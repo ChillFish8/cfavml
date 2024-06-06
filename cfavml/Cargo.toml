@@ -1,0 +1,46 @@
+[package]
+name = "cfavml"
+version = "0.1.0"
+edition = "2021"
+description = "CF's Accelerated Vector Math Library"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+
+[dev-dependencies]
+rand = "0.8.5"
+rand_chacha = "0.3.1"
+simsimd = "4.3.0"
+paste = "1.0.14"
+
+criterion = { version = "0.5.1", features = ["html_reports", "csv_output"] }
+
+[target.'cfg(unix)'.dev-dependencies]
+ndarray = { version = "0.15.6", features = ["blas"] }
+blas-src = { version = "0.8", features = ["openblas"] }
+openblas-src = { version = "0.10", features = ["cblas", "system"] }
+
+[target.'cfg(not(unix))'.dev-dependencies]
+ndarray = "0.15.6"
+
+[features]
+# Enables nightly only features like fast-math optimizations for fallback routines and AVX512 support.
+#
+# This feature generally needs to be enabled in order to get the best optimizations.
+nightly = []
+
+# Enables algined memory with benchmarks
+benchmark-aligned = []
+
+# [[bench]]
+# name = "bench_3rd_parties"
+# harness = false
+
+[[bench]]
+name = "bench_distance_measures"
+harness = false
+
+# [[bench]]
+# name = "bench_metrics"
+# harness = false
