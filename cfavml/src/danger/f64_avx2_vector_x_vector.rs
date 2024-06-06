@@ -1,5 +1,5 @@
-use std::arch::x86_64::*;
-use std::{mem, ptr};
+use core::arch::x86_64::*;
+use core::{mem, ptr};
 
 use crate::danger::{copy_avx2_pd_register_to, offsets_avx2_pd, CHUNK_0, CHUNK_1};
 

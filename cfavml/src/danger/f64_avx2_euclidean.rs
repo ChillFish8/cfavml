@@ -1,4 +1,4 @@
-use std::arch::x86_64::*;
+use core::arch::x86_64::*;
 
 use crate::danger::{offsets_avx2_pd, rollup_x8_pd, sum_avx2_pd, CHUNK_0, CHUNK_1};
 

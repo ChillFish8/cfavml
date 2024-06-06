@@ -1,5 +1,5 @@
-use std::arch::x86_64::*;
-use std::{mem, ptr};
+use core::arch::x86_64::*;
+use core::{mem, ptr};
 
 use crate::danger::{
     copy_masked_avx512_ps_register_to,

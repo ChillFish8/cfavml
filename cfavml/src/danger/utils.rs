@@ -1,5 +1,5 @@
-use std::arch::x86_64::*;
-use std::{mem, ptr};
+use core::arch::x86_64::*;
+use core::{mem, ptr};
 
 use crate::math::Math;
 
@@ -311,7 +311,7 @@ pub(crate) unsafe fn copy_masked_avx512_ps_register_to(
     len: usize,
 ) {
     let result = mem::transmute::<__m512, [f32; 16]>(reg);
-    ptr::copy_nonoverlapping(result.as_ptr(), arr, std::cmp::min(16, len));
+    ptr::copy_nonoverlapping(result.as_ptr(), arr, core::cmp::min(16, len));
 }
 
 #[cfg(all(any(target_arch = "x86", target_arch = "x86_64"), feature = "nightly"))]
@@ -327,7 +327,7 @@ pub(crate) unsafe fn copy_masked_avx512_pd_register_to(
     len: usize,
 ) {
     let result = mem::transmute::<__m512d, [f64; 8]>(reg);
-    ptr::copy_nonoverlapping(result.as_ptr(), arr, std::cmp::min(8, len));
+    ptr::copy_nonoverlapping(result.as_ptr(), arr, core::cmp::min(8, len));
 }
 
 #[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
@@ -348,7 +348,7 @@ pub(crate) unsafe fn copy_avx2_pd_register_to(arr: *mut f64, reg: __m256d) {
 
 #[cfg(test)]
 mod tests {
-    use std::array;
+    use core::array;
 
     use super::*;
     use crate::math::AutoMath;
@@ -363,6 +363,7 @@ mod tests {
         assert_eq!(x[24..].as_ptr(), p4);
     }
 
+    #[cfg(all(any(target_arch = "x86", target_arch = "x86_64"), feature = "nightly"))]
     #[test]
     fn test_avx512_offsets() {
         let x: [f32; 64] = array::from_fn(|i| i as f32);

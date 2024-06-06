@@ -1,8 +1,8 @@
 use std::hint::black_box;
 use std::time::Duration;
 
+use cfavml::danger::*;
 use criterion::{criterion_group, criterion_main, Criterion};
-use eonn_accel::danger::*;
 
 mod utils;
 
