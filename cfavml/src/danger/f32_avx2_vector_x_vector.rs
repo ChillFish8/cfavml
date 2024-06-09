@@ -1,5 +1,4 @@
 use core::arch::x86_64::*;
-use core::{mem, ptr};
 
 use crate::danger::{copy_avx2_ps_register_to, offsets_avx2_ps, CHUNK_0, CHUNK_1};
 
@@ -391,10 +390,14 @@ unsafe fn write_x64_block(
     r7: __m256,
     r8: __m256,
 ) {
-    let merged = [r1, r2, r3, r4, r5, r6, r7, r8];
-
-    let results = mem::transmute::<[__m256; 8], [f32; 64]>(merged);
-    ptr::copy_nonoverlapping(results.as_ptr(), x, results.len());
+    _mm256_storeu_ps(x, r1);
+    _mm256_storeu_ps(x.add(8), r2);
+    _mm256_storeu_ps(x.add(16), r3);
+    _mm256_storeu_ps(x.add(24), r4);
+    _mm256_storeu_ps(x.add(32), r5);
+    _mm256_storeu_ps(x.add(40), r6);
+    _mm256_storeu_ps(x.add(48), r7);
+    _mm256_storeu_ps(x.add(56), r8);
 }
 
 #[cfg(test)]
