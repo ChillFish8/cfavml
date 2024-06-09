@@ -7,7 +7,7 @@ use crate::math::*;
 ///
 /// This method in theory is safe, but like the rest of the dangerous API, makes
 /// no guarantee that it will always remain safe with no strings attached.
-pub unsafe fn f32_xany_fallback_nofma_min_horizontal<T>(arr: &[T]) -> T
+pub unsafe fn generic_xany_fallback_nofma_min_horizontal<T>(arr: &[T]) -> T
 where
     T: Copy,
     AutoMath: Math<T>,
@@ -159,7 +159,7 @@ mod tests {
     #[test]
     fn test_xany_nofma_min_horizontal() {
         let (x, _) = get_sample_vectors(131);
-        let min = unsafe { f32_xany_fallback_nofma_min_horizontal(&x) };
+        let min = unsafe { generic_xany_fallback_nofma_min_horizontal(&x) };
         assert_eq!(min, x.iter().fold(f32::INFINITY, |acc, v| acc.min(*v)));
     }
 

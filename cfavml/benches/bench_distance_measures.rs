@@ -62,16 +62,19 @@ benchmark_distance_measure!(
     xany = f32_xany_avx2_fma_euclidean,
 );
 
+#[cfg(all(any(target_arch = "x86", target_arch = "x86_64"), feature = "nightly"))]
 benchmark_distance_measure!(
     "f32_avx512_fma_dot",
     x1024 = f32_xconst_avx512_fma_dot::<1024>,
     xany = f32_xany_avx512_fma_dot,
 );
+#[cfg(all(any(target_arch = "x86", target_arch = "x86_64"), feature = "nightly"))]
 benchmark_distance_measure!(
     "f32_avx512_fma_cosine",
     x1024 = f32_xconst_avx512_fma_cosine::<1024>,
     xany = f32_xany_avx512_fma_cosine,
 );
+#[cfg(all(any(target_arch = "x86", target_arch = "x86_64"), feature = "nightly"))]
 benchmark_distance_measure!(
     "f32_avx512_fma_euclidean",
     x1024 = f32_xconst_avx512_fma_euclidean::<1024>,
@@ -97,7 +100,7 @@ benchmark_distance_measure!(
 criterion_group!(
     name = benches;
     config = Criterion::default()
-        .measurement_time(Duration::from_secs(60));
+        .measurement_time(Duration::from_secs(10));
     targets =
         benchmark_f32_avx2_nofma_dot,
         benchmark_f32_avx2_fma_dot,
@@ -105,11 +108,18 @@ criterion_group!(
         benchmark_f32_avx2_fma_cosine,
         benchmark_f32_avx2_nofma_euclidean,
         benchmark_f32_avx2_fma_euclidean,
-        benchmark_f32_avx512_fma_dot,
-        benchmark_f32_avx512_fma_cosine,
-        benchmark_f32_avx512_fma_euclidean,
         benchmark_f32_fallback_nofma_dot,
         benchmark_f32_fallback_nofma_cosine,
         benchmark_f32_fallback_nofma_euclidean,
+);
+#[cfg(all(any(target_arch = "x86", target_arch = "x86_64"), feature = "nightly", feature = "benchmark-avx512"))]
+criterion_group!(
+    name = benches_avx512;
+    config = Criterion::default()
+        .measurement_time(Duration::from_secs(10));
+    targets =
+        benchmark_f32_avx512_fma_dot,
+        benchmark_f32_avx512_fma_cosine,
+        benchmark_f32_avx512_fma_euclidean,
 );
 criterion_main!(benches);
