@@ -103,7 +103,11 @@ pub unsafe fn f32_xconst_avx2_nofma_min_vertical<const DIMS: usize>(
 ) {
     debug_assert_eq!(DIMS % 64, 0, "DIMS must be a multiple of 64");
     debug_assert_eq!(output.len(), DIMS, "Output buffer must be equal to DIMS");
-    debug_assert_eq!(matrix.len() % DIMS, 0, "Matrix num elements must be a multiple of DIMS");
+    debug_assert_eq!(
+        matrix.len() % DIMS,
+        0,
+        "Matrix num elements must be a multiple of DIMS"
+    );
 
     let matrix_len = matrix.len();
     let matrix_ptr = matrix.as_ptr();
@@ -113,13 +117,7 @@ pub unsafe fn f32_xconst_avx2_nofma_min_vertical<const DIMS: usize>(
     // the min of for each of the lanes vertically through the matrix.
     let mut i = 0;
     while i < DIMS {
-        min_vertical_component(
-            i,
-            matrix_ptr,
-            matrix_len,
-            results_ptr,
-            DIMS,
-        );
+        min_vertical_component(i, matrix_ptr, matrix_len, results_ptr, DIMS);
 
         i += 64;
     }
@@ -226,10 +224,7 @@ pub unsafe fn f32_xany_avx2_nofma_min_horizontal(arr: &[f32]) -> f32 {
 ///
 /// This method assumes AVX2 instructions are available, if this method is executed
 /// on non-AVX2 enabled systems, it will lead to an `ILLEGAL_INSTRUCTION` error.
-pub unsafe fn f32_xany_avx2_nofma_min_vertical(
-    matrix: &[f32],
-    output: &mut [f32],
-) {
+pub unsafe fn f32_xany_avx2_nofma_min_vertical(matrix: &[f32], output: &mut [f32]) {
     let dims = output.len();
     let offset_from = dims % 64;
 
@@ -243,13 +238,7 @@ pub unsafe fn f32_xany_avx2_nofma_min_vertical(
     // the min of for each of the lanes vertically through the matrix.
     let mut i = 0;
     while i < (dims - offset_from) {
-        min_vertical_component(
-            i,
-            matrix_ptr,
-            matrix_len,
-            results_ptr,
-            dims,
-        );
+        min_vertical_component(i, matrix_ptr, matrix_len, results_ptr, dims);
 
         i += 64;
     }
@@ -288,7 +277,6 @@ pub unsafe fn f32_xany_avx2_nofma_min_vertical(
         }
     }
 }
-
 
 #[inline(always)]
 unsafe fn min_vertical_component(
@@ -344,10 +332,10 @@ unsafe fn min_vertical_component(
     _mm256_storeu_ps(results_ptr.add(i + 56), acc8);
 }
 
-
 #[cfg(test)]
 mod tests {
     use ndarray::Axis;
+
     use super::*;
     use crate::test_utils::get_sample_vectors;
 
@@ -363,7 +351,11 @@ mod tests {
         let (matrix, _) = get_sample_vectors::<f32>(512 * 25);
 
         let arr = ndarray::Array2::from_shape_vec((25, 512), matrix.clone()).unwrap();
-        let expected_vertical_max = arr.map_axis(Axis(0), |a| a.iter().min_by(|a, b| a.total_cmp(b)).copied().unwrap()).to_vec();
+        let expected_vertical_max = arr
+            .map_axis(Axis(0), |a| {
+                a.iter().min_by(|a, b| a.total_cmp(b)).copied().unwrap()
+            })
+            .to_vec();
 
         let mut max = vec![f32::INFINITY; 512];
         unsafe { f32_xconst_avx2_nofma_min_vertical::<512>(&matrix, &mut max) };
@@ -382,7 +374,11 @@ mod tests {
         let (matrix, _) = get_sample_vectors::<f32>(537 * 25);
 
         let arr = ndarray::Array2::from_shape_vec((25, 537), matrix.clone()).unwrap();
-        let expected_vertical_max = arr.map_axis(Axis(0), |a| a.iter().min_by(|a, b| a.total_cmp(b)).copied().unwrap()).to_vec();
+        let expected_vertical_max = arr
+            .map_axis(Axis(0), |a| {
+                a.iter().min_by(|a, b| a.total_cmp(b)).copied().unwrap()
+            })
+            .to_vec();
 
         let mut max = vec![f32::INFINITY; 537];
         unsafe { f32_xany_avx2_nofma_min_vertical(&matrix, &mut max) };

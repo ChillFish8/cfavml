@@ -1,12 +1,6 @@
 use core::arch::x86_64::*;
 
-use crate::danger::{
-    offsets_avx2_ps,
-    rollup_x8_ps,
-    sum_avx2_ps,
-    CHUNK_0,
-    CHUNK_1,
-};
+use crate::danger::{offsets_avx2_ps, rollup_x8_ps, sum_avx2_ps, CHUNK_0, CHUNK_1};
 
 #[target_feature(enable = "avx2")]
 #[inline]
@@ -165,7 +159,11 @@ pub unsafe fn f32_xconst_avx2_nofma_sum_vertical<const DIMS: usize>(
     output: &mut [f32],
 ) {
     debug_assert_eq!(DIMS % 64, 0, "DIMS must be a multiple of 64");
-    debug_assert_eq!(matrix.len() % DIMS, 0, "Matrix shape must be `[[f32; DIMS]; N]`");
+    debug_assert_eq!(
+        matrix.len() % DIMS,
+        0,
+        "Matrix shape must be `[[f32; DIMS]; N]`"
+    );
     debug_assert_eq!(output.len(), DIMS, "Output buffer must be DIMS in size");
 
     let matrix_len = matrix.len();
@@ -174,17 +172,10 @@ pub unsafe fn f32_xconst_avx2_nofma_sum_vertical<const DIMS: usize>(
 
     let mut i = 0;
     while i < DIMS {
-        sum_vertical_component(
-            i,
-            matrix_ptr,
-            matrix_len,
-            results_ptr,
-            DIMS,
-        );
+        sum_vertical_component(i, matrix_ptr, matrix_len, results_ptr, DIMS);
 
         i += 64;
     }
-
 }
 
 #[target_feature(enable = "avx2")]
@@ -207,10 +198,7 @@ pub unsafe fn f32_xconst_avx2_nofma_sum_vertical<const DIMS: usize>(
 ///
 /// This method assumes AVX2 instructions are available, if this method is executed
 /// on non-AVX2 enabled systems, it will lead to an `ILLEGAL_INSTRUCTION` error.
-pub unsafe fn f32_xany_avx2_nofma_sum_vertical(
-    matrix: &[f32],
-    output: &mut [f32],
-) {
+pub unsafe fn f32_xany_avx2_nofma_sum_vertical(matrix: &[f32], output: &mut [f32]) {
     let dims = output.len();
     let offset_from = dims % 64;
 
@@ -227,13 +215,7 @@ pub unsafe fn f32_xany_avx2_nofma_sum_vertical(
 
     let mut i = 0;
     while i < (dims - offset_from) {
-        sum_vertical_component(
-            i,
-            matrix_ptr,
-            matrix_len,
-            results_ptr,
-            dims,
-        );
+        sum_vertical_component(i, matrix_ptr, matrix_len, results_ptr, dims);
 
         i += 64;
     }
@@ -352,6 +334,7 @@ unsafe fn sum_x64_block(
 #[cfg(test)]
 mod tests {
     use ndarray::Axis;
+
     use super::*;
     use crate::test_utils::{assert_is_close, get_sample_vectors};
 

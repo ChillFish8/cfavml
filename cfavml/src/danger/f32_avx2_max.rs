@@ -102,7 +102,11 @@ pub unsafe fn f32_xconst_avx2_nofma_max_vertical<const DIMS: usize>(
     output: &mut [f32],
 ) {
     debug_assert_eq!(DIMS % 64, 0, "DIMS must be a multiple of 64");
-    debug_assert_eq!(matrix.len() % DIMS, 0, "Matrix shape must be `[[f32; DIMS]; N]`");
+    debug_assert_eq!(
+        matrix.len() % DIMS,
+        0,
+        "Matrix shape must be `[[f32; DIMS]; N]`"
+    );
     debug_assert_eq!(output.len(), DIMS, "Output buffer must be DIMS in size");
 
     let matrix_len = matrix.len();
@@ -114,13 +118,7 @@ pub unsafe fn f32_xconst_avx2_nofma_max_vertical<const DIMS: usize>(
     // the max of for each of the lanes vertically through the matrix.
     let mut i = 0;
     while i < DIMS {
-        vertical_max_component(
-            i,
-            matrix_ptr,
-            matrix_len,
-            max_values_ptr,
-            DIMS,
-        );
+        vertical_max_component(i, matrix_ptr, matrix_len, max_values_ptr, DIMS);
 
         i += 64;
     }
@@ -245,13 +243,7 @@ pub unsafe fn f32_xany_avx2_nofma_max_vertical(matrix: &[f32], output: &mut [f32
     // the max of for each of the lanes vertically through the matrix.
     let mut i = 0;
     while i < (dims - offset_from) {
-        vertical_max_component(
-            i,
-            matrix_ptr,
-            matrix_len,
-            max_values_ptr,
-            dims,
-        );
+        vertical_max_component(i, matrix_ptr, matrix_len, max_values_ptr, dims);
 
         i += 64;
     }
@@ -345,12 +337,12 @@ unsafe fn vertical_max_component(
     _mm256_storeu_ps(results_ptr.add(i + 40), acc6);
     _mm256_storeu_ps(results_ptr.add(i + 48), acc7);
     _mm256_storeu_ps(results_ptr.add(i + 56), acc8);
-
 }
 
 #[cfg(test)]
 mod tests {
     use ndarray::Axis;
+
     use super::*;
     use crate::test_utils::get_sample_vectors;
 
@@ -366,7 +358,11 @@ mod tests {
         let (matrix, _) = get_sample_vectors::<f32>(512 * 25);
 
         let arr = ndarray::Array2::from_shape_vec((25, 512), matrix.clone()).unwrap();
-        let expected_vertical_max = arr.map_axis(Axis(0), |a| a.iter().max_by(|a, b| a.total_cmp(b)).copied().unwrap()).to_vec();
+        let expected_vertical_max = arr
+            .map_axis(Axis(0), |a| {
+                a.iter().max_by(|a, b| a.total_cmp(b)).copied().unwrap()
+            })
+            .to_vec();
 
         let mut max = vec![f32::NEG_INFINITY; 512];
         unsafe { f32_xconst_avx2_nofma_max_vertical::<512>(&matrix, &mut max) };
@@ -385,7 +381,11 @@ mod tests {
         let (matrix, _) = get_sample_vectors::<f32>(537 * 25);
 
         let arr = ndarray::Array2::from_shape_vec((25, 537), matrix.clone()).unwrap();
-        let expected_vertical_max = arr.map_axis(Axis(0), |a| a.iter().max_by(|a, b| a.total_cmp(b)).copied().unwrap()).to_vec();
+        let expected_vertical_max = arr
+            .map_axis(Axis(0), |a| {
+                a.iter().max_by(|a, b| a.total_cmp(b)).copied().unwrap()
+            })
+            .to_vec();
 
         let mut max = vec![f32::NEG_INFINITY; 537];
         unsafe { f32_xany_avx2_nofma_max_vertical(&matrix, &mut max) };
