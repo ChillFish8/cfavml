@@ -92,7 +92,8 @@ pub unsafe fn f32_xconst_avx2_nofma_max_horizontal<const DIMS: usize>(
 /// `DIMS` **MUST** be a multiple of `64`, otherwise this routine
 /// will become immediately UB due to out of bounds pointer accesses.
 ///
-/// `output` & rows of the matrix must also be `DIMS` in length.
+/// The `matrix` must be a multiple of DIMS to produce N vectors within the matrix,
+/// and `output` must be equal to DIMS.
 ///
 /// This method assumes AVX2 instructions are available, if this method is executed
 /// on non-AVX2 enabled systems, it will lead to an `ILLEGAL_INSTRUCTION` error.
