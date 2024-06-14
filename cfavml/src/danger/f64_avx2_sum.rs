@@ -1,8 +1,6 @@
 use core::arch::x86_64::*;
-use core::{mem, ptr};
 
 use crate::danger::{
-    copy_avx2_pd_register_to,
     offsets_avx2_pd,
     rollup_x8_pd,
     sum_avx2_pd,
@@ -163,51 +161,29 @@ pub unsafe fn f64_xany_avx2_nofma_sum_horizontal(x: &[f64]) -> f64 {
 /// This method assumes AVX2 instructions are available, if this method is executed
 /// on non-AVX2 enabled systems, it will lead to an `ILLEGAL_INSTRUCTION` error.
 pub unsafe fn f64_xconst_avx2_nofma_sum_vertical<const DIMS: usize>(
-    matrix: &[&[f64]],
-) -> Vec<f64> {
+    matrix: &[f64],
+    output: &mut [f64]
+) {
     debug_assert_eq!(DIMS % 32, 0, "DIMS must be a multiple of 32");
+    debug_assert_eq!(matrix.len() % DIMS, 0, "Matrix size must be a multiple of DIMS");
+    debug_assert_eq!(output.len(), DIMS, "Output buffer must be the same size as DIMS");
 
-    let mut result = vec![0.0; DIMS];
-    let results_ptr = result.as_mut_ptr();
+    let matrix_len = matrix.len();
+    let matrix_ptr = matrix.as_ptr();
+    let results_ptr = output.as_mut_ptr();
 
     let mut i = 0;
     while i < DIMS {
-        let mut acc1 = _mm256_setzero_pd();
-        let mut acc2 = _mm256_setzero_pd();
-        let mut acc3 = _mm256_setzero_pd();
-        let mut acc4 = _mm256_setzero_pd();
-        let mut acc5 = _mm256_setzero_pd();
-        let mut acc6 = _mm256_setzero_pd();
-        let mut acc7 = _mm256_setzero_pd();
-        let mut acc8 = _mm256_setzero_pd();
-
-        for n in 0..matrix.len() {
-            let arr = *matrix.get_unchecked(n);
-            debug_assert_eq!(arr.len(), DIMS);
-            let arr = arr.as_ptr();
-
-            sum_x64_block(
-                arr.add(i),
-                &mut acc1,
-                &mut acc2,
-                &mut acc3,
-                &mut acc4,
-                &mut acc5,
-                &mut acc6,
-                &mut acc7,
-                &mut acc8,
-            );
-        }
-
-        let merged = [acc1, acc2, acc3, acc4, acc5, acc6, acc7, acc8];
-
-        let result = mem::transmute::<[__m256d; 8], [f64; 32]>(merged);
-        ptr::copy_nonoverlapping(result.as_ptr(), results_ptr.add(i), result.len());
+        min_vertical_component(
+            i,
+            matrix_ptr,
+            matrix_len,
+            results_ptr,
+            DIMS,
+        );
 
         i += 32;
     }
-
-    result
 }
 
 #[allow(unused)]
@@ -231,46 +207,29 @@ pub unsafe fn f64_xconst_avx2_nofma_sum_vertical<const DIMS: usize>(
 ///
 /// This method assumes AVX2 instructions are available, if this method is executed
 /// on non-AVX2 enabled systems, it will lead to an `ILLEGAL_INSTRUCTION` error.
-pub unsafe fn f64_xany_avx2_nofma_sum_vertical(matrix: &[&[f64]]) -> Vec<f64> {
-    let len = matrix[0].len();
-    let offset_from = len % 32;
+pub unsafe fn f64_xany_avx2_nofma_sum_vertical(
+    matrix: &[f64],
+    output: &mut [f64],
+) {
+    let dims = output.len();
 
-    let mut results = vec![0.0; len];
-    let results_ptr = results.as_mut_ptr();
+    debug_assert_eq!(matrix.len() % dims, 0, "Matrix size must be a multiple of dims");
+
+    let matrix_len = matrix.len();
+    let matrix_ptr = matrix.as_ptr();
+    let offset_from = dims % 32;
+
+    let results_ptr = output.as_mut_ptr();
 
     let mut i = 0;
-    while i < (len - offset_from) {
-        let mut acc1 = _mm256_setzero_pd();
-        let mut acc2 = _mm256_setzero_pd();
-        let mut acc3 = _mm256_setzero_pd();
-        let mut acc4 = _mm256_setzero_pd();
-        let mut acc5 = _mm256_setzero_pd();
-        let mut acc6 = _mm256_setzero_pd();
-        let mut acc7 = _mm256_setzero_pd();
-        let mut acc8 = _mm256_setzero_pd();
-
-        for m in 0..matrix.len() {
-            let arr = *matrix.get_unchecked(m);
-            debug_assert_eq!(arr.len(), len);
-            let arr = arr.as_ptr();
-
-            sum_x64_block(
-                arr.add(i),
-                &mut acc1,
-                &mut acc2,
-                &mut acc3,
-                &mut acc4,
-                &mut acc5,
-                &mut acc6,
-                &mut acc7,
-                &mut acc8,
-            );
-        }
-
-        let merged = [acc1, acc2, acc3, acc4, acc5, acc6, acc7, acc8];
-
-        let result = mem::transmute::<[__m256d; 8], [f64; 32]>(merged);
-        ptr::copy_nonoverlapping(result.as_ptr(), results_ptr.add(i), result.len());
+    while i < (dims - offset_from) {
+        min_vertical_component(
+            i,
+            matrix_ptr,
+            matrix_len,
+            results_ptr,
+            dims,
+        );
 
         i += 32;
     }
@@ -278,36 +237,33 @@ pub unsafe fn f64_xany_avx2_nofma_sum_vertical(matrix: &[&[f64]]) -> Vec<f64> {
     if offset_from != 0 {
         let tail = offset_from % 4;
 
-        while i < (len - tail) {
+        while i < (dims - tail) {
             let mut acc = _mm256_setzero_pd();
 
-            for m in 0..matrix.len() {
-                let arr = *matrix.get_unchecked(m);
-                debug_assert_eq!(arr.len(), len);
-                let arr = arr.as_ptr();
-
-                let x = _mm256_loadu_pd(arr.add(i));
+            let mut j = 0;
+            while j < matrix_len {
+                let x = _mm256_loadu_pd(matrix_ptr.add(j + i));
                 acc = _mm256_add_pd(acc, x);
+
+                j += dims;
             }
 
-            copy_avx2_pd_register_to(results_ptr.add(i), acc);
+            _mm256_storeu_pd(results_ptr.add(i), acc);
 
             i += 4;
         }
 
-        while i < len {
-            for m in 0..matrix.len() {
-                let arr = *matrix.get_unchecked(m);
-                debug_assert_eq!(arr.len(), len);
+        while i < dims {
+            let mut j = 0;
+            while j < matrix_len {
+                *output.get_unchecked_mut(i) += *matrix.get_unchecked(j + i);
 
-                *results.get_unchecked_mut(i) += *arr.get_unchecked(i);
+                j += dims;
             }
 
             i += 1;
         }
     }
-
-    results
 }
 
 #[allow(clippy::too_many_arguments)]
@@ -345,8 +301,56 @@ unsafe fn sum_x64_block(
     *acc8 = _mm256_add_pd(*acc8, x8);
 }
 
+
+#[inline(always)]
+unsafe fn min_vertical_component(
+    i: usize,
+    matrix_ptr: *const f64,
+    matrix_len: usize,
+    results_ptr: *mut f64,
+    dims: usize,
+) {
+    let mut acc1 = _mm256_setzero_pd();
+    let mut acc2 = _mm256_setzero_pd();
+    let mut acc3 = _mm256_setzero_pd();
+    let mut acc4 = _mm256_setzero_pd();
+    let mut acc5 = _mm256_setzero_pd();
+    let mut acc6 = _mm256_setzero_pd();
+    let mut acc7 = _mm256_setzero_pd();
+    let mut acc8 = _mm256_setzero_pd();
+
+    // Vertical max of the 32 elements.
+    let mut j = 0;
+    while j < matrix_len {
+        sum_x64_block(
+            matrix_ptr.add(j + i),
+            &mut acc1,
+            &mut acc2,
+            &mut acc3,
+            &mut acc4,
+            &mut acc5,
+            &mut acc6,
+            &mut acc7,
+            &mut acc8,
+        );
+
+        j += dims;
+    }
+
+    _mm256_storeu_pd(results_ptr.add(i), acc1);
+    _mm256_storeu_pd(results_ptr.add(i + 4), acc2);
+    _mm256_storeu_pd(results_ptr.add(i + 8), acc3);
+    _mm256_storeu_pd(results_ptr.add(i + 12), acc4);
+    _mm256_storeu_pd(results_ptr.add(i + 16), acc5);
+    _mm256_storeu_pd(results_ptr.add(i + 20), acc6);
+    _mm256_storeu_pd(results_ptr.add(i + 24), acc7);
+    _mm256_storeu_pd(results_ptr.add(i + 28), acc8);
+}
+
+
 #[cfg(test)]
 mod tests {
+    use ndarray::Axis;
     use super::*;
     use crate::test_utils::{assert_is_close, get_sample_vectors};
 
@@ -366,47 +370,25 @@ mod tests {
 
     #[test]
     fn test_xconst_nofma_sum_vertical() {
-        let mut matrix = Vec::new();
-        for _ in 0..25 {
-            let (x, _) = get_sample_vectors(512);
-            matrix.push(x);
-        }
+        let (matrix, _) = get_sample_vectors::<f64>(512 * 25);
 
-        let matrix_view = matrix.iter().map(|v| v.as_ref()).collect::<Vec<&[f64]>>();
+        let arr = ndarray::Array2::from_shape_vec((25, 512), matrix.clone()).unwrap();
+        let result = arr.sum_axis(Axis(0)).to_vec();
 
-        let mut expected_vertical_sum = vec![0.0; 512];
-        for i in 0..512 {
-            let mut sum = 0.0;
-            for arr in matrix.iter() {
-                sum += arr[i];
-            }
-            expected_vertical_sum[i] = sum;
-        }
-
-        let sum = unsafe { f64_xconst_avx2_nofma_sum_vertical::<512>(&matrix_view) };
-        assert_eq!(sum, expected_vertical_sum);
+        let mut output = vec![0.0; 512];
+        unsafe { f64_xconst_avx2_nofma_sum_vertical::<512>(&matrix, &mut output) };
+        assert_eq!(output, result);
     }
 
     #[test]
     fn test_xany_nofma_sum_vertical() {
-        let mut matrix = Vec::new();
-        for _ in 0..25 {
-            let (x, _) = get_sample_vectors(537);
-            matrix.push(x);
-        }
+        let (matrix, _) = get_sample_vectors::<f64>(537 * 25);
 
-        let matrix_view = matrix.iter().map(|v| v.as_ref()).collect::<Vec<&[f64]>>();
+        let arr = ndarray::Array2::from_shape_vec((25, 537), matrix.clone()).unwrap();
+        let result = arr.sum_axis(Axis(0)).to_vec();
 
-        let mut expected_vertical_sum = vec![0.0; 537];
-        for i in 0..537 {
-            let mut sum = 0.0;
-            for arr in matrix.iter() {
-                sum += arr[i];
-            }
-            expected_vertical_sum[i] = sum;
-        }
-
-        let sum = unsafe { f64_xany_avx2_nofma_sum_vertical(&matrix_view) };
-        assert_eq!(sum, expected_vertical_sum);
+        let mut output = vec![0.0; 537];
+        unsafe { f64_xany_avx2_nofma_sum_vertical(&matrix, &mut output) };
+        assert_eq!(output, result);
     }
 }

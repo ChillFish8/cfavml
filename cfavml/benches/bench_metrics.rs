@@ -3,6 +3,7 @@ use std::time::Duration;
 
 use cfavml::danger::*;
 use criterion::{criterion_group, criterion_main, Criterion};
+use ndarray::Axis;
 
 mod utils;
 
@@ -17,6 +18,11 @@ fn benchmark_ndarray(c: &mut Criterion) {
         let (x, _) = utils::get_sample_vectors(1024);
         let x = ndarray::Array1::from_shape_vec((1024,), x).unwrap();
         b.iter(|| repeat!(1000, ndarray::ArrayBase::sum, &x));
+    });
+    c.bench_function("f32_ndarray_sum xany-x1024 matrix", |b| {
+        let (x, _) = utils::get_sample_vectors(1024 * 2048);
+        let x = ndarray::Array2::from_shape_vec((2048, 1024), x).unwrap();
+        b.iter(|| x.sum_axis(Axis(0)));
     });
 
     c.bench_function("f32_ndarray_min xany-1301", |b| {
@@ -49,7 +55,7 @@ fn ndarray_fold_op(arr: &ndarray::Array1<f32>, init: f32, op: fn(f32, &f32) -> f
 }
 
 
-macro_rules! benchmark_metric {
+macro_rules! benchmark_horizontal_metric {
     (
         $name:expr,
         x1024 = $fx1024:expr,
@@ -69,57 +75,73 @@ macro_rules! benchmark_metric {
                     let (x, _) = utils::get_sample_vectors(1024);
                     b.iter(|| repeat!(1000, $fxany, &x));
                 });
+                c.bench_function(&format!("{} x1024 matrix", $name), |b| {
+                    let (x, _) = utils::get_sample_vectors(1024 * 2048);
+                    b.iter(|| {
+                        for i in (0..x.len()).step_by(1024) {
+                            unsafe { black_box($fx1024(&x[i..i+1024])) };
+                        }
+                    });
+                });
+                c.bench_function(&format!("{} xany-1024 matrix", $name), |b| {
+                    let (x, _) = utils::get_sample_vectors(1024 * 2048);
+                    b.iter(|| {
+                        for i in (0..x.len()).step_by(1024) {
+                            unsafe { black_box($fxany(&x[i..i+1024])) };
+                        }
+                    });
+                });
             }
         }
     };
 }
 
-benchmark_metric!(
+benchmark_horizontal_metric!(
     "f32_avx2_nofma_min",
     x1024 = f32_xconst_avx2_nofma_min_horizontal::<1024>,
     xany = f32_xany_avx2_nofma_min_horizontal,
 );
-benchmark_metric!(
+benchmark_horizontal_metric!(
     "f32_avx2_nofma_max",
     x1024 = f32_xconst_avx2_nofma_max_horizontal::<1024>,
     xany = f32_xany_avx2_nofma_max_horizontal,
 );
-benchmark_metric!(
+benchmark_horizontal_metric!(
     "f32_avx2_nofma_sum",
     x1024 = f32_xconst_avx2_nofma_sum_horizontal::<1024>,
     xany = f32_xany_avx2_nofma_sum_horizontal,
 );
 
 #[cfg(all(any(target_arch = "x86", target_arch = "x86_64"), feature = "nightly", feature = "benchmark-avx512"))]
-benchmark_metric!(
+benchmark_horizontal_metric!(
     "f32_avx512_nofma_min",
     x1024 = f32_xconst_avx512_nofma_min_horizontal::<1024>,
     xany = f32_xany_avx512_nofma_min_horizontal,
 );
 #[cfg(all(any(target_arch = "x86", target_arch = "x86_64"), feature = "nightly", feature = "benchmark-avx512"))]
-benchmark_metric!(
+benchmark_horizontal_metric!(
     "f32_avx512_nofma_max",
     x1024 = f32_xconst_avx512_nofma_max_horizontal::<1024>,
     xany = f32_xany_avx512_nofma_max_horizontal,
 );
 #[cfg(all(any(target_arch = "x86", target_arch = "x86_64"), feature = "nightly", feature = "benchmark-avx512"))]
-benchmark_metric!(
+benchmark_horizontal_metric!(
     "f32_avx512_nofma_sum",
     x1024 = f32_xconst_avx512_nofma_sum_horizontal::<1024>,
     xany = f32_xany_avx512_nofma_sum_horizontal,
 );
 
-benchmark_metric!(
+benchmark_horizontal_metric!(
     "f32_fallback_nofma_min",
     x1024 = generic_xany_fallback_nofma_min_horizontal,
     xany = generic_xany_fallback_nofma_min_horizontal,
 );
-benchmark_metric!(
+benchmark_horizontal_metric!(
     "f32_fallback_nofma_max",
     x1024 = generic_xany_fallback_nofma_max_horizontal,
     xany = generic_xany_fallback_nofma_max_horizontal,
 );
-benchmark_metric!(
+benchmark_horizontal_metric!(
     "f32_fallback_nofma_sum",
     x1024 = generic_xany_fallback_nofma_sum_horizontal,
     xany = generic_xany_fallback_nofma_sum_horizontal,
