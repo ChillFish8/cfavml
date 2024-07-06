@@ -1,164 +1,44 @@
-#[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
-mod f32_avx2_cosine;
-#[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
-mod f32_avx2_dot_product;
-#[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
-mod f32_avx2_euclidean;
-#[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
-mod f32_avx2_max;
-#[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
-mod f32_avx2_min;
-#[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
-mod f32_avx2_norm;
-#[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
-mod f32_avx2_sum;
-#[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
-mod f32_avx2_vector_x_value;
-#[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
-mod f32_avx2_vector_x_vector;
-#[cfg(all(any(target_arch = "x86", target_arch = "x86_64"), feature = "nightly"))]
-mod f32_avx512_cosine;
-#[cfg(all(any(target_arch = "x86", target_arch = "x86_64"), feature = "nightly"))]
-mod f32_avx512_dot_product;
-#[cfg(all(any(target_arch = "x86", target_arch = "x86_64"), feature = "nightly"))]
-mod f32_avx512_euclidean;
-#[cfg(all(any(target_arch = "x86", target_arch = "x86_64"), feature = "nightly"))]
-mod f32_avx512_max;
-#[cfg(all(any(target_arch = "x86", target_arch = "x86_64"), feature = "nightly"))]
-mod f32_avx512_min;
-#[cfg(all(any(target_arch = "x86", target_arch = "x86_64"), feature = "nightly"))]
-mod f32_avx512_norm;
-#[cfg(all(any(target_arch = "x86", target_arch = "x86_64"), feature = "nightly"))]
-mod f32_avx512_sum;
-#[cfg(all(any(target_arch = "x86", target_arch = "x86_64"), feature = "nightly"))]
-mod f32_avx512_vector_x_value;
-#[cfg(all(any(target_arch = "x86", target_arch = "x86_64"), feature = "nightly"))]
-mod f32_avx512_vector_x_vector;
-#[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
-mod f64_avx2_cosine;
-#[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
-mod f64_avx2_dot_product;
-#[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
-mod f64_avx2_euclidean;
-#[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
-mod f64_avx2_max;
-#[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
-mod f64_avx2_min;
-#[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
-mod f64_avx2_norm;
-#[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
-mod f64_avx2_sum;
-#[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
-mod f64_avx2_vector_x_value;
-#[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
-mod f64_avx2_vector_x_vector;
-#[cfg(all(any(target_arch = "x86", target_arch = "x86_64"), feature = "nightly"))]
-mod f64_avx512_cosine;
-#[cfg(all(any(target_arch = "x86", target_arch = "x86_64"), feature = "nightly"))]
-mod f64_avx512_dot_product;
-#[cfg(all(any(target_arch = "x86", target_arch = "x86_64"), feature = "nightly"))]
-mod f64_avx512_euclidean;
-#[cfg(all(any(target_arch = "x86", target_arch = "x86_64"), feature = "nightly"))]
-mod f64_avx512_max;
-#[cfg(all(any(target_arch = "x86", target_arch = "x86_64"), feature = "nightly"))]
-mod f64_avx512_min;
-#[cfg(all(any(target_arch = "x86", target_arch = "x86_64"), feature = "nightly"))]
-mod f64_avx512_norm;
-#[cfg(all(any(target_arch = "x86", target_arch = "x86_64"), feature = "nightly"))]
-mod f64_avx512_sum;
-#[cfg(all(any(target_arch = "x86", target_arch = "x86_64"), feature = "nightly"))]
-mod f64_avx512_vector_x_value;
-#[cfg(all(any(target_arch = "x86", target_arch = "x86_64"), feature = "nightly"))]
-mod f64_avx512_vector_x_vector;
-mod generic_fallback_cosine;
-mod generic_fallback_dot_product;
-mod generic_fallback_euclidean;
-mod generic_fallback_max;
-mod generic_fallback_min;
-mod generic_fallback_sum;
-mod generic_fallback_vector_x_value;
-mod generic_fallback_vector_x_vector;
-mod utils;
+mod core_simd_api;
+mod impl_avx2;
+mod impl_avx2_fma;
+mod impl_fallback;
+mod op_cosine;
+mod op_dot_product;
+mod op_euclidean;
+mod op_max;
+mod op_min;
+mod op_norm;
+mod op_sum;
+mod op_vector_x_value;
+mod op_vector_x_vector;
 
-pub(crate) use utils::*;
+#[cfg(test)]
+mod impl_test;
 
+pub use self::core_simd_api::{DenseLane, SimdRegister};
 #[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
-pub use self::f32_avx2_cosine::*;
+pub use self::impl_avx2::*;
 #[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
-pub use self::f32_avx2_dot_product::*;
-#[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
-pub use self::f32_avx2_euclidean::*;
-#[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
-pub use self::f32_avx2_max::*;
-#[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
-pub use self::f32_avx2_min::*;
-#[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
-pub use self::f32_avx2_norm::*;
-#[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
-pub use self::f32_avx2_sum::*;
-#[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
-pub use self::f32_avx2_vector_x_value::*;
-#[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
-pub use self::f32_avx2_vector_x_vector::*;
-#[cfg(all(any(target_arch = "x86", target_arch = "x86_64"), feature = "nightly"))]
-pub use self::f32_avx512_cosine::*;
-#[cfg(all(any(target_arch = "x86", target_arch = "x86_64"), feature = "nightly"))]
-pub use self::f32_avx512_dot_product::*;
-#[cfg(all(any(target_arch = "x86", target_arch = "x86_64"), feature = "nightly"))]
-pub use self::f32_avx512_euclidean::*;
-#[cfg(all(any(target_arch = "x86", target_arch = "x86_64"), feature = "nightly"))]
-pub use self::f32_avx512_max::*;
-#[cfg(all(any(target_arch = "x86", target_arch = "x86_64"), feature = "nightly"))]
-pub use self::f32_avx512_min::*;
-#[cfg(all(any(target_arch = "x86", target_arch = "x86_64"), feature = "nightly"))]
-pub use self::f32_avx512_norm::*;
-#[cfg(all(any(target_arch = "x86", target_arch = "x86_64"), feature = "nightly"))]
-pub use self::f32_avx512_sum::*;
-#[cfg(all(any(target_arch = "x86", target_arch = "x86_64"), feature = "nightly"))]
-pub use self::f32_avx512_vector_x_value::*;
-#[cfg(all(any(target_arch = "x86", target_arch = "x86_64"), feature = "nightly"))]
-pub use self::f32_avx512_vector_x_vector::*;
-#[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
-pub use self::f64_avx2_cosine::*;
-#[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
-pub use self::f64_avx2_dot_product::*;
-#[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
-pub use self::f64_avx2_euclidean::*;
-#[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
-pub use self::f64_avx2_max::*;
-#[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
-pub use self::f64_avx2_min::*;
-#[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
-pub use self::f64_avx2_norm::*;
-#[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
-pub use self::f64_avx2_sum::*;
-#[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
-pub use self::f64_avx2_vector_x_value::*;
-#[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
-pub use self::f64_avx2_vector_x_vector::*;
-#[cfg(all(any(target_arch = "x86", target_arch = "x86_64"), feature = "nightly"))]
-pub use self::f64_avx512_cosine::*;
-#[cfg(all(any(target_arch = "x86", target_arch = "x86_64"), feature = "nightly"))]
-pub use self::f64_avx512_dot_product::*;
-#[cfg(all(any(target_arch = "x86", target_arch = "x86_64"), feature = "nightly"))]
-pub use self::f64_avx512_euclidean::*;
-#[cfg(all(any(target_arch = "x86", target_arch = "x86_64"), feature = "nightly"))]
-pub use self::f64_avx512_max::*;
-#[cfg(all(any(target_arch = "x86", target_arch = "x86_64"), feature = "nightly"))]
-pub use self::f64_avx512_min::*;
-#[cfg(all(any(target_arch = "x86", target_arch = "x86_64"), feature = "nightly"))]
-pub use self::f64_avx512_norm::*;
-#[cfg(all(any(target_arch = "x86", target_arch = "x86_64"), feature = "nightly"))]
-pub use self::f64_avx512_sum::*;
-#[cfg(all(any(target_arch = "x86", target_arch = "x86_64"), feature = "nightly"))]
-pub use self::f64_avx512_vector_x_value::*;
-#[cfg(all(any(target_arch = "x86", target_arch = "x86_64"), feature = "nightly"))]
-pub use self::f64_avx512_vector_x_vector::*;
-pub use self::generic_fallback_cosine::*;
-pub use self::generic_fallback_dot_product::*;
-pub use self::generic_fallback_euclidean::*;
-pub use self::generic_fallback_max::*;
-pub use self::generic_fallback_min::*;
-pub use self::generic_fallback_sum::*;
-pub use self::generic_fallback_vector_x_value::*;
-pub use self::generic_fallback_vector_x_vector::*;
+pub use self::impl_avx2_fma::*;
+pub use self::impl_fallback::*;
+#[cfg(test)]
+pub(crate) use self::op_cosine::cosine;
+pub use self::op_cosine::generic_cosine;
+pub use self::op_dot_product::generic_dot_product;
+pub use self::op_euclidean::generic_euclidean;
+pub use self::op_max::{generic_max_horizontal, generic_max_vertical};
+pub use self::op_min::{generic_min_horizontal, generic_min_vertical};
+pub use self::op_norm::generic_squared_norm;
+pub use self::op_sum::{generic_sum_horizontal, generic_sum_vertical};
+pub use self::op_vector_x_value::{
+    generic_add_value,
+    generic_div_value,
+    generic_mul_value,
+    generic_sub_value,
+};
+pub use self::op_vector_x_vector::{
+    generic_add_vector,
+    generic_div_vector,
+    generic_mul_vector,
+    generic_sub_vector,
+};

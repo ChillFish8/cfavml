@@ -6,6 +6,8 @@
       <sourceFolder url="file://$MODULE_DIR$/cfavml/benches" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/cfavml/src" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/blogpost/benches" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/blogpost/src" isTestSource="false" />
       <excludeFolder url="file://$MODULE_DIR$/cfavml/target" />
       <excludeFolder url="file://$MODULE_DIR$/target" />
     </content>

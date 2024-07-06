@@ -112,7 +112,11 @@ criterion_group!(
         benchmark_f32_fallback_nofma_cosine,
         benchmark_f32_fallback_nofma_euclidean,
 );
-#[cfg(all(any(target_arch = "x86", target_arch = "x86_64"), feature = "nightly", feature = "benchmark-avx512"))]
+#[cfg(all(
+    any(target_arch = "x86", target_arch = "x86_64"),
+    feature = "nightly",
+    feature = "benchmark-avx512"
+))]
 criterion_group!(
     name = benches_avx512;
     config = Criterion::default()

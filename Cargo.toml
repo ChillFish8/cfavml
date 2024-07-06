@@ -4,6 +4,7 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
+ndarray = { version = "0.15.6", default-features = false }
 
 cfavml = { path = "cfavml", version = "0.1.0" }
 

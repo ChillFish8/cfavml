@@ -52,4 +52,8 @@ pub trait Math<T> {
 
     /// `a / b`
     fn div(a: T, b: T) -> T;
+
+    // No officer, nothing scuffed about this, no sir.
+    #[cfg(test)]
+    fn is_close(a: T, b: T) -> bool;
 }

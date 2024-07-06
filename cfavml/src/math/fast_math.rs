@@ -86,6 +86,14 @@ impl Math<f32> for FastMath {
             intrinsics::fdiv_algebraic(a, b)
         }
     }
+
+    #[cfg(test)]
+    fn is_close(a: f32, b: f32) -> bool {
+        let max = a.max(b);
+        let min = a.min(b);
+        let diff = max - min;
+        diff <= 0.00015
+    }
 }
 
 impl Math<f64> for FastMath {
@@ -168,5 +176,13 @@ impl Math<f64> for FastMath {
         } else {
             intrinsics::fdiv_algebraic(a, b)
         }
+    }
+
+    #[cfg(test)]
+    fn is_close(a: f64, b: f64) -> bool {
+        let max = a.max(b);
+        let min = a.min(b);
+        let diff = max - min;
+        diff <= 0.00015
     }
 }
