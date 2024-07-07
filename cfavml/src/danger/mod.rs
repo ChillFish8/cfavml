@@ -14,6 +14,8 @@ mod op_vector_x_vector;
 
 #[cfg(test)]
 mod impl_test;
+#[cfg(test)]
+mod test_suite;
 
 pub use self::core_simd_api::{DenseLane, SimdRegister};
 #[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
@@ -42,3 +44,8 @@ pub use self::op_vector_x_vector::{
     generic_mul_vector,
     generic_sub_vector,
 };
+
+#[allow(non_snake_case)]
+pub(crate) const fn _MM_SHUFFLE(z: u32, y: u32, x: u32, w: u32) -> i32 {
+    ((z << 6) | (y << 4) | (x << 2) | w) as i32
+}

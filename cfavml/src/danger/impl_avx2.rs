@@ -1,7 +1,9 @@
 use core::arch::x86_64::*;
-use std::mem;
+use core::iter::zip;
+use core::mem;
 
 use super::core_simd_api::{DenseLane, SimdRegister};
+use crate::apply_dense;
 
 /// AVX2 enabled SIMD operations.
 ///
@@ -96,32 +98,30 @@ impl SimdRegister<f32> for Avx2 {
 
     #[inline(always)]
     unsafe fn max_to_value(reg: Self::Register) -> f32 {
-        let [a, b, c, d, e, f, g, h] = mem::transmute::<_, [f32; 8]>(reg);
+        let hi = _mm256_extractf128_ps::<1>(reg);
+        let lo = _mm256_castps256_ps128(reg);
 
-        let mut m1 = a.max(b);
+        let maxed = _mm_max_ps(lo, hi);
+        let [a, b, c, d] = mem::transmute::<_, [f32; 4]>(maxed);
+
+        let m1 = a.max(b);
         let m2 = c.max(d);
-        let mut m3 = e.max(f);
-        let m4 = g.max(h);
 
-        m1 = m1.max(m2);
-        m3 = m3.max(m4);
-
-        m1.max(m3)
+        m1.max(m2)
     }
 
     #[inline(always)]
     unsafe fn min_to_value(reg: Self::Register) -> f32 {
-        let [a, b, c, d, e, f, g, h] = mem::transmute::<_, [f32; 8]>(reg);
+        let hi = _mm256_extractf128_ps::<1>(reg);
+        let lo = _mm256_castps256_ps128(reg);
 
-        let mut m1 = a.min(b);
+        let maxed = _mm_min_ps(lo, hi);
+        let [a, b, c, d] = mem::transmute::<_, [f32; 4]>(maxed);
+
+        let m1 = a.min(b);
         let m2 = c.min(d);
-        let mut m3 = e.min(f);
-        let m4 = g.min(h);
 
-        m1 = m1.min(m2);
-        m3 = m3.min(m4);
-
-        m1.min(m3)
+        m1.min(m2)
     }
 
     #[inline(always)]
@@ -214,22 +214,24 @@ impl SimdRegister<f64> for Avx2 {
 
     #[inline(always)]
     unsafe fn max_to_value(reg: Self::Register) -> f64 {
-        let [a, b, c, d] = mem::transmute::<_, [f64; 4]>(reg);
+        let hi = _mm256_extractf128_pd::<1>(reg);
+        let lo = _mm256_castpd256_pd128(reg);
 
-        let m1 = a.max(b);
-        let m2 = c.max(d);
+        let maxed = _mm_max_pd(lo, hi);
+        let [a, b] = mem::transmute::<_, [f64; 2]>(maxed);
 
-        m1.max(m2)
+        a.max(b)
     }
 
     #[inline(always)]
     unsafe fn min_to_value(reg: Self::Register) -> f64 {
-        let [a, b, c, d] = mem::transmute::<_, [f64; 4]>(reg);
+        let hi = _mm256_extractf128_pd::<1>(reg);
+        let lo = _mm256_castpd256_pd128(reg);
 
-        let m1 = a.min(b);
-        let m2 = c.min(d);
+        let maxed = _mm_min_pd(lo, hi);
+        let [a, b] = mem::transmute::<_, [f64; 2]>(maxed);
 
-        m1.min(m2)
+        a.min(b)
     }
 
     #[inline(always)]
@@ -238,115 +240,201 @@ impl SimdRegister<f64> for Avx2 {
     }
 }
 
-#[cfg(all(target_feature = "avx2", test))]
-mod tests {
-    use super::*;
-    use crate::test_utils::get_sample_vectors;
+impl SimdRegister<i8> for Avx2 {
+    type Register = __m256i;
 
-    #[test]
-    fn test_suite() {
-        unsafe { crate::danger::impl_test::test_suite_impl_f32::<Avx2>() }
+    #[inline(always)]
+    unsafe fn load(mem: *const i8) -> Self::Register {
+        _mm256_loadu_si256(mem.cast())
     }
 
-    #[test]
-    fn test_cosine() {
-        let (l1, l2) = get_sample_vectors::<f32>(1043);
-        unsafe { crate::danger::op_cosine::test_cosine::<_, Avx2>(l1, l2) };
-
-        let (l1, l2) = get_sample_vectors::<f64>(1043);
-        unsafe { crate::danger::op_cosine::test_cosine::<_, Avx2>(l1, l2) };
+    #[inline(always)]
+    unsafe fn filled(value: i8) -> Self::Register {
+        _mm256_set1_epi8(value)
     }
 
-    #[test]
-    fn test_dot_product() {
-        let (l1, l2) = get_sample_vectors::<f32>(1043);
-        unsafe { crate::danger::op_dot_product::test_dot::<_, Avx2>(l1, l2) };
-
-        let (l1, l2) = get_sample_vectors::<f64>(1043);
-        unsafe { crate::danger::op_dot_product::test_dot::<_, Avx2>(l1, l2) };
+    #[inline(always)]
+    unsafe fn zeroed() -> Self::Register {
+        _mm256_setzero_si256()
     }
 
-    #[test]
-    fn test_norm() {
-        let (l1, _) = get_sample_vectors::<f32>(1043);
-        unsafe { crate::danger::op_norm::test_norm::<_, Avx2>(l1) };
-
-        let (l1, _) = get_sample_vectors::<f64>(1043);
-        unsafe { crate::danger::op_norm::test_norm::<_, Avx2>(l1) };
+    #[inline(always)]
+    unsafe fn add(l1: Self::Register, l2: Self::Register) -> Self::Register {
+        _mm256_add_epi8(l1, l2)
     }
 
-    #[test]
-    fn test_euclidean() {
-        let (l1, l2) = get_sample_vectors::<f32>(1043);
-        unsafe { crate::danger::op_euclidean::test_euclidean::<_, Avx2>(l1, l2) };
-
-        let (l1, l2) = get_sample_vectors::<f64>(1043);
-        unsafe { crate::danger::op_euclidean::test_euclidean::<_, Avx2>(l1, l2) };
+    #[inline(always)]
+    unsafe fn sub(l1: Self::Register, l2: Self::Register) -> Self::Register {
+        _mm256_sub_epi8(l1, l2)
     }
 
-    #[test]
-    fn test_max() {
-        let (l1, l2) = get_sample_vectors::<f32>(1043);
-        unsafe { crate::danger::op_max::test_max::<_, Avx2>(l1, l2) };
+    #[inline(always)]
+    unsafe fn mul(l1: Self::Register, l2: Self::Register) -> Self::Register {
+        let mask = _mm256_set1_epi32(0xFF00FF00u32 as i32);
 
-        let (l1, l2) = get_sample_vectors::<f64>(1043);
-        unsafe { crate::danger::op_max::test_max::<_, Avx2>(l1, l2) };
+        let shift_l1 = _mm256_srai_epi16::<8>(l1);
+        let shift_l2 = _mm256_srai_epi16::<8>(l2);
+
+        let even = _mm256_mullo_epi16(l1, l2);
+        let odd = _mm256_mullo_epi16(shift_l1, shift_l2);
+        let odd = _mm256_slli_epi16::<8>(odd);
+        _mm256_blendv_epi8(even, odd, mask)
     }
 
-    #[test]
-    fn test_min() {
-        let (l1, l2) = get_sample_vectors::<f32>(1043);
-        unsafe { crate::danger::op_min::test_min::<_, Avx2>(l1, l2) };
+    #[inline(always)]
+    /// Scalar `i8` integer division.
+    ///
+    /// In reality this operation is not SIMD, in theory we could later support
+    /// it however it will always be an incredibly expensive operation with quite
+    /// a lot of cognitive load on the maintenance side, so for the foreseeable future
+    /// non-floating point division operations will be non-simd.
+    unsafe fn div(l1: Self::Register, l2: Self::Register) -> Self::Register {
+        let l1_unpacked = mem::transmute::<_, [i8; 32]>(l1);
+        let l2_unpacked = mem::transmute::<_, [i8; 32]>(l2);
 
-        let (l1, l2) = get_sample_vectors::<f64>(1043);
-        unsafe { crate::danger::op_min::test_min::<_, Avx2>(l1, l2) };
+        let mut result = [0i8; 32];
+        for (idx, (l1, l2)) in zip(l1_unpacked, l2_unpacked).enumerate() {
+            result[idx] = l1.wrapping_div(l2);
+        }
+
+        mem::transmute::<_, Self::Register>(result)
     }
 
-    #[test]
-    fn test_sum() {
-        let (l1, l2) = (vec![1.0f32; 1043], vec![3.0f32; 1043]);
-        unsafe { crate::danger::op_sum::test_sum::<_, Avx2>(l1, l2) };
-
-        let (l1, l2) = (vec![1.0f32; 1043], vec![3.0f32; 1043]);
-        unsafe { crate::danger::op_sum::test_sum::<_, Avx2>(l1, l2) };
+    #[inline(always)]
+    unsafe fn fmadd(
+        l1: Self::Register,
+        l2: Self::Register,
+        acc: Self::Register,
+    ) -> Self::Register {
+        // A non-fused variant for AVX2 without the FMA cpu feature requirement.
+        let res = <Self as SimdRegister<i8>>::mul(l1, l2);
+        <Self as SimdRegister<i8>>::add(res, acc)
     }
 
-    #[test]
-    fn test_vector_x_value() {
-        let (l1, _) = (vec![1.0f32; 1043], vec![3.0f32; 1043]);
-        unsafe {
-            crate::danger::op_vector_x_value::tests::test_add::<_, Avx2>(l1.clone(), 2.0)
-        };
-        unsafe {
-            crate::danger::op_vector_x_value::tests::test_sub::<_, Avx2>(l1.clone(), 2.0)
-        };
-        unsafe {
-            crate::danger::op_vector_x_value::tests::test_div::<_, Avx2>(l1.clone(), 2.0)
-        };
-        unsafe { crate::danger::op_vector_x_value::tests::test_mul::<_, Avx2>(l1, 2.0) };
+    #[inline(always)]
+    unsafe fn max(l1: Self::Register, l2: Self::Register) -> Self::Register {
+        _mm256_max_epi8(l1, l2)
     }
 
-    #[test]
-    fn test_vector_x_vector() {
-        let (l1, l2) = (vec![1.0f32; 1043], vec![3.0f32; 1043]);
-        unsafe {
-            crate::danger::op_vector_x_vector::tests::test_add::<_, Avx2>(
-                l1.clone(),
-                l2.clone(),
-            )
-        };
-        unsafe {
-            crate::danger::op_vector_x_vector::tests::test_sub::<_, Avx2>(
-                l1.clone(),
-                l2.clone(),
-            )
-        };
-        unsafe {
-            crate::danger::op_vector_x_vector::tests::test_div::<_, Avx2>(
-                l1.clone(),
-                l2.clone(),
-            )
-        };
-        unsafe { crate::danger::op_vector_x_vector::tests::test_mul::<_, Avx2>(l1, l2) };
+    #[inline(always)]
+    unsafe fn min(l1: Self::Register, l2: Self::Register) -> Self::Register {
+        _mm256_min_epi8(l1, l2)
+    }
+
+    #[inline(always)]
+    unsafe fn fmadd_dense(
+        l1: DenseLane<Self::Register>,
+        l2: DenseLane<Self::Register>,
+        acc: DenseLane<Self::Register>,
+    ) -> DenseLane<Self::Register> {
+        let mask = DenseLane::copy(_mm256_set1_epi32(0xFF00FF00u32 as i32));
+
+        let even = apply_dense!(_mm256_mullo_epi16, l1, l2);
+
+        let shift_l1 = apply_dense!(_mm256_srai_epi16::<8>, l1);
+        let shift_l2 = apply_dense!(_mm256_srai_epi16::<8>, l2);
+
+        let odd = apply_dense!(_mm256_mullo_epi16, shift_l1, shift_l2);
+        let odd = apply_dense!(_mm256_slli_epi16::<8>, odd);
+
+        let res = apply_dense!(_mm256_blendv_epi8, even, odd, mask);
+        apply_dense!(_mm256_add_epi8, res, acc)
+    }
+
+    #[inline(always)]
+    unsafe fn sum_to_value(reg: Self::Register) -> i8 {
+        // There is a bit of an assumption the compile will optimize these scalar impls
+        // out, but the SIMD version is a bit complicated and is difficult to get to
+        // mirror the scalar behaviour.
+        // TODO: We can probably do this with the pure SIMD way, but we should try match
+        //       the scalar behaviour in terms of wrapping.
+
+        let hi = _mm256_extracti128_si256::<1>(reg);
+        let lo = _mm256_castsi256_si128(reg);
+
+        let sum = _mm_add_epi8(hi, lo);
+        let unpacked = mem::transmute::<_, [i8; 16]>(sum);
+
+        let mut s1 = unpacked[0].wrapping_add(unpacked[1]);
+        let s2 = unpacked[2].wrapping_add(unpacked[3]);
+        let mut s3 = unpacked[4].wrapping_add(unpacked[5]);
+        let s4 = unpacked[6].wrapping_add(unpacked[7]);
+        let mut s5 = unpacked[8].wrapping_add(unpacked[9]);
+        let s6 = unpacked[10].wrapping_add(unpacked[11]);
+        let mut s7 = unpacked[12].wrapping_add(unpacked[13]);
+        let s8 = unpacked[14].wrapping_add(unpacked[15]);
+
+        s1 = s1.wrapping_add(s2);
+        s3 = s3.wrapping_add(s4);
+        s5 = s5.wrapping_add(s6);
+        s7 = s7.wrapping_add(s8);
+
+        s1 = s1.wrapping_add(s3);
+        s5 = s5.wrapping_add(s7);
+
+        s5.wrapping_add(s1)
+    }
+
+    #[inline(always)]
+    unsafe fn max_to_value(reg: Self::Register) -> i8 {
+        let hi = _mm256_extracti128_si256::<1>(reg);
+        let lo = _mm256_castsi256_si128(reg);
+
+        let maxed = _mm_max_epi8(hi, lo);
+        let unpacked = mem::transmute::<_, [i8; 16]>(maxed);
+
+        let mut m1 = i8::MIN;
+        let mut m2 = i8::MIN;
+        let mut m3 = i8::MIN;
+        let mut m4 = i8::MIN;
+
+        let mut i = 0;
+        while i < 16 {
+            m1 = m1.max(unpacked[i]);
+            m2 = m2.max(unpacked[i + 1]);
+            m3 = m3.max(unpacked[i + 2]);
+            m4 = m4.max(unpacked[i + 3]);
+
+            i += 4;
+        }
+
+        m1 = m1.max(m2);
+        m3 = m3.max(m4);
+
+        m1.max(m3)
+    }
+
+    #[inline(always)]
+    unsafe fn min_to_value(reg: Self::Register) -> i8 {
+        let hi = _mm256_extracti128_si256::<1>(reg);
+        let lo = _mm256_castsi256_si128(reg);
+
+        let minimal = _mm_min_epi8(hi, lo);
+        let unpacked = mem::transmute::<_, [i8; 16]>(minimal);
+
+        let mut m1 = i8::MAX;
+        let mut m2 = i8::MAX;
+        let mut m3 = i8::MAX;
+        let mut m4 = i8::MAX;
+
+        let mut i = 0;
+        while i < 16 {
+            m1 = m1.min(unpacked[i]);
+            m2 = m2.min(unpacked[i + 1]);
+            m3 = m3.min(unpacked[i + 2]);
+            m4 = m4.min(unpacked[i + 3]);
+
+            i += 4;
+        }
+
+        m1 = m1.min(m2);
+        m3 = m3.min(m4);
+
+        m1.min(m3)
+    }
+
+    #[inline(always)]
+    unsafe fn write(mem: *mut i8, reg: Self::Register) {
+        _mm256_storeu_si256(mem.cast(), reg)
     }
 }

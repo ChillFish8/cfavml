@@ -9,6 +9,8 @@ const SEED: u64 = 34535345353;
 
 pub fn get_sample_vectors<T>(size: usize) -> (Vec<T>, Vec<T>)
 where
+    T: Copy,
+    AutoMath: Math<T>,
     Standard: Distribution<T>,
 {
     let mut rng = ChaCha8Rng::seed_from_u64(SEED);
@@ -16,8 +18,19 @@ where
     let mut x = Vec::new();
     let mut y = Vec::new();
     for _ in 0..size {
-        x.push(rng.gen());
-        y.push(rng.gen());
+        let mut v1 = rng.gen();
+        let mut v2 = rng.gen();
+
+        if AutoMath::cmp_eq(v1, AutoMath::zero()) {
+            v1 = AutoMath::one();
+        }
+
+        if AutoMath::cmp_eq(v2, AutoMath::zero()) {
+            v2 = AutoMath::one();
+        }
+
+        x.push(v1);
+        y.push(v2);
     }
 
     (x, y)

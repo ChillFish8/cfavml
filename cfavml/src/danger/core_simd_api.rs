@@ -1,7 +1,21 @@
-use std::mem;
+use core::mem;
 
+#[doc(hidden)]
 #[macro_export]
+/// Applies a given operation expression over the dense lane for upto 3 args.
 macro_rules! apply_dense {
+    ($op:expr, $l1:ident) => {{
+        DenseLane {
+            a: $op($l1.a),
+            b: $op($l1.b),
+            c: $op($l1.c),
+            d: $op($l1.d),
+            e: $op($l1.e),
+            f: $op($l1.f),
+            g: $op($l1.g),
+            h: $op($l1.h),
+        }
+    }};
     ($op:expr, $l1:ident, $l2:ident) => {{
         DenseLane {
             a: $op($l1.a, $l2.a),
