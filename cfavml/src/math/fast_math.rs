@@ -187,7 +187,6 @@ impl Math<f64> for FastMath {
     }
 }
 
-
 impl Math<i32> for FastMath {
     #[inline(always)]
     fn zero() -> i32 {

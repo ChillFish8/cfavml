@@ -8,22 +8,26 @@ use crate::math::{AutoMath, Math};
 /// we haven't manually supported.
 pub struct Fallback;
 
-impl SimdRegister<f32> for Fallback {
-    type Register = f32;
+impl<T> SimdRegister<T> for Fallback
+where
+    T: Copy,
+    AutoMath: Math<T>,
+{
+    type Register = T;
 
     #[inline(always)]
-    unsafe fn load(mem: *const f32) -> Self::Register {
+    unsafe fn load(mem: *const T) -> Self::Register {
         mem.read()
     }
 
     #[inline(always)]
-    unsafe fn filled(value: f32) -> Self::Register {
+    unsafe fn filled(value: T) -> Self::Register {
         value
     }
 
     #[inline(always)]
     unsafe fn zeroed() -> Self::Register {
-        0.0
+        AutoMath::zero()
     }
 
     #[inline(always)]
@@ -67,188 +71,30 @@ impl SimdRegister<f32> for Fallback {
     }
 
     #[inline(always)]
-    unsafe fn sum_to_value(reg: Self::Register) -> f32 {
+    unsafe fn sum_to_value(reg: Self::Register) -> T {
         reg
     }
 
     #[inline(always)]
-    unsafe fn max_to_value(reg: Self::Register) -> f32 {
+    unsafe fn max_to_value(reg: Self::Register) -> T {
         reg
     }
 
     #[inline(always)]
-    unsafe fn min_to_value(reg: Self::Register) -> f32 {
+    unsafe fn min_to_value(reg: Self::Register) -> T {
         reg
     }
 
     #[inline(always)]
-    unsafe fn write(mem: *mut f32, reg: Self::Register) {
+    unsafe fn write(mem: *mut T, reg: Self::Register) {
         mem.write(reg)
     }
 }
-
-impl SimdRegister<f64> for Fallback {
-    type Register = f64;
-
-    #[inline(always)]
-    unsafe fn load(mem: *const f64) -> Self::Register {
-        mem.read()
-    }
-
-    #[inline(always)]
-    unsafe fn filled(value: f64) -> Self::Register {
-        value
-    }
-
-    #[inline(always)]
-    unsafe fn zeroed() -> Self::Register {
-        0.0
-    }
-
-    #[inline(always)]
-    unsafe fn add(l1: Self::Register, l2: Self::Register) -> Self::Register {
-        AutoMath::add(l1, l2)
-    }
-
-    #[inline(always)]
-    unsafe fn sub(l1: Self::Register, l2: Self::Register) -> Self::Register {
-        AutoMath::sub(l1, l2)
-    }
-
-    #[inline(always)]
-    unsafe fn mul(l1: Self::Register, l2: Self::Register) -> Self::Register {
-        AutoMath::mul(l1, l2)
-    }
-
-    #[inline(always)]
-    unsafe fn div(l1: Self::Register, l2: Self::Register) -> Self::Register {
-        AutoMath::div(l1, l2)
-    }
-
-    #[inline(always)]
-    unsafe fn fmadd(
-        l1: Self::Register,
-        l2: Self::Register,
-        acc: Self::Register,
-    ) -> Self::Register {
-        let res = AutoMath::mul(l1, l2);
-        AutoMath::add(res, acc)
-    }
-
-    #[inline(always)]
-    unsafe fn max(l1: Self::Register, l2: Self::Register) -> Self::Register {
-        AutoMath::cmp_max(l1, l2)
-    }
-
-    #[inline(always)]
-    unsafe fn min(l1: Self::Register, l2: Self::Register) -> Self::Register {
-        AutoMath::cmp_min(l1, l2)
-    }
-
-    #[inline(always)]
-    unsafe fn sum_to_value(reg: Self::Register) -> f64 {
-        reg
-    }
-
-    #[inline(always)]
-    unsafe fn max_to_value(reg: Self::Register) -> f64 {
-        reg
-    }
-
-    #[inline(always)]
-    unsafe fn min_to_value(reg: Self::Register) -> f64 {
-        reg
-    }
-
-    #[inline(always)]
-    unsafe fn write(mem: *mut f64, reg: Self::Register) {
-        mem.write(reg)
-    }
-}
-
-impl SimdRegister<i32> for Fallback {
-    type Register = i32;
-
-    #[inline(always)]
-    unsafe fn load(mem: *const i32) -> Self::Register {
-        mem.read()
-    }
-
-    #[inline(always)]
-    unsafe fn filled(value: i32) -> Self::Register {
-        value
-    }
-
-    #[inline(always)]
-    unsafe fn zeroed() -> Self::Register {
-        0
-    }
-
-    #[inline(always)]
-    unsafe fn add(l1: Self::Register, l2: Self::Register) -> Self::Register {
-        AutoMath::add(l1, l2)
-    }
-
-    #[inline(always)]
-    unsafe fn sub(l1: Self::Register, l2: Self::Register) -> Self::Register {
-        AutoMath::sub(l1, l2)
-    }
-
-    #[inline(always)]
-    unsafe fn mul(l1: Self::Register, l2: Self::Register) -> Self::Register {
-        AutoMath::mul(l1, l2)
-    }
-
-    #[inline(always)]
-    unsafe fn div(l1: Self::Register, l2: Self::Register) -> Self::Register {
-        AutoMath::div(l1, l2)
-    }
-
-    #[inline(always)]
-    unsafe fn fmadd(
-        l1: Self::Register,
-        l2: Self::Register,
-        acc: Self::Register,
-    ) -> Self::Register {
-        let res = AutoMath::mul(l1, l2);
-        AutoMath::add(res, acc)
-    }
-
-    #[inline(always)]
-    unsafe fn max(l1: Self::Register, l2: Self::Register) -> Self::Register {
-        AutoMath::cmp_max(l1, l2)
-    }
-
-    #[inline(always)]
-    unsafe fn min(l1: Self::Register, l2: Self::Register) -> Self::Register {
-        AutoMath::cmp_min(l1, l2)
-    }
-
-    #[inline(always)]
-    unsafe fn sum_to_value(reg: Self::Register) -> i32 {
-        reg
-    }
-
-    #[inline(always)]
-    unsafe fn max_to_value(reg: Self::Register) -> i32 {
-        reg
-    }
-
-    #[inline(always)]
-    unsafe fn min_to_value(reg: Self::Register) -> i32 {
-        reg
-    }
-
-    #[inline(always)]
-    unsafe fn write(mem: *mut i32, reg: Self::Register) {
-        mem.write(reg)
-    }
-}
-
 
 #[cfg(test)]
 mod tests {
     use std::fmt::Debug;
+
     use super::*;
     use crate::test_utils::get_sample_vectors;
 
@@ -366,9 +212,9 @@ mod tests {
     }
 
     fn test_vector_x_value_all<T: Copy + PartialEq + Debug>(l1: Vec<T>, value: T)
-        where
-            Fallback: SimdRegister<T>,
-            AutoMath: Math<T>,
+    where
+        Fallback: SimdRegister<T>,
+        AutoMath: Math<T>,
     {
         unsafe {
             crate::danger::op_vector_x_value::tests::test_add::<_, Fallback>(
