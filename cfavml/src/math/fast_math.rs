@@ -186,3 +186,76 @@ impl Math<f64> for FastMath {
         diff <= 0.00015
     }
 }
+
+
+impl Math<i32> for FastMath {
+    #[inline(always)]
+    fn zero() -> i32 {
+        0
+    }
+
+    #[inline(always)]
+    fn one() -> i32 {
+        1
+    }
+
+    #[inline(always)]
+    fn max() -> i32 {
+        i32::MAX
+    }
+
+    #[inline(always)]
+    fn min() -> i32 {
+        i32::MIN
+    }
+
+    #[inline(always)]
+    fn sqrt(a: i32) -> i32 {
+        (a as f64).sqrt() as i32
+    }
+
+    #[inline(always)]
+    fn abs(a: i32) -> i32 {
+        a.abs()
+    }
+
+    #[inline(always)]
+    fn cmp_eq(a: i32, b: i32) -> bool {
+        a == b
+    }
+
+    #[inline(always)]
+    fn cmp_min(a: i32, b: i32) -> i32 {
+        a.min(b)
+    }
+
+    #[inline(always)]
+    fn cmp_max(a: i32, b: i32) -> i32 {
+        a.max(b)
+    }
+
+    #[inline(always)]
+    fn add(a: i32, b: i32) -> i32 {
+        a.wrapping_add(b)
+    }
+
+    #[inline(always)]
+    fn sub(a: i32, b: i32) -> i32 {
+        a.wrapping_sub(b)
+    }
+
+    #[inline(always)]
+    fn mul(a: i32, b: i32) -> i32 {
+        a.wrapping_mul(b)
+    }
+
+    #[inline(always)]
+    fn div(a: i32, b: i32) -> i32 {
+        a.wrapping_div(b)
+    }
+
+    #[cfg(test)]
+    fn is_close(a: i32, b: i32) -> bool {
+        a == b
+    }
+}
