@@ -54,3 +54,21 @@ where
 
     total
 }
+
+#[cfg(test)]
+pub(crate) unsafe fn test_norm<T, R>(l1: Vec<T>)
+where
+    T: Copy + PartialEq + std::fmt::Debug,
+    R: SimdRegister<T>,
+    crate::math::AutoMath: Math<T>,
+{
+    use crate::math::AutoMath;
+
+    let dims = l1.len();
+    let value = generic_squared_norm::<T, R, AutoMath>(dims, &l1);
+    let expected_value = crate::test_utils::simple_dot(&l1, &l1);
+    assert!(
+        AutoMath::is_close(value, expected_value),
+        "value missmatch {value:?} vs {expected_value:?}"
+    );
+}

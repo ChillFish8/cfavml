@@ -195,6 +195,15 @@ mod tests {
     }
 
     #[test]
+    fn test_norm() {
+        let (l1, _) = get_sample_vectors::<f32>(1043);
+        unsafe { crate::danger::op_norm::test_norm::<_, Fallback>(l1) };
+
+        let (l1, _) = get_sample_vectors::<f64>(1043);
+        unsafe { crate::danger::op_norm::test_norm::<_, Fallback>(l1) };
+    }
+
+    #[test]
     fn test_euclidean() {
         let (l1, l2) = get_sample_vectors::<f32>(1043);
         unsafe { crate::danger::op_euclidean::test_euclidean::<_, Fallback>(l1, l2) };
