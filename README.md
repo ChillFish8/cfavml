@@ -18,6 +18,8 @@ low-level unsafe operations.
   extension traits.
   
   * This library also only uses `core` rather than `std`.
+  * This library primarily optimizes for AMD CPUs which may perform worse on Intel CPUs compared to
+    the most 'optimal' Intel optimized code.
   * WARNING: This library is not for the faint of hearts, it is effectively _entirely_
     written in unsafe and makes a lot of assumptions for each routine which differ, please
     make sure to read the routine docs and not assume that just because one routine requires

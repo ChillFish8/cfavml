@@ -111,7 +111,13 @@ mod tests {
         let (l1, l2) = get_sample_vectors::<f64>(1043);
         unsafe { crate::danger::op_cosine::test_cosine::<_, Fallback>(l1, l2) };
 
+        // We skip the i8 and i16 types here because A) no on realistically is going to use
+        // these methods with integer ops, and also the lower bits combined with the RNG for testing
+        // causes a lot of panics.
         let (l1, l2) = get_sample_vectors::<i32>(1043);
+        unsafe { crate::danger::op_cosine::test_cosine::<_, Fallback>(l1, l2) };
+
+        let (l1, l2) = get_sample_vectors::<i64>(1043);
         unsafe { crate::danger::op_cosine::test_cosine::<_, Fallback>(l1, l2) };
     }
 
@@ -123,7 +129,28 @@ mod tests {
         let (l1, l2) = get_sample_vectors::<f64>(1043);
         unsafe { crate::danger::op_dot_product::test_dot::<_, Fallback>(l1, l2) };
 
+        let (l1, l2) = get_sample_vectors::<i8>(1043);
+        unsafe { crate::danger::op_dot_product::test_dot::<_, Fallback>(l1, l2) };
+
+        let (l1, l2) = get_sample_vectors::<i16>(1043);
+        unsafe { crate::danger::op_dot_product::test_dot::<_, Fallback>(l1, l2) };
+
         let (l1, l2) = get_sample_vectors::<i32>(1043);
+        unsafe { crate::danger::op_dot_product::test_dot::<_, Fallback>(l1, l2) };
+
+        let (l1, l2) = get_sample_vectors::<i64>(1043);
+        unsafe { crate::danger::op_dot_product::test_dot::<_, Fallback>(l1, l2) };
+
+        let (l1, l2) = get_sample_vectors::<u8>(1043);
+        unsafe { crate::danger::op_dot_product::test_dot::<_, Fallback>(l1, l2) };
+
+        let (l1, l2) = get_sample_vectors::<u16>(1043);
+        unsafe { crate::danger::op_dot_product::test_dot::<_, Fallback>(l1, l2) };
+
+        let (l1, l2) = get_sample_vectors::<u32>(1043);
+        unsafe { crate::danger::op_dot_product::test_dot::<_, Fallback>(l1, l2) };
+
+        let (l1, l2) = get_sample_vectors::<u64>(1043);
         unsafe { crate::danger::op_dot_product::test_dot::<_, Fallback>(l1, l2) };
     }
 
@@ -135,7 +162,28 @@ mod tests {
         let (l1, _) = get_sample_vectors::<f64>(1043);
         unsafe { crate::danger::op_norm::test_norm::<_, Fallback>(l1) };
 
+        let (l1, _) = get_sample_vectors::<i8>(1043);
+        unsafe { crate::danger::op_norm::test_norm::<_, Fallback>(l1) };
+
+        let (l1, _) = get_sample_vectors::<i16>(1043);
+        unsafe { crate::danger::op_norm::test_norm::<_, Fallback>(l1) };
+
         let (l1, _) = get_sample_vectors::<i32>(1043);
+        unsafe { crate::danger::op_norm::test_norm::<_, Fallback>(l1) };
+
+        let (l1, _) = get_sample_vectors::<i64>(1043);
+        unsafe { crate::danger::op_norm::test_norm::<_, Fallback>(l1) };
+
+        let (l1, _) = get_sample_vectors::<u8>(1043);
+        unsafe { crate::danger::op_norm::test_norm::<_, Fallback>(l1) };
+
+        let (l1, _) = get_sample_vectors::<u16>(1043);
+        unsafe { crate::danger::op_norm::test_norm::<_, Fallback>(l1) };
+
+        let (l1, _) = get_sample_vectors::<u32>(1043);
+        unsafe { crate::danger::op_norm::test_norm::<_, Fallback>(l1) };
+
+        let (l1, _) = get_sample_vectors::<u64>(1043);
         unsafe { crate::danger::op_norm::test_norm::<_, Fallback>(l1) };
     }
 
@@ -147,7 +195,28 @@ mod tests {
         let (l1, l2) = get_sample_vectors::<f64>(1043);
         unsafe { crate::danger::op_euclidean::test_euclidean::<_, Fallback>(l1, l2) };
 
+        let (l1, l2) = get_sample_vectors::<i8>(1043);
+        unsafe { crate::danger::op_euclidean::test_euclidean::<_, Fallback>(l1, l2) };
+
+        let (l1, l2) = get_sample_vectors::<i16>(1043);
+        unsafe { crate::danger::op_euclidean::test_euclidean::<_, Fallback>(l1, l2) };
+
         let (l1, l2) = get_sample_vectors::<i32>(1043);
+        unsafe { crate::danger::op_euclidean::test_euclidean::<_, Fallback>(l1, l2) };
+
+        let (l1, l2) = get_sample_vectors::<i64>(1043);
+        unsafe { crate::danger::op_euclidean::test_euclidean::<_, Fallback>(l1, l2) };
+
+        let (l1, l2) = get_sample_vectors::<u8>(1043);
+        unsafe { crate::danger::op_euclidean::test_euclidean::<_, Fallback>(l1, l2) };
+
+        let (l1, l2) = get_sample_vectors::<u16>(1043);
+        unsafe { crate::danger::op_euclidean::test_euclidean::<_, Fallback>(l1, l2) };
+
+        let (l1, l2) = get_sample_vectors::<u32>(1043);
+        unsafe { crate::danger::op_euclidean::test_euclidean::<_, Fallback>(l1, l2) };
+
+        let (l1, l2) = get_sample_vectors::<u64>(1043);
         unsafe { crate::danger::op_euclidean::test_euclidean::<_, Fallback>(l1, l2) };
     }
 
@@ -159,7 +228,28 @@ mod tests {
         let (l1, l2) = get_sample_vectors::<f64>(1043);
         unsafe { crate::danger::op_max::test_max::<_, Fallback>(l1, l2) };
 
+        let (l1, l2) = get_sample_vectors::<i8>(1043);
+        unsafe { crate::danger::op_max::test_max::<_, Fallback>(l1, l2) };
+
+        let (l1, l2) = get_sample_vectors::<i16>(1043);
+        unsafe { crate::danger::op_max::test_max::<_, Fallback>(l1, l2) };
+
         let (l1, l2) = get_sample_vectors::<i32>(1043);
+        unsafe { crate::danger::op_max::test_max::<_, Fallback>(l1, l2) };
+
+        let (l1, l2) = get_sample_vectors::<i64>(1043);
+        unsafe { crate::danger::op_max::test_max::<_, Fallback>(l1, l2) };
+
+        let (l1, l2) = get_sample_vectors::<u8>(1043);
+        unsafe { crate::danger::op_max::test_max::<_, Fallback>(l1, l2) };
+
+        let (l1, l2) = get_sample_vectors::<u16>(1043);
+        unsafe { crate::danger::op_max::test_max::<_, Fallback>(l1, l2) };
+
+        let (l1, l2) = get_sample_vectors::<u32>(1043);
+        unsafe { crate::danger::op_max::test_max::<_, Fallback>(l1, l2) };
+
+        let (l1, l2) = get_sample_vectors::<u64>(1043);
         unsafe { crate::danger::op_max::test_max::<_, Fallback>(l1, l2) };
     }
 
@@ -171,7 +261,28 @@ mod tests {
         let (l1, l2) = get_sample_vectors::<f64>(1043);
         unsafe { crate::danger::op_min::test_min::<_, Fallback>(l1, l2) };
 
+        let (l1, l2) = get_sample_vectors::<i8>(1043);
+        unsafe { crate::danger::op_min::test_min::<_, Fallback>(l1, l2) };
+
+        let (l1, l2) = get_sample_vectors::<i16>(1043);
+        unsafe { crate::danger::op_min::test_min::<_, Fallback>(l1, l2) };
+
         let (l1, l2) = get_sample_vectors::<i32>(1043);
+        unsafe { crate::danger::op_min::test_min::<_, Fallback>(l1, l2) };
+
+        let (l1, l2) = get_sample_vectors::<i64>(1043);
+        unsafe { crate::danger::op_min::test_min::<_, Fallback>(l1, l2) };
+
+        let (l1, l2) = get_sample_vectors::<u8>(1043);
+        unsafe { crate::danger::op_min::test_min::<_, Fallback>(l1, l2) };
+
+        let (l1, l2) = get_sample_vectors::<u16>(1043);
+        unsafe { crate::danger::op_min::test_min::<_, Fallback>(l1, l2) };
+
+        let (l1, l2) = get_sample_vectors::<u32>(1043);
+        unsafe { crate::danger::op_min::test_min::<_, Fallback>(l1, l2) };
+
+        let (l1, l2) = get_sample_vectors::<u64>(1043);
         unsafe { crate::danger::op_min::test_min::<_, Fallback>(l1, l2) };
     }
 
@@ -183,8 +294,29 @@ mod tests {
         let (l1, l2) = (vec![1.0f64; 1043], vec![3.0f64; 1043]);
         unsafe { crate::danger::op_sum::test_sum::<_, Fallback>(l1, l2) };
 
-        let (l1, l2) = (vec![1i32; 1043], vec![3i32; 1043]);
-        unsafe { crate::danger::op_sum::test_sum::<_, Fallback>(l1, l2) };
+        let (l1, l2) = (vec![1; 1043], vec![3; 1043]);
+        unsafe { crate::danger::op_sum::test_sum::<i8, Fallback>(l1, l2) };
+
+        let (l1, l2) = (vec![1; 1043], vec![3; 1043]);
+        unsafe { crate::danger::op_sum::test_sum::<i16, Fallback>(l1, l2) };
+
+        let (l1, l2) = (vec![1; 1043], vec![3; 1043]);
+        unsafe { crate::danger::op_sum::test_sum::<i32, Fallback>(l1, l2) };
+
+        let (l1, l2) = (vec![1; 1043], vec![3; 1043]);
+        unsafe { crate::danger::op_sum::test_sum::<i64, Fallback>(l1, l2) };
+
+        let (l1, l2) = (vec![1; 1043], vec![3; 1043]);
+        unsafe { crate::danger::op_sum::test_sum::<u8, Fallback>(l1, l2) };
+
+        let (l1, l2) = (vec![1; 1043], vec![3; 1043]);
+        unsafe { crate::danger::op_sum::test_sum::<u16, Fallback>(l1, l2) };
+
+        let (l1, l2) = (vec![1; 1043], vec![3; 1043]);
+        unsafe { crate::danger::op_sum::test_sum::<u32, Fallback>(l1, l2) };
+
+        let (l1, l2) = (vec![1; 1043], vec![3; 1043]);
+        unsafe { crate::danger::op_sum::test_sum::<u64, Fallback>(l1, l2) };
     }
 
     #[test]
@@ -195,8 +327,29 @@ mod tests {
         let (l1, _) = (vec![1.0f64; 1043], vec![3.0f64; 1043]);
         test_vector_x_value_all(l1, 2.0);
 
-        let (l1, _) = (vec![1i32; 1043], vec![3i32; 1043]);
-        test_vector_x_value_all(l1, 2);
+        let (l1, _) = (vec![1; 1043], vec![3; 1043]);
+        test_vector_x_value_all::<i8>(l1, 2);
+
+        let (l1, _) = (vec![1; 1043], vec![3; 1043]);
+        test_vector_x_value_all::<i16>(l1, 2);
+
+        let (l1, _) = (vec![1; 1043], vec![3; 1043]);
+        test_vector_x_value_all::<i32>(l1, 2);
+
+        let (l1, _) = (vec![1; 1043], vec![3; 1043]);
+        test_vector_x_value_all::<i64>(l1, 2);
+
+        let (l1, _) = (vec![1; 1043], vec![3; 1043]);
+        test_vector_x_value_all::<u8>(l1, 2);
+
+        let (l1, _) = (vec![1; 1043], vec![3; 1043]);
+        test_vector_x_value_all::<u16>(l1, 2);
+
+        let (l1, _) = (vec![1; 1043], vec![3; 1043]);
+        test_vector_x_value_all::<u32>(l1, 2);
+
+        let (l1, _) = (vec![1; 1043], vec![3; 1043]);
+        test_vector_x_value_all::<u64>(l1, 2);
     }
 
     #[test]
@@ -207,8 +360,29 @@ mod tests {
         let (l1, l2) = (vec![1.0f64; 1043], vec![3.0f64; 1043]);
         test_vector_x_vector_all(l1, l2);
 
-        let (l1, l2) = (vec![1i32; 1043], vec![3i32; 1043]);
-        test_vector_x_vector_all(l1, l2);
+        let (l1, l2) = (vec![1; 1043], vec![3; 1043]);
+        test_vector_x_vector_all::<i8>(l1, l2);
+
+        let (l1, l2) = (vec![1; 1043], vec![3; 1043]);
+        test_vector_x_vector_all::<i16>(l1, l2);
+
+        let (l1, l2) = (vec![1; 1043], vec![3; 1043]);
+        test_vector_x_vector_all::<i32>(l1, l2);
+
+        let (l1, l2) = (vec![1; 1043], vec![3; 1043]);
+        test_vector_x_vector_all::<i64>(l1, l2);
+
+        let (l1, l2) = (vec![1; 1043], vec![3; 1043]);
+        test_vector_x_vector_all::<u8>(l1, l2);
+
+        let (l1, l2) = (vec![1; 1043], vec![3; 1043]);
+        test_vector_x_vector_all::<u16>(l1, l2);
+
+        let (l1, l2) = (vec![1; 1043], vec![3; 1043]);
+        test_vector_x_vector_all::<u32>(l1, l2);
+
+        let (l1, l2) = (vec![1; 1043], vec![3; 1043]);
+        test_vector_x_vector_all::<u64>(l1, l2);
     }
 
     fn test_vector_x_value_all<T: Copy + PartialEq + Debug>(l1: Vec<T>, value: T)
