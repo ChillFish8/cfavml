@@ -153,74 +153,161 @@ impl Math<f64> for StdMath {
     }
 }
 
-impl Math<i32> for StdMath {
-    #[inline(always)]
-    fn zero() -> i32 {
-        0
-    }
+macro_rules! define_int_ops {
+    ($t:ident) => {
+        impl Math<$t> for StdMath {
+            #[inline(always)]
+            fn zero() -> $t {
+                0
+            }
 
-    #[inline(always)]
-    fn one() -> i32 {
-        1
-    }
+            #[inline(always)]
+            fn one() -> $t {
+                1
+            }
 
-    #[inline(always)]
-    fn max() -> i32 {
-        i32::MAX
-    }
+            #[inline(always)]
+            fn max() -> $t {
+                $t::MAX
+            }
 
-    #[inline(always)]
-    fn min() -> i32 {
-        i32::MIN
-    }
+            #[inline(always)]
+            fn min() -> $t {
+                $t::MIN
+            }
 
-    #[inline(always)]
-    fn sqrt(a: i32) -> i32 {
-        (a as f64).sqrt() as i32
-    }
+            #[inline(always)]
+            fn sqrt(a: $t) -> $t {
+                (a as f64).sqrt() as $t
+            }
 
-    #[inline(always)]
-    fn abs(a: i32) -> i32 {
-        a.abs()
-    }
+            #[inline(always)]
+            fn abs(a: $t) -> $t {
+                a.abs()
+            }
 
-    #[inline(always)]
-    fn cmp_eq(a: i32, b: i32) -> bool {
-        a == b
-    }
+            #[inline(always)]
+            fn cmp_eq(a: $t, b: $t) -> bool {
+                a == b
+            }
 
-    #[inline(always)]
-    fn cmp_min(a: i32, b: i32) -> i32 {
-        a.min(b)
-    }
+            #[inline(always)]
+            fn cmp_min(a: $t, b: $t) -> $t {
+                a.min(b)
+            }
 
-    #[inline(always)]
-    fn cmp_max(a: i32, b: i32) -> i32 {
-        a.max(b)
-    }
+            #[inline(always)]
+            fn cmp_max(a: $t, b: $t) -> $t {
+                a.max(b)
+            }
 
-    #[inline(always)]
-    fn add(a: i32, b: i32) -> i32 {
-        a.wrapping_add(b)
-    }
+            #[inline(always)]
+            fn add(a: $t, b: $t) -> $t {
+                a.wrapping_add(b)
+            }
 
-    #[inline(always)]
-    fn sub(a: i32, b: i32) -> i32 {
-        a.wrapping_sub(b)
-    }
+            #[inline(always)]
+            fn sub(a: $t, b: $t) -> $t {
+                a.wrapping_sub(b)
+            }
 
-    #[inline(always)]
-    fn mul(a: i32, b: i32) -> i32 {
-        a.wrapping_mul(b)
-    }
+            #[inline(always)]
+            fn mul(a: $t, b: $t) -> $t {
+                a.wrapping_mul(b)
+            }
 
-    #[inline(always)]
-    fn div(a: i32, b: i32) -> i32 {
-        a.wrapping_div(b)
-    }
+            #[inline(always)]
+            fn div(a: $t, b: $t) -> $t {
+                a.wrapping_div(b)
+            }
 
-    #[cfg(test)]
-    fn is_close(a: i32, b: i32) -> bool {
-        a == b
-    }
+            #[cfg(test)]
+            fn is_close(a: $t, b: $t) -> bool {
+                a == b
+            }
+        }
+    };
+    (unsigned $t:ident) => {
+        impl Math<$t> for StdMath {
+            #[inline(always)]
+            fn zero() -> $t {
+                0
+            }
+
+            #[inline(always)]
+            fn one() -> $t {
+                1
+            }
+
+            #[inline(always)]
+            fn max() -> $t {
+                $t::MAX
+            }
+
+            #[inline(always)]
+            fn min() -> $t {
+                $t::MIN
+            }
+
+            #[inline(always)]
+            fn sqrt(a: $t) -> $t {
+                (a as f64).sqrt() as $t
+            }
+
+            #[inline(always)]
+            fn abs(a: $t) -> $t {
+                a
+            }
+
+            #[inline(always)]
+            fn cmp_eq(a: $t, b: $t) -> bool {
+                a == b
+            }
+
+            #[inline(always)]
+            fn cmp_min(a: $t, b: $t) -> $t {
+                a.min(b)
+            }
+
+            #[inline(always)]
+            fn cmp_max(a: $t, b: $t) -> $t {
+                a.max(b)
+            }
+
+            #[inline(always)]
+            fn add(a: $t, b: $t) -> $t {
+                a.wrapping_add(b)
+            }
+
+            #[inline(always)]
+            fn sub(a: $t, b: $t) -> $t {
+                a.wrapping_sub(b)
+            }
+
+            #[inline(always)]
+            fn mul(a: $t, b: $t) -> $t {
+                a.wrapping_mul(b)
+            }
+
+            #[inline(always)]
+            fn div(a: $t, b: $t) -> $t {
+                a.wrapping_div(b)
+            }
+
+            #[cfg(test)]
+            fn is_close(a: $t, b: $t) -> bool {
+                a == b
+            }
+        }
+    };
 }
+
+define_int_ops!(i8);
+define_int_ops!(i16);
+define_int_ops!(i32);
+define_int_ops!(i64);
+
+define_int_ops!(unsigned u8);
+define_int_ops!(unsigned u16);
+define_int_ops!(unsigned u32);
+define_int_ops!(unsigned u64);
