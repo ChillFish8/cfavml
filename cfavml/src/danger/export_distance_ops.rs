@@ -462,7 +462,6 @@ pub mod distance_ops_avx2 {
         features = "avx2"
     );
 
-
     export_distance_op!(
         description = "Dot product of two vectors",
         ty = u8,

@@ -46,6 +46,8 @@ pub fn get_sample_vectors(size: usize) -> (Vec<f32>, Vec<f32>) {
 #[cfg(feature = "benchmark-aligned")]
 use std::mem;
 
+use cfavml::math::Math;
+
 #[cfg(feature = "benchmark-aligned")]
 #[repr(C, align(64))]
 struct AlignToSixtyFour([f32; 16]);
@@ -64,4 +66,18 @@ unsafe fn aligned_vec(n_elements: usize) -> Vec<f32> {
     mem::forget(aligned);
 
     Vec::from_raw_parts(ptr as *mut f32, len_units * 16, cap_units * 16)
+}
+
+#[inline(always)]
+pub(crate) fn cosine<T: Copy, M: Math<T>>(dot_product: T, norm_x: T, norm_y: T) -> T {
+    if M::cmp_eq(norm_x, M::zero()) && M::cmp_eq(norm_y, M::zero()) {
+        M::zero()
+    } else if M::cmp_eq(norm_x, M::zero()) || M::cmp_eq(norm_y, M::zero()) {
+        M::zero()
+    } else {
+        M::sub(
+            M::one(),
+            M::div(dot_product, M::sqrt(M::mul(norm_x, norm_y))),
+        )
+    }
 }

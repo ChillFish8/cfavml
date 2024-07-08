@@ -12,6 +12,7 @@ description = "CF's Accelerated Vector Math Library"
 rand = "0.8.5"
 rand_chacha = "0.3.1"
 paste = "1.0.14"
+simsimd = "4.4.0"
 
 criterion = { version = "0.5.1", features = ["html_reports", "csv_output"] }
 
@@ -38,10 +39,6 @@ benchmark-avx512 = []
 all-features = true
 rustdoc-args = ["--cfg", "docsrs"]
 
-# [[bench]]
-# name = "bench_distance_measures"
-# harness = false
-
 [[bench]]
-name = "bench_metrics"
+name = "bench_distance_measures"
 harness = false
