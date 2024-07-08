@@ -134,17 +134,17 @@ mod avx2_tests {
     test_suite!(i16, Avx2);
     test_suite!(i32, Avx2);
     test_suite!(i64, Avx2);
-    // test_suite!(u8, Avx2);
-    // test_suite!(u16, Avx2);
-    // test_suite!(u32, Avx2);
-    // test_suite!(u64, Avx2);
+    test_suite!(u8, Avx2);
+    test_suite!(u16, Avx2);
+    test_suite!(u32, Avx2);
+    test_suite!(u64, Avx2);
 
     test_cosine_extra!(f32, Avx2);
     test_cosine_extra!(f64, Avx2);
-    // test_cosine_extra!(i32, Avx2);
-    // test_cosine_extra!(i64, Avx2);
-    // test_cosine_extra!(u8, Avx2);
-    // test_cosine_extra!(u16, Avx2);
-    // test_cosine_extra!(u32, Avx2);
-    // test_cosine_extra!(u64, Avx2);
+    test_cosine_extra!(i32, Avx2);
+    test_cosine_extra!(i64, Avx2);
+    test_cosine_extra!(u8, Avx2);
+    test_cosine_extra!(u16, Avx2);
+    test_cosine_extra!(u32, Avx2);
+    test_cosine_extra!(u64, Avx2);
 }

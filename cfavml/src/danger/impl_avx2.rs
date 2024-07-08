@@ -966,3 +966,699 @@ impl SimdRegister<i64> for Avx2 {
         _mm256_storeu_si256(mem.cast(), reg)
     }
 }
+
+impl SimdRegister<u8> for Avx2 {
+    type Register = __m256i;
+
+    #[inline(always)]
+    unsafe fn load(mem: *const u8) -> Self::Register {
+        _mm256_loadu_si256(mem.cast())
+    }
+
+    #[inline(always)]
+    unsafe fn filled(value: u8) -> Self::Register {
+        _mm256_set1_epi8(value as i8)
+    }
+
+    #[inline(always)]
+    unsafe fn zeroed() -> Self::Register {
+        _mm256_setzero_si256()
+    }
+
+    #[inline(always)]
+    unsafe fn add(l1: Self::Register, l2: Self::Register) -> Self::Register {
+        _mm256_add_epi8(l1, l2)
+    }
+
+    #[inline(always)]
+    unsafe fn sub(l1: Self::Register, l2: Self::Register) -> Self::Register {
+        _mm256_sub_epi8(l1, l2)
+    }
+
+    #[inline(always)]
+    unsafe fn mul(l1: Self::Register, l2: Self::Register) -> Self::Register {
+        <Self as SimdRegister<i8>>::mul(l1, l2)
+    }
+
+    #[inline(always)]
+    /// Scalar `u8` integer division.
+    ///
+    /// In reality this operation is not SIMD, in theory we could later support
+    /// it however it will always be an incredibly expensive operation with quite
+    /// a lot of cognitive load on the maintenance side, so for the foreseeable future
+    /// non-floating point division operations will be non-simd.
+    unsafe fn div(l1: Self::Register, l2: Self::Register) -> Self::Register {
+        let l1_unpacked = mem::transmute::<_, [u8; 32]>(l1);
+        let l2_unpacked = mem::transmute::<_, [u8; 32]>(l2);
+
+        let mut result = [0u8; 32];
+        for (idx, (l1, l2)) in zip(l1_unpacked, l2_unpacked).enumerate() {
+            result[idx] = l1.wrapping_div(l2);
+        }
+
+        mem::transmute::<_, Self::Register>(result)
+    }
+
+    #[inline(always)]
+    unsafe fn fmadd(
+        l1: Self::Register,
+        l2: Self::Register,
+        acc: Self::Register,
+    ) -> Self::Register {
+        let res = <Self as SimdRegister<u8>>::mul(l1, l2);
+        <Self as SimdRegister<u8>>::add(res, acc)
+    }
+
+    #[inline(always)]
+    unsafe fn max(l1: Self::Register, l2: Self::Register) -> Self::Register {
+        _mm256_max_epu8(l1, l2)
+    }
+
+    #[inline(always)]
+    unsafe fn min(l1: Self::Register, l2: Self::Register) -> Self::Register {
+        _mm256_min_epu8(l1, l2)
+    }
+
+    #[inline(always)]
+    unsafe fn mul_dense(
+        l1: DenseLane<Self::Register>,
+        l2: DenseLane<Self::Register>,
+    ) -> DenseLane<Self::Register> {
+        <Self as SimdRegister<i8>>::mul_dense(l1, l2)
+    }
+
+    #[inline(always)]
+    unsafe fn fmadd_dense(
+        l1: DenseLane<Self::Register>,
+        l2: DenseLane<Self::Register>,
+        acc: DenseLane<Self::Register>,
+    ) -> DenseLane<Self::Register> {
+        let res = <Self as SimdRegister<u8>>::mul_dense(l1, l2);
+        <Self as SimdRegister<u8>>::add_dense(res, acc)
+    }
+
+    #[inline(always)]
+    unsafe fn sum_to_value(reg: Self::Register) -> u8 {
+        // There is a bit of an assumption the compile will optimize these scalar impls
+        // out, but the SIMD version is a bit complicated and is difficult to get to
+        // mirror the scalar behaviour.
+        // TODO: We can probably do this with the pure SIMD way, but we should try match
+        //       the scalar behaviour in terms of wrapping.
+
+        let hi = _mm256_extracti128_si256::<1>(reg);
+        let lo = _mm256_castsi256_si128(reg);
+
+        let sum = _mm_add_epi8(hi, lo);
+        let unpacked = mem::transmute::<_, [u8; 16]>(sum);
+
+        let mut s1: u8 = 0;
+        let mut s2: u8 = 0;
+        let mut s3: u8 = 0;
+        let mut s4: u8 = 0;
+
+        let mut i = 0;
+        while i < 16 {
+            s1 = s1.wrapping_add(unpacked[i]);
+            s2 = s2.wrapping_add(unpacked[i + 1]);
+            s3 = s3.wrapping_add(unpacked[i + 2]);
+            s4 = s4.wrapping_add(unpacked[i + 3]);
+
+            i += 4;
+        }
+
+        s1 = s1.wrapping_add(s2);
+        s3 = s3.wrapping_add(s4);
+
+        s1.wrapping_add(s3)
+    }
+
+    #[inline(always)]
+    unsafe fn max_to_value(reg: Self::Register) -> u8 {
+        let hi = _mm256_extracti128_si256::<1>(reg);
+        let lo = _mm256_castsi256_si128(reg);
+
+        let maxed = _mm_max_epu8(hi, lo);
+        let unpacked = mem::transmute::<_, [u8; 16]>(maxed);
+
+        let mut m1 = u8::MIN;
+        let mut m2 = u8::MIN;
+        let mut m3 = u8::MIN;
+        let mut m4 = u8::MIN;
+
+        let mut i = 0;
+        while i < 16 {
+            m1 = m1.max(unpacked[i]);
+            m2 = m2.max(unpacked[i + 1]);
+            m3 = m3.max(unpacked[i + 2]);
+            m4 = m4.max(unpacked[i + 3]);
+
+            i += 4;
+        }
+
+        m1 = m1.max(m2);
+        m3 = m3.max(m4);
+
+        m1.max(m3)
+    }
+
+    #[inline(always)]
+    unsafe fn min_to_value(reg: Self::Register) -> u8 {
+        let hi = _mm256_extracti128_si256::<1>(reg);
+        let lo = _mm256_castsi256_si128(reg);
+
+        let minimal = _mm_min_epu8(hi, lo);
+        let unpacked = mem::transmute::<_, [u8; 16]>(minimal);
+
+        let mut m1 = u8::MAX;
+        let mut m2 = u8::MAX;
+        let mut m3 = u8::MAX;
+        let mut m4 = u8::MAX;
+
+        let mut i = 0;
+        while i < 16 {
+            m1 = m1.min(unpacked[i]);
+            m2 = m2.min(unpacked[i + 1]);
+            m3 = m3.min(unpacked[i + 2]);
+            m4 = m4.min(unpacked[i + 3]);
+
+            i += 4;
+        }
+
+        m1 = m1.min(m2);
+        m3 = m3.min(m4);
+
+        m1.min(m3)
+    }
+
+    #[inline(always)]
+    unsafe fn write(mem: *mut u8, reg: Self::Register) {
+        _mm256_storeu_si256(mem.cast(), reg)
+    }
+}
+
+impl SimdRegister<u16> for Avx2 {
+    type Register = __m256i;
+
+    #[inline(always)]
+    unsafe fn load(mem: *const u16) -> Self::Register {
+        _mm256_loadu_si256(mem.cast())
+    }
+
+    #[inline(always)]
+    unsafe fn filled(value: u16) -> Self::Register {
+        _mm256_set1_epi16(value as i16)
+    }
+
+    #[inline(always)]
+    unsafe fn zeroed() -> Self::Register {
+        _mm256_setzero_si256()
+    }
+
+    #[inline(always)]
+    unsafe fn add(l1: Self::Register, l2: Self::Register) -> Self::Register {
+        _mm256_add_epi16(l1, l2)
+    }
+
+    #[inline(always)]
+    unsafe fn sub(l1: Self::Register, l2: Self::Register) -> Self::Register {
+        _mm256_sub_epi16(l1, l2)
+    }
+
+    #[inline(always)]
+    unsafe fn mul(l1: Self::Register, l2: Self::Register) -> Self::Register {
+        _mm256_mullo_epi16(l1, l2)
+    }
+
+    #[inline(always)]
+    /// Scalar `u16` integer division.
+    ///
+    /// In reality this operation is not SIMD, in theory we could later support
+    /// it however it will always be an incredibly expensive operation with quite
+    /// a lot of cognitive load on the maintenance side, so for the foreseeable future
+    /// non-floating point division operations will be non-simd.
+    unsafe fn div(l1: Self::Register, l2: Self::Register) -> Self::Register {
+        let l1_unpacked = mem::transmute::<_, [u16; 16]>(l1);
+        let l2_unpacked = mem::transmute::<_, [u16; 16]>(l2);
+
+        let mut result = [0u16; 16];
+        for (idx, (l1, l2)) in zip(l1_unpacked, l2_unpacked).enumerate() {
+            result[idx] = l1.wrapping_div(l2);
+        }
+
+        mem::transmute::<_, Self::Register>(result)
+    }
+
+    #[inline(always)]
+    unsafe fn fmadd(
+        l1: Self::Register,
+        l2: Self::Register,
+        acc: Self::Register,
+    ) -> Self::Register {
+        // A non-fused variant for AVX2 without the FMA cpu feature requirement.
+        let res = <Self as SimdRegister<u16>>::mul(l1, l2);
+        <Self as SimdRegister<u16>>::add(res, acc)
+    }
+
+    #[inline(always)]
+    unsafe fn max(l1: Self::Register, l2: Self::Register) -> Self::Register {
+        _mm256_max_epu16(l1, l2)
+    }
+
+    #[inline(always)]
+    unsafe fn min(l1: Self::Register, l2: Self::Register) -> Self::Register {
+        _mm256_min_epu16(l1, l2)
+    }
+
+    #[inline(always)]
+    unsafe fn mul_dense(
+        l1: DenseLane<Self::Register>,
+        l2: DenseLane<Self::Register>,
+    ) -> DenseLane<Self::Register> {
+        <Self as SimdRegister<i16>>::mul_dense(l1, l2)
+    }
+
+    #[inline(always)]
+    unsafe fn fmadd_dense(
+        l1: DenseLane<Self::Register>,
+        l2: DenseLane<Self::Register>,
+        acc: DenseLane<Self::Register>,
+    ) -> DenseLane<Self::Register> {
+        let res = <Self as SimdRegister<u16>>::mul_dense(l1, l2);
+        <Self as SimdRegister<u16>>::add_dense(res, acc)
+    }
+
+    #[inline(always)]
+    unsafe fn sum_to_value(reg: Self::Register) -> u16 {
+        // There is a bit of an assumption the compile will optimize these scalar impls
+        // out, but the SIMD version is a bit complicated and is difficult to get to
+        // mirror the scalar behaviour.
+        // TODO: We can probably do this with the pure SIMD way, but we should try match
+        //       the scalar behaviour in terms of wrapping.
+
+        let hi = _mm256_extracti128_si256::<1>(reg);
+        let lo = _mm256_castsi256_si128(reg);
+
+        let sum = _mm_add_epi16(hi, lo);
+        let unpacked = mem::transmute::<_, [u16; 8]>(sum);
+
+        let mut s1: u16 = 0;
+        let mut s2: u16 = 0;
+        let mut s3: u16 = 0;
+        let mut s4: u16 = 0;
+
+        let mut i = 0;
+        while i < 8 {
+            s1 = s1.wrapping_add(unpacked[i]);
+            s2 = s2.wrapping_add(unpacked[i + 1]);
+            s3 = s3.wrapping_add(unpacked[i + 2]);
+            s4 = s4.wrapping_add(unpacked[i + 3]);
+
+            i += 4;
+        }
+
+        s1 = s1.wrapping_add(s2);
+        s3 = s3.wrapping_add(s4);
+
+        s1.wrapping_add(s3)
+    }
+
+    #[inline(always)]
+    unsafe fn max_to_value(reg: Self::Register) -> u16 {
+        let hi = _mm256_extracti128_si256::<1>(reg);
+        let lo = _mm256_castsi256_si128(reg);
+
+        let maxed = _mm_max_epu16(hi, lo);
+        let unpacked = mem::transmute::<_, [u16; 8]>(maxed);
+
+        let mut m1 = u16::MIN;
+        let mut m2 = u16::MIN;
+        let mut m3 = u16::MIN;
+        let mut m4 = u16::MIN;
+
+        let mut i = 0;
+        while i < 8 {
+            m1 = m1.max(unpacked[i]);
+            m2 = m2.max(unpacked[i + 1]);
+            m3 = m3.max(unpacked[i + 2]);
+            m4 = m4.max(unpacked[i + 3]);
+
+            i += 4;
+        }
+
+        m1 = m1.max(m2);
+        m3 = m3.max(m4);
+
+        m1.max(m3)
+    }
+
+    #[inline(always)]
+    unsafe fn min_to_value(reg: Self::Register) -> u16 {
+        let hi = _mm256_extracti128_si256::<1>(reg);
+        let lo = _mm256_castsi256_si128(reg);
+
+        let minimal = _mm_min_epu16(hi, lo);
+        let unpacked = mem::transmute::<_, [u16; 8]>(minimal);
+
+        let mut m1 = u16::MAX;
+        let mut m2 = u16::MAX;
+        let mut m3 = u16::MAX;
+        let mut m4 = u16::MAX;
+
+        let mut i = 0;
+        while i < 8 {
+            m1 = m1.min(unpacked[i]);
+            m2 = m2.min(unpacked[i + 1]);
+            m3 = m3.min(unpacked[i + 2]);
+            m4 = m4.min(unpacked[i + 3]);
+
+            i += 4;
+        }
+
+        m1 = m1.min(m2);
+        m3 = m3.min(m4);
+
+        m1.min(m3)
+    }
+
+    #[inline(always)]
+    unsafe fn write(mem: *mut u16, reg: Self::Register) {
+        _mm256_storeu_si256(mem.cast(), reg)
+    }
+}
+
+impl SimdRegister<u32> for Avx2 {
+    type Register = __m256i;
+
+    #[inline(always)]
+    unsafe fn load(mem: *const u32) -> Self::Register {
+        _mm256_loadu_si256(mem.cast())
+    }
+
+    #[inline(always)]
+    unsafe fn filled(value: u32) -> Self::Register {
+        _mm256_set1_epi32(value as i32)
+    }
+
+    #[inline(always)]
+    unsafe fn zeroed() -> Self::Register {
+        _mm256_setzero_si256()
+    }
+
+    #[inline(always)]
+    unsafe fn add(l1: Self::Register, l2: Self::Register) -> Self::Register {
+        _mm256_add_epi32(l1, l2)
+    }
+
+    #[inline(always)]
+    unsafe fn sub(l1: Self::Register, l2: Self::Register) -> Self::Register {
+        _mm256_sub_epi32(l1, l2)
+    }
+
+    #[inline(always)]
+    unsafe fn mul(l1: Self::Register, l2: Self::Register) -> Self::Register {
+        _mm256_mullo_epi32(l1, l2)
+    }
+
+    #[inline(always)]
+    /// Scalar `u32` integer division.
+    ///
+    /// In reality this operation is not SIMD, in theory we could later support
+    /// it however it will always be an incredibly expensive operation with quite
+    /// a lot of cognitive load on the maintenance side, so for the foreseeable future
+    /// non-floating point division operations will be non-simd.
+    unsafe fn div(l1: Self::Register, l2: Self::Register) -> Self::Register {
+        let l1_unpacked = mem::transmute::<_, [u32; 8]>(l1);
+        let l2_unpacked = mem::transmute::<_, [u32; 8]>(l2);
+
+        let mut result = [0u32; 8];
+        for (idx, (l1, l2)) in zip(l1_unpacked, l2_unpacked).enumerate() {
+            result[idx] = l1.wrapping_div(l2);
+        }
+
+        mem::transmute::<_, Self::Register>(result)
+    }
+
+    #[inline(always)]
+    unsafe fn fmadd(
+        l1: Self::Register,
+        l2: Self::Register,
+        acc: Self::Register,
+    ) -> Self::Register {
+        // A non-fused variant for AVX2 without the FMA cpu feature requirement.
+        let res = <Self as SimdRegister<u32>>::mul(l1, l2);
+        <Self as SimdRegister<u32>>::add(res, acc)
+    }
+
+    #[inline(always)]
+    unsafe fn max(l1: Self::Register, l2: Self::Register) -> Self::Register {
+        _mm256_max_epu32(l1, l2)
+    }
+
+    #[inline(always)]
+    unsafe fn min(l1: Self::Register, l2: Self::Register) -> Self::Register {
+        _mm256_min_epu32(l1, l2)
+    }
+
+    #[inline(always)]
+    unsafe fn mul_dense(
+        l1: DenseLane<Self::Register>,
+        l2: DenseLane<Self::Register>,
+    ) -> DenseLane<Self::Register> {
+        <Self as SimdRegister<i32>>::mul_dense(l1, l2)
+    }
+
+    #[inline(always)]
+    unsafe fn fmadd_dense(
+        l1: DenseLane<Self::Register>,
+        l2: DenseLane<Self::Register>,
+        acc: DenseLane<Self::Register>,
+    ) -> DenseLane<Self::Register> {
+        let res = <Self as SimdRegister<u32>>::mul_dense(l1, l2);
+        <Self as SimdRegister<u32>>::add_dense(res, acc)
+    }
+
+    #[inline(always)]
+    unsafe fn sum_to_value(reg: Self::Register) -> u32 {
+        // There is a bit of an assumption the compile will optimize these scalar impls
+        // out, but the SIMD version is a bit complicated and is difficult to get to
+        // mirror the scalar behaviour.
+        // TODO: We can probably do this with the pure SIMD way, but we should try match
+        //       the scalar behaviour in terms of wrapping.
+
+        let hi = _mm256_extracti128_si256::<1>(reg);
+        let lo = _mm256_castsi256_si128(reg);
+
+        let sum = _mm_add_epi32(hi, lo);
+        let unpacked = mem::transmute::<_, [u32; 4]>(sum);
+
+        let mut s1 = unpacked[0];
+        let s2 = unpacked[1];
+        let mut s3 = unpacked[2];
+        let s4 = unpacked[3];
+
+        s1 = s1.wrapping_add(s2);
+        s3 = s3.wrapping_add(s4);
+
+        s1.wrapping_add(s3)
+    }
+
+    #[inline(always)]
+    unsafe fn max_to_value(reg: Self::Register) -> u32 {
+        let hi = _mm256_extracti128_si256::<1>(reg);
+        let lo = _mm256_castsi256_si128(reg);
+
+        let maxed = _mm_max_epu32(hi, lo);
+        let unpacked = mem::transmute::<_, [u32; 4]>(maxed);
+
+        let mut m1 = unpacked[0];
+        let m2 = unpacked[1];
+        let mut m3 = unpacked[2];
+        let m4 = unpacked[3];
+
+        m1 = m1.max(m2);
+        m3 = m3.max(m4);
+
+        m1.max(m3)
+    }
+
+    #[inline(always)]
+    unsafe fn min_to_value(reg: Self::Register) -> u32 {
+        let hi = _mm256_extracti128_si256::<1>(reg);
+        let lo = _mm256_castsi256_si128(reg);
+
+        let minimal = _mm_min_epu32(hi, lo);
+        let unpacked = mem::transmute::<_, [u32; 4]>(minimal);
+
+        let mut m1 = unpacked[0];
+        let m2 = unpacked[1];
+        let mut m3 = unpacked[2];
+        let m4 = unpacked[3];
+
+        m1 = m1.min(m2);
+        m3 = m3.min(m4);
+
+        m1.min(m3)
+    }
+
+    #[inline(always)]
+    unsafe fn write(mem: *mut u32, reg: Self::Register) {
+        _mm256_storeu_si256(mem.cast(), reg)
+    }
+}
+
+impl SimdRegister<u64> for Avx2 {
+    type Register = __m256i;
+
+    #[inline(always)]
+    unsafe fn load(mem: *const u64) -> Self::Register {
+        _mm256_loadu_si256(mem.cast())
+    }
+
+    #[inline(always)]
+    unsafe fn filled(value: u64) -> Self::Register {
+        _mm256_set1_epi64x(value as i64)
+    }
+
+    #[inline(always)]
+    unsafe fn zeroed() -> Self::Register {
+        _mm256_setzero_si256()
+    }
+
+    #[inline(always)]
+    unsafe fn add(l1: Self::Register, l2: Self::Register) -> Self::Register {
+        _mm256_add_epi64(l1, l2)
+    }
+
+    #[inline(always)]
+    unsafe fn sub(l1: Self::Register, l2: Self::Register) -> Self::Register {
+        _mm256_sub_epi64(l1, l2)
+    }
+
+    #[inline(always)]
+    unsafe fn mul(l1: Self::Register, l2: Self::Register) -> Self::Register {
+        <Self as SimdRegister<i64>>::mul(l1, l2)
+    }
+
+    #[inline(always)]
+    /// Scalar `u64` integer division.
+    ///
+    /// In reality this operation is not SIMD, in theory we could later support
+    /// it however it will always be an incredibly expensive operation with quite
+    /// a lot of cognitive load on the maintenance side, so for the foreseeable future
+    /// non-floating point division operations will be non-simd.
+    unsafe fn div(l1: Self::Register, l2: Self::Register) -> Self::Register {
+        let l1_unpacked = mem::transmute::<_, [u64; 4]>(l1);
+        let l2_unpacked = mem::transmute::<_, [u64; 4]>(l2);
+
+        let mut result = [0u64; 4];
+        for (idx, (l1, l2)) in zip(l1_unpacked, l2_unpacked).enumerate() {
+            result[idx] = l1.wrapping_div(l2);
+        }
+
+        mem::transmute::<_, Self::Register>(result)
+    }
+
+    #[inline(always)]
+    unsafe fn mul_dense(
+        l1: DenseLane<Self::Register>,
+        l2: DenseLane<Self::Register>,
+    ) -> DenseLane<Self::Register> {
+        <Self as SimdRegister<i64>>::mul_dense(l1, l2)
+    }
+
+    #[inline(always)]
+    unsafe fn fmadd(
+        l1: Self::Register,
+        l2: Self::Register,
+        acc: Self::Register,
+    ) -> Self::Register {
+        // A non-fused variant for AVX2 without the FMA cpu feature requirement.
+        let res = <Self as SimdRegister<u64>>::mul(l1, l2);
+        <Self as SimdRegister<u64>>::add(res, acc)
+    }
+
+    #[inline(always)]
+    unsafe fn max(l1: Self::Register, l2: Self::Register) -> Self::Register {
+        let sign_bit = _mm256_set1_epi64x(0x8000_0000_0000_0000u64 as i64);
+        let mask = _mm256_cmpgt_epi64(
+            _mm256_xor_si256(l1, sign_bit),
+            _mm256_xor_si256(l2, sign_bit),
+        );
+        _mm256_blendv_epi8(l2, l1, mask)
+    }
+
+    #[inline(always)]
+    unsafe fn min(l1: Self::Register, l2: Self::Register) -> Self::Register {
+        let sign_bit = _mm256_set1_epi64x(0x8000_0000_0000_0000u64 as i64);
+        let mask = _mm256_cmpgt_epi64(
+            _mm256_xor_si256(l1, sign_bit),
+            _mm256_xor_si256(l2, sign_bit),
+        );
+        _mm256_blendv_epi8(l1, l2, mask)
+    }
+
+    #[inline(always)]
+    unsafe fn fmadd_dense(
+        l1: DenseLane<Self::Register>,
+        l2: DenseLane<Self::Register>,
+        acc: DenseLane<Self::Register>,
+    ) -> DenseLane<Self::Register> {
+        let res = <Self as SimdRegister<u64>>::mul_dense(l1, l2);
+        <Self as SimdRegister<u64>>::add_dense(res, acc)
+    }
+
+    #[inline(always)]
+    unsafe fn sum_to_value(reg: Self::Register) -> u64 {
+        // There is a bit of an assumption the compile will optimize these scalar impls
+        // out, but the SIMD version is a bit complicated and is difficult to get to
+        // mirror the scalar behaviour.
+        // TODO: We can probably do this with the pure SIMD way, but we should try match
+        //       the scalar behaviour in terms of wrapping.
+
+        let hi = _mm256_extracti128_si256::<1>(reg);
+        let lo = _mm256_castsi256_si128(reg);
+
+        let sum = _mm_add_epi64(hi, lo);
+        let unpacked = mem::transmute::<_, [u64; 2]>(sum);
+
+        let s1 = unpacked[0];
+        let s2 = unpacked[1];
+
+        s1.wrapping_add(s2)
+    }
+
+    #[inline(always)]
+    unsafe fn max_to_value(reg: Self::Register) -> u64 {
+        let hi = _mm256_extracti128_si256::<1>(reg);
+        let lo = _mm256_castsi256_si128(reg);
+
+        let sign_bit = _mm_set1_epi64x(0x8000_0000_0000_0000u64 as i64);
+        let mask =
+            _mm_cmpgt_epi64(_mm_xor_si128(hi, sign_bit), _mm_xor_si128(lo, sign_bit));
+        let max = _mm_blendv_epi8(lo, hi, mask);
+
+        let [m1, m2] = mem::transmute::<_, [u64; 2]>(max);
+
+        m1.max(m2)
+    }
+
+    #[inline(always)]
+    unsafe fn min_to_value(reg: Self::Register) -> u64 {
+        let hi = _mm256_extracti128_si256::<1>(reg);
+        let lo = _mm256_castsi256_si128(reg);
+
+        let sign_bit = _mm_set1_epi64x(0x8000_0000_0000_0000u64 as i64);
+        let mask =
+            _mm_cmpgt_epi64(_mm_xor_si128(hi, sign_bit), _mm_xor_si128(lo, sign_bit));
+        let min = _mm_blendv_epi8(hi, lo, mask);
+
+        let [m1, m2] = mem::transmute::<_, [u64; 2]>(min);
+
+        m1.min(m2)
+    }
+
+    #[inline(always)]
+    unsafe fn write(mem: *mut u64, reg: Self::Register) {
+        _mm256_storeu_si256(mem.cast(), reg)
+    }
+}
