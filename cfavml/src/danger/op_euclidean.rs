@@ -2,7 +2,7 @@ use crate::danger::core_simd_api::SimdRegister;
 use crate::math::Math;
 
 #[inline(always)]
-/// A generic Euclidean distance implementation over two vectors of a given set of dimensions.
+/// A generic squared Euclidean distance implementation over two vectors of a given set of dimensions.
 ///
 /// # Safety
 ///

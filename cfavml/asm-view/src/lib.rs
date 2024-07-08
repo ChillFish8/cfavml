@@ -61,6 +61,27 @@ export_dense_op!(i8, Avx2, sub_dense, features = "avx2");
 export_dense_op!(i8, Avx2, max_dense, features = "avx2");
 export_dense_op!(i8, Avx2, min_dense, features = "avx2");
 
+export_dense_op!(i16, Avx2, mul_dense, features = "avx2");
+export_dense_op!(i16, Avx2, div_dense, features = "avx2");
+export_dense_op!(i16, Avx2, add_dense, features = "avx2");
+export_dense_op!(i16, Avx2, sub_dense, features = "avx2");
+export_dense_op!(i16, Avx2, max_dense, features = "avx2");
+export_dense_op!(i16, Avx2, min_dense, features = "avx2");
+
+export_dense_op!(i32, Avx2, mul_dense, features = "avx2");
+export_dense_op!(i32, Avx2, div_dense, features = "avx2");
+export_dense_op!(i32, Avx2, add_dense, features = "avx2");
+export_dense_op!(i32, Avx2, sub_dense, features = "avx2");
+export_dense_op!(i32, Avx2, max_dense, features = "avx2");
+export_dense_op!(i32, Avx2, min_dense, features = "avx2");
+
+export_dense_op!(i64, Avx2, mul_dense, features = "avx2");
+export_dense_op!(i64, Avx2, div_dense, features = "avx2");
+export_dense_op!(i64, Avx2, add_dense, features = "avx2");
+export_dense_op!(i64, Avx2, sub_dense, features = "avx2");
+export_dense_op!(i64, Avx2, max_dense, features = "avx2");
+export_dense_op!(i64, Avx2, min_dense, features = "avx2");
+
 export_dense_op!(f32, Avx2, mul_dense, features = "avx2");
 export_dense_op!(f32, Avx2, div_dense, features = "avx2");
 export_dense_op!(f32, Avx2, add_dense, features = "avx2");

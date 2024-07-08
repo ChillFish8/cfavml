@@ -12,6 +12,7 @@ mod op_sum;
 mod op_vector_x_value;
 mod op_vector_x_vector;
 
+mod export_distance_ops;
 #[cfg(test)]
 mod impl_test;
 #[cfg(test)]
@@ -44,6 +45,13 @@ pub use self::op_vector_x_vector::{
     generic_mul_vector,
     generic_sub_vector,
 };
+pub use self::export_distance_ops::distance_ops_fallback::*;
+#[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
+pub use self::export_distance_ops::distance_ops_avx2::*;
+#[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
+pub use self::export_distance_ops::distance_ops_avx2_fma::*;
+#[cfg(target_arch = "aarch64")]
+pub use self::export_distance_ops::distance_ops_neon::*;
 
 #[allow(non_snake_case)]
 pub(crate) const fn _MM_SHUFFLE(z: u32, y: u32, x: u32, w: u32) -> i32 {

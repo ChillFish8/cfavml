@@ -1,3 +1,14 @@
+//! The core SIMD api providing a generic abstraction over several architectures and various
+//! register sizes.
+//!
+//! This API allows for generally maximum efficiency across the architectures with the only
+//! exception being AVX512 which cannot make full use of it's masked loading behaviour, but
+//! under testing this did not have a significant impact.
+//!
+//! In general the API of this trait is not expected to be used directly and is just a light
+//! wrapper around various intrinsics with the exception of [DenseLane] and it's helpers
+//! providing high throughput operations on the instructions.
+
 use core::mem;
 
 #[doc(hidden)]

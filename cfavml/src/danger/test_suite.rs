@@ -131,9 +131,9 @@ mod avx2_tests {
     test_suite!(f32, Avx2);
     test_suite!(f64, Avx2);
     test_suite!(i8, Avx2);
-    // test_suite!(i16, Avx2);
-    // test_suite!(i32, Avx2);
-    // test_suite!(i64, Avx2);
+    test_suite!(i16, Avx2);
+    test_suite!(i32, Avx2);
+    test_suite!(i64, Avx2);
     // test_suite!(u8, Avx2);
     // test_suite!(u16, Avx2);
     // test_suite!(u32, Avx2);
