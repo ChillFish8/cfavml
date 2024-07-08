@@ -322,10 +322,9 @@ impl SimdRegister<i8> for Avx2 {
     }
 
     #[inline(always)]
-    unsafe fn fmadd_dense(
+    unsafe fn mul_dense(
         l1: DenseLane<Self::Register>,
         l2: DenseLane<Self::Register>,
-        acc: DenseLane<Self::Register>,
     ) -> DenseLane<Self::Register> {
         let mask = DenseLane::copy(_mm256_set1_epi32(0xFF00FF00u32 as i32));
 
@@ -337,7 +336,16 @@ impl SimdRegister<i8> for Avx2 {
         let odd = apply_dense!(_mm256_mullo_epi16, shift_l1, shift_l2);
         let odd = apply_dense!(_mm256_slli_epi16::<8>, odd);
 
-        let res = apply_dense!(_mm256_blendv_epi8, even, odd, mask);
+        apply_dense!(_mm256_blendv_epi8, even, odd, mask)
+    }
+
+    #[inline(always)]
+    unsafe fn fmadd_dense(
+        l1: DenseLane<Self::Register>,
+        l2: DenseLane<Self::Register>,
+        acc: DenseLane<Self::Register>,
+    ) -> DenseLane<Self::Register> {
+        let res = <Self as SimdRegister<i8>>::mul_dense(l1, l2);
         apply_dense!(_mm256_add_epi8, res, acc)
     }
 

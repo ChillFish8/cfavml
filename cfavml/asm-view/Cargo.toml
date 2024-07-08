@@ -8,4 +8,4 @@ edition = "2021"
 [dependencies]
 paste = "1.0.15"
 
-eonn-accel = { path = "..", features = ["dangerous-access", "nightly"] }
+cfavml = { path = "..", features = ["nightly"] }

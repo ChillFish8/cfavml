@@ -11,5 +11,8 @@ cfavml = { path = "cfavml", version = "0.1.0" }
 
 [workspace]
 members = [
-    "cfavml"
+    "cfavml",
+    
+    # Testing and profiling
+    "cfavml/asm-view"
 ]
