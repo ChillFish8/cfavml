@@ -191,7 +191,6 @@ pub mod distance_ops_fallback {
         xany = i64_xany_fallback_nofma_squared_euclidean,
     );
 
-
     export_distance_op!(
         description = "Dot product of two vectors",
         ty = u8,
@@ -451,7 +450,8 @@ pub mod distance_ops_avx2_fma {
         op = generic_dot_product,
         xconst = f32_xconst_avx2_fma_dot,
         xany = f32_xany_avx2_fma_dot,
-        features = "avx2", "fma"
+        features = "avx2",
+        "fma"
     );
     export_distance_op!(
         description = "Cosine distance of two vectors",
@@ -460,7 +460,8 @@ pub mod distance_ops_avx2_fma {
         op = generic_cosine,
         xconst = f32_xconst_avx2_fma_cosine,
         xany = f32_xany_avx2_fma_cosine,
-        features = "avx2", "fma"
+        features = "avx2",
+        "fma"
     );
     export_distance_op!(
         description = "Squared Euclidean distance of two vectors",
@@ -469,7 +470,8 @@ pub mod distance_ops_avx2_fma {
         op = generic_euclidean,
         xconst = f32_xconst_avx2_fma_squared_euclidean,
         xany = f32_xany_avx2_fma_squared_euclidean,
-        features = "avx2", "fma"
+        features = "avx2",
+        "fma"
     );
 
     export_distance_op!(
@@ -479,7 +481,8 @@ pub mod distance_ops_avx2_fma {
         op = generic_dot_product,
         xconst = f64_xconst_avx2_fma_dot,
         xany = f64_xany_avx2_fma_dot,
-        features = "avx2", "fma"
+        features = "avx2",
+        "fma"
     );
     export_distance_op!(
         description = "Cosine distance of two vectors",
@@ -488,7 +491,8 @@ pub mod distance_ops_avx2_fma {
         op = generic_cosine,
         xconst = f64_xconst_avx2_fma_cosine,
         xany = f64_xany_avx2_fma_cosine,
-        features = "avx2", "fma"
+        features = "avx2",
+        "fma"
     );
     export_distance_op!(
         description = "Squared Euclidean distance of two vectors",
@@ -497,7 +501,8 @@ pub mod distance_ops_avx2_fma {
         op = generic_euclidean,
         xconst = f64_xconst_avx2_fma_squared_euclidean,
         xany = f64_xany_avx2_fma_squared_euclidean,
-        features = "avx2", "fma"
+        features = "avx2",
+        "fma"
     );
 }
 
@@ -624,7 +629,6 @@ pub mod distance_ops_neon {
         xany = i64_xany_neon_nofma_squared_euclidean,
         features = "neon"
     );
-
 
     export_distance_op!(
         description = "Dot product of two vectors",

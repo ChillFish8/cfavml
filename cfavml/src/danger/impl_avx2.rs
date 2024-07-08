@@ -828,7 +828,7 @@ impl SimdRegister<i64> for Avx2 {
 
     #[inline(always)]
     unsafe fn mul(l1: Self::Register, l2: Self::Register) -> Self::Register {
-        let mask =  _mm256_set1_epi64x(0xFFFFFFFF00000000u64 as i64);
+        let mask = _mm256_set1_epi64x(0xFFFFFFFF00000000u64 as i64);
         let digit_1 = _mm256_mul_epu32(l1, l2);
 
         let l2_swap = _mm256_shuffle_epi32::<{ super::_MM_SHUFFLE(2, 3, 0, 1) }>(l2);
@@ -892,7 +892,10 @@ impl SimdRegister<i64> for Avx2 {
 
         let digit_1 = apply_dense!(_mm256_mul_epu32, l1, l2);
 
-        let l2_swap = apply_dense!(_mm256_shuffle_epi32::<{ super::_MM_SHUFFLE(2, 3, 0, 1) }>, l2);
+        let l2_swap = apply_dense!(
+            _mm256_shuffle_epi32::<{ super::_MM_SHUFFLE(2, 3, 0, 1) }>,
+            l2
+        );
         let cross_prod = apply_dense!(_mm256_mullo_epi32, l1, l2_swap);
 
         let prod_lo = apply_dense!(_mm256_slli_epi64::<32>, cross_prod);
