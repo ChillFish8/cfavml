@@ -148,3 +148,14 @@ mod avx2_tests {
     test_cosine_extra!(u32, Avx2);
     test_cosine_extra!(u64, Avx2);
 }
+
+#[cfg(all(target_feature = "avx2", target_feature = "fma", test))]
+mod avx2_fma_tests {
+    use super::*;
+
+    test_suite!(f32, Avx2Fma);
+    test_suite!(f64, Avx2Fma);
+
+    test_cosine_extra!(f32, Avx2Fma);
+    test_cosine_extra!(f64, Avx2Fma);
+}
