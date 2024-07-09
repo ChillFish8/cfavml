@@ -18,7 +18,7 @@ macro_rules! benchmark_distance_measure {
         xany = $fxany:expr,
     ) => {
         paste::paste! {
-            fn [< benchmark_ $name >](c: &mut Criterion) {
+            pub fn [< benchmark_ $name >](c: &mut Criterion) {
                 c.bench_function(&format!("{} x1024", $name), |b| {
                     let (x, y) = utils::get_sample_vectors(1024);
                     b.iter(|| repeat!(1000, $fx1024, &x, &y));
@@ -36,36 +36,62 @@ macro_rules! benchmark_distance_measure {
     };
 }
 
-benchmark_distance_measure!(
-    "f32_avx2_nofma_dot",
-    x1024 = f32_xconst_avx2_nofma_dot::<1024>,
-    xany = f32_xany_avx2_nofma_dot,
-);
-benchmark_distance_measure!(
-    "f32_avx2_fma_dot",
-    x1024 = f32_xconst_avx2_fma_dot::<1024>,
-    xany = f32_xany_avx2_fma_dot,
-);
-benchmark_distance_measure!(
-    "f32_avx2_nofma_cosine",
-    x1024 = f32_xconst_avx2_nofma_cosine::<1024>,
-    xany = f32_xany_avx2_nofma_cosine,
-);
-benchmark_distance_measure!(
-    "f32_avx2_fma_cosine",
-    x1024 = f32_xconst_avx2_fma_cosine::<1024>,
-    xany = f32_xany_avx2_fma_cosine,
-);
-benchmark_distance_measure!(
-    "f32_avx2_nofma_euclidean",
-    x1024 = f32_xconst_avx2_nofma_squared_euclidean::<1024>,
-    xany = f32_xany_avx2_nofma_squared_euclidean,
-);
-benchmark_distance_measure!(
-    "f32_avx2_fma_euclidean",
-    x1024 = f32_xconst_avx2_fma_squared_euclidean::<1024>,
-    xany = f32_xany_avx2_fma_squared_euclidean,
-);
+#[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
+mod avx2 {
+    use super::*;
+
+    benchmark_distance_measure!(
+        "f32_avx2_nofma_dot",
+        x1024 = f32_xconst_avx2_nofma_dot::<1024>,
+        xany = f32_xany_avx2_nofma_dot,
+    );
+    benchmark_distance_measure!(
+        "f32_avx2_fma_dot",
+        x1024 = f32_xconst_avx2_fma_dot::<1024>,
+        xany = f32_xany_avx2_fma_dot,
+    );
+    benchmark_distance_measure!(
+        "f32_avx2_nofma_cosine",
+        x1024 = f32_xconst_avx2_nofma_cosine::<1024>,
+        xany = f32_xany_avx2_nofma_cosine,
+    );
+    benchmark_distance_measure!(
+        "f32_avx2_fma_cosine",
+        x1024 = f32_xconst_avx2_fma_cosine::<1024>,
+        xany = f32_xany_avx2_fma_cosine,
+    );
+    benchmark_distance_measure!(
+        "f32_avx2_nofma_euclidean",
+        x1024 = f32_xconst_avx2_nofma_squared_euclidean::<1024>,
+        xany = f32_xany_avx2_nofma_squared_euclidean,
+    );
+    benchmark_distance_measure!(
+        "f32_avx2_fma_euclidean",
+        x1024 = f32_xconst_avx2_fma_squared_euclidean::<1024>,
+        xany = f32_xany_avx2_fma_squared_euclidean,
+    );
+}
+
+#[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
+mod neon {
+    use super::*;
+
+    benchmark_distance_measure!(
+        "f32_neon_nofma_dot",
+        x1024 = f32_xconst_neon_nofma_dot::<1024>,
+        xany = f32_xany_neon_nofma_dot,
+    );
+    benchmark_distance_measure!(
+        "f32_neon_nofma_cosine",
+        x1024 = f32_xconst_neon_nofma_cosine::<1024>,
+        xany = f32_xany_neon_nofma_cosine,
+    );
+    benchmark_distance_measure!(
+        "f32_neon_nofma_euclidean",
+        x1024 = f32_xconst_neon_nofma_squared_euclidean::<1024>,
+        xany = f32_xany_neon_nofma_squared_euclidean,
+    );
+}
 
 benchmark_distance_measure!(
     "f32_fallback_nofma_dot",
@@ -129,15 +155,32 @@ criterion_group!(
     targets =
         benchmark_f32_xany_ndarray,
         benchmark_f32_xany_simsimd,
-        benchmark_f32_avx2_nofma_dot,
-        benchmark_f32_avx2_fma_dot,
-        benchmark_f32_avx2_nofma_cosine,
-        benchmark_f32_avx2_fma_cosine,
-        benchmark_f32_avx2_nofma_euclidean,
-        benchmark_f32_avx2_fma_euclidean,
         benchmark_f32_fallback_nofma_dot,
         benchmark_f32_fallback_nofma_cosine,
         benchmark_f32_fallback_nofma_euclidean,
+);
+#[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
+criterion_group!(
+    name = benches_avx2_x86;
+    config = Criterion::default()
+        .measurement_time(Duration::from_secs(10));
+    targets =
+        avx2::benchmark_f32_avx2_nofma_dot,
+        avx2::benchmark_f32_avx2_fma_dot,
+        avx2::benchmark_f32_avx2_nofma_cosine,
+        avx2::benchmark_f32_avx2_fma_cosine,
+        avx2::benchmark_f32_avx2_nofma_euclidean,
+        avx2::benchmark_f32_avx2_fma_euclidean,
+);
+#[cfg(any(target_arch = "aarch64"))]
+criterion_group!(
+    name = benches_neon_aarch64;
+    config = Criterion::default()
+        .measurement_time(Duration::from_secs(10));
+    targets =
+        neon::benchmark_f32_neon_nofma_dot,
+        neon::benchmark_f32_neon_nofma_cosine,
+        neon::benchmark_f32_neon_nofma_euclidean,
 );
 criterion_main!(benches);
 
