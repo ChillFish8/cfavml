@@ -172,7 +172,7 @@ criterion_group!(
         avx2::benchmark_f32_avx2_nofma_euclidean,
         avx2::benchmark_f32_avx2_fma_euclidean,
 );
-#[cfg(any(target_arch = "aarch64"))]
+#[cfg(target_arch = "aarch64")]
 criterion_group!(
     name = benches_neon_aarch64;
     config = Criterion::default()
@@ -182,7 +182,10 @@ criterion_group!(
         neon::benchmark_f32_neon_nofma_cosine,
         neon::benchmark_f32_neon_nofma_euclidean,
 );
-criterion_main!(benches);
+#[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
+criterion_main!(benches, benches_avx2_x86);
+#[cfg(target_arch = "aarch64")]
+criterion_main!(benches, benches_neon_aarch64);
 
 fn ndarray_cosine(a: &ndarray::Array1<f32>, b: &ndarray::Array1<f32>) -> f32 {
     let norm_a = a.dot(a);
