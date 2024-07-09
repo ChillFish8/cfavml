@@ -7,5 +7,6 @@ edition = "2021"
 
 [dependencies]
 paste = "1.0.15"
+ndarray = "0.15.6"
 
-cfavml = { path = "..", features = ["nightly"] }
+cfavml = { path = ".." }

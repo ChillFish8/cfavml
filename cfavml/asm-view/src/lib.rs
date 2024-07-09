@@ -13,6 +13,17 @@ macro_rules! export_dense_op {
             }
         }
     };
+    ($t:ident, $im:ident, $op:ident) => {
+        paste::paste!{
+            #[inline(never)]
+            pub unsafe fn [<impl_ $im:lower _ $t _ $op>](a: &[$t], b: &[$t]) {
+                let l1 = <$im as cfavml::danger::SimdRegister<$t>>::load_dense(a.as_ptr());
+                let l2 = <$im as cfavml::danger::SimdRegister<$t>>::load_dense(b.as_ptr());
+                let res = <$im as cfavml::danger::SimdRegister<$t>>::$op(l1, l2);
+                std::hint::black_box(res);
+            }
+        }
+    };
 }
 
 macro_rules! export_distance_op {
@@ -20,6 +31,15 @@ macro_rules! export_distance_op {
         paste::paste!{
             #[inline(never)]
             #[target_feature($(enable = $feat)*)]
+            pub unsafe fn [<impl_ $im:lower _ $t _ $op>](a: &[$t], b: &[$t]) {
+                let res = $op::<_, $im, cfavml::math::AutoMath>(a.len(), a, b)  ;
+                std::hint::black_box(res);
+            }
+        }
+    };
+    ($t:ident, $im:ident, $op:ident) => {
+        paste::paste!{
+            #[inline(never)]
             pub unsafe fn [<impl_ $im:lower _ $t _ $op>](a: &[$t], b: &[$t]) {
                 let res = $op::<_, $im, cfavml::math::AutoMath>(a.len(), a, b)  ;
                 std::hint::black_box(res);
@@ -39,6 +59,15 @@ macro_rules! export_vector_x_vector_op {
             }
         }
     };
+    ($t:ident, $im:ident, $op:ident) => {
+        paste::paste!{
+            #[inline(never)]
+            pub unsafe fn [<impl_ $im:lower _ $t _ $op>](a: &[$t], b: &[$t], res: &mut [$t]) {
+                let res = $op::<_, $im, cfavml::math::AutoMath>(a.len(), a, b, res)  ;
+                std::hint::black_box(res);
+            }
+        }
+    };
 }
 
 macro_rules! export_vector_x_value_op {
@@ -52,7 +81,94 @@ macro_rules! export_vector_x_value_op {
             }
         }
     };
+    ($t:ident, $im:ident, $op:ident) => {
+        paste::paste!{
+            #[inline(never)]
+            pub unsafe fn [<impl_ $im:lower _ $t _ $op>](value: $t, a: &[$t], res: &mut [$t]) {
+                let res = $op::<_, $im, cfavml::math::AutoMath>(a.len(), value, a, res)  ;
+                std::hint::black_box(res);
+            }
+        }
+    };
 }
+
+export_dense_op!(i8, Fallback, mul_dense);
+export_dense_op!(i8, Fallback, div_dense);
+export_dense_op!(i8, Fallback, add_dense);
+export_dense_op!(i8, Fallback, sub_dense);
+export_dense_op!(i8, Fallback, max_dense);
+export_dense_op!(i8, Fallback, min_dense);
+
+export_dense_op!(i16, Fallback, mul_dense);
+export_dense_op!(i16, Fallback, div_dense);
+export_dense_op!(i16, Fallback, add_dense);
+export_dense_op!(i16, Fallback, sub_dense);
+export_dense_op!(i16, Fallback, max_dense);
+export_dense_op!(i16, Fallback, min_dense);
+
+export_dense_op!(i32, Fallback, mul_dense);
+export_dense_op!(i32, Fallback, div_dense);
+export_dense_op!(i32, Fallback, add_dense);
+export_dense_op!(i32, Fallback, sub_dense);
+export_dense_op!(i32, Fallback, max_dense);
+export_dense_op!(i32, Fallback, min_dense);
+
+export_dense_op!(i64, Fallback, mul_dense);
+export_dense_op!(i64, Fallback, div_dense);
+export_dense_op!(i64, Fallback, add_dense);
+export_dense_op!(i64, Fallback, sub_dense);
+export_dense_op!(i64, Fallback, max_dense);
+export_dense_op!(i64, Fallback, min_dense);
+
+export_dense_op!(f32, Fallback, mul_dense);
+export_dense_op!(f32, Fallback, div_dense);
+export_dense_op!(f32, Fallback, add_dense);
+export_dense_op!(f32, Fallback, sub_dense);
+export_dense_op!(f32, Fallback, max_dense);
+export_dense_op!(f32, Fallback, min_dense);
+
+export_dense_op!(f64, Fallback, mul_dense);
+export_dense_op!(f64, Fallback, div_dense);
+export_dense_op!(f64, Fallback, add_dense);
+export_dense_op!(f64, Fallback, sub_dense);
+export_dense_op!(f64, Fallback, max_dense);
+export_dense_op!(f64, Fallback, min_dense);
+
+export_distance_op!(i8, Fallback, generic_cosine);
+export_distance_op!(i8, Fallback, generic_dot_product);
+export_distance_op!(i8, Fallback, generic_euclidean);
+export_vector_x_vector_op!(i8, Fallback, generic_add_vector);
+export_vector_x_vector_op!(i8, Fallback, generic_sub_vector);
+export_vector_x_vector_op!(i8, Fallback, generic_mul_vector);
+export_vector_x_vector_op!(i8, Fallback, generic_div_vector);
+export_vector_x_value_op!(i8, Fallback, generic_add_value);
+export_vector_x_value_op!(i8, Fallback, generic_sub_value);
+export_vector_x_value_op!(i8, Fallback, generic_mul_value);
+export_vector_x_value_op!(i8, Fallback, generic_div_value);
+
+export_distance_op!(f32, Fallback, generic_cosine);
+export_distance_op!(f32, Fallback, generic_dot_product);
+export_distance_op!(f32, Fallback, generic_euclidean);
+export_vector_x_vector_op!(f32, Fallback, generic_add_vector);
+export_vector_x_vector_op!(f32, Fallback, generic_sub_vector);
+export_vector_x_vector_op!(f32, Fallback, generic_mul_vector);
+export_vector_x_vector_op!(f32, Fallback, generic_div_vector);
+export_vector_x_value_op!(f32, Fallback, generic_add_value);
+export_vector_x_value_op!(f32, Fallback, generic_sub_value);
+export_vector_x_value_op!(f32, Fallback, generic_mul_value);
+export_vector_x_value_op!(f32, Fallback, generic_div_value);
+
+export_distance_op!(f64, Fallback, generic_cosine);
+export_distance_op!(f64, Fallback, generic_dot_product);
+export_distance_op!(f64, Fallback, generic_euclidean);
+export_vector_x_vector_op!(f64, Fallback, generic_add_vector);
+export_vector_x_vector_op!(f64, Fallback, generic_sub_vector);
+export_vector_x_vector_op!(f64, Fallback, generic_mul_vector);
+export_vector_x_vector_op!(f64, Fallback, generic_div_vector);
+export_vector_x_value_op!(f64, Fallback, generic_add_value);
+export_vector_x_value_op!(f64, Fallback, generic_sub_value);
+export_vector_x_value_op!(f64, Fallback, generic_mul_value);
+export_vector_x_value_op!(f64, Fallback, generic_div_value);
 
 export_dense_op!(i8, Avx2, mul_dense, features = "avx2");
 export_dense_op!(i8, Avx2, div_dense, features = "avx2");
@@ -131,3 +247,8 @@ export_vector_x_value_op!(f64, Avx2, generic_add_value, features = "avx2");
 export_vector_x_value_op!(f64, Avx2, generic_sub_value, features = "avx2");
 export_vector_x_value_op!(f64, Avx2, generic_mul_value, features = "avx2");
 export_vector_x_value_op!(f64, Avx2, generic_div_value, features = "avx2");
+
+#[inline(never)]
+pub fn ndarray_dot(a: &ndarray::Array1<f32>, b: &ndarray::Array1<f32>) -> f32 {
+    a.dot(b)
+}

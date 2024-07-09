@@ -1,4 +1,4 @@
-use crate::danger::SimdRegister;
+use crate::danger::{DenseLane, SimdRegister};
 use crate::math::{AutoMath, Math};
 
 /// Fallback SIMD-like operations.
@@ -58,6 +58,16 @@ where
     ) -> Self::Register {
         let res = AutoMath::mul(l1, l2);
         AutoMath::add(res, acc)
+    }
+
+    #[inline(always)]
+    unsafe fn fmadd_dense(
+        l1: DenseLane<Self::Register>,
+        l2: DenseLane<Self::Register>,
+        acc: DenseLane<Self::Register>,
+    ) -> DenseLane<Self::Register> {
+        let res = <Self as SimdRegister<T>>::mul_dense(l1, l2);
+        <Self as SimdRegister<T>>::add_dense(res, acc)
     }
 
     #[inline(always)]
