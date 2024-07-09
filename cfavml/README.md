@@ -153,3 +153,46 @@ f32_fallback_nofma_euclidean x1024      time:   [346.84 µs 348.83 µs 350.79 µ
 f32_fallback_nofma_euclidean xany-1301  time:   [432.80 µs 435.61 µs 438.26 µs]
 f32_fallback_nofma_euclidean xany-1024  time:   [339.50 µs 341.79 µs 344.09 µs]
 ```
+
+### Benchmarks - ARM
+
+Ran on a Hetzner `CAX31 Ampere ARM`.
+
+CPU Supports `NEON` families.
+
+Ndarray compiled with openblas installed via `libopenblas-dev`.
+`OMP_NUM_THRESD=1`
+
+```
+ndarray x1024 dot                         time:   [133.54 µs 133.57 µs 133.60 µs]
+ndarray x1024 cosine                      time:   [407.32 µs 407.37 µs 407.41 µs]
+ndarray x1024 euclidean                   time:   [330.03 µs 330.07 µs 330.12 µs]
+                                          
+simsimd x1024 dot                         time:   [176.88 µs 176.89 µs 176.91 µs]
+simsimd x1024 cosine                      time:   [185.93 µs 185.96 µs 185.98 µs]
+simsimd x1024 euclidean                   time:   [175.84 µs 176.07 µs 176.58 µs]
+                                          
+f32_fallback_nofma_dot x1024              time:   [131.32 µs 131.42 µs 131.53 µs]
+f32_fallback_nofma_dot xany-1301          time:   [170.16 µs 170.27 µs 170.37 µs]
+f32_fallback_nofma_dot xany-1024          time:   [132.38 µs 132.53 µs 132.68 µs]
+                                          
+f32_fallback_nofma_cosine x1024           time:   [832.38 µs 833.28 µs 835.10 µs]
+f32_fallback_nofma_cosine xany-1301       time:   [1.0590 ms 1.0591 ms 1.0592 ms]
+f32_fallback_nofma_cosine xany-1024       time:   [832.13 µs 832.17 µs 832.21 µs]
+                                          
+f32_fallback_nofma_euclidean x1024        time:   [496.26 µs 496.29 µs 496.32 µs]
+f32_fallback_nofma_euclidean xany-1301    time:   [630.57 µs 630.69 µs 630.81 µs]
+f32_fallback_nofma_euclidean xany-1024    time:   [496.54 µs 496.61 µs 496.69 µs]
+
+f32_neon_nofma_dot x1024                  time:   [90.249 µs 90.309 µs 90.369 µs]
+f32_neon_nofma_dot xany-1301              time:   [116.38 µs 116.47 µs 116.57 µs]
+f32_neon_nofma_dot xany-1024              time:   [88.509 µs 88.533 µs 88.559 µs]
+
+f32_neon_nofma_cosine x1024               time:   [155.53 µs 155.54 µs 155.55 µs]
+f32_neon_nofma_cosine xany-1301           time:   [403.79 µs 403.85 µs 403.93 µs]
+f32_neon_nofma_cosine xany-1024           time:   [321.74 µs 321.78 µs 321.82 µs]
+
+f32_neon_nofma_euclidean x1024            time:   [122.12 µs 122.18 µs 122.28 µs]
+f32_neon_nofma_euclidean xany-1301        time:   [156.97 µs 156.99 µs 157.02 µs]
+f32_neon_nofma_euclidean xany-1024        time:   [124.35 µs 124.38 µs 124.41 µs]
+```
