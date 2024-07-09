@@ -6,7 +6,7 @@ use std::ops::Sub;
 use std::time::Duration;
 
 use cfavml::danger::*;
-use cfavml::math::AutoMath;
+use cfavml::math::{AutoMath, Math};
 use criterion::{criterion_group, criterion_main, Criterion};
 
 mod utils;
@@ -77,19 +77,19 @@ mod neon {
     use super::*;
 
     benchmark_distance_measure!(
-        "f32_neon_nofma_dot",
-        x1024 = f32_xconst_neon_nofma_dot::<1024>,
-        xany = f32_xany_neon_nofma_dot,
+        "f32_neon_fma_dot",
+        x1024 = f32_xconst_neon_fma_dot::<1024>,
+        xany = f32_xany_neon_fma_dot,
     );
     benchmark_distance_measure!(
-        "f32_neon_nofma_cosine",
-        x1024 = f32_xconst_neon_nofma_cosine::<1024>,
-        xany = f32_xany_neon_nofma_cosine,
+        "f32_neon_fma_cosine",
+        x1024 = f32_xconst_neon_fma_cosine::<1024>,
+        xany = f32_xany_neon_fma_cosine,
     );
     benchmark_distance_measure!(
-        "f32_neon_nofma_euclidean",
-        x1024 = f32_xconst_neon_nofma_squared_euclidean::<1024>,
-        xany = f32_xany_neon_nofma_squared_euclidean,
+        "f32_neon_fma_euclidean",
+        x1024 = f32_xconst_neon_fma_squared_euclidean::<1024>,
+        xany = f32_xany_neon_fma_squared_euclidean,
     );
 }
 

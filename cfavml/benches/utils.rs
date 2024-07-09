@@ -69,7 +69,7 @@ unsafe fn aligned_vec(n_elements: usize) -> Vec<f32> {
 }
 
 #[inline(always)]
-pub(crate) fn cosine<T: Copy, M: Math<T>>(dot_product: T, norm_x: T, norm_y: T) -> T {
+pub fn cosine<T: Copy, M: Math<T>>(dot_product: T, norm_x: T, norm_y: T) -> T {
     if M::cmp_eq(norm_x, M::zero()) && M::cmp_eq(norm_y, M::zero()) {
         M::zero()
     } else if M::cmp_eq(norm_x, M::zero()) || M::cmp_eq(norm_y, M::zero()) {

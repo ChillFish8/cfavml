@@ -170,83 +170,131 @@ export_vector_x_value_op!(f64, Fallback, generic_sub_value);
 export_vector_x_value_op!(f64, Fallback, generic_mul_value);
 export_vector_x_value_op!(f64, Fallback, generic_div_value);
 
-export_dense_op!(i8, Avx2, mul_dense, features = "avx2");
-export_dense_op!(i8, Avx2, div_dense, features = "avx2");
-export_dense_op!(i8, Avx2, add_dense, features = "avx2");
-export_dense_op!(i8, Avx2, sub_dense, features = "avx2");
-export_dense_op!(i8, Avx2, max_dense, features = "avx2");
-export_dense_op!(i8, Avx2, min_dense, features = "avx2");
+#[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
+pub mod avx2_ops {
+    use super::*;
 
-export_dense_op!(i16, Avx2, mul_dense, features = "avx2");
-export_dense_op!(i16, Avx2, div_dense, features = "avx2");
-export_dense_op!(i16, Avx2, add_dense, features = "avx2");
-export_dense_op!(i16, Avx2, sub_dense, features = "avx2");
-export_dense_op!(i16, Avx2, max_dense, features = "avx2");
-export_dense_op!(i16, Avx2, min_dense, features = "avx2");
+    export_dense_op!(i8, Avx2, mul_dense, features = "avx2");
+    export_dense_op!(i8, Avx2, div_dense, features = "avx2");
+    export_dense_op!(i8, Avx2, add_dense, features = "avx2");
+    export_dense_op!(i8, Avx2, sub_dense, features = "avx2");
+    export_dense_op!(i8, Avx2, max_dense, features = "avx2");
+    export_dense_op!(i8, Avx2, min_dense, features = "avx2");
 
-export_dense_op!(i32, Avx2, mul_dense, features = "avx2");
-export_dense_op!(i32, Avx2, div_dense, features = "avx2");
-export_dense_op!(i32, Avx2, add_dense, features = "avx2");
-export_dense_op!(i32, Avx2, sub_dense, features = "avx2");
-export_dense_op!(i32, Avx2, max_dense, features = "avx2");
-export_dense_op!(i32, Avx2, min_dense, features = "avx2");
+    export_dense_op!(i16, Avx2, mul_dense, features = "avx2");
+    export_dense_op!(i16, Avx2, div_dense, features = "avx2");
+    export_dense_op!(i16, Avx2, add_dense, features = "avx2");
+    export_dense_op!(i16, Avx2, sub_dense, features = "avx2");
+    export_dense_op!(i16, Avx2, max_dense, features = "avx2");
+    export_dense_op!(i16, Avx2, min_dense, features = "avx2");
 
-export_dense_op!(i64, Avx2, mul_dense, features = "avx2");
-export_dense_op!(i64, Avx2, div_dense, features = "avx2");
-export_dense_op!(i64, Avx2, add_dense, features = "avx2");
-export_dense_op!(i64, Avx2, sub_dense, features = "avx2");
-export_dense_op!(i64, Avx2, max_dense, features = "avx2");
-export_dense_op!(i64, Avx2, min_dense, features = "avx2");
+    export_dense_op!(i32, Avx2, mul_dense, features = "avx2");
+    export_dense_op!(i32, Avx2, div_dense, features = "avx2");
+    export_dense_op!(i32, Avx2, add_dense, features = "avx2");
+    export_dense_op!(i32, Avx2, sub_dense, features = "avx2");
+    export_dense_op!(i32, Avx2, max_dense, features = "avx2");
+    export_dense_op!(i32, Avx2, min_dense, features = "avx2");
 
-export_dense_op!(f32, Avx2, mul_dense, features = "avx2");
-export_dense_op!(f32, Avx2, div_dense, features = "avx2");
-export_dense_op!(f32, Avx2, add_dense, features = "avx2");
-export_dense_op!(f32, Avx2, sub_dense, features = "avx2");
-export_dense_op!(f32, Avx2, max_dense, features = "avx2");
-export_dense_op!(f32, Avx2, min_dense, features = "avx2");
+    export_dense_op!(i64, Avx2, mul_dense, features = "avx2");
+    export_dense_op!(i64, Avx2, div_dense, features = "avx2");
+    export_dense_op!(i64, Avx2, add_dense, features = "avx2");
+    export_dense_op!(i64, Avx2, sub_dense, features = "avx2");
+    export_dense_op!(i64, Avx2, max_dense, features = "avx2");
+    export_dense_op!(i64, Avx2, min_dense, features = "avx2");
 
-export_dense_op!(f64, Avx2, mul_dense, features = "avx2");
-export_dense_op!(f64, Avx2, div_dense, features = "avx2");
-export_dense_op!(f64, Avx2, add_dense, features = "avx2");
-export_dense_op!(f64, Avx2, sub_dense, features = "avx2");
-export_dense_op!(f64, Avx2, max_dense, features = "avx2");
-export_dense_op!(f64, Avx2, min_dense, features = "avx2");
+    export_dense_op!(f32, Avx2, mul_dense, features = "avx2");
+    export_dense_op!(f32, Avx2, div_dense, features = "avx2");
+    export_dense_op!(f32, Avx2, add_dense, features = "avx2");
+    export_dense_op!(f32, Avx2, sub_dense, features = "avx2");
+    export_dense_op!(f32, Avx2, max_dense, features = "avx2");
+    export_dense_op!(f32, Avx2, min_dense, features = "avx2");
 
-export_distance_op!(i8, Avx2, generic_cosine, features = "avx2");
-export_distance_op!(i8, Avx2, generic_dot_product, features = "avx2");
-export_distance_op!(i8, Avx2, generic_euclidean, features = "avx2");
-export_vector_x_vector_op!(i8, Avx2, generic_add_vector, features = "avx2");
-export_vector_x_vector_op!(i8, Avx2, generic_sub_vector, features = "avx2");
-export_vector_x_vector_op!(i8, Avx2, generic_mul_vector, features = "avx2");
-export_vector_x_vector_op!(i8, Avx2, generic_div_vector, features = "avx2");
-export_vector_x_value_op!(i8, Avx2, generic_add_value, features = "avx2");
-export_vector_x_value_op!(i8, Avx2, generic_sub_value, features = "avx2");
-export_vector_x_value_op!(i8, Avx2, generic_mul_value, features = "avx2");
-export_vector_x_value_op!(i8, Avx2, generic_div_value, features = "avx2");
+    export_dense_op!(f64, Avx2, mul_dense, features = "avx2");
+    export_dense_op!(f64, Avx2, div_dense, features = "avx2");
+    export_dense_op!(f64, Avx2, add_dense, features = "avx2");
+    export_dense_op!(f64, Avx2, sub_dense, features = "avx2");
+    export_dense_op!(f64, Avx2, max_dense, features = "avx2");
+    export_dense_op!(f64, Avx2, min_dense, features = "avx2");
 
-export_distance_op!(f32, Avx2, generic_cosine, features = "avx2");
-export_distance_op!(f32, Avx2, generic_dot_product, features = "avx2");
-export_distance_op!(f32, Avx2, generic_euclidean, features = "avx2");
-export_vector_x_vector_op!(f32, Avx2, generic_add_vector, features = "avx2");
-export_vector_x_vector_op!(f32, Avx2, generic_sub_vector, features = "avx2");
-export_vector_x_vector_op!(f32, Avx2, generic_mul_vector, features = "avx2");
-export_vector_x_vector_op!(f32, Avx2, generic_div_vector, features = "avx2");
-export_vector_x_value_op!(f32, Avx2, generic_add_value, features = "avx2");
-export_vector_x_value_op!(f32, Avx2, generic_sub_value, features = "avx2");
-export_vector_x_value_op!(f32, Avx2, generic_mul_value, features = "avx2");
-export_vector_x_value_op!(f32, Avx2, generic_div_value, features = "avx2");
+    export_distance_op!(i8, Avx2, generic_cosine, features = "avx2");
+    export_distance_op!(i8, Avx2, generic_dot_product, features = "avx2");
+    export_distance_op!(i8, Avx2, generic_euclidean, features = "avx2");
+    export_vector_x_vector_op!(i8, Avx2, generic_add_vector, features = "avx2");
+    export_vector_x_vector_op!(i8, Avx2, generic_sub_vector, features = "avx2");
+    export_vector_x_vector_op!(i8, Avx2, generic_mul_vector, features = "avx2");
+    export_vector_x_vector_op!(i8, Avx2, generic_div_vector, features = "avx2");
+    export_vector_x_value_op!(i8, Avx2, generic_add_value, features = "avx2");
+    export_vector_x_value_op!(i8, Avx2, generic_sub_value, features = "avx2");
+    export_vector_x_value_op!(i8, Avx2, generic_mul_value, features = "avx2");
+    export_vector_x_value_op!(i8, Avx2, generic_div_value, features = "avx2");
 
-export_distance_op!(f64, Avx2, generic_cosine, features = "avx2");
-export_distance_op!(f64, Avx2, generic_dot_product, features = "avx2");
-export_distance_op!(f64, Avx2, generic_euclidean, features = "avx2");
-export_vector_x_vector_op!(f64, Avx2, generic_add_vector, features = "avx2");
-export_vector_x_vector_op!(f64, Avx2, generic_sub_vector, features = "avx2");
-export_vector_x_vector_op!(f64, Avx2, generic_mul_vector, features = "avx2");
-export_vector_x_vector_op!(f64, Avx2, generic_div_vector, features = "avx2");
-export_vector_x_value_op!(f64, Avx2, generic_add_value, features = "avx2");
-export_vector_x_value_op!(f64, Avx2, generic_sub_value, features = "avx2");
-export_vector_x_value_op!(f64, Avx2, generic_mul_value, features = "avx2");
-export_vector_x_value_op!(f64, Avx2, generic_div_value, features = "avx2");
+    export_distance_op!(f32, Avx2, generic_cosine, features = "avx2");
+    export_distance_op!(f32, Avx2, generic_dot_product, features = "avx2");
+    export_distance_op!(f32, Avx2, generic_euclidean, features = "avx2");
+    export_vector_x_vector_op!(f32, Avx2, generic_add_vector, features = "avx2");
+    export_vector_x_vector_op!(f32, Avx2, generic_sub_vector, features = "avx2");
+    export_vector_x_vector_op!(f32, Avx2, generic_mul_vector, features = "avx2");
+    export_vector_x_vector_op!(f32, Avx2, generic_div_vector, features = "avx2");
+    export_vector_x_value_op!(f32, Avx2, generic_add_value, features = "avx2");
+    export_vector_x_value_op!(f32, Avx2, generic_sub_value, features = "avx2");
+    export_vector_x_value_op!(f32, Avx2, generic_mul_value, features = "avx2");
+    export_vector_x_value_op!(f32, Avx2, generic_div_value, features = "avx2");
+
+    export_distance_op!(f64, Avx2, generic_cosine, features = "avx2");
+    export_distance_op!(f64, Avx2, generic_dot_product, features = "avx2");
+    export_distance_op!(f64, Avx2, generic_euclidean, features = "avx2");
+    export_vector_x_vector_op!(f64, Avx2, generic_add_vector, features = "avx2");
+    export_vector_x_vector_op!(f64, Avx2, generic_sub_vector, features = "avx2");
+    export_vector_x_vector_op!(f64, Avx2, generic_mul_vector, features = "avx2");
+    export_vector_x_vector_op!(f64, Avx2, generic_div_vector, features = "avx2");
+    export_vector_x_value_op!(f64, Avx2, generic_add_value, features = "avx2");
+    export_vector_x_value_op!(f64, Avx2, generic_sub_value, features = "avx2");
+    export_vector_x_value_op!(f64, Avx2, generic_mul_value, features = "avx2");
+    export_vector_x_value_op!(f64, Avx2, generic_div_value, features = "avx2");
+}
+
+#[cfg(target_arch = "aarch64")]
+pub mod neon_ops {
+    use super::*;
+
+    export_dense_op!(f32, Neon, mul_dense, features = "neon");
+    export_dense_op!(f32, Neon, div_dense, features = "neon");
+    export_dense_op!(f32, Neon, add_dense, features = "neon");
+    export_dense_op!(f32, Neon, sub_dense, features = "neon");
+    export_dense_op!(f32, Neon, max_dense, features = "neon");
+    export_dense_op!(f32, Neon, min_dense, features = "neon");
+
+    export_dense_op!(f64, Neon, mul_dense, features = "neon");
+    export_dense_op!(f64, Neon, div_dense, features = "neon");
+    export_dense_op!(f64, Neon, add_dense, features = "neon");
+    export_dense_op!(f64, Neon, sub_dense, features = "neon");
+    export_dense_op!(f64, Neon, max_dense, features = "neon");
+    export_dense_op!(f64, Neon, min_dense, features = "neon");
+
+    export_distance_op!(f32, Neon, generic_cosine, features = "neon");
+    export_distance_op!(f32, Neon, generic_dot_product, features = "neon");
+    export_distance_op!(f32, Neon, generic_euclidean, features = "neon");
+    export_vector_x_vector_op!(f32, Neon, generic_add_vector, features = "neon");
+    export_vector_x_vector_op!(f32, Neon, generic_sub_vector, features = "neon");
+    export_vector_x_vector_op!(f32, Neon, generic_mul_vector, features = "neon");
+    export_vector_x_vector_op!(f32, Neon, generic_div_vector, features = "neon");
+    export_vector_x_value_op!(f32, Neon, generic_add_value, features = "neon");
+    export_vector_x_value_op!(f32, Neon, generic_sub_value, features = "neon");
+    export_vector_x_value_op!(f32, Neon, generic_mul_value, features = "neon");
+    export_vector_x_value_op!(f32, Neon, generic_div_value, features = "neon");
+
+    export_distance_op!(f64, Neon, generic_cosine, features = "neon");
+    export_distance_op!(f64, Neon, generic_dot_product, features = "neon");
+    export_distance_op!(f64, Neon, generic_euclidean, features = "neon");
+    export_vector_x_vector_op!(f64, Neon, generic_add_vector, features = "neon");
+    export_vector_x_vector_op!(f64, Neon, generic_sub_vector, features = "neon");
+    export_vector_x_vector_op!(f64, Neon, generic_mul_vector, features = "neon");
+    export_vector_x_vector_op!(f64, Neon, generic_div_vector, features = "neon");
+    export_vector_x_value_op!(f64, Neon, generic_add_value, features = "neon");
+    export_vector_x_value_op!(f64, Neon, generic_sub_value, features = "neon");
+    export_vector_x_value_op!(f64, Neon, generic_mul_value, features = "neon");
+    export_vector_x_value_op!(f64, Neon, generic_div_value, features = "neon");
+}
 
 #[inline(never)]
 pub fn ndarray_dot(a: &ndarray::Array1<f32>, b: &ndarray::Array1<f32>) -> f32 {

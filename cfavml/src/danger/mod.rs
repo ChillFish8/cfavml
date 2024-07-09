@@ -4,6 +4,8 @@ mod impl_avx2;
 #[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
 mod impl_avx2_fma;
 mod impl_fallback;
+#[cfg(target_arch = "aarch64")]
+mod impl_neon;
 mod op_cosine;
 mod op_dot_product;
 mod op_euclidean;
@@ -33,6 +35,8 @@ pub use self::impl_avx2::*;
 #[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
 pub use self::impl_avx2_fma::*;
 pub use self::impl_fallback::*;
+#[cfg(target_arch = "aarch64")]
+pub use self::impl_neon::*;
 #[cfg(test)]
 pub(crate) use self::op_cosine::cosine;
 pub use self::op_cosine::generic_cosine;

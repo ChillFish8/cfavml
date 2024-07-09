@@ -941,56 +941,56 @@ pub mod distance_ops_neon {
     export_distance_op!(
         description = "Dot product of two vectors",
         ty = f32,
-        register = Fallback,
+        register = Neon,
         op = generic_dot_product,
-        xconst = f32_xconst_neon_nofma_dot,
-        xany = f32_xany_neon_nofma_dot,
+        xconst = f32_xconst_neon_fma_dot,
+        xany = f32_xany_neon_fma_dot,
         features = "neon"
     );
     export_distance_op!(
         description = "Cosine distance of two vectors",
         ty = f32,
-        register = Fallback,
+        register = Neon,
         op = generic_cosine,
-        xconst = f32_xconst_neon_nofma_cosine,
-        xany = f32_xany_neon_nofma_cosine,
+        xconst = f32_xconst_neon_fma_cosine,
+        xany = f32_xany_neon_fma_cosine,
         features = "neon"
     );
     export_distance_op!(
         description = "Squared Euclidean distance of two vectors",
         ty = f32,
-        register = Fallback,
+        register = Neon,
         op = generic_euclidean,
-        xconst = f32_xconst_neon_nofma_squared_euclidean,
-        xany = f32_xany_neon_nofma_squared_euclidean,
+        xconst = f32_xconst_neon_fma_squared_euclidean,
+        xany = f32_xany_neon_fma_squared_euclidean,
         features = "neon"
     );
 
     export_distance_op!(
         description = "Dot product of two vectors",
         ty = f64,
-        register = Fallback,
+        register = Neon,
         op = generic_dot_product,
-        xconst = f64_xconst_neon_nofma_dot,
-        xany = f64_xany_neon_nofma_dot,
+        xconst = f64_xconst_neon_fma_dot,
+        xany = f64_xany_neon_fma_dot,
         features = "neon"
     );
     export_distance_op!(
         description = "Cosine distance of two vectors",
         ty = f64,
-        register = Fallback,
+        register = Neon,
         op = generic_cosine,
-        xconst = f64_xconst_neon_nofma_cosine,
-        xany = f64_xany_neon_nofma_cosine,
+        xconst = f64_xconst_neon_fma_cosine,
+        xany = f64_xany_neon_fma_cosine,
         features = "neon"
     );
     export_distance_op!(
         description = "Squared Euclidean distance of two vectors",
         ty = f64,
-        register = Fallback,
+        register = Neon,
         op = generic_euclidean,
-        xconst = f64_xconst_neon_nofma_squared_euclidean,
-        xany = f64_xany_neon_nofma_squared_euclidean,
+        xconst = f64_xconst_neon_fma_squared_euclidean,
+        xany = f64_xany_neon_fma_squared_euclidean,
         features = "neon"
     );
 }

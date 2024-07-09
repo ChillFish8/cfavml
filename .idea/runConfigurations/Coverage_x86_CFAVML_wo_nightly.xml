@@ -1,5 +1,5 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="Coverage CFAVML wo/nightly" type="CargoCommandRunConfiguration" factoryName="Cargo Command">
+  <configuration default="false" name="Coverage x86 CFAVML wo/nightly" type="CargoCommandRunConfiguration" factoryName="Cargo Command">
     <option name="command" value="llvm-cov -p cfavml" />
     <option name="workingDirectory" value="file://$PROJECT_DIR$/cfavml" />
     <envs>

@@ -159,3 +159,14 @@ mod avx2_fma_tests {
     test_cosine_extra!(f32, Avx2Fma);
     test_cosine_extra!(f64, Avx2Fma);
 }
+
+#[cfg(all(target_feature = "neon", test))]
+mod neon_tests {
+    use super::*;
+
+    test_suite!(f32, Neon);
+    test_suite!(f64, Neon);
+
+    test_cosine_extra!(f32, Neon);
+    test_cosine_extra!(f64, Neon);
+}
