@@ -1,5 +1,7 @@
 mod core_simd_api;
+#[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
 mod impl_avx2;
+#[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
 mod impl_avx2_fma;
 mod impl_fallback;
 mod op_cosine;
