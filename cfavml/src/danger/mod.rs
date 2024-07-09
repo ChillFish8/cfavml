@@ -3,6 +3,8 @@ mod core_simd_api;
 mod impl_avx2;
 #[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
 mod impl_avx2_fma;
+#[cfg(all(any(target_arch = "x86", target_arch = "x86_64"), feature = "nightly"))]
+mod impl_avx512;
 mod impl_fallback;
 #[cfg(target_arch = "aarch64")]
 mod impl_neon;
@@ -27,6 +29,8 @@ pub use self::core_simd_api::{DenseLane, SimdRegister};
 pub use self::export_distance_ops::distance_ops_avx2::*;
 #[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
 pub use self::export_distance_ops::distance_ops_avx2_fma::*;
+#[cfg(all(any(target_arch = "x86", target_arch = "x86_64"), feature = "nightly"))]
+pub use self::export_distance_ops::distance_ops_avx512::*;
 pub use self::export_distance_ops::distance_ops_fallback::*;
 #[cfg(target_arch = "aarch64")]
 pub use self::export_distance_ops::distance_ops_neon::*;
@@ -34,6 +38,8 @@ pub use self::export_distance_ops::distance_ops_neon::*;
 pub use self::impl_avx2::*;
 #[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
 pub use self::impl_avx2_fma::*;
+#[cfg(all(any(target_arch = "x86", target_arch = "x86_64"), feature = "nightly"))]
+pub use self::impl_avx512::*;
 pub use self::impl_fallback::*;
 #[cfg(target_arch = "aarch64")]
 pub use self::impl_neon::*;
