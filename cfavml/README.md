@@ -1,39 +1,88 @@
-# eonn-accel
+# CFAVML
 
-Various specialised vector operations, primarily designed for similarity search.
+> _CF's Accelerated Vector Math Library_
 
-This system has several specializations for various CPU features and vector dimensions,
-currently only `f32` vectors with dimensions of  any size are supported, but with 
-specialized const generic variants for various multiples of 128 or 64 (depending on arch).
+Various accelerated vector operations over Rust primitives with SIMD.
 
-Supported CPU features include `Avx512`, `Avx2` and `Fma`, fallback implementations can
-be optimized relatively well by the compiler for other architectures e.g. ARM or SSE.
+### Available SIMD Architectures
+
+- AVX2
+- AVX2 + FMA
+- AVX512
+- NEON (`f32`/`f64` operations only currently)
+- Fallback (Typically optimized to SSE automatically by LLVM on x86)
+
+### Supported Primitives
+
+- `f32`
+- `f64`
+- `i8`
+- `i16`
+- `i32`
+- `i64`
+- `u8`
+- `u16`
+- `u32`
+- `u64`
+
+##### Note on non-`f32/f64` division
+
+Division operations on non-floating point primitives are currently still scalar
+operations, as performing integer division is incredibly hard to do anymore efficiently
+with SIMD and adds a significant amount of cognitive overhead when reading the code.
+
+Although to be honest I have some serious questions about your application if you're doing 
+heavy integer division...
 
 ### Supported Operations & Distances
 
-- `dot(a, b)`
-- `norm(a)`  - Equivalent to `np.inner()` (squared norm)
-- `cosine(a, b)`     - Does not do inverse by itself
-- `euclidean(a, b)`  - Squared euclidean
-- `div(a, value)` - Vector x single-value
-- `mul(a, value)` - Vector x single-value
-- `add(a, value)` - Vector x single-value
-- `sub(a, value)` - Vector x single-value
-- `div(a, b)` - Vector x vector
-- `mul(a, b)` - Vector x vector
-- `add(a, b)` - Vector x vector
-- `sub(a, b)` - Vector x vector
-- `sum_horizontal(a)`
-- `max_horizontal(a)`
-- `min_horizontal(a)`
-- `sum_vertical(m)` - 2D matrix
-- `max_vertical(m)` - 2D matrix
-- `min_vertical(m)` - 2D matrix
+- Dot Product
+- L2 Norm
+- Squared Euclidean
+- Cosine 
+- Vector Min Value
+- Vector Max Value
+- Vector Sum Value
+- Vector Add Value
+- Vector Sub Value
+- Vector Mul Value
+- Vector Div Value
+- Vector Add Vector
+- Vector Sub Vector
+- Vector Mul Vector
+- Vector Div Vector
 
 ### Dangerous routine naming convention
 
-If you've looked at the `danger` folder at all, you'll notice all functions implement a certain
-naming scheme to indicate their specialization.
+If you've looked at the `danger` folder at all, you'll notice a few things, one SIMD operations
+are gated behind the `SimdRegister<T>` trait, this provides us with a generic abstraction
+over the various SIMD register types and architectures.
+
+This trait, combined with the `Math<T>` trait form the core of all operations and are
+provided as generic functions (with no target features):
+
+- `generic_dot_product`
+- `generic_euclidean`
+- `generic_cosine`
+- `generic_norm`
+- `generic_max_horizontal`
+- `generic_max_vertical`
+- `generic_min_horizontal`
+- `generic_min_vertical`
+- `generic_sum_horizontal`
+- `generic_sum_vertical`
+- `generic_add_value`
+- `generic_sub_value`
+- `generic_mul_value`
+- `generic_div_value`
+- `generic_add_vector`
+- `generic_sub_vector`
+- `generic_mul_vector`
+- `generic_div_vector`
+
+We also provide pre-configured non-generic methods with have the relevant `target_feature`s 
+specified, naturally these methods are immediately UB if you call them without the correct
+CPU flags being available.
 
 ```
 <dtype>_x<dims>_<arch>_<(no)fma>_<op_name>
