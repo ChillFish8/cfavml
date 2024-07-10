@@ -93,7 +93,7 @@ CPU flags being available.
 - `nightly` Enables optimizations available only on nightly platforms.
   * This is required for AVX512 support due to it currently being unstable.
 
-### Benchmarks - AMD Ryzen 5900x
+### Benchmarks - AMD Ryzen 5900x (WINDOWS - no BLAS)
 
 - **Supported Flags:** `avx2`, `fma`
 - Not really a good benchmark since this is a desktop chip, your servers are going to behave very differently.
