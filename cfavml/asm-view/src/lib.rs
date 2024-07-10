@@ -1,8 +1,5 @@
 use cfavml::danger::*;
 
-pub unsafe fn test_strip_out() {
-
-}
 
 macro_rules! export_dense_op {
     ($t:ident, $im:ident, $op:ident, features = $($feat:expr $(,)?)*) => {

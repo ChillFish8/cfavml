@@ -6,7 +6,7 @@ use crate::math::Math;
 ///
 /// # Safety
 ///
-/// The sizes of `a` and `result` must be equal to `dims`, the safety requirements of
+/// The sizes of `a`, `b` and `result` must be equal to `dims`, the safety requirements of
 /// `M` definition the basic math operations and the requirements of `R` SIMD register
 /// must also be followed.
 pub unsafe fn generic_add_vector<T, R, M>(
@@ -68,7 +68,7 @@ pub unsafe fn generic_add_vector<T, R, M>(
 ///
 /// # Safety
 ///
-/// The sizes of `a` and `result` must be equal to `dims`, the safety requirements of
+/// The sizes of `a`, `b` and `result` must be equal to `dims`, the safety requirements of
 /// `M` definition the basic math operations and the requirements of `R` SIMD register
 /// must also be followed.
 pub unsafe fn generic_sub_vector<T, R, M>(
@@ -130,7 +130,7 @@ pub unsafe fn generic_sub_vector<T, R, M>(
 ///
 /// # Safety
 ///
-/// The sizes of `a` and `result` must be equal to `dims`, the safety requirements of
+/// The sizes of `a`, `b` and `result` must be equal to `dims`, the safety requirements of
 /// `M` definition the basic math operations and the requirements of `R` SIMD register
 /// must also be followed.
 pub unsafe fn generic_mul_vector<T, R, M>(

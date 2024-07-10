@@ -35,6 +35,13 @@ pub use self::export_distance_ops::distance_ops_avx512::*;
 pub use self::export_distance_ops::distance_ops_fallback::*;
 #[cfg(target_arch = "aarch64")]
 pub use self::export_distance_ops::distance_ops_neon::*;
+pub use self::export_arithmetic_ops::arithmetic_ops_fallback::*;
+#[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
+pub use self::export_arithmetic_ops::arithmetic_ops_avx2::*;
+#[cfg(all(any(target_arch = "x86", target_arch = "x86_64"), feature = "nightly"))]
+pub use self::export_arithmetic_ops::arithmetic_ops_avx512::*;
+#[cfg(target_arch = "aarch64")]
+pub use self::export_arithmetic_ops::arithmetic_ops_neon::*;
 #[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
 pub use self::impl_avx2::*;
 #[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
