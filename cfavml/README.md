@@ -145,50 +145,114 @@ CPU Supports `AVX512`, `AVX2` and the `SSE` families.
 Ndarray compiled with openblas installed via `libopenblas-dev`. 
 `OMP_NUM_THRESD=1`
 
+Personally, I am not sure how much I would read into these results, this is an old gen XEON 
+and its clock accuracy changes every second... Which naturally does not give me the greatest trust in 
+the numbers.
+
+##### CPU Info
 ```
-ndarray x1024 dot                       time:   [68.526 µs 69.200 µs 69.933 µs]
-ndarray x1024 cosine                    time:   [185.08 µs 186.51 µs 187.95 µs]
-ndarray x1024 euclidean                 time:   [433.85 µs 437.34 µs 440.88 µs]
-                                        
-simsimd x1024 dot                       time:   [91.877 µs 92.306 µs 92.764 µs]
-simsimd x1024 cosine                    time:   [121.50 µs 122.78 µs 124.57 µs]
-simsimd x1024 euclidean                 time:   [102.72 µs 103.94 µs 105.16 µs]
-                                        
-f32_avx2_nofma_dot x1024                time:   [87.033 µs 87.549 µs 88.096 µs]
-f32_avx2_nofma_dot xany-1301            time:   [107.18 µs 107.73 µs 108.33 µs]
-f32_avx2_nofma_dot xany-1024            time:   [80.020 µs 80.397 µs 80.732 µs]
-                                        
-f32_avx2_fma_dot x1024                  time:   [79.109 µs 79.440 µs 79.811 µs]
-f32_avx2_fma_dot xany-1301              time:   [86.501 µs 87.004 µs 87.507 µs]
-f32_avx2_fma_dot xany-1024              time:   [81.079 µs 81.399 µs 81.734 µs]
-                                        
-f32_avx2_nofma_cosine x1024             time:   [275.73 µs 277.49 µs 279.39 µs]
-f32_avx2_nofma_cosine xany-1301         time:   [414.16 µs 422.72 µs 433.58 µs]
-f32_avx2_nofma_cosine xany-1024         time:   [341.22 µs 343.26 µs 345.30 µs]
-                                        
-f32_avx2_fma_cosine x1024               time:   [216.62 µs 218.46 µs 220.55 µs]
-f32_avx2_fma_cosine xany-1301           time:   [343.44 µs 352.89 µs 362.38 µs]
-f32_avx2_fma_cosine xany-1024           time:   [295.30 µs 300.96 µs 307.62 µs]
+vendor_id       : GenuineIntel
+cpu family      : 6
+model           : 85
+model name      : Intel Xeon Processor (Skylake, IBRS, no TSX)
+stepping        : 4
+microcode       : 0x1
+cpu MHz         : 2294.608
+cache size      : 16384 KB
+physical id     : 0
+siblings        : 16
+core id         : 15
+cpu cores       : 16
+```
 
-f32_avx2_nofma_euclidean x1024          time:   [122.87 µs 125.17 µs 127.50 µs]
-f32_avx2_nofma_euclidean xany-1301      time:   [147.26 µs 149.43 µs 151.98 µs]
-f32_avx2_nofma_euclidean xany-1024      time:   [115.04 µs 116.49 µs 118.05 µs]
-                                        
-f32_avx2_fma_euclidean x1024            time:   [85.604 µs 86.501 µs 87.524 µs]
-f32_avx2_fma_euclidean xany-1301        time:   [134.52 µs 136.73 µs 139.56 µs]
-f32_avx2_fma_euclidean xany-1024        time:   [96.740 µs 97.632 µs 98.708 µs]
+##### Bench wo/aligned buffers
+```
+Timer precision: 41 ns
+bench_distance_measures          fastest       │ slowest       │ median        │ mean          │ samples │ iters
+├─ cosine_x1341                                │               │               │               │         │
+│  ├─ cfavml_avx2_fma_f32        286.9 ns      │ 540.5 ns      │ 317.4 ns      │ 333.4 ns      │ 500     │ 1250000
+│  ├─ cfavml_avx2_fma_f64        502.7 ns      │ 795.5 ns      │ 568.6 ns      │ 560.9 ns      │ 500     │ 1250000
+│  ├─ cfavml_avx2_nofma_f32      341.1 ns      │ 623.7 ns      │ 395.1 ns      │ 398.9 ns      │ 500     │ 1250000
+│  ├─ cfavml_avx2_nofma_f64      591.5 ns      │ 1.021 µs      │ 692.1 ns      │ 711.3 ns      │ 500     │ 1250000
+│  ├─ cfavml_avx512_fma_f32      179.5 ns      │ 299.6 ns      │ 228.3 ns      │ 229.8 ns      │ 500     │ 1250000
+│  ├─ cfavml_avx512_fma_f64      303.5 ns      │ 474.9 ns      │ 377.2 ns      │ 373.2 ns      │ 500     │ 1250000
+│  ├─ cfavml_fallback_nofma_f32  1.334 µs      │ 2.252 µs      │ 1.573 µs      │ 1.593 µs      │ 500     │ 1250000
+│  ├─ cfavml_fallback_nofma_f64  1.047 µs      │ 3.369 µs      │ 1.294 µs      │ 1.322 µs      │ 500     │ 1250000
+│  ├─ ndarray_f32                12.25 µs      │ 17.55 µs      │ 14.38 µs      │ 14.31 µs      │ 500     │ 1250000
+│  ├─ ndarray_f64                682.3 ns      │ 1.072 µs      │ 758.1 ns      │ 765.1 ns      │ 500     │ 1250000
+│  ├─ simsimd_f32                125.5 ns      │ 187.5 ns      │ 139.9 ns      │ 144.1 ns      │ 500     │ 1250000
+│  ╰─ simsimd_f64                240.6 ns      │ 347.3 ns      │ 276.5 ns      │ 286.5 ns      │ 500     │ 1250000
+├─ dot_product_x1341                           │               │               │               │         │
+│  ├─ cfavml_avx2_fma_f32        81.62 ns      │ 115.5 ns      │ 93.55 ns      │ 93.62 ns      │ 500     │ 1250000
+│  ├─ cfavml_avx2_fma_f64        191.4 ns      │ 245.1 ns      │ 209.9 ns      │ 209.4 ns      │ 500     │ 1250000
+│  ├─ cfavml_avx2_nofma_f32      100.1 ns      │ 130.2 ns      │ 109.2 ns      │ 110.2 ns      │ 500     │ 1250000
+│  ├─ cfavml_avx2_nofma_f64      186.5 ns      │ 247.5 ns      │ 213.4 ns      │ 214.1 ns      │ 500     │ 1250000
+│  ├─ cfavml_avx512_fma_f32      76.47 ns      │ 118.3 ns      │ 89.73 ns      │ 92.5 ns       │ 500     │ 1250000
+│  ├─ cfavml_avx512_fma_f64      128.8 ns      │ 192.2 ns      │ 147 ns        │ 153.2 ns      │ 500     │ 1250000
+│  ├─ cfavml_fallback_nofma_f32  542.2 ns      │ 944.4 ns      │ 627.6 ns      │ 632.9 ns      │ 500     │ 1250000
+│  ├─ cfavml_fallback_nofma_f64  359.8 ns      │ 499.9 ns      │ 400.8 ns      │ 413.1 ns      │ 500     │ 1250000
+│  ├─ ndarray_f32                100.9 ns      │ 147.8 ns      │ 115.3 ns      │ 118.5 ns      │ 500     │ 1250000
+│  ├─ ndarray_f64                140.2 ns      │ 208.3 ns      │ 162.1 ns      │ 167.9 ns      │ 500     │ 1250000
+│  ├─ simsimd_f32                101.6 ns      │ 142.4 ns      │ 115.7 ns      │ 115.7 ns      │ 500     │ 1250000
+│  ╰─ simsimd_f64                225.1 ns      │ 291.6 ns      │ 256.5 ns      │ 260.9 ns      │ 500     │ 1250000
+╰─ euclidean_x1341                             │               │               │               │         │
+   ├─ cfavml_avx2_fma_f32        103.7 ns      │ 128.5 ns      │ 107.1 ns      │ 109.6 ns      │ 500     │ 1250000
+   ├─ cfavml_avx2_fma_f64        218.3 ns      │ 257.4 ns      │ 237.7 ns      │ 233.6 ns      │ 500     │ 1250000
+   ├─ cfavml_avx2_nofma_f32      134.2 ns      │ 234.4 ns      │ 149.5 ns      │ 157.6 ns      │ 500     │ 1250000
+   ├─ cfavml_avx2_nofma_f64      247.4 ns      │ 438.5 ns      │ 270 ns        │ 266.1 ns      │ 500     │ 1250000
+   ├─ cfavml_avx512_fma_f32      91.95 ns      │ 167.2 ns      │ 106.9 ns      │ 109.7 ns      │ 500     │ 1250000
+   ├─ cfavml_avx512_fma_f64      150.2 ns      │ 201.8 ns      │ 172.9 ns      │ 174.9 ns      │ 500     │ 1250000
+   ├─ cfavml_fallback_nofma_f32  659.4 ns      │ 784.8 ns      │ 666.8 ns      │ 682.6 ns      │ 500     │ 1250000
+   ├─ cfavml_fallback_nofma_f64  514.6 ns      │ 630.4 ns      │ 561.8 ns      │ 567.7 ns      │ 500     │ 1250000
+   ├─ ndarray_f32                3.304 µs      │ 4.387 µs      │ 3.491 µs      │ 3.514 µs      │ 500     │ 1250000
+   ├─ ndarray_f64                810.4 ns      │ 912.5 ns      │ 825.8 ns      │ 836.4 ns      │ 500     │ 1250000
+   ├─ simsimd_f32                135.3 ns      │ 167.9 ns      │ 138.4 ns      │ 140.4 ns      │ 500     │ 1250000
+   ╰─ simsimd_f64                281.5 ns      │ 410.8 ns      │ 301.7 ns      │ 300.8 ns      │ 500     │ 1250000
+```
 
-f32_fallback_nofma_dot x1024            time:   [452.12 µs 454.53 µs 456.81 µs]
-f32_fallback_nofma_dot xany-1301        time:   [578.87 µs 583.11 µs 587.90 µs]
-f32_fallback_nofma_dot xany-1024        time:   [443.31 µs 448.21 µs 452.48 µs]
-
-f32_fallback_nofma_cosine x1024         time:   [1.1164 ms 1.1224 ms 1.1287 ms]
-f32_fallback_nofma_cosine xany-1301     time:   [1.4166 ms 1.4220 ms 1.4274 ms]
-f32_fallback_nofma_cosine xany-1024     time:   [1.1336 ms 1.1434 ms 1.1545 ms]
-
-f32_fallback_nofma_euclidean x1024      time:   [526.37 µs 537.05 µs 548.41 µs]
-f32_fallback_nofma_euclidean xany-1301  time:   [662.82 µs 672.44 µs 682.99 µs]
-f32_fallback_nofma_euclidean xany-1024  time:   [511.62 µs 521.75 µs 532.44 µs]
+##### Bench w/aligned buffers
+```
+Timer precision: 68 ns
+bench_distance_measures          fastest       │ slowest       │ median        │ mean          │ samples │ iters
+├─ cosine_x1341                                │               │               │               │         │
+│  ├─ cfavml_avx2_fma_f32        220.9 ns      │ 525 ns        │ 252.7 ns      │ 256.1 ns      │ 500     │ 1250000
+│  ├─ cfavml_avx2_fma_f64        393.3 ns      │ 513.3 ns      │ 445.5 ns      │ 443.6 ns      │ 500     │ 1250000
+│  ├─ cfavml_avx2_nofma_f32      273.5 ns      │ 379 ns        │ 317.4 ns      │ 316.6 ns      │ 500     │ 1250000
+│  ├─ cfavml_avx2_nofma_f64      488.3 ns      │ 667.1 ns      │ 576.3 ns      │ 574.6 ns      │ 500     │ 1250000
+│  ├─ cfavml_avx512_fma_f32      142.7 ns      │ 202.3 ns      │ 159.5 ns      │ 161.4 ns      │ 500     │ 1250000
+│  ├─ cfavml_avx512_fma_f64      223.4 ns      │ 320.2 ns      │ 252.1 ns      │ 254.3 ns      │ 500     │ 1250000
+│  ├─ cfavml_fallback_nofma_f32  1.122 µs      │ 2.137 µs      │ 1.227 µs      │ 1.246 µs      │ 500     │ 1250000
+│  ├─ cfavml_fallback_nofma_f64  931.1 ns      │ 2.286 µs      │ 1.037 µs      │ 1.045 µs      │ 500     │ 1250000
+│  ├─ ndarray_f32                11.73 µs      │ 14.18 µs      │ 12.49 µs      │ 12.57 µs      │ 500     │ 1250000
+│  ├─ ndarray_f64                570.6 ns      │ 796.3 ns      │ 658.4 ns      │ 670.1 ns      │ 500     │ 1250000
+│  ├─ simsimd_f32                121.7 ns      │ 183.3 ns      │ 152.4 ns      │ 149.5 ns      │ 500     │ 1250000
+│  ╰─ simsimd_f64                238.9 ns      │ 344.6 ns      │ 297.2 ns      │ 291.2 ns      │ 500     │ 1250000
+├─ dot_product_x1341                           │               │               │               │         │
+│  ├─ cfavml_avx2_fma_f32        80.11 ns      │ 117.8 ns      │ 92.16 ns      │ 92.19 ns      │ 500     │ 1250000
+│  ├─ cfavml_avx2_fma_f64        131.9 ns      │ 176.3 ns      │ 147.2 ns      │ 147.3 ns      │ 500     │ 1250000
+│  ├─ cfavml_avx2_nofma_f32      92.99 ns      │ 189.2 ns      │ 105.7 ns      │ 107.7 ns      │ 500     │ 1250000
+│  ├─ cfavml_avx2_nofma_f64      156.5 ns      │ 209.1 ns      │ 177.7 ns      │ 178.1 ns      │ 500     │ 1250000
+│  ├─ cfavml_avx512_fma_f32      59.02 ns      │ 89.5 ns       │ 65.94 ns      │ 66 ns         │ 500     │ 1250000
+│  ├─ cfavml_avx512_fma_f64      82.87 ns      │ 115.6 ns      │ 92.53 ns      │ 93.54 ns      │ 500     │ 1250000
+│  ├─ cfavml_fallback_nofma_f32  522.1 ns      │ 732.3 ns      │ 571.4 ns      │ 584.6 ns      │ 500     │ 1250000
+│  ├─ cfavml_fallback_nofma_f64  355.1 ns      │ 501.7 ns      │ 389.2 ns      │ 398.5 ns      │ 500     │ 1250000
+│  ├─ ndarray_f32                80.39 ns      │ 121.9 ns      │ 90.1 ns       │ 93.04 ns      │ 500     │ 1250000
+│  ├─ ndarray_f64                94.63 ns      │ 145.3 ns      │ 105.6 ns      │ 105.5 ns      │ 500     │ 1250000
+│  ├─ simsimd_f32                103.7 ns      │ 156.9 ns      │ 115.9 ns      │ 117.1 ns      │ 500     │ 1250000
+│  ╰─ simsimd_f64                217.7 ns      │ 283.6 ns      │ 247.5 ns      │ 247.4 ns      │ 500     │ 1250000
+╰─ euclidean_x1341                             │               │               │               │         │
+   ├─ cfavml_avx2_fma_f32        89.05 ns      │ 186 ns        │ 105.6 ns      │ 108 ns        │ 500     │ 1250000
+   ├─ cfavml_avx2_fma_f64        156.5 ns      │ 218.5 ns      │ 180.4 ns      │ 180.7 ns      │ 500     │ 1250000
+   ├─ cfavml_avx2_nofma_f32      115.9 ns      │ 164.4 ns      │ 136.6 ns      │ 135.7 ns      │ 500     │ 1250000
+   ├─ cfavml_avx2_nofma_f64      199.8 ns      │ 268.3 ns      │ 228.7 ns      │ 228.5 ns      │ 500     │ 1250000
+   ├─ cfavml_avx512_fma_f32      87.33 ns      │ 124.5 ns      │ 108.6 ns      │ 109.2 ns      │ 500     │ 1250000
+   ├─ cfavml_avx512_fma_f64      163.7 ns      │ 205.5 ns      │ 184.3 ns      │ 184.4 ns      │ 500     │ 1250000
+   ├─ cfavml_fallback_nofma_f32  672.2 ns      │ 806.5 ns      │ 738 ns        │ 737.8 ns      │ 500     │ 1250000
+   ├─ cfavml_fallback_nofma_f64  582.3 ns      │ 987.3 ns      │ 633.5 ns      │ 622.2 ns      │ 500     │ 1250000
+   ├─ ndarray_f32                3.744 µs      │ 4.146 µs      │ 3.832 µs      │ 3.84 µs       │ 500     │ 1250000
+   ├─ ndarray_f64                694.7 ns      │ 1.141 µs      │ 739.4 ns      │ 742 ns        │ 500     │ 1250000
+   ├─ simsimd_f32                135.7 ns      │ 172.1 ns      │ 149.5 ns      │ 151.3 ns      │ 500     │ 1250000
+   ╰─ simsimd_f64                284.3 ns      │ 347.8 ns      │ 312.4 ns      │ 313.4 ns      │ 500     │ 1250000
 ```
 
 ### Benchmarks - AMD
@@ -200,50 +264,98 @@ CPU Supports `AVX2` and the `SSE` families.
 Ndarray compiled with openblas installed via `libopenblas-dev`.
 `OMP_NUM_THRESD=1`
 
+##### CPU Info
 ```
-ndarray x1024 dot                       time:   [60.558 µs 60.929 µs 61.283 µs]
-ndarray x1024 cosine                    time:   [184.70 µs 185.91 µs 187.15 µs]
-ndarray x1024 euclidean                 time:   [238.59 µs 240.13 µs 241.69 µs]
+vendor_id       : AuthenticAMD
+cpu family      : 23
+model           : 49
+model name      : AMD EPYC Processor
+stepping        : 0
+microcode       : 0x1000065
+cpu MHz         : 2445.406
+cache size      : 512 KB
+physical id     : 0
+siblings        : 16
+core id         : 15
+cpu cores       : 16
+```
 
-simsimd x1024 dot                       time:   [897.33 µs 902.23 µs 906.68 µs]
-simsimd x1024 cosine                    time:   [933.19 µs 939.19 µs 944.96 µs]
-simsimd x1024 euclidean                 time:   [896.06 µs 901.35 µs 906.54 µs]
+##### Bench wo/aligned buffers
+```
+Timer precision: 29 ns
+bench_distance_measures          fastest       │ slowest       │ median        │ mean          │ samples │ iters
+├─ cosine_x1341                                │               │               │               │         │
+│  ├─ cfavml_avx2_fma_f32        181.5 ns      │ 240.3 ns      │ 187.8 ns      │ 190.8 ns      │ 500     │ 1250000
+│  ├─ cfavml_avx2_fma_f64        345.2 ns      │ 429.8 ns      │ 351.6 ns      │ 356.5 ns      │ 500     │ 1250000
+│  ├─ cfavml_avx2_nofma_f32      188.8 ns      │ 265.9 ns      │ 195.6 ns      │ 197.5 ns      │ 500     │ 1250000
+│  ├─ cfavml_avx2_nofma_f64      352.4 ns      │ 571 ns        │ 363.9 ns      │ 374.4 ns      │ 500     │ 1250000
+│  ├─ cfavml_fallback_nofma_f32  1.038 µs      │ 1.532 µs      │ 1.132 µs      │ 1.129 µs      │ 500     │ 1250000
+│  ├─ cfavml_fallback_nofma_f64  968.8 ns      │ 1.254 µs      │ 990.6 ns      │ 1.028 µs      │ 500     │ 1250000
+│  ├─ ndarray_f32                488.1 ns      │ 789.6 ns      │ 492.5 ns      │ 494.7 ns      │ 500     │ 1250000
+│  ├─ ndarray_f64                523.9 ns      │ 588.7 ns      │ 542.4 ns      │ 544.1 ns      │ 500     │ 1250000
+│  ├─ simsimd_f32                1.253 µs      │ 1.329 µs      │ 1.26 µs       │ 1.261 µs      │ 500     │ 1250000
+│  ╰─ simsimd_f64                1.256 µs      │ 1.31 µs       │ 1.263 µs      │ 1.265 µs      │ 500     │ 1250000
+├─ dot_product_x1341                           │               │               │               │         │
+│  ├─ cfavml_avx2_fma_f32        59.48 ns      │ 78.08 ns      │ 60.42 ns      │ 62.19 ns      │ 500     │ 1250000
+│  ├─ cfavml_avx2_fma_f64        151 ns        │ 178 ns        │ 152.6 ns      │ 153.3 ns      │ 500     │ 1250000
+│  ├─ cfavml_avx2_nofma_f32      63.79 ns      │ 73.85 ns      │ 64.87 ns      │ 65.8 ns       │ 500     │ 1250000
+│  ├─ cfavml_avx2_nofma_f64      154.4 ns      │ 167.7 ns      │ 157.8 ns      │ 157.7 ns      │ 500     │ 1250000
+│  ├─ cfavml_fallback_nofma_f32  457.9 ns      │ 548.8 ns      │ 462.3 ns      │ 463.9 ns      │ 500     │ 1250000
+│  ├─ cfavml_fallback_nofma_f64  422.8 ns      │ 500.4 ns      │ 430.5 ns      │ 431.5 ns      │ 500     │ 1250000
+│  ├─ ndarray_f32                78.32 ns      │ 96.13 ns      │ 79.69 ns      │ 80.84 ns      │ 500     │ 1250000
+│  ├─ ndarray_f64                165.6 ns      │ 204.6 ns      │ 168 ns        │ 168.4 ns      │ 500     │ 1250000
+│  ├─ simsimd_f32                1.213 µs      │ 1.299 µs      │ 1.226 µs      │ 1.229 µs      │ 500     │ 1250000
+│  ╰─ simsimd_f64                1.221 µs      │ 1.26 µs       │ 1.228 µs      │ 1.23 µs       │ 500     │ 1250000
+╰─ euclidean_x1341                             │               │               │               │         │
+   ├─ cfavml_avx2_fma_f32        68.2 ns       │ 101.6 ns      │ 71.45 ns      │ 72.8 ns       │ 500     │ 1250000
+   ├─ cfavml_avx2_fma_f64        139.5 ns      │ 191.7 ns      │ 144.6 ns      │ 148.6 ns      │ 500     │ 1250000
+   ├─ cfavml_avx2_nofma_f32      70.91 ns      │ 83.91 ns      │ 72.86 ns      │ 73.47 ns      │ 500     │ 1250000
+   ├─ cfavml_avx2_nofma_f64      141.8 ns      │ 223 ns        │ 147.6 ns      │ 155 ns        │ 500     │ 1250000
+   ├─ cfavml_fallback_nofma_f32  468.1 ns      │ 642.4 ns      │ 480.2 ns      │ 489.4 ns      │ 500     │ 1250000
+   ├─ cfavml_fallback_nofma_f64  475.3 ns      │ 618.7 ns      │ 482 ns        │ 490.9 ns      │ 500     │ 1250000
+   ├─ ndarray_f32                385.6 ns      │ 460.3 ns      │ 393 ns        │ 395.3 ns      │ 500     │ 1250000
+   ├─ ndarray_f64                513.1 ns      │ 664.6 ns      │ 520.2 ns      │ 524.9 ns      │ 500     │ 1250000
+   ├─ simsimd_f32                1.219 µs      │ 1.277 µs      │ 1.226 µs      │ 1.228 µs      │ 500     │ 1250000
+   ╰─ simsimd_f64                1.228 µs      │ 1.276 µs      │ 1.236 µs      │ 1.238 µs      │ 500     │ 1250000
+```
 
-f32_avx2_nofma_dot x1024                time:   [57.765 µs 58.056 µs 58.328 µs]
-f32_avx2_nofma_dot xany-1301            time:   [77.447 µs 77.948 µs 78.440 µs]
-f32_avx2_nofma_dot xany-1024            time:   [56.186 µs 56.580 µs 56.944 µs]
-
-f32_avx2_fma_dot x1024                  time:   [40.432 µs 40.759 µs 41.096 µs]
-f32_avx2_fma_dot xany-1301              time:   [71.430 µs 72.013 µs 72.575 µs]
-f32_avx2_fma_dot xany-1024              time:   [41.927 µs 42.206 µs 42.482 µs]
-
-f32_avx2_nofma_cosine x1024             time:   [185.24 µs 186.55 µs 187.87 µs]
-f32_avx2_nofma_cosine xany-1301         time:   [241.52 µs 243.23 µs 244.98 µs]
-f32_avx2_nofma_cosine xany-1024         time:   [193.88 µs 195.33 µs 196.81 µs]
-
-f32_avx2_fma_cosine x1024               time:   [194.12 µs 195.54 µs 196.95 µs]
-f32_avx2_fma_cosine xany-1301           time:   [259.67 µs 261.11 µs 262.47 µs]
-f32_avx2_fma_cosine xany-1024           time:   [203.31 µs 204.75 µs 206.12 µs]
-
-f32_avx2_nofma_euclidean x1024          time:   [51.604 µs 51.913 µs 52.216 µs]
-f32_avx2_nofma_euclidean xany-1301      time:   [77.431 µs 77.979 µs 78.531 µs]
-f32_avx2_nofma_euclidean xany-1024      time:   [56.036 µs 56.435 µs 56.813 µs]
-
-f32_avx2_fma_euclidean x1024            time:   [63.379 µs 63.756 µs 64.109 µs]
-f32_avx2_fma_euclidean xany-1301        time:   [72.760 µs 73.246 µs 73.707 µs]
-f32_avx2_fma_euclidean xany-1024        time:   [52.056 µs 52.448 µs 52.847 µs]
-
-f32_fallback_nofma_dot x1024            time:   [319.21 µs 321.19 µs 323.09 µs]
-f32_fallback_nofma_dot xany-1301        time:   [401.54 µs 404.57 µs 407.62 µs]
-f32_fallback_nofma_dot xany-1024        time:   [320.53 µs 322.66 µs 324.57 µs]
-
-f32_fallback_nofma_cosine x1024         time:   [715.65 µs 719.69 µs 723.60 µs]
-f32_fallback_nofma_cosine xany-1301     time:   [894.42 µs 899.93 µs 905.42 µs]
-f32_fallback_nofma_cosine xany-1024     time:   [702.34 µs 706.97 µs 711.35 µs]
-
-f32_fallback_nofma_euclidean x1024      time:   [346.84 µs 348.83 µs 350.79 µs]
-f32_fallback_nofma_euclidean xany-1301  time:   [432.80 µs 435.61 µs 438.26 µs]
-f32_fallback_nofma_euclidean xany-1024  time:   [339.50 µs 341.79 µs 344.09 µs]
+##### Bench w/aligned buffers
+```
+Timer precision: 29 ns
+bench_distance_measures          fastest       │ slowest       │ median        │ mean          │ samples │ iters
+├─ cosine_x1341                                │               │               │               │         │
+│  ├─ cfavml_avx2_fma_f32        170 ns        │ 256.4 ns      │ 175.3 ns      │ 177.7 ns      │ 500     │ 1250000
+│  ├─ cfavml_avx2_fma_f64        309.6 ns      │ 486.9 ns      │ 324.4 ns      │ 337.1 ns      │ 500     │ 1250000
+│  ├─ cfavml_avx2_nofma_f32      169.8 ns      │ 263.7 ns      │ 174.5 ns      │ 177.7 ns      │ 500     │ 1250000
+│  ├─ cfavml_avx2_nofma_f64      303.3 ns      │ 454.3 ns      │ 314.5 ns      │ 324.4 ns      │ 500     │ 1250000
+│  ├─ cfavml_fallback_nofma_f32  1.036 µs      │ 1.374 µs      │ 1.048 µs      │ 1.063 µs      │ 500     │ 1250000
+│  ├─ cfavml_fallback_nofma_f64  975.5 ns      │ 1.134 µs      │ 993.4 ns      │ 1.002 µs      │ 500     │ 1250000
+│  ├─ ndarray_f32                488 ns        │ 544.3 ns      │ 493.9 ns      │ 496.1 ns      │ 500     │ 1250000
+│  ├─ ndarray_f64                468.2 ns      │ 603.7 ns      │ 475.8 ns      │ 491.6 ns      │ 500     │ 1250000
+│  ├─ simsimd_f32                1.254 µs      │ 1.29 µs       │ 1.261 µs      │ 1.262 µs      │ 500     │ 1250000
+│  ╰─ simsimd_f64                1.256 µs      │ 1.337 µs      │ 1.267 µs      │ 1.272 µs      │ 500     │ 1250000
+├─ dot_product_x1341                           │               │               │               │         │
+│  ├─ cfavml_avx2_fma_f32        59.55 ns      │ 77.42 ns      │ 60.45 ns      │ 61.7 ns       │ 500     │ 1250000
+│  ├─ cfavml_avx2_fma_f64        106.3 ns      │ 128.3 ns      │ 107.3 ns      │ 109.1 ns      │ 500     │ 1250000
+│  ├─ cfavml_avx2_nofma_f32      63.83 ns      │ 79.29 ns      │ 64.52 ns      │ 65.47 ns      │ 500     │ 1250000
+│  ├─ cfavml_avx2_nofma_f64      109.6 ns      │ 134.8 ns      │ 110.5 ns      │ 112.2 ns      │ 500     │ 1250000
+│  ├─ cfavml_fallback_nofma_f32  457.2 ns      │ 555.1 ns      │ 463.3 ns      │ 465.7 ns      │ 500     │ 1250000
+│  ├─ cfavml_fallback_nofma_f64  423.1 ns      │ 475.8 ns      │ 434.6 ns      │ 435.9 ns      │ 500     │ 1250000
+│  ├─ ndarray_f32                78.39 ns      │ 115.2 ns      │ 79.73 ns      │ 81 ns         │ 500     │ 1250000
+│  ├─ ndarray_f64                118.2 ns      │ 172.4 ns      │ 120.3 ns      │ 121.9 ns      │ 500     │ 1250000
+│  ├─ simsimd_f32                1.214 µs      │ 1.35 µs       │ 1.235 µs      │ 1.241 µs      │ 500     │ 1250000
+│  ╰─ simsimd_f64                1.222 µs      │ 1.306 µs      │ 1.23 µs       │ 1.232 µs      │ 500     │ 1250000
+╰─ euclidean_x1341                             │               │               │               │         │
+   ├─ cfavml_avx2_fma_f32        67.9 ns       │ 109.2 ns      │ 69.65 ns      │ 71.24 ns      │ 500     │ 1250000
+   ├─ cfavml_avx2_fma_f64        113.9 ns      │ 168.7 ns      │ 119 ns        │ 123 ns        │ 500     │ 1250000
+   ├─ cfavml_avx2_nofma_f32      71.16 ns      │ 103.2 ns      │ 74.89 ns      │ 76.91 ns      │ 500     │ 1250000
+   ├─ cfavml_avx2_nofma_f64      118.2 ns      │ 178.9 ns      │ 122.4 ns      │ 125.3 ns      │ 500     │ 1250000
+   ├─ cfavml_fallback_nofma_f32  464.8 ns      │ 725.6 ns      │ 481.7 ns      │ 504.3 ns      │ 500     │ 1250000
+   ├─ cfavml_fallback_nofma_f64  473.6 ns      │ 674.7 ns      │ 481.1 ns      │ 489.1 ns      │ 500     │ 1250000
+   ├─ ndarray_f32                401.1 ns      │ 529.1 ns      │ 410.7 ns      │ 417.6 ns      │ 500     │ 1250000
+   ├─ ndarray_f64                462.9 ns      │ 728 ns        │ 474.8 ns      │ 484.1 ns      │ 500     │ 1250000
+   ├─ simsimd_f32                1.218 µs      │ 1.34 µs       │ 1.228 µs      │ 1.236 µs      │ 500     │ 1250000
+   ╰─ simsimd_f64                1.228 µs      │ 1.321 µs      │ 1.24 µs       │ 1.244 µs      │ 500     │ 1250000
 ```
 
 ### Benchmarks - ARM
