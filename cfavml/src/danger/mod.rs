@@ -23,6 +23,7 @@ mod export_distance_ops;
 mod impl_test;
 #[cfg(test)]
 mod test_suite;
+mod export_arithmetic_ops;
 
 pub use self::core_simd_api::{DenseLane, SimdRegister};
 #[cfg(any(target_arch = "x86", target_arch = "x86_64"))]

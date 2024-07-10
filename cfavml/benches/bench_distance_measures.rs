@@ -133,22 +133,22 @@ benchmark_distance_measure!(
 fn benchmark_f32_xany_ndarray(c: &mut Criterion) {
     c.bench_function("ndarray x1024 dot", |b| {
         let (x, y) = utils::get_sample_vectors(1024);
-        let x = ndarray::Array1::from_shape_vec((x.len(),), x).unwrap();
-        let y = ndarray::Array1::from_shape_vec((y.len(),), y).unwrap();
+        let x = ndarray::ArrayView1::from_shape((x.len(),), &x).unwrap();
+        let y = ndarray::ArrayView1::from_shape((y.len(),), &y).unwrap();
 
-        b.iter(|| repeat!(1000, ndarray::Array1::dot, &x, &y));
+        b.iter(|| repeat!(1000, ndarray::ArrayView1::dot, &x, &y));
     });
     c.bench_function("ndarray x1024 cosine", |b| {
         let (x, y) = utils::get_sample_vectors(1024);
-        let x = ndarray::Array1::from_shape_vec((x.len(),), x).unwrap();
-        let y = ndarray::Array1::from_shape_vec((y.len(),), y).unwrap();
+        let x = ndarray::ArrayView1::from_shape((x.len(),), &x).unwrap();
+        let y = ndarray::ArrayView1::from_shape((y.len(),), &y).unwrap();
 
         b.iter(|| repeat!(1000, ndarray_cosine, &x, &y));
     });
     c.bench_function("ndarray x1024 euclidean", |b| {
         let (x, y) = utils::get_sample_vectors(1024);
-        let x = ndarray::Array1::from_shape_vec((x.len(),), x).unwrap();
-        let y = ndarray::Array1::from_shape_vec((y.len(),), y).unwrap();
+        let x = ndarray::ArrayView1::from_shape((x.len(),), &x).unwrap();
+        let y = ndarray::ArrayView1::from_shape((y.len(),), &y).unwrap();
 
         b.iter(|| repeat!(1000, ndarray_euclidean, &x, &y));
     });
@@ -220,14 +220,14 @@ criterion_main!(benches, benches_avx2_x86, benches_avx512_x86);
 #[cfg(target_arch = "aarch64")]
 criterion_main!(benches, benches_neon_aarch64);
 
-fn ndarray_cosine(a: &ndarray::Array1<f32>, b: &ndarray::Array1<f32>) -> f32 {
-    let norm_a = a.dot(a);
-    let norm_b = b.dot(b);
+fn ndarray_cosine(a: &ndarray::ArrayView1<f32>, b: &ndarray::ArrayView1<f32>) -> f32 {
+    let norm_a = a.product();
+    let norm_b = b.product();
     let dot = a.dot(b);
     utils::cosine::<_, AutoMath>(dot, norm_a, norm_b)
 }
 
-fn ndarray_euclidean(a: &ndarray::Array1<f32>, b: &ndarray::Array1<f32>) -> f32 {
+fn ndarray_euclidean(a: &ndarray::ArrayView1<f32>, b: &ndarray::ArrayView1<f32>) -> f32 {
     let diff = a.sub(b);
     diff.dot(&diff)
 }

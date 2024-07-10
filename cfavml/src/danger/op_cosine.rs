@@ -22,7 +22,6 @@ where
     let a_ptr = a.as_ptr();
     let b_ptr = b.as_ptr();
 
-    let mut total = R::zeroed_dense();
     let mut norm_a = R::zeroed_dense();
     let mut norm_b = R::zeroed_dense();
 
@@ -31,14 +30,13 @@ where
     while i < (dims - offset_from) {
         let l1 = R::load_dense(a_ptr.add(i));
         let l2 = R::load_dense(b_ptr.add(i));
-        total = R::fmadd_dense(l1, l2, total);
+
         norm_a = R::fmadd_dense(l1, l1, norm_a);
         norm_b = R::fmadd_dense(l2, l2, norm_b);
 
         i += R::elements_per_dense();
     }
 
-    let mut total = R::sum_to_register(total);
     let mut norm_a = R::sum_to_register(norm_a);
     let mut norm_b = R::sum_to_register(norm_b);
 
@@ -47,7 +45,6 @@ where
     while i < (dims - offset_from) {
         let l1 = R::load(a_ptr.add(i));
         let l2 = R::load(b_ptr.add(i));
-        total = R::fmadd(l1, l2, total);
         norm_a = R::fmadd(l1, l1, norm_a);
         norm_b = R::fmadd(l2, l2, norm_b);
 
@@ -55,21 +52,20 @@ where
     }
 
     // Handle the remainder.
-    let mut total = R::sum_to_value(total);
     let mut norm_a = R::sum_to_value(norm_a);
     let mut norm_b = R::sum_to_value(norm_b);
 
     while i < dims {
         let a = *a.get_unchecked(i);
         let b = *b.get_unchecked(i);
-        total = M::add(total, M::mul(a, b));
         norm_a = M::add(norm_a, M::mul(a, a));
         norm_b = M::add(norm_b, M::mul(b, b));
 
         i += 1;
     }
 
-    cosine::<T, M>(total, norm_a, norm_b)
+    let dot = super::op_dot_product::generic_dot_product::<T, R, M>(dims, a, b);
+    cosine::<T, M>(dot, norm_a, norm_b)
 }
 
 #[inline(always)]

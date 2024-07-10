@@ -1,4 +1,4 @@
-//! Generated non-generic methods for x86 based SIMD operations.
+//! Generated non-generic methods for SIMD based vector distance operations.
 //!
 //! Although the generic methods can provide greater ergonomics within your code
 //! they do not apply the necessary feature assumptions or type ergonomics, that
