@@ -1,4 +1,6 @@
 use rand::{Rng, SeedableRng};
+use rand::distributions::Standard;
+use rand::prelude::Distribution;
 use rand_chacha::ChaCha8Rng;
 
 const SEED: u64 = 2837564324875;
@@ -16,7 +18,10 @@ macro_rules! repeat {
 }
 
 #[cfg(not(feature = "benchmark-aligned"))]
-pub fn get_sample_vectors(size: usize) -> (Vec<f32>, Vec<f32>) {
+pub fn get_sample_vectors<T>(size: usize) -> (Vec<T>, Vec<T>)
+where
+    Standard: Distribution<T>,
+{
     let mut rng = ChaCha8Rng::seed_from_u64(SEED);
 
     let mut x = Vec::new();
@@ -30,7 +35,10 @@ pub fn get_sample_vectors(size: usize) -> (Vec<f32>, Vec<f32>) {
 }
 
 #[cfg(feature = "benchmark-aligned")]
-pub fn get_sample_vectors(size: usize) -> (aligned::AlignedBuffer<f32>, aligned::AlignedBuffer<f32>) {
+pub fn get_sample_vectors<T>(size: usize) -> (aligned::AlignedBuffer<T>, aligned::AlignedBuffer<T>)
+where
+    Standard: Distribution<T>,
+{
     use std::ops::DerefMut;
 
     let mut rng = ChaCha8Rng::seed_from_u64(SEED);

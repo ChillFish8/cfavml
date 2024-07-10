@@ -93,6 +93,49 @@ CPU flags being available.
 - `nightly` Enables optimizations available only on nightly platforms.
   * This is required for AVX512 support due to it currently being unstable.
 
+### Benchmarks - AMD Ryzen 5900x
+
+- **Supported Flags:** `avx2`, `fma`
+- Not really a good benchmark since this is a desktop chip, your servers are going to behave very differently.
+
+```
+bench_distance_measures          fastest       │ slowest       │ median        │ mean          │ samples │ iters
+├─ cosine_x1341                                │               │               │               │         │
+│  ├─ cfavml_avx2_fma_f32        139.1 ns      │ 285.3 ns      │ 143.5 ns      │ 148.7 ns      │ 500     │ 1250000
+│  ├─ cfavml_avx2_fma_f64        243.4 ns      │ 388.3 ns      │ 251.9 ns      │ 255.5 ns      │ 500     │ 1250000
+│  ├─ cfavml_avx2_nofma_f32      118.4 ns      │ 201.3 ns      │ 122.1 ns      │ 125.1 ns      │ 500     │ 1250000
+│  ├─ cfavml_avx2_nofma_f64      252.5 ns      │ 368.8 ns      │ 263.3 ns      │ 265.3 ns      │ 500     │ 1250000
+│  ├─ cfavml_fallback_nofma_f32  725.9 ns      │ 1.034 µs      │ 745.3 ns      │ 753 ns        │ 500     │ 1250000
+│  ├─ cfavml_fallback_nofma_f64  667.7 ns      │ 900.5 ns      │ 684.9 ns      │ 688.9 ns      │ 500     │ 1250000
+│  ├─ ndarray_f32                444.1 ns      │ 567 ns        │ 452.3 ns      │ 457.5 ns      │ 500     │ 1250000
+│  ├─ ndarray_f64                410 ns        │ 561.9 ns      │ 414.8 ns      │ 419.1 ns      │ 500     │ 1250000
+│  ├─ simsimd_f32                859.8 ns      │ 993.3 ns      │ 869.6 ns      │ 877.1 ns      │ 500     │ 1250000
+│  ╰─ simsimd_f64                862.6 ns      │ 1.007 µs      │ 872 ns        │ 876.7 ns      │ 500     │ 1250000
+├─ dot_product_x1341                           │               │               │               │         │
+│  ├─ cfavml_avx2_fma_f32        41.98 ns      │ 62.06 ns      │ 43.14 ns      │ 43.82 ns      │ 500     │ 1250000
+│  ├─ cfavml_avx2_fma_f64        108.6 ns      │ 188.4 ns      │ 112.7 ns      │ 113.8 ns      │ 500     │ 1250000
+│  ├─ cfavml_avx2_nofma_f32      57.06 ns      │ 80.34 ns      │ 58.1 ns       │ 59.16 ns      │ 500     │ 1250000
+│  ├─ cfavml_avx2_nofma_f64      108.9 ns      │ 155.9 ns      │ 112.5 ns      │ 113.9 ns      │ 500     │ 1250000
+│  ├─ cfavml_fallback_nofma_f32  316.5 ns      │ 468.1 ns      │ 322.2 ns      │ 325.9 ns      │ 500     │ 1250000
+│  ├─ cfavml_fallback_nofma_f64  289.4 ns      │ 455 ns        │ 296.4 ns      │ 299.2 ns      │ 500     │ 1250000
+│  ├─ ndarray_f32                152.7 ns      │ 222.5 ns      │ 155.1 ns      │ 156.5 ns      │ 500     │ 1250000
+│  ├─ ndarray_f64                154.5 ns      │ 264.1 ns      │ 157.9 ns      │ 159.5 ns      │ 500     │ 1250000
+│  ├─ simsimd_f32                838 ns        │ 958.7 ns      │ 856.2 ns      │ 856.7 ns      │ 500     │ 1250000
+│  ╰─ simsimd_f64                834.7 ns      │ 893.5 ns      │ 843.7 ns      │ 846.4 ns      │ 500     │ 1250000
+╰─ euclidean_x1341                             │               │               │               │         │
+   ├─ cfavml_avx2_fma_f32        54.9 ns       │ 67.78 ns      │ 56.34 ns      │ 56.7 ns       │ 500     │ 1250000
+   ├─ cfavml_avx2_fma_f64        97.94 ns      │ 174.5 ns      │ 100.9 ns      │ 103 ns        │ 500     │ 1250000
+   ├─ cfavml_avx2_nofma_f32      55.62 ns      │ 105.1 ns      │ 57.7 ns       │ 58.78 ns      │ 500     │ 1250000
+   ├─ cfavml_avx2_nofma_f64      119.7 ns      │ 160.1 ns      │ 123.1 ns      │ 123.8 ns      │ 500     │ 1250000
+   ├─ cfavml_fallback_nofma_f32  317 ns        │ 532.2 ns      │ 321.3 ns      │ 323.7 ns      │ 500     │ 1250000
+   ├─ cfavml_fallback_nofma_f64  353.5 ns      │ 510.7 ns      │ 362.9 ns      │ 371.8 ns      │ 500     │ 1250000
+   ├─ ndarray_f32                291.6 ns      │ 485.3 ns      │ 291.9 ns      │ 295.1 ns      │ 500     │ 1250000
+   ├─ ndarray_f64                399.9 ns      │ 643.7 ns      │ 412.6 ns      │ 417.3 ns      │ 500     │ 1250000
+   ├─ simsimd_f32                832.3 ns      │ 979.2 ns      │ 854.1 ns      │ 858.1 ns      │ 500     │ 1250000
+   ╰─ simsimd_f64                840 ns        │ 1.035 µs      │ 858.7 ns      │ 861 ns        │ 500     │ 1250000
+
+```
+
 ### Benchmarks - Intel
 
 Ran on a Hetzner `CX52 Intel x86`.

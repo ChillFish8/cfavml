@@ -5,7 +5,7 @@ macro_rules! export_dense_op {
     ($t:ident, $im:ident, $op:ident, features = $($feat:expr $(,)?)*) => {
         paste::paste!{
             #[inline(never)]
-            #[target_feature($(enable = $feat)*)]
+            #[target_feature($(enable = $feat ,)*)]
             pub unsafe fn [<impl_ $im:lower _ $t _ $op>](a: &[$t], b: &[$t]) {
                 let l1 = <$im as cfavml::danger::SimdRegister<$t>>::load_dense(a.as_ptr());
                 let l2 = <$im as cfavml::danger::SimdRegister<$t>>::load_dense(b.as_ptr());
@@ -31,7 +31,7 @@ macro_rules! export_distance_op {
     ($t:ident, $im:ident, $op:ident, features = $($feat:expr $(,)?)*) => {
         paste::paste!{
             #[inline(never)]
-            #[target_feature($(enable = $feat)*)]
+            #[target_feature($(enable = $feat ,)*)]
             pub unsafe fn [<impl_ $im:lower _ $t _ $op>](a: &[$t], b: &[$t]) {
                 let res = $op::<_, $im, cfavml::math::AutoMath>(a.len(), a, b)  ;
                 std::hint::black_box(res);
@@ -53,7 +53,7 @@ macro_rules! export_vector_x_vector_op {
     ($t:ident, $im:ident, $op:ident, features = $($feat:expr $(,)?)*) => {
         paste::paste!{
             #[inline(never)]
-            #[target_feature($(enable = $feat)*)]
+            #[target_feature($(enable = $feat ,)*)]
             pub unsafe fn [<impl_ $im:lower _ $t _ $op>](a: &[$t], b: &[$t], res: &mut [$t]) {
                 let res = $op::<_, $im, cfavml::math::AutoMath>(a.len(), a, b, res)  ;
                 std::hint::black_box(res);
@@ -75,7 +75,7 @@ macro_rules! export_vector_x_value_op {
     ($t:ident, $im:ident, $op:ident, features = $($feat:expr $(,)?)*) => {
         paste::paste!{
             #[inline(never)]
-            #[target_feature($(enable = $feat)*)]
+            #[target_feature($(enable = $feat ,)*)]
             pub unsafe fn [<impl_ $im:lower _ $t _ $op>](value: $t, a: &[$t], res: &mut [$t]) {
                 let res = $op::<_, $im, cfavml::math::AutoMath>(a.len(), value, a, res)  ;
                 std::hint::black_box(res);
@@ -252,6 +252,20 @@ pub mod avx2_ops {
     export_vector_x_value_op!(f64, Avx2, generic_sub_value, features = "avx2");
     export_vector_x_value_op!(f64, Avx2, generic_mul_value, features = "avx2");
     export_vector_x_value_op!(f64, Avx2, generic_div_value, features = "avx2");
+}
+
+#[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
+pub mod avx2_fma_ops {
+    use super::*;
+
+    export_distance_op!(f32, Avx2Fma, generic_cosine, features = "avx2", "fma");
+    export_distance_op!(f32, Avx2Fma, generic_dot_product, features = "avx2", "fma");
+    export_distance_op!(f32, Avx2Fma, generic_euclidean, features = "avx2", "fma");
+    export_vector_x_value_op!(f32, Avx2Fma, generic_div_value, features = "avx2", "fma");
+
+    export_distance_op!(f64, Avx2Fma, generic_cosine, features = "avx2", "fma");
+    export_distance_op!(f64, Avx2Fma, generic_dot_product, features = "avx2", "fma");
+    export_distance_op!(f64, Avx2Fma, generic_euclidean, features = "avx2", "fma");
 }
 
 #[cfg(target_arch = "aarch64")]
