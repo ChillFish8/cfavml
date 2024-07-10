@@ -25,3 +25,6 @@ low-level unsafe operations.
     make sure to read the routine docs and not assume that just because one routine requires
     one set of rules, that all of them require the same rules and nothing else.
 
+### Is this a replacement for BLAS?
+
+No. It is more a replacement for the default implementations ndarray uses for its operations.

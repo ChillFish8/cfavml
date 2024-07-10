@@ -93,6 +93,12 @@ CPU flags being available.
 - `nightly` Enables optimizations available only on nightly platforms.
   * This is required for AVX512 support due to it currently being unstable.
 
+### Is this a replacement for BLAS?
+
+No. At least, not unless you're only doing dot product... BLAS and LAPACK are _huge_ and I am certainly
+not in the market for implementing all BLAS routines in Rust, but that being said if your application is 
+similar to that of ndarray where it is only using BLAS for the dot product, then maybe.
+
 ### Benchmarks - AMD Ryzen 5900x (WINDOWS - no BLAS)
 
 - **Supported Flags:** `avx2`, `fma`
