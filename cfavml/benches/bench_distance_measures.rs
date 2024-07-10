@@ -72,6 +72,27 @@ mod avx2 {
     );
 }
 
+#[cfg(all(any(target_arch = "x86", target_arch = "x86_64"), feature = "benchmark-avx512"))]
+mod avx512 {
+    use super::*;
+
+    benchmark_distance_measure!(
+        "f32_avx512_fma_dot",
+        x1024 = f32_xconst_avx512_fma_dot::<1024>,
+        xany = f32_xany_avx512_fma_dot,
+    );
+    benchmark_distance_measure!(
+        "f32_avx512_fma_cosine",
+        x1024 = f32_xconst_avx512_fma_cosine::<1024>,
+        xany = f32_xany_avx512_fma_cosine,
+    );
+    benchmark_distance_measure!(
+        "f32_avx512_fma_euclidean",
+        x1024 = f32_xconst_avx512_fma_squared_euclidean::<1024>,
+        xany = f32_xany_avx512_fma_squared_euclidean,
+    );
+}
+
 #[cfg(any(target_arch = "aarch64"))]
 mod neon {
     use super::*;
@@ -172,6 +193,16 @@ criterion_group!(
         avx2::benchmark_f32_avx2_nofma_euclidean,
         avx2::benchmark_f32_avx2_fma_euclidean,
 );
+#[cfg(all(any(target_arch = "x86", target_arch = "x86_64"), feature = "nightly"))]
+criterion_group!(
+    name = benches_avx512_x86;
+    config = Criterion::default()
+        .measurement_time(Duration::from_secs(10));
+    targets =
+        avx512::benchmark_f32_avx512_fma_dot,
+        avx512::benchmark_f32_avx512_fma_cosine,
+        avx512::benchmark_f32_avx512_fma_euclidean,
+);
 #[cfg(target_arch = "aarch64")]
 criterion_group!(
     name = benches_neon_aarch64;
@@ -182,8 +213,10 @@ criterion_group!(
         neon::benchmark_f32_neon_nofma_cosine,
         neon::benchmark_f32_neon_nofma_euclidean,
 );
-#[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
+#[cfg(all(any(target_arch = "x86", target_arch = "x86_64"), not(feature = "benchmark-avx512")))]
 criterion_main!(benches, benches_avx2_x86);
+#[cfg(all(any(target_arch = "x86", target_arch = "x86_64"), feature = "benchmark-avx512"))]
+criterion_main!(benches, benches_avx2_x86, benches_avx512_x86);
 #[cfg(target_arch = "aarch64")]
 criterion_main!(benches, benches_neon_aarch64);
 
