@@ -1,5 +1,6 @@
 mod core;
 mod float32;
+mod aligned_buffer;
 
 pub fn add(left: usize, right: usize) -> usize {
     left + right
