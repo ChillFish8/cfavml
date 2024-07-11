@@ -7,14 +7,8 @@ description = "Common utilities for maximizing performance during computation wi
 
 [dependencies]
 num_cpus = "1.16.0"
-
-# Used in CPU pinning
-[target.'cfg(any(target_os = "android", target_os = "linux", target_os = "macos", target_os = "freebsd"))'.dependencies]
-libc = "0.2"
-
-# Used in CPU pinning
-[target.'cfg(target_os = "windows")'.dependencies]
-winapi = { version = "0.3.9", features = ["processthreadsapi", "winbase"] }
+core_affinity = "0.8.1"
+rayon = "1.10.0"
 
 [features]
 # Enables common env var compatibility.

@@ -26,10 +26,11 @@ This system will implicitly look for the following env vars to configure the CPU
 - `OPENBLAS_NUM_THREADS`  (Enable feature `env-var-compat`)
 
 If no env var is provided, the system will use the number of **Physical** CPU cores available
-as provided by the `num_cpus` crate.
+as provided by the `num_cpus` crate. NOTE: This will always hard cap at the number of physical CPUs.
 
 There is also some addition env vars used for configuration:
 
+- `CFAVML_DEBUG` - If set to `true`/`1` this will log extra debug info, errors, etc... 
 - `CFAVML_NO_CACHE_THREADPOOL` - If set to `true`/`1` the system will not cache created threadpools.
 - `CFAVML_NO_PINNING` - If set to `true`/`1` the system will **not** pin created threads to cores.
   * This is **NOT** recommended as it severely impacts the performance of routines and general
