@@ -1,4 +1,4 @@
-# CFAVML GEMM
+# CFAVML Utils
 
 > _Common utilities for maximizing performance during computation with `cfavml`_
 
