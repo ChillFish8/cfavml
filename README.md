@@ -1,30 +1,100 @@
-# ndarray-accel
+# CFAVML
 
-A set of extension traits implementing common operations entirely in optimized SIMD 
-without a dependency on blas or other C-linked libs.
+> _CF's Accelerated Vector Math Library_
 
-This project has been extracted from some existing work on a approximate nearest 
-neighbor library, and has eventually branched out to become this library.
+Various accelerated vector operations over Rust primitives with SIMD.
 
-### Not using ndarray? No problem!
+### Available SIMD Architectures
 
-This library comes in two parts, the actual extension traits for ndarray and the
-low-level unsafe operations.
+- AVX2
+- AVX2 + FMA
+- AVX512
+- NEON (`f32`/`f64` operations only currently)
+- Fallback (Typically optimized to SSE automatically by LLVM on x86)
 
-- `ndarray-accel` Main library targetting ndarray
-- `cfavml` Accelerated vector math library with all unsafe operation, this library
-  also exposes some additional functionality like the const-generic versions
-  of routines that I have not yet worked out how best to utilise within the ndarray
-  extension traits.
-  
-  * This library also only uses `core` rather than `std`.
-  * This library primarily optimizes for AMD CPUs which may perform worse on Intel CPUs compared to
-    the most 'optimal' Intel optimized code.
-  * WARNING: This library is not for the faint of hearts, it is effectively _entirely_
-    written in unsafe and makes a lot of assumptions for each routine which differ, please
-    make sure to read the routine docs and not assume that just because one routine requires
-    one set of rules, that all of them require the same rules and nothing else.
+### Supported Primitives
+
+- `f32`
+- `f64`
+- `i8`
+- `i16`
+- `i32`
+- `i64`
+- `u8`
+- `u16`
+- `u32`
+- `u64`
+
+##### Note on non-`f32/f64` division
+
+Division operations on non-floating point primitives are currently still scalar
+operations, as performing integer division is incredibly hard to do anymore efficiently
+with SIMD and adds a significant amount of cognitive overhead when reading the code.
+
+Although to be honest I have some serious questions about your application if you're doing
+heavy integer division...
+
+### Supported Operations & Distances
+
+- Dot Product
+- L2 Norm
+- Squared Euclidean
+- Cosine
+- Vector Min Value
+- Vector Max Value
+- Vector Sum Value
+- Vector Add Value
+- Vector Sub Value
+- Vector Mul Value
+- Vector Div Value
+- Vector Add Vector
+- Vector Sub Vector
+- Vector Mul Vector
+- Vector Div Vector
+
+### Dangerous routine naming convention
+
+If you've looked at the `danger` folder at all, you'll notice a few things, one SIMD operations
+are gated behind the `SimdRegister<T>` trait, this provides us with a generic abstraction
+over the various SIMD register types and architectures.
+
+This trait, combined with the `Math<T>` trait form the core of all operations and are
+provided as generic functions (with no target features):
+
+- `generic_dot_product`
+- `generic_euclidean`
+- `generic_cosine`
+- `generic_norm`
+- `generic_max_horizontal`
+- `generic_max_vertical`
+- `generic_min_horizontal`
+- `generic_min_vertical`
+- `generic_sum_horizontal`
+- `generic_sum_vertical`
+- `generic_add_value`
+- `generic_sub_value`
+- `generic_mul_value`
+- `generic_div_value`
+- `generic_add_vector`
+- `generic_sub_vector`
+- `generic_mul_vector`
+- `generic_div_vector`
+
+We also provide pre-configured non-generic methods with have the relevant `target_feature`s
+specified, naturally these methods are immediately UB if you call them without the correct
+CPU flags being available.
+
+```
+<dtype>_x<dims>_<arch>_<(no)fma>_<op_name>
+```
+
+### Features
+
+- `nightly` Enables optimizations available only on nightly platforms.
+  * This is required for AVX512 support due to it currently being unstable.
 
 ### Is this a replacement for BLAS?
 
-No. It is more a replacement for the default implementations ndarray uses for its operations.
+No. At least, not unless you're only doing dot product... BLAS and LAPACK are _huge_ and I am certainly
+not in the market for implementing all BLAS routines in Rust, but that being said if your application is
+similar to that of ndarray where it is only using BLAS for the dot product, then maybe.

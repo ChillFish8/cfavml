@@ -1,0 +1,11 @@
+[package]
+name = "cfavml-gemm"
+version = "0.1.0"
+edition = "2021"
+description = "BLAS-like general matrix multiplication extension for `cfavml`."
+
+[dependencies]
+num_cpus = "1.16.0"
+
+cfavml = { version = "0.1", path = "../cfavml" }
+cfavml-utils = { version = "0.1", path = "../cfavml-utils" }

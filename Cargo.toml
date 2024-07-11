@@ -1,18 +1,9 @@
-[package]
-name = "ndarray-accel"
-version = "0.1.0"
-edition = "2021"
-
-[dependencies]
-ndarray = { version = "0.15.6", default-features = false }
-
-cfavml = { path = "cfavml", version = "0.1.0" }
-
-
 [workspace]
+resolver = "2"
 members = [
     "cfavml",
-    
+    "cfavml-gemm",
+    "cfavml-utils",
     # Testing and profiling
     "cfavml/asm-view"
 ]

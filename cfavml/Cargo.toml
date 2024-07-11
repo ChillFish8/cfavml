@@ -41,3 +41,7 @@ rustdoc-args = ["--cfg", "docsrs"]
 [[bench]]
 name = "bench_distance_measures"
 harness = false
+
+[[bench]]
+name = "bench_gemm"
+harness = false

@@ -1,0 +1,24 @@
+[package]
+name = "cfavml-utils"
+version = "0.1.0"
+edition = "2021"
+readme = "README.md"
+description = "Common utilities for maximizing performance during computation with `cfavml`"
+
+[dependencies]
+num_cpus = "1.16.0"
+
+# Used in CPU pinning
+[target.'cfg(any(target_os = "android", target_os = "linux", target_os = "macos", target_os = "freebsd"))'.dependencies]
+libc = "0.2"
+
+# Used in CPU pinning
+[target.'cfg(target_os = "windows")'.dependencies]
+winapi = { version = "0.3.9", features = ["processthreadsapi", "winbase"] }
+
+[features]
+# Enables common env var compatibility.
+#
+# This enables CFAVML to use common env vars like `OMP_NUM_THREADS` or `OPENBLAS_NUM_THREADS`
+# to configure the CPU limits of the system.
+env-var-compat = []

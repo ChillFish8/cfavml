@@ -9,6 +9,7 @@
     all(any(target_arch = "x86", target_arch = "x86_64"), feature = "nightly"),
     feature(stdarch_x86_avx512)
 )]
+#![doc = include_str!("../README.md")]
 
 pub mod danger;
 pub mod math;
