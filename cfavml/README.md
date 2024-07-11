@@ -85,7 +85,7 @@ We also provide pre-configured non-generic methods with have the relevant `targe
 specified, naturally these methods are immediately UB if you call them without the correct
 CPU flags being available.
 
-```
+```no_test
 <dtype>_x<dims>_<arch>_<(no)fma>_<op_name>
 ```
 

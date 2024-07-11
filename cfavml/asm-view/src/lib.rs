@@ -1,6 +1,5 @@
 use cfavml::danger::*;
 
-
 macro_rules! export_dense_op {
     ($t:ident, $im:ident, $op:ident, features = $($feat:expr $(,)?)*) => {
         paste::paste!{

@@ -1,4 +1,5 @@
 use std::hint::black_box;
+
 use divan::Bencher;
 
 mod utils;
@@ -11,8 +12,9 @@ const DIMS: usize = 2048;
 
 #[cfg_attr(not(debug_assertions), divan::bench_group(threads = false))]
 mod gemm_x4064 {
-    use ndarray::{Array2, ArrayView2};
     use ndarray::linalg::general_mat_mul;
+    use ndarray::{Array2, ArrayView2};
+
     use super::*;
 
     #[cfg_attr(not(debug_assertions), divan::bench)]
@@ -20,7 +22,7 @@ mod gemm_x4064 {
         let (l1, l2) = utils::get_sample_vectors::<f32>(DIMS * DIMS);
         let l1_view = ArrayView2::from_shape((DIMS, DIMS), &l1).unwrap();
         let l2_view = ArrayView2::from_shape((DIMS, DIMS), &l2).unwrap();
-        let mut l3_view= Array2::from_elem((DIMS, DIMS), 0.0);
+        let mut l3_view = Array2::from_elem((DIMS, DIMS), 0.0);
 
         bencher.bench_local(|| {
             let l1_view = black_box(l1_view);

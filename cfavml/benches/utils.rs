@@ -1,6 +1,6 @@
-use rand::{Rng, SeedableRng};
 use rand::distributions::Standard;
 use rand::prelude::Distribution;
+use rand::{Rng, SeedableRng};
 use rand_chacha::ChaCha8Rng;
 
 const SEED: u64 = 2837564324875;
@@ -35,7 +35,9 @@ where
 }
 
 #[cfg(feature = "benchmark-aligned")]
-pub fn get_sample_vectors<T>(size: usize) -> (aligned::AlignedBuffer<T>, aligned::AlignedBuffer<T>)
+pub fn get_sample_vectors<T>(
+    size: usize,
+) -> (aligned::AlignedBuffer<T>, aligned::AlignedBuffer<T>)
 where
     Standard: Distribution<T>,
 {
@@ -57,7 +59,6 @@ where
 }
 
 use cfavml::math::Math;
-
 
 #[cfg(feature = "benchmark-aligned")]
 pub mod aligned {
@@ -82,7 +83,7 @@ pub mod aligned {
             Self {
                 size,
                 phantom: PhantomData,
-                inner: aligned_vec::<T>(size)
+                inner: aligned_vec::<T>(size),
             }
         }
     }

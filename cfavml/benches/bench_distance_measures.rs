@@ -16,7 +16,10 @@ fn main() {
     divan::main();
 }
 
-#[cfg_attr(not(debug_assertions), divan::bench_group(sample_count = 500, sample_size = 2500, threads = false))]
+#[cfg_attr(
+    not(debug_assertions),
+    divan::bench_group(sample_count = 500, sample_size = 2500, threads = false)
+)]
 mod dot_product_x1341 {
     use super::*;
 
@@ -56,8 +59,7 @@ mod dot_product_x1341 {
             let l1_view = black_box(&l1);
             let l2_view = black_box(&l2);
 
-            simsimd::SpatialSimilarity::dot(l1_view, l2_view)
-                .unwrap_or_default()
+            simsimd::SpatialSimilarity::dot(l1_view, l2_view).unwrap_or_default()
         });
     }
 
@@ -69,8 +71,7 @@ mod dot_product_x1341 {
             let l1_view = black_box(&l1);
             let l2_view = black_box(&l2);
 
-            simsimd::SpatialSimilarity::dot(l1_view, l2_view)
-                .unwrap_or_default()
+            simsimd::SpatialSimilarity::dot(l1_view, l2_view).unwrap_or_default()
         });
     }
 
@@ -105,9 +106,15 @@ mod dot_product_x1341 {
     #[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
     define_cfavml_variants!(f64, cfavml_avx2_fma_f64, f64_xany_avx2_fma_dot);
 
-    #[cfg(all(any(target_arch = "x86", target_arch = "x86_64"), feature = "benchmark-avx512"))]
+    #[cfg(all(
+        any(target_arch = "x86", target_arch = "x86_64"),
+        feature = "benchmark-avx512"
+    ))]
     define_cfavml_variants!(f32, cfavml_avx512_fma_f32, f32_xany_avx512_fma_dot);
-    #[cfg(all(any(target_arch = "x86", target_arch = "x86_64"), feature = "benchmark-avx512"))]
+    #[cfg(all(
+        any(target_arch = "x86", target_arch = "x86_64"),
+        feature = "benchmark-avx512"
+    ))]
     define_cfavml_variants!(f64, cfavml_avx512_fma_f64, f64_xany_avx512_fma_dot);
 
     #[cfg(target_arch = "aarch64")]
@@ -116,8 +123,10 @@ mod dot_product_x1341 {
     define_cfavml_variants!(f64, cfavml_neon_fma_f64, f64_xany_neon_fma_dot);
 }
 
-
-#[cfg_attr(not(debug_assertions), divan::bench_group(sample_count = 500, sample_size = 2500, threads = false))]
+#[cfg_attr(
+    not(debug_assertions),
+    divan::bench_group(sample_count = 500, sample_size = 2500, threads = false)
+)]
 mod cosine_x1341 {
     use super::*;
 
@@ -163,8 +172,7 @@ mod cosine_x1341 {
             let l1_view = black_box(&l1);
             let l2_view = black_box(&l2);
 
-            simsimd::SpatialSimilarity::cosine(l1_view, l2_view)
-                .unwrap_or_default()
+            simsimd::SpatialSimilarity::cosine(l1_view, l2_view).unwrap_or_default()
         });
     }
 
@@ -176,8 +184,7 @@ mod cosine_x1341 {
             let l1_view = black_box(&l1);
             let l2_view = black_box(&l2);
 
-            simsimd::SpatialSimilarity::cosine(l1_view, l2_view)
-                .unwrap_or_default()
+            simsimd::SpatialSimilarity::cosine(l1_view, l2_view).unwrap_or_default()
         });
     }
 
@@ -200,8 +207,16 @@ mod cosine_x1341 {
         };
     }
 
-    define_cfavml_variants!(f32, cfavml_fallback_nofma_f32, f32_xany_fallback_nofma_cosine);
-    define_cfavml_variants!(f64, cfavml_fallback_nofma_f64, f64_xany_fallback_nofma_cosine);
+    define_cfavml_variants!(
+        f32,
+        cfavml_fallback_nofma_f32,
+        f32_xany_fallback_nofma_cosine
+    );
+    define_cfavml_variants!(
+        f64,
+        cfavml_fallback_nofma_f64,
+        f64_xany_fallback_nofma_cosine
+    );
 
     #[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
     define_cfavml_variants!(f32, cfavml_avx2_nofma_f32, f32_xany_avx2_nofma_cosine);
@@ -212,9 +227,15 @@ mod cosine_x1341 {
     #[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
     define_cfavml_variants!(f64, cfavml_avx2_fma_f64, f64_xany_avx2_fma_cosine);
 
-    #[cfg(all(any(target_arch = "x86", target_arch = "x86_64"), feature = "benchmark-avx512"))]
+    #[cfg(all(
+        any(target_arch = "x86", target_arch = "x86_64"),
+        feature = "benchmark-avx512"
+    ))]
     define_cfavml_variants!(f32, cfavml_avx512_fma_f32, f32_xany_avx512_fma_cosine);
-    #[cfg(all(any(target_arch = "x86", target_arch = "x86_64"), feature = "benchmark-avx512"))]
+    #[cfg(all(
+        any(target_arch = "x86", target_arch = "x86_64"),
+        feature = "benchmark-avx512"
+    ))]
     define_cfavml_variants!(f64, cfavml_avx512_fma_f64, f64_xany_avx512_fma_cosine);
 
     #[cfg(target_arch = "aarch64")]
@@ -223,9 +244,13 @@ mod cosine_x1341 {
     define_cfavml_variants!(f64, cfavml_neon_fma_f64, f64_xany_neon_fma_cosine);
 }
 
-#[cfg_attr(not(debug_assertions), divan::bench_group(sample_count = 500, sample_size = 2500, threads = false))]
+#[cfg_attr(
+    not(debug_assertions),
+    divan::bench_group(sample_count = 500, sample_size = 2500, threads = false)
+)]
 mod euclidean_x1341 {
     use std::ops::Sub;
+
     use super::*;
 
     #[cfg_attr(not(debug_assertions), divan::bench)]
@@ -266,8 +291,7 @@ mod euclidean_x1341 {
             let l1_view = black_box(&l1);
             let l2_view = black_box(&l2);
 
-            simsimd::SpatialSimilarity::sqeuclidean(l1_view, l2_view)
-                .unwrap_or_default()
+            simsimd::SpatialSimilarity::sqeuclidean(l1_view, l2_view).unwrap_or_default()
         });
     }
 
@@ -279,8 +303,7 @@ mod euclidean_x1341 {
             let l1_view = black_box(&l1);
             let l2_view = black_box(&l2);
 
-            simsimd::SpatialSimilarity::sqeuclidean(l1_view, l2_view)
-                .unwrap_or_default()
+            simsimd::SpatialSimilarity::sqeuclidean(l1_view, l2_view).unwrap_or_default()
         });
     }
 
@@ -303,25 +326,71 @@ mod euclidean_x1341 {
         };
     }
 
-    define_cfavml_variants!(f32, cfavml_fallback_nofma_f32, f32_xany_fallback_nofma_squared_euclidean);
-    define_cfavml_variants!(f64, cfavml_fallback_nofma_f64, f64_xany_fallback_nofma_squared_euclidean);
+    define_cfavml_variants!(
+        f32,
+        cfavml_fallback_nofma_f32,
+        f32_xany_fallback_nofma_squared_euclidean
+    );
+    define_cfavml_variants!(
+        f64,
+        cfavml_fallback_nofma_f64,
+        f64_xany_fallback_nofma_squared_euclidean
+    );
 
     #[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
-    define_cfavml_variants!(f32, cfavml_avx2_nofma_f32, f32_xany_avx2_nofma_squared_euclidean);
+    define_cfavml_variants!(
+        f32,
+        cfavml_avx2_nofma_f32,
+        f32_xany_avx2_nofma_squared_euclidean
+    );
     #[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
-    define_cfavml_variants!(f64, cfavml_avx2_nofma_f64, f64_xany_avx2_nofma_squared_euclidean);
+    define_cfavml_variants!(
+        f64,
+        cfavml_avx2_nofma_f64,
+        f64_xany_avx2_nofma_squared_euclidean
+    );
     #[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
-    define_cfavml_variants!(f32, cfavml_avx2_fma_f32, f32_xany_avx2_fma_squared_euclidean);
+    define_cfavml_variants!(
+        f32,
+        cfavml_avx2_fma_f32,
+        f32_xany_avx2_fma_squared_euclidean
+    );
     #[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
-    define_cfavml_variants!(f64, cfavml_avx2_fma_f64, f64_xany_avx2_fma_squared_euclidean);
+    define_cfavml_variants!(
+        f64,
+        cfavml_avx2_fma_f64,
+        f64_xany_avx2_fma_squared_euclidean
+    );
 
-    #[cfg(all(any(target_arch = "x86", target_arch = "x86_64"), feature = "benchmark-avx512"))]
-    define_cfavml_variants!(f32, cfavml_avx512_fma_f32, f32_xany_avx512_fma_squared_euclidean);
-    #[cfg(all(any(target_arch = "x86", target_arch = "x86_64"), feature = "benchmark-avx512"))]
-    define_cfavml_variants!(f64, cfavml_avx512_fma_f64, f64_xany_avx512_fma_squared_euclidean);
+    #[cfg(all(
+        any(target_arch = "x86", target_arch = "x86_64"),
+        feature = "benchmark-avx512"
+    ))]
+    define_cfavml_variants!(
+        f32,
+        cfavml_avx512_fma_f32,
+        f32_xany_avx512_fma_squared_euclidean
+    );
+    #[cfg(all(
+        any(target_arch = "x86", target_arch = "x86_64"),
+        feature = "benchmark-avx512"
+    ))]
+    define_cfavml_variants!(
+        f64,
+        cfavml_avx512_fma_f64,
+        f64_xany_avx512_fma_squared_euclidean
+    );
 
     #[cfg(target_arch = "aarch64")]
-    define_cfavml_variants!(f32, cfavml_neon_fma_f32, f32_xany_neon_fma_squared_euclidean);
+    define_cfavml_variants!(
+        f32,
+        cfavml_neon_fma_f32,
+        f32_xany_neon_fma_squared_euclidean
+    );
     #[cfg(target_arch = "aarch64")]
-    define_cfavml_variants!(f64, cfavml_neon_fma_f64, f64_xany_neon_fma_squared_euclidean);
+    define_cfavml_variants!(
+        f64,
+        cfavml_neon_fma_f64,
+        f64_xany_neon_fma_squared_euclidean
+    );
 }

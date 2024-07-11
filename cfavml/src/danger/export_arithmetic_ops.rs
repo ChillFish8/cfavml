@@ -194,7 +194,8 @@ pub mod arithmetic_ops_fallback {
         xany = f32_xany_fallback_nofma_add_value,
     );
     export_vector_x_value_op!(
-        description = "Value subtraction on a provided vector, writing to a result vector",
+        description =
+            "Value subtraction on a provided vector, writing to a result vector",
         ty = f32,
         register = Fallback,
         op = generic_sub_value,
@@ -259,7 +260,8 @@ pub mod arithmetic_ops_fallback {
         xany = f64_xany_fallback_nofma_add_value,
     );
     export_vector_x_value_op!(
-        description = "Value subtraction on a provided vector, writing to a result vector",
+        description =
+            "Value subtraction on a provided vector, writing to a result vector",
         ty = f64,
         register = Fallback,
         op = generic_sub_value,
@@ -324,7 +326,8 @@ pub mod arithmetic_ops_fallback {
         xany = i8_xany_fallback_nofma_add_value,
     );
     export_vector_x_value_op!(
-        description = "Value subtraction on a provided vector, writing to a result vector",
+        description =
+            "Value subtraction on a provided vector, writing to a result vector",
         ty = i8,
         register = Fallback,
         op = generic_sub_value,
@@ -389,7 +392,8 @@ pub mod arithmetic_ops_fallback {
         xany = i16_xany_fallback_nofma_add_value,
     );
     export_vector_x_value_op!(
-        description = "Value subtraction on a provided vector, writing to a result vector",
+        description =
+            "Value subtraction on a provided vector, writing to a result vector",
         ty = i16,
         register = Fallback,
         op = generic_sub_value,
@@ -454,7 +458,8 @@ pub mod arithmetic_ops_fallback {
         xany = i32_xany_fallback_nofma_add_value,
     );
     export_vector_x_value_op!(
-        description = "Value subtraction on a provided vector, writing to a result vector",
+        description =
+            "Value subtraction on a provided vector, writing to a result vector",
         ty = i32,
         register = Fallback,
         op = generic_sub_value,
@@ -519,7 +524,8 @@ pub mod arithmetic_ops_fallback {
         xany = i64_xany_fallback_nofma_add_value,
     );
     export_vector_x_value_op!(
-        description = "Value subtraction on a provided vector, writing to a result vector",
+        description =
+            "Value subtraction on a provided vector, writing to a result vector",
         ty = i64,
         register = Fallback,
         op = generic_sub_value,
@@ -584,7 +590,8 @@ pub mod arithmetic_ops_fallback {
         xany = u8_xany_fallback_nofma_add_value,
     );
     export_vector_x_value_op!(
-        description = "Value subtraction on a provided vector, writing to a result vector",
+        description =
+            "Value subtraction on a provided vector, writing to a result vector",
         ty = u8,
         register = Fallback,
         op = generic_sub_value,
@@ -649,7 +656,8 @@ pub mod arithmetic_ops_fallback {
         xany = u16_xany_fallback_nofma_add_value,
     );
     export_vector_x_value_op!(
-        description = "Value subtraction on a provided vector, writing to a result vector",
+        description =
+            "Value subtraction on a provided vector, writing to a result vector",
         ty = u16,
         register = Fallback,
         op = generic_sub_value,
@@ -714,7 +722,8 @@ pub mod arithmetic_ops_fallback {
         xany = u32_xany_fallback_nofma_add_value,
     );
     export_vector_x_value_op!(
-        description = "Value subtraction on a provided vector, writing to a result vector",
+        description =
+            "Value subtraction on a provided vector, writing to a result vector",
         ty = u32,
         register = Fallback,
         op = generic_sub_value,
@@ -779,7 +788,8 @@ pub mod arithmetic_ops_fallback {
         xany = u64_xany_fallback_nofma_add_value,
     );
     export_vector_x_value_op!(
-        description = "Value subtraction on a provided vector, writing to a result vector",
+        description =
+            "Value subtraction on a provided vector, writing to a result vector",
         ty = u64,
         register = Fallback,
         op = generic_sub_value,
@@ -854,7 +864,8 @@ pub mod arithmetic_ops_avx2 {
         features = "avx2"
     );
     export_vector_x_value_op!(
-        description = "Value subtraction on a provided vector, writing to a result vector",
+        description =
+            "Value subtraction on a provided vector, writing to a result vector",
         ty = f32,
         register = Avx2,
         op = generic_sub_value,
@@ -927,7 +938,8 @@ pub mod arithmetic_ops_avx2 {
         features = "avx2"
     );
     export_vector_x_value_op!(
-        description = "Value subtraction on a provided vector, writing to a result vector",
+        description =
+            "Value subtraction on a provided vector, writing to a result vector",
         ty = f64,
         register = Avx2,
         op = generic_sub_value,
@@ -1000,7 +1012,8 @@ pub mod arithmetic_ops_avx2 {
         features = "avx2"
     );
     export_vector_x_value_op!(
-        description = "Value subtraction on a provided vector, writing to a result vector",
+        description =
+            "Value subtraction on a provided vector, writing to a result vector",
         ty = i8,
         register = Avx2,
         op = generic_sub_value,
@@ -1073,7 +1086,8 @@ pub mod arithmetic_ops_avx2 {
         features = "avx2"
     );
     export_vector_x_value_op!(
-        description = "Value subtraction on a provided vector, writing to a result vector",
+        description =
+            "Value subtraction on a provided vector, writing to a result vector",
         ty = i16,
         register = Avx2,
         op = generic_sub_value,
@@ -1146,7 +1160,8 @@ pub mod arithmetic_ops_avx2 {
         features = "avx2"
     );
     export_vector_x_value_op!(
-        description = "Value subtraction on a provided vector, writing to a result vector",
+        description =
+            "Value subtraction on a provided vector, writing to a result vector",
         ty = i32,
         register = Avx2,
         op = generic_sub_value,
@@ -1219,7 +1234,8 @@ pub mod arithmetic_ops_avx2 {
         features = "avx2"
     );
     export_vector_x_value_op!(
-        description = "Value subtraction on a provided vector, writing to a result vector",
+        description =
+            "Value subtraction on a provided vector, writing to a result vector",
         ty = i64,
         register = Avx2,
         op = generic_sub_value,
@@ -1292,7 +1308,8 @@ pub mod arithmetic_ops_avx2 {
         features = "avx2"
     );
     export_vector_x_value_op!(
-        description = "Value subtraction on a provided vector, writing to a result vector",
+        description =
+            "Value subtraction on a provided vector, writing to a result vector",
         ty = u8,
         register = Avx2,
         op = generic_sub_value,
@@ -1365,7 +1382,8 @@ pub mod arithmetic_ops_avx2 {
         features = "avx2"
     );
     export_vector_x_value_op!(
-        description = "Value subtraction on a provided vector, writing to a result vector",
+        description =
+            "Value subtraction on a provided vector, writing to a result vector",
         ty = u16,
         register = Avx2,
         op = generic_sub_value,
@@ -1438,7 +1456,8 @@ pub mod arithmetic_ops_avx2 {
         features = "avx2"
     );
     export_vector_x_value_op!(
-        description = "Value subtraction on a provided vector, writing to a result vector",
+        description =
+            "Value subtraction on a provided vector, writing to a result vector",
         ty = u32,
         register = Avx2,
         op = generic_sub_value,
@@ -1511,7 +1530,8 @@ pub mod arithmetic_ops_avx2 {
         features = "avx2"
     );
     export_vector_x_value_op!(
-        description = "Value subtraction on a provided vector, writing to a result vector",
+        description =
+            "Value subtraction on a provided vector, writing to a result vector",
         ty = u64,
         register = Avx2,
         op = generic_sub_value,
@@ -1575,7 +1595,6 @@ pub mod arithmetic_ops_avx2 {
     );
 }
 
-
 #[cfg(all(any(target_arch = "x86", target_arch = "x86_64"), feature = "nightly"))]
 /// Vector space distance ops on the AVX512 supported architectures.
 ///
@@ -1594,7 +1613,8 @@ pub mod arithmetic_ops_avx512 {
         features = "avx512f"
     );
     export_vector_x_value_op!(
-        description = "Value subtraction on a provided vector, writing to a result vector",
+        description =
+            "Value subtraction on a provided vector, writing to a result vector",
         ty = f32,
         register = Avx512,
         op = generic_sub_value,
@@ -1667,7 +1687,8 @@ pub mod arithmetic_ops_avx512 {
         features = "avx512f"
     );
     export_vector_x_value_op!(
-        description = "Value subtraction on a provided vector, writing to a result vector",
+        description =
+            "Value subtraction on a provided vector, writing to a result vector",
         ty = f64,
         register = Avx512,
         op = generic_sub_value,
@@ -1740,7 +1761,8 @@ pub mod arithmetic_ops_avx512 {
         features = "avx512f"
     );
     export_vector_x_value_op!(
-        description = "Value subtraction on a provided vector, writing to a result vector",
+        description =
+            "Value subtraction on a provided vector, writing to a result vector",
         ty = i8,
         register = Avx512,
         op = generic_sub_value,
@@ -1813,7 +1835,8 @@ pub mod arithmetic_ops_avx512 {
         features = "avx512f"
     );
     export_vector_x_value_op!(
-        description = "Value subtraction on a provided vector, writing to a result vector",
+        description =
+            "Value subtraction on a provided vector, writing to a result vector",
         ty = i16,
         register = Avx512,
         op = generic_sub_value,
@@ -1886,7 +1909,8 @@ pub mod arithmetic_ops_avx512 {
         features = "avx512f"
     );
     export_vector_x_value_op!(
-        description = "Value subtraction on a provided vector, writing to a result vector",
+        description =
+            "Value subtraction on a provided vector, writing to a result vector",
         ty = i32,
         register = Avx512,
         op = generic_sub_value,
@@ -1959,7 +1983,8 @@ pub mod arithmetic_ops_avx512 {
         features = "avx512f"
     );
     export_vector_x_value_op!(
-        description = "Value subtraction on a provided vector, writing to a result vector",
+        description =
+            "Value subtraction on a provided vector, writing to a result vector",
         ty = i64,
         register = Avx512,
         op = generic_sub_value,
@@ -2032,7 +2057,8 @@ pub mod arithmetic_ops_avx512 {
         features = "avx512f"
     );
     export_vector_x_value_op!(
-        description = "Value subtraction on a provided vector, writing to a result vector",
+        description =
+            "Value subtraction on a provided vector, writing to a result vector",
         ty = u8,
         register = Avx512,
         op = generic_sub_value,
@@ -2105,7 +2131,8 @@ pub mod arithmetic_ops_avx512 {
         features = "avx512f"
     );
     export_vector_x_value_op!(
-        description = "Value subtraction on a provided vector, writing to a result vector",
+        description =
+            "Value subtraction on a provided vector, writing to a result vector",
         ty = u16,
         register = Avx512,
         op = generic_sub_value,
@@ -2178,7 +2205,8 @@ pub mod arithmetic_ops_avx512 {
         features = "avx512f"
     );
     export_vector_x_value_op!(
-        description = "Value subtraction on a provided vector, writing to a result vector",
+        description =
+            "Value subtraction on a provided vector, writing to a result vector",
         ty = u32,
         register = Avx512,
         op = generic_sub_value,
@@ -2251,7 +2279,8 @@ pub mod arithmetic_ops_avx512 {
         features = "avx512f"
     );
     export_vector_x_value_op!(
-        description = "Value subtraction on a provided vector, writing to a result vector",
+        description =
+            "Value subtraction on a provided vector, writing to a result vector",
         ty = u64,
         register = Avx512,
         op = generic_sub_value,
@@ -2333,7 +2362,8 @@ pub mod arithmetic_ops_neon {
         features = "neon"
     );
     export_vector_x_value_op!(
-        description = "Value subtraction on a provided vector, writing to a result vector",
+        description =
+            "Value subtraction on a provided vector, writing to a result vector",
         ty = f32,
         register = Neon,
         op = generic_sub_value,
@@ -2406,7 +2436,8 @@ pub mod arithmetic_ops_neon {
         features = "neon"
     );
     export_vector_x_value_op!(
-        description = "Value subtraction on a provided vector, writing to a result vector",
+        description =
+            "Value subtraction on a provided vector, writing to a result vector",
         ty = f64,
         register = Neon,
         op = generic_sub_value,
@@ -2479,7 +2510,8 @@ pub mod arithmetic_ops_neon {
         features = "neon"
     );
     export_vector_x_value_op!(
-        description = "Value subtraction on a provided vector, writing to a result vector",
+        description =
+            "Value subtraction on a provided vector, writing to a result vector",
         ty = i8,
         register = Neon,
         op = generic_sub_value,
@@ -2552,7 +2584,8 @@ pub mod arithmetic_ops_neon {
         features = "neon"
     );
     export_vector_x_value_op!(
-        description = "Value subtraction on a provided vector, writing to a result vector",
+        description =
+            "Value subtraction on a provided vector, writing to a result vector",
         ty = i16,
         register = Neon,
         op = generic_sub_value,
@@ -2625,7 +2658,8 @@ pub mod arithmetic_ops_neon {
         features = "neon"
     );
     export_vector_x_value_op!(
-        description = "Value subtraction on a provided vector, writing to a result vector",
+        description =
+            "Value subtraction on a provided vector, writing to a result vector",
         ty = i32,
         register = Neon,
         op = generic_sub_value,
@@ -2698,7 +2732,8 @@ pub mod arithmetic_ops_neon {
         features = "neon"
     );
     export_vector_x_value_op!(
-        description = "Value subtraction on a provided vector, writing to a result vector",
+        description =
+            "Value subtraction on a provided vector, writing to a result vector",
         ty = i64,
         register = Neon,
         op = generic_sub_value,
@@ -2771,7 +2806,8 @@ pub mod arithmetic_ops_neon {
         features = "neon"
     );
     export_vector_x_value_op!(
-        description = "Value subtraction on a provided vector, writing to a result vector",
+        description =
+            "Value subtraction on a provided vector, writing to a result vector",
         ty = u8,
         register = Neon,
         op = generic_sub_value,
@@ -2844,7 +2880,8 @@ pub mod arithmetic_ops_neon {
         features = "neon"
     );
     export_vector_x_value_op!(
-        description = "Value subtraction on a provided vector, writing to a result vector",
+        description =
+            "Value subtraction on a provided vector, writing to a result vector",
         ty = u16,
         register = Neon,
         op = generic_sub_value,
@@ -2917,7 +2954,8 @@ pub mod arithmetic_ops_neon {
         features = "neon"
     );
     export_vector_x_value_op!(
-        description = "Value subtraction on a provided vector, writing to a result vector",
+        description =
+            "Value subtraction on a provided vector, writing to a result vector",
         ty = u32,
         register = Neon,
         op = generic_sub_value,
@@ -2990,7 +3028,8 @@ pub mod arithmetic_ops_neon {
         features = "neon"
     );
     export_vector_x_value_op!(
-        description = "Value subtraction on a provided vector, writing to a result vector",
+        description =
+            "Value subtraction on a provided vector, writing to a result vector",
         ty = u64,
         register = Neon,
         op = generic_sub_value,
