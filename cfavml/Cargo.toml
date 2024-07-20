@@ -43,5 +43,5 @@ name = "bench_distance_measures"
 harness = false
 
 [[bench]]
-name = "bench_gemm"
+name = "bench_min_max"
 harness = false

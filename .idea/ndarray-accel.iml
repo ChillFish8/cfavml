@@ -11,6 +11,7 @@
       <sourceFolder url="file://$MODULE_DIR$/cfavml/asm-view/src" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/cfavml-gemm/src" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/cfavml-utils/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/cfavml-gemm/benches" isTestSource="true" />
       <excludeFolder url="file://$MODULE_DIR$/cfavml/target" />
       <excludeFolder url="file://$MODULE_DIR$/target" />
     </content>

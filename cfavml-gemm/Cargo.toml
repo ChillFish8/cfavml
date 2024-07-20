@@ -9,3 +9,14 @@ num_cpus = "1.16.0"
 
 cfavml = { version = "0.1", path = "../cfavml" }
 cfavml-utils = { version = "0.1", path = "../cfavml-utils" }
+
+[dev-dependencies]
+rand = "0.8.5"
+rand_chacha = "0.3.1"
+divan = "0.1.14"
+ndarray = "0.15.6"
+faer = "0.19.1"
+
+[[bench]]
+name = "bench_sgemm"
+harness = false
