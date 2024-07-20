@@ -1,5 +1,6 @@
 #![doc = include_str!("../README.md")]
 
+pub mod aligned_buffer;
 pub mod pinning;
 mod threadpool;
 
