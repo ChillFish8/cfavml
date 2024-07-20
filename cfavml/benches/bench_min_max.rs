@@ -1,4 +1,5 @@
 use std::hint::black_box;
+
 use divan::Bencher;
 use ndarray::ArrayView1;
 
@@ -22,6 +23,7 @@ fn main() {
 mod op_min {
     use cfavml::danger::{Avx2, SimdRegister};
     use cfavml::math::{AutoMath, Math};
+
     use super::*;
 
     macro_rules! ndarray_impls {
@@ -70,10 +72,10 @@ mod op_min {
 
     #[target_feature(enable = "avx2")]
     unsafe fn generic_min<T>(a: &[T]) -> T
-        where
-            T: Copy,
-            Avx2: SimdRegister<T>,
-            AutoMath: Math<T>,
+    where
+        T: Copy,
+        Avx2: SimdRegister<T>,
+        AutoMath: Math<T>,
     {
         cfavml::danger::generic_min_horizontal::<T, Avx2, AutoMath>(a.len(), a)
     }
@@ -102,6 +104,7 @@ mod op_min {
 mod op_max {
     use cfavml::danger::{Avx2, SimdRegister};
     use cfavml::math::{AutoMath, Math};
+
     use super::*;
 
     macro_rules! ndarray_impls {
@@ -150,10 +153,10 @@ mod op_max {
 
     #[target_feature(enable = "avx2")]
     unsafe fn generic_max<T>(a: &[T]) -> T
-        where
-            T: Copy,
-            Avx2: SimdRegister<T>,
-            AutoMath: Math<T>,
+    where
+        T: Copy,
+        Avx2: SimdRegister<T>,
+        AutoMath: Math<T>,
     {
         cfavml::danger::generic_max_horizontal::<T, Avx2, AutoMath>(a.len(), a)
     }
@@ -170,7 +173,6 @@ mod op_max {
     cfavml_impls!(i64);
 }
 
-
 #[cfg_attr(
     not(debug_assertions),
     divan::bench_group(
@@ -183,6 +185,7 @@ mod op_max {
 mod op_sum {
     use cfavml::danger::{Avx2, SimdRegister};
     use cfavml::math::{AutoMath, Math};
+
     use super::*;
 
     macro_rules! ndarray_impls {
@@ -231,10 +234,10 @@ mod op_sum {
 
     #[target_feature(enable = "avx2")]
     unsafe fn generic_sum<T>(a: &[T]) -> T
-        where
-            T: Copy,
-            Avx2: SimdRegister<T>,
-            AutoMath: Math<T>,
+    where
+        T: Copy,
+        Avx2: SimdRegister<T>,
+        AutoMath: Math<T>,
     {
         cfavml::danger::generic_sum_horizontal::<T, Avx2, AutoMath>(a.len(), a)
     }
