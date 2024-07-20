@@ -188,6 +188,33 @@ mod op_sum {
 
     use super::*;
 
+    macro_rules! naive_impls {
+        ($t:ty) => {
+            paste::paste! {
+                #[cfg_attr(not(debug_assertions), divan::bench)]
+                fn [< $t _sum_naive>](bencher: Bencher) {
+                    let (l1, _) = utils::get_sample_vectors::<$t>(DIMS);
+
+                    bencher.bench_local(|| {
+                        let l1_view = black_box(&l1);
+                        l1_view.iter().sum::<$t>()
+                    });
+                }
+            }
+        };
+    }
+
+    naive_impls!(f32);
+    naive_impls!(f64);
+    naive_impls!(u8);
+    naive_impls!(u16);
+    naive_impls!(u32);
+    naive_impls!(u64);
+    naive_impls!(i8);
+    naive_impls!(i16);
+    naive_impls!(i32);
+    naive_impls!(i64);
+
     macro_rules! ndarray_impls {
         ($t:ty) => {
             paste::paste! {
