@@ -17,7 +17,7 @@ fn main() {
         sample_count = 500,
         sample_size = 10000,
         threads = false,
-        counters = [divan::counter::ItemsCount::new(DIMS)]
+        counters = [divan::counter::ItemsCount::new(DIMS)],
     )
 )]
 mod op_min {
