@@ -20,7 +20,4 @@ pub unsafe fn f32_avx2_fma_gemm(
     let c_ptr = c.as_mut_ptr();
 
     let c_shape = (shape_a.0, shape_b.1);
-
-
 }
-

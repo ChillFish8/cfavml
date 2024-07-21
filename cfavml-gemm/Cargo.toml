@@ -18,5 +18,5 @@ ndarray = "0.15.6"
 faer = "0.19.1"
 
 [[bench]]
-name = "bench_sgemm"
+name = "bench_components"
 harness = false
