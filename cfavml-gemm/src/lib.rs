@@ -1,6 +1,7 @@
 #![doc = include_str!("../README.md")]
 
 mod genric_kernel;
+pub mod manipulation;
 
 use core::arch::x86_64::*;
 

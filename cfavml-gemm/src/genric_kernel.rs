@@ -94,7 +94,7 @@ where
         let b_row_chunks = R::load_dense(b_ptr);
 
         // Store intermediary back, since we are calculating the first step of the first row.
-        self.matrix_result.a = R::fmadd_dense(a_broadcast, b_row_chunks, self.matrix_result.a);
+        // self.matrix_result.a = R::fmadd_dense(a_broadcast, b_row_chunks, self.matrix_result.a);
 
         self.matrix_result = R::zeroed_dense();
     }
