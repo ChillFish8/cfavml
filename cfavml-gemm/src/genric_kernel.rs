@@ -1,4 +1,5 @@
 use std::marker::PhantomData;
+
 use cfavml::danger::{DenseLane, SimdRegister};
 use cfavml::math::{AutoMath, Math};
 use cfavml_utils::aligned_buffer::AlignedBuffer;
@@ -61,14 +62,7 @@ where
 
     /// Computes the dot product of the given matrix of `a` and `b` writing the result to `result`
     /// using the configured micro-kernel.
-    pub(crate) fn dot_matrix(
-        &mut self,
-        a: &[T],
-        b: &[T],
-        result: &mut [T],
-    ) {
-
-    }
+    pub(crate) fn dot_matrix(&mut self, a: &[T], b: &[T], result: &mut [T]) {}
 
     /// Executes the micro-kernel using the configured buffers.
     unsafe fn execute_kernel(&mut self) {

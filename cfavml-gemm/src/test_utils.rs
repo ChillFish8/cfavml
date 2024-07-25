@@ -21,8 +21,11 @@ where
     (x, y)
 }
 
-
-pub fn basic_transpose<T: Copy + Default>(width: usize, height: usize, data: &[T]) -> Vec<T> {
+pub fn basic_transpose<T: Copy + Default>(
+    width: usize,
+    height: usize,
+    data: &[T],
+) -> Vec<T> {
     let mut result = vec![T::default(); width * height];
 
     for i in 0..width {
