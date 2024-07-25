@@ -30,15 +30,6 @@ pub(super) unsafe fn transpose_32bit(
             let l1_transpose = transpose_dense_32bit(l1);
             store_8x8_32bit(j + i * height, height, l1_transpose, result_ptr);
 
-            // top-right
-            let l1 = load_8x8_32bit(
-                (i + 8) + j * width,
-                width,
-                data_ptr,
-            );
-            let l1_transpose = transpose_dense_32bit(l1);
-            store_8x8_32bit(j + (i + 8) * height, height, l1_transpose, result_ptr);
-
             // bottom-left
             let l1 = load_8x8_32bit(
                 i + (j + 8) * width,
@@ -47,6 +38,15 @@ pub(super) unsafe fn transpose_32bit(
             );
             let l1_transpose = transpose_dense_32bit(l1);
             store_8x8_32bit((j + 8) + i * height, height, l1_transpose, result_ptr);
+
+            // top-right
+            let l1 = load_8x8_32bit(
+                (i + 8) + j * width,
+                width,
+                data_ptr,
+            );
+            let l1_transpose = transpose_dense_32bit(l1);
+            store_8x8_32bit(j + (i + 8) * height, height, l1_transpose, result_ptr);
 
             // bottom-right
             let l1 = load_8x8_32bit(
