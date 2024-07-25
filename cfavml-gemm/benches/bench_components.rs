@@ -58,19 +58,3 @@ fn bench_transpose_basic(bencher: Bencher) {
         }
     });
 }
-
-#[cfg_attr(
-    not(debug_assertions),
-    divan::bench(
-        counters = [divan::counter::ItemsCount::new(DIMS * DIMS)],
-    )
-)]
-fn bench_transpose_faer(bencher: Bencher) {
-    let (l1, _) = utils::get_sample_vectors::<f32>(DIMS * DIMS);
-    let matl1 = faer::mat::from_row_major_slice(&l1, DIMS, DIMS);
-
-    bencher.bench_local(|| {
-        let data = black_box(matl1);
-        data.transpose().to_owned()
-    });
-}

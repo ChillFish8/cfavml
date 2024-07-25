@@ -29,8 +29,6 @@ pub(super) unsafe fn transpose_32bit(
 
             let l1_transpose = transpose_dense_32bit(l1);
 
-            // TODO: Maybe we can improve this step a bit, if we do it height wise first
-            //       we might get better cache locality.
             store_8x8_32bit(j + i * height, height, l1_transpose, result_ptr);
 
             i += 8;
@@ -156,6 +154,14 @@ unsafe fn store_8x8_32bit(
     _mm256_storeu_ps(result_ptr.add(offset + (5 * height)), l1.f);
     _mm256_storeu_ps(result_ptr.add(offset + (6 * height)), l1.g);
     _mm256_storeu_ps(result_ptr.add(offset + (7 * height)), l1.h);
+}
+
+#[inline(always)]
+unsafe fn prefetch_8x8_32bit(
+    offset: usize,
+    result_ptr: *mut f32,
+) {
+    _mm_prefetch::<_MM_HINT_T1>(result_ptr.add(offset).cast());
 }
 
 #[inline(always)]
