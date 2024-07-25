@@ -1,9 +1,10 @@
 #![doc = include_str!("../README.md")]
 
 mod genric_kernel;
-pub mod manipulation;
+pub mod transpose;
 
-use core::arch::x86_64::*;
+#[cfg(test)]
+mod test_utils;
 
 /// Assumes Row-Major Order.
 pub unsafe fn f32_avx2_fma_gemm(
@@ -17,8 +18,8 @@ pub unsafe fn f32_avx2_fma_gemm(
     debug_assert_eq!(a.len(), shape_a.0 * shape_a.1, "Shape error");
     debug_assert_eq!(b.len(), shape_b.0 * shape_b.1, "Shape error");
 
-    let b_ptr = b.as_ptr();
-    let c_ptr = c.as_mut_ptr();
+    let _b_ptr = b.as_ptr();
+    let _c_ptr = c.as_mut_ptr();
 
-    let c_shape = (shape_a.0, shape_b.1);
+    let _c_shape = (shape_a.0, shape_b.1);
 }

@@ -16,7 +16,7 @@ for _ in range(0, 10):
     res = np.matmul(x, y)
     elapsed = time.perf_counter() - start
 
-    print(f"{(flop / elapsed) * 1e-9} GFLOPS")
+    print(f"{(flop / elapsed) * 1e-9} GFLOPS {elapsed * 1e3 :.2f}ms")
 
 
 sample_m1 = np.array([
