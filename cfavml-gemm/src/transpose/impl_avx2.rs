@@ -14,33 +14,59 @@ pub(super) unsafe fn transpose_32bit(
     let data_ptr = data.as_ptr();
     let result_ptr = result.as_mut_ptr();
 
-    let width_remainder = width % 8;
-    let height_remainder = height % 8;
+    let width_remainder = width % 16;
+    let height_remainder = height % 16;
 
     let mut j = 0;
     while j < (height - height_remainder) {
         let mut i = 0;
         while i < (width - width_remainder) {
+            // top-left
             let l1 = load_8x8_32bit(
                 i + j * width,
                 width,
                 data_ptr,
             );
-
             let l1_transpose = transpose_dense_32bit(l1);
-
             store_8x8_32bit(j + i * height, height, l1_transpose, result_ptr);
 
-            i += 8;
+            // top-right
+            let l1 = load_8x8_32bit(
+                (i + 8) + j * width,
+                width,
+                data_ptr,
+            );
+            let l1_transpose = transpose_dense_32bit(l1);
+            store_8x8_32bit(j + (i + 8) * height, height, l1_transpose, result_ptr);
+
+            // bottom-left
+            let l1 = load_8x8_32bit(
+                i + (j + 8) * width,
+                width,
+                data_ptr,
+            );
+            let l1_transpose = transpose_dense_32bit(l1);
+            store_8x8_32bit((j + 8) + i * height, height, l1_transpose, result_ptr);
+
+            // bottom-right
+            let l1 = load_8x8_32bit(
+                (i + 8) + (j + 8) * width,
+                width,
+                data_ptr,
+            );
+            let l1_transpose = transpose_dense_32bit(l1);
+            store_8x8_32bit((j + 8) + (i + 8) * height, height, l1_transpose, result_ptr);
+
+            i += 16;
         }
 
-        j += 8;
+        j += 16;
     }
 
     // Handles the tail of each row that does not fit within 8 wide blocks.
     let mut j_remainder = 0;
     while j_remainder < (height - height_remainder) {
-        let mut i = (width - width_remainder);
+        let mut i = width - width_remainder;
         while i < width {
             *result.get_unchecked_mut(i * height + j_remainder) = *data.get_unchecked(j_remainder * width + i);
 
@@ -433,6 +459,18 @@ mod tests {
 
         unsafe {
             transpose_32bit(40, 40, &matrix, &mut result);
+            assert_eq!(&result, &expected);
+        }
+    }
+
+    #[test]
+    fn test_32bit_transponse_64x64_square() {
+        let (matrix, _) = crate::test_utils::get_sample_vectors(64 * 64);
+        let mut result = vec![0.0; 64 * 64];
+        let expected = crate::test_utils::basic_transpose(64, 64, &matrix);
+
+        unsafe {
+            transpose_32bit(64, 64, &matrix, &mut result);
             assert_eq!(&result, &expected);
         }
     }
