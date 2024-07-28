@@ -187,3 +187,14 @@ impl TransposeMatrix<f64> for Avx2 {
 const fn _MM_SHUFFLE(z: u32, y: u32, x: u32, w: u32) -> i32 {
     ((z << 6) | (y << 4) | (x << 2) | w) as i32
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::transpose::test_suite::run_test_suites_f32;
+
+    #[test]
+    fn test_avx2_f32() {
+        run_test_suites_f32::<Avx2>();
+    }
+}

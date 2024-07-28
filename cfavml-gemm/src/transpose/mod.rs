@@ -39,7 +39,7 @@ where
         #[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
         unsafe {
             if is_x86_feature_detected!("avx2") {
-                return f32_xany_avx2_nofma_transpose(width, height, data, result)
+                return f32_xany_avx2_nofma_transpose(width, height, data, result);
             }
         }
     } else if TypeId::of::<T>() == TypeId::of::<f64>()
@@ -51,7 +51,7 @@ where
         #[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
         unsafe {
             if is_x86_feature_detected!("avx2") {
-                return f64_xany_avx2_nofma_transpose(width, height, data, result)
+                return f64_xany_avx2_nofma_transpose(width, height, data, result);
             }
         }
     }
@@ -62,7 +62,8 @@ where
         let mut i = 0;
         while i < width {
             unsafe {
-                *result.get_unchecked_mut(i * height + j) = *data.get_unchecked(j * width + i);
+                *result.get_unchecked_mut(i * height + j) =
+                    *data.get_unchecked(j * width + i);
             }
 
             i += 1;
@@ -214,4 +215,69 @@ where
     unsafe fn transpose_register_matrix(
         matrix: Self::RegisterMatrix,
     ) -> Self::RegisterMatrix;
+}
+
+#[cfg(test)]
+mod test_suite {
+    use super::*;
+
+    pub fn run_test_suites_f32<R>()
+    where
+        R: TransposeMatrix<f32> + SimdRegister<f32>,
+    {
+        println!("Running 2x2 matrix");
+        let input_matrix = [0.0, 0.1, 1.0, 1.1];
+        let expected_matrix = [0.0, 1.0, 0.1, 1.1];
+        let mut result = [999.0; 4];
+        unsafe { generic_transpose::<f32, R>(2, 2, &input_matrix, &mut result) };
+        assert_eq!(result, expected_matrix);
+
+        println!("Running 4x4 matrix");
+        let input_matrix = [
+            0.0, 0.1, 0.2, 0.3, 1.0, 1.1, 1.2, 1.3, 2.0, 2.1, 2.2, 2.3, 3.0, 3.1, 3.2,
+            3.3,
+        ];
+        let expected_matrix = [
+            0.0, 1.0, 2.0, 3.0, 0.1, 1.1, 2.1, 3.1, 0.2, 1.2, 2.2, 3.2, 0.3, 1.3, 2.3,
+            3.3,
+        ];
+        let mut result = [999.0; 16];
+        unsafe { generic_transpose::<f32, R>(4, 4, &input_matrix, &mut result) };
+        assert_eq!(result, expected_matrix);
+
+        println!("Running 2x4 matrix");
+        let input_matrix = [0.0, 0.1, 1.0, 1.1, 2.0, 2.1, 3.0, 3.1];
+        let expected_matrix = [0.0, 1.0, 2.0, 3.0, 0.1, 1.1, 2.1, 3.1];
+        let mut result = [999.0; 8];
+        unsafe { generic_transpose::<f32, R>(2, 4, &input_matrix, &mut result) };
+        assert_eq!(result, expected_matrix);
+
+        println!("Running 3x3 matrix");
+        let input_matrix = [0.0, 0.1, 0.2, 1.0, 1.1, 1.2, 2.0, 2.1, 2.2];
+        let expected_matrix = [0.0, 1.0, 2.0, 0.1, 1.1, 2.1, 0.2, 1.2, 2.2];
+        let mut result = [999.0; 9];
+        unsafe { generic_transpose::<f32, R>(3, 3, &input_matrix, &mut result) };
+        assert_eq!(result, expected_matrix);
+
+        println!("Running 13x19 matrix");
+        let (input_matrix, _) = crate::test_utils::get_sample_vectors(13 * 19);
+        let expected_matrix = crate::test_utils::basic_transpose(13, 19, &input_matrix);
+        let mut result = [999.0; 13 * 19];
+        unsafe { generic_transpose::<f32, R>(13, 19, &input_matrix, &mut result) };
+        assert_eq!(&result, expected_matrix.as_slice());
+
+        println!("Running 639x63 matrix");
+        let (input_matrix, _) = crate::test_utils::get_sample_vectors(639 * 63);
+        let expected_matrix = crate::test_utils::basic_transpose(639, 63, &input_matrix);
+        let mut result = [999.0; 639 * 63];
+        unsafe { generic_transpose::<f32, R>(639, 63, &input_matrix, &mut result) };
+        assert_eq!(&result, expected_matrix.as_slice());
+
+        println!("Running 1x2 matrix");
+        let (input_matrix, _) = crate::test_utils::get_sample_vectors(1 * 2);
+        let expected_matrix = crate::test_utils::basic_transpose(1, 2, &input_matrix);
+        let mut result = [999.0; 1 * 2];
+        unsafe { generic_transpose::<f32, R>(1, 2, &input_matrix, &mut result) };
+        assert_eq!(&result, expected_matrix.as_slice());
+    }
 }
