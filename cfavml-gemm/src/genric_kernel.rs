@@ -10,7 +10,7 @@ use cfavml_utils::aligned_buffer::AlignedBuffer;
 /// the actual type being used, so for `f32` this becomes a 8x8 kernel, `f64` becomes
 /// `4x4` etc... Internally these all become operations over a [SimdRegister] with
 /// a 8x dense lane.
-pub(crate) struct GenericMatrixKernel<T, R>
+pub struct GenericMatrixKernel<T, R>
 where
     T: Copy,
     R: SimdRegister<T>,
@@ -37,7 +37,7 @@ where
 {
     /// Creates a new micro kernel with an allocation large enough
     /// to handle the 256bit x 8 operation.
-    pub(crate) fn allocate(dims: usize) -> Self {
+    pub fn allocate(dims: usize) -> Self {
         // We select `num_elements_per_lane * 8` rows+cols to compute
         // the dot product with, this means on f32 this is `8 * 8 == 64` elements
         // amounting to `8 * dims` elements loaded from buffers `a` and `b`.
@@ -62,7 +62,7 @@ where
 
     /// Computes the dot product of the given matrix of `a` and `b` writing the result to `result`
     /// using the configured micro-kernel.
-    pub(crate) unsafe fn dot_matrix(
+    pub unsafe fn dot_matrix(
         &mut self,
         a_width: usize,
         a_height: usize,

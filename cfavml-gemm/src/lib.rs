@@ -3,6 +3,8 @@
 mod genric_kernel;
 pub mod transpose;
 
+pub use self::genric_kernel::GenericMatrixKernel;
+
 #[cfg(test)]
 mod test_utils;
 

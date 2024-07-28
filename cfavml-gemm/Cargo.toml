@@ -20,3 +20,7 @@ faer = "0.19.1"
 [[bench]]
 name = "bench_components"
 harness = false
+
+[[bench]]
+name = "bench_gemm"
+harness = false
