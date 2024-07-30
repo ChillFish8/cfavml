@@ -5,7 +5,7 @@ use cfavml::danger::*;
 
 mod utils;
 
-const DIMS: usize = 128;
+const DIMS: usize = 4096;
 const FLOP: usize = DIMS * DIMS * 2 * DIMS;
 
 fn main() {

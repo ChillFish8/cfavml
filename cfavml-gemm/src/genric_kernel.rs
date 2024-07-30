@@ -1,5 +1,6 @@
 use std::fmt::Debug;
 use std::{mem, ptr};
+use std::time::{Duration, Instant};
 
 use cfavml::danger::{DenseLane, SimdRegister};
 use cfavml_utils::aligned_buffer::AlignedBuffer;
@@ -48,7 +49,7 @@ where
         // Internally this is only ever going to be used with integer primitives
         // which do not impose any additional alignment issues.
         let a_buffer = unsafe { AlignedBuffer::zeroed(buffer_size) };
-        let b_buffer = unsafe { AlignedBuffer::zeroed(buffer_size) };
+        let b_buffer = unsafe { AlignedBuffer::zeroed(dims * dims) };  // TODO: Change
         let temp_buffer = unsafe { AlignedBuffer::zeroed(buffer_size) };
 
         Self {
@@ -109,10 +110,9 @@ where
             "TODO: Remove limitation"
         ); // TODO: FIXME!
 
-        let b_buffer_ptr = self.b_buffer.as_mut_slice().as_mut_ptr();
+        crate::transpose::transpose_matrix(b_width, b_height, b, self.b_buffer.as_mut_slice());
 
         let a_ptr = a.as_ptr();
-        let b_ptr = b.as_ptr();
         let result_ptr = result.as_mut_ptr();
 
         let mut i = 0;
@@ -130,12 +130,9 @@ where
 
             let mut j = 0;
             while j < b_width {
-                for n in 0..b_height {
-                    let reg = R::load(b_ptr.add(j + (n * b_width)));
-                    R::write(b_buffer_ptr.add(n * 8), reg);
-                }
+                dbg!(j * b_height);
+                self.execute_kernel(j * b_height);
 
-                self.execute_kernel();
                 self.drain_kernel(result_ptr.add(j + (i * a_width)), a_width);
 
                 j += R::elements_per_lane();
@@ -173,7 +170,8 @@ where
     }
 
     /// Executes the micro-kernel using the configured buffers.
-    unsafe fn execute_kernel(&mut self) {
+    unsafe fn execute_kernel(&mut self, b_offset: usize) {
+        debug_slice("B", 8, self.b_buffer.as_slice());
         let a_ptr = self.a_buffer.as_ptr();
         let b_ptr = self.b_buffer.as_ptr();
 
@@ -197,7 +195,8 @@ where
 
         let mut offset = 0;
         while offset < self.a_buffer.len() {
-            self.compute_partial_step(a_ptr.add(offset), b_ptr.add(offset));
+            dbg!(offset);
+            self.compute_partial_step(a_ptr.add(offset), b_ptr.add(b_offset + offset));
             offset += 16;
         }
     }
@@ -210,14 +209,16 @@ where
     unsafe fn compute_partial_step(&mut self, a_ptr: *const T, b_ptr: *const T) {
         let b_row_1 = R::load(b_ptr);
         let b_row_2 = R::load(b_ptr.add(8));
+        println!("B1: {:?}", std::slice::from_raw_parts(b_ptr, 8));
+        println!("B2: {:?}", std::slice::from_raw_parts(b_ptr.add(8), 8));
 
         // Processing the first row of the first 4 columns of B
         // and then calculating the first part of the dot product of the first element of
         // the first 4 rows  of the 1st column.
-        let a_broadcast_col1_row1 = R::filled(a_ptr.read());
-        let a_broadcast_col1_row2 = R::filled(a_ptr.add(1).read());
-        let a_broadcast_col1_row3 = R::filled(a_ptr.add(2).read());
-        let a_broadcast_col1_row4 = R::filled(a_ptr.add(3).read());
+        let a_broadcast_col1_row1 = R::filled(dbg!(a_ptr.read()));
+        let a_broadcast_col1_row2 = R::filled(dbg!(a_ptr.add(1).read()));
+        let a_broadcast_col1_row3 = R::filled(dbg!(a_ptr.add(2).read()));
+        let a_broadcast_col1_row4 = R::filled(dbg!(a_ptr.add(3).read()));
         self.matrix_result.a =
             R::fmadd(a_broadcast_col1_row1, b_row_1, self.matrix_result.a);
         self.matrix_result.b =
@@ -228,10 +229,10 @@ where
             R::fmadd(a_broadcast_col1_row4, b_row_1, self.matrix_result.d);
 
         // Calculating the second step, forming the first step of calculating the 8x8 matrix.
-        let a_broadcast_col1_row5 = R::filled(a_ptr.add(4).read());
-        let a_broadcast_col1_row6 = R::filled(a_ptr.add(5).read());
-        let a_broadcast_col1_row7 = R::filled(a_ptr.add(6).read());
-        let a_broadcast_col1_row8 = R::filled(a_ptr.add(7).read());
+        let a_broadcast_col1_row5 = R::filled(dbg!(a_ptr.add(4).read()));
+        let a_broadcast_col1_row6 = R::filled(dbg!(a_ptr.add(5).read()));
+        let a_broadcast_col1_row7 = R::filled(dbg!(a_ptr.add(6).read()));
+        let a_broadcast_col1_row8 = R::filled(dbg!(a_ptr.add(7).read()));
         self.matrix_result.e =
             R::fmadd(a_broadcast_col1_row5, b_row_1, self.matrix_result.e);
         self.matrix_result.f =
@@ -242,10 +243,10 @@ where
             R::fmadd(a_broadcast_col1_row8, b_row_1, self.matrix_result.h);
 
         // Now we've gone down to the 2nd row of B, and target the 2nd col of A.
-        let a_broadcast_col2_row1 = R::filled(a_ptr.add(8).read());
-        let a_broadcast_col2_row2 = R::filled(a_ptr.add(9).read());
-        let a_broadcast_col2_row3 = R::filled(a_ptr.add(10).read());
-        let a_broadcast_col2_row4 = R::filled(a_ptr.add(11).read());
+        let a_broadcast_col2_row1 = R::filled(dbg!(a_ptr.add(8).read()));
+        let a_broadcast_col2_row2 = R::filled(dbg!(a_ptr.add(9).read()));
+        let a_broadcast_col2_row3 = R::filled(dbg!(a_ptr.add(10).read()));
+        let a_broadcast_col2_row4 = R::filled(dbg!(a_ptr.add(11).read()));
         self.matrix_result.a =
             R::fmadd(a_broadcast_col2_row1, b_row_2, self.matrix_result.a);
         self.matrix_result.b =
@@ -255,10 +256,10 @@ where
         self.matrix_result.d =
             R::fmadd(a_broadcast_col2_row4, b_row_2, self.matrix_result.d);
 
-        let a_broadcast_col2_row5 = R::filled(a_ptr.add(12).read());
-        let a_broadcast_col2_row6 = R::filled(a_ptr.add(13).read());
-        let a_broadcast_col2_row7 = R::filled(a_ptr.add(14).read());
-        let a_broadcast_col2_row8 = R::filled(a_ptr.add(15).read());
+        let a_broadcast_col2_row5 = R::filled(dbg!(a_ptr.add(12).read()));
+        let a_broadcast_col2_row6 = R::filled(dbg!(a_ptr.add(13).read()));
+        let a_broadcast_col2_row7 = R::filled(dbg!(a_ptr.add(14).read()));
+        let a_broadcast_col2_row8 = R::filled(dbg!(a_ptr.add(15).read()));
         self.matrix_result.e =
             R::fmadd(a_broadcast_col2_row5, b_row_2, self.matrix_result.e);
         self.matrix_result.f =
@@ -307,7 +308,17 @@ mod tests {
 
     #[test]
     fn test_basic_f32_gemm_8x8() {
-        let (a, b) = generate_sample_data(8 * 8);
+        let a = [
+            1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8,
+            2.1, 2.2, 2.3, 2.4, 2.5, 2.6, 2.7, 2.8,
+            3.1, 3.2, 3.3, 3.4, 3.5, 3.6, 3.7, 3.8,
+            4.1, 4.2, 4.3, 4.4, 4.5, 4.6, 4.7, 4.8,
+            5.1, 5.2, 5.3, 5.4, 5.5, 5.6, 5.7, 5.8,
+            6.1, 6.2, 6.3, 6.4, 6.5, 6.6, 6.7, 6.8,
+            7.1, 7.2, 7.3, 7.4, 7.5, 7.6, 7.7, 7.8,
+            8.1, 8.2, 8.3, 8.4, 8.5, 8.6, 8.7, 8.8,
+        ];
+        let b = a;
 
         let na = ndarray::ArrayView2::from_shape((8, 8), &a).unwrap();
         let nb = ndarray::ArrayView2::from_shape((8, 8), &b).unwrap();
