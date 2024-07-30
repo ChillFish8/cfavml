@@ -215,10 +215,10 @@ where
         // Processing the first row of the first 4 columns of B
         // and then calculating the first part of the dot product of the first element of
         // the first 4 rows  of the 1st column.
-        let a_broadcast_col1_row1 = R::filled(dbg!(a_ptr.read()));
-        let a_broadcast_col1_row2 = R::filled(dbg!(a_ptr.add(1).read()));
-        let a_broadcast_col1_row3 = R::filled(dbg!(a_ptr.add(2).read()));
-        let a_broadcast_col1_row4 = R::filled(dbg!(a_ptr.add(3).read()));
+        let a_broadcast_col1_row1 = R::filled(a_ptr.read());
+        let a_broadcast_col1_row2 = R::filled(a_ptr.add(1).read());
+        let a_broadcast_col1_row3 = R::filled(a_ptr.add(2).read());
+        let a_broadcast_col1_row4 = R::filled(a_ptr.add(3).read());
         self.matrix_result.a =
             R::fmadd(a_broadcast_col1_row1, b_row_1, self.matrix_result.a);
         self.matrix_result.b =
@@ -229,10 +229,10 @@ where
             R::fmadd(a_broadcast_col1_row4, b_row_1, self.matrix_result.d);
 
         // Calculating the second step, forming the first step of calculating the 8x8 matrix.
-        let a_broadcast_col1_row5 = R::filled(dbg!(a_ptr.add(4).read()));
-        let a_broadcast_col1_row6 = R::filled(dbg!(a_ptr.add(5).read()));
-        let a_broadcast_col1_row7 = R::filled(dbg!(a_ptr.add(6).read()));
-        let a_broadcast_col1_row8 = R::filled(dbg!(a_ptr.add(7).read()));
+        let a_broadcast_col1_row5 = R::filled(a_ptr.add(4).read());
+        let a_broadcast_col1_row6 = R::filled(a_ptr.add(5).read());
+        let a_broadcast_col1_row7 = R::filled(a_ptr.add(6).read());
+        let a_broadcast_col1_row8 = R::filled(a_ptr.add(7).read());
         self.matrix_result.e =
             R::fmadd(a_broadcast_col1_row5, b_row_1, self.matrix_result.e);
         self.matrix_result.f =
@@ -243,10 +243,10 @@ where
             R::fmadd(a_broadcast_col1_row8, b_row_1, self.matrix_result.h);
 
         // Now we've gone down to the 2nd row of B, and target the 2nd col of A.
-        let a_broadcast_col2_row1 = R::filled(dbg!(a_ptr.add(8).read()));
-        let a_broadcast_col2_row2 = R::filled(dbg!(a_ptr.add(9).read()));
-        let a_broadcast_col2_row3 = R::filled(dbg!(a_ptr.add(10).read()));
-        let a_broadcast_col2_row4 = R::filled(dbg!(a_ptr.add(11).read()));
+        let a_broadcast_col2_row1 = R::filled(a_ptr.add(8).read());
+        let a_broadcast_col2_row2 = R::filled(a_ptr.add(9).read());
+        let a_broadcast_col2_row3 = R::filled(a_ptr.add(10).read());
+        let a_broadcast_col2_row4 = R::filled(a_ptr.add(11).read());
         self.matrix_result.a =
             R::fmadd(a_broadcast_col2_row1, b_row_2, self.matrix_result.a);
         self.matrix_result.b =
@@ -256,10 +256,10 @@ where
         self.matrix_result.d =
             R::fmadd(a_broadcast_col2_row4, b_row_2, self.matrix_result.d);
 
-        let a_broadcast_col2_row5 = R::filled(dbg!(a_ptr.add(12).read()));
-        let a_broadcast_col2_row6 = R::filled(dbg!(a_ptr.add(13).read()));
-        let a_broadcast_col2_row7 = R::filled(dbg!(a_ptr.add(14).read()));
-        let a_broadcast_col2_row8 = R::filled(dbg!(a_ptr.add(15).read()));
+        let a_broadcast_col2_row5 = R::filled(a_ptr.add(12).read());
+        let a_broadcast_col2_row6 = R::filled(a_ptr.add(13).read());
+        let a_broadcast_col2_row7 = R::filled(a_ptr.add(14).read());
+        let a_broadcast_col2_row8 = R::filled(a_ptr.add(15).read());
         self.matrix_result.e =
             R::fmadd(a_broadcast_col2_row5, b_row_2, self.matrix_result.e);
         self.matrix_result.f =
