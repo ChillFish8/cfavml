@@ -130,7 +130,7 @@ where
 
             let mut j = 0;
             while j < b_width {
-                dbg!(j * b_height);
+                // dbg!(j * b_height);
                 self.execute_kernel(j * b_height);
 
                 self.drain_kernel(result_ptr.add(j + (i * a_width)), a_width);
@@ -171,7 +171,7 @@ where
 
     /// Executes the micro-kernel using the configured buffers.
     unsafe fn execute_kernel(&mut self, b_offset: usize) {
-        debug_slice("B", 8, self.b_buffer.as_slice());
+        // debug_slice("B", 8, self.b_buffer.as_slice());
         let a_ptr = self.a_buffer.as_ptr();
         let b_ptr = self.b_buffer.as_ptr();
 
@@ -192,10 +192,17 @@ where
         // - TODO: We should handle width and heights of the two matrices separately
         //         otherwise it is going to become painful later on.
         // - TODO: So it definitely does not work when the matrix is odd lengths, i.e. 32 x 8.
+        // - Ok so we broke the matmul when we moved the operation to pre-transpose B
+        //   this is because we go from now loading the rows of B, to the columns of B
+        //   which naturally changes how we do our FMADD operations. Maybe not the worst
+        //   thing possible...
+        // - So solution is instead of broadcasting A we broadcast single elements of B
+        //   and then load the full-width of the transposed A lanes.
+        // - TODO: Maybe we can swap A and B to avoid the transpositions?
+        // - We probably need to redo the kernel to correctly handle the fact that B is column major.
 
         let mut offset = 0;
         while offset < self.a_buffer.len() {
-            dbg!(offset);
             self.compute_partial_step(a_ptr.add(offset), b_ptr.add(b_offset + offset));
             offset += 16;
         }
@@ -207,67 +214,42 @@ where
     /// throughput here although we only target ~16 registers in use at any point in time
     /// which may not be fully optimal on AVX512 or NEON architectures which have 32 available.
     unsafe fn compute_partial_step(&mut self, a_ptr: *const T, b_ptr: *const T) {
-        let b_row_1 = R::load(b_ptr);
-        let b_row_2 = R::load(b_ptr.add(8));
-        println!("B1: {:?}", std::slice::from_raw_parts(b_ptr, 8));
-        println!("B2: {:?}", std::slice::from_raw_parts(b_ptr.add(8), 8));
+        // println!("A1: {:?}", std::slice::from_raw_parts(a_ptr, 8));
+        // println!("A2: {:?}\n", std::slice::from_raw_parts(a_ptr.add(8), 8));
+        // println!("B1: {:?}", std::slice::from_raw_parts(b_ptr, 8));
+        // println!("B2: {:?}", std::slice::from_raw_parts(b_ptr.add(8), 8));
 
-        // Processing the first row of the first 4 columns of B
-        // and then calculating the first part of the dot product of the first element of
-        // the first 4 rows  of the 1st column.
-        let a_broadcast_col1_row1 = R::filled(a_ptr.read());
-        let a_broadcast_col1_row2 = R::filled(a_ptr.add(1).read());
-        let a_broadcast_col1_row3 = R::filled(a_ptr.add(2).read());
-        let a_broadcast_col1_row4 = R::filled(a_ptr.add(3).read());
-        self.matrix_result.a =
-            R::fmadd(a_broadcast_col1_row1, b_row_1, self.matrix_result.a);
-        self.matrix_result.b =
-            R::fmadd(a_broadcast_col1_row2, b_row_1, self.matrix_result.b);
-        self.matrix_result.c =
-            R::fmadd(a_broadcast_col1_row3, b_row_1, self.matrix_result.c);
-        self.matrix_result.d =
-            R::fmadd(a_broadcast_col1_row4, b_row_1, self.matrix_result.d);
+        // Col 1-2 of A
+        let a_row_1 = R::load(a_ptr);
+        let a_row_2 = R::load(a_ptr.add(8));
+        let b_broadcast_col1_row1 = R::filled(b_ptr.add(0).read());
+        let b_broadcast_col1_row2 = R::filled(b_ptr.add(1).read());
+        self.matrix_result.a = R::fmadd(b_broadcast_col1_row1, a_row_1, self.matrix_result.a);
+        self.matrix_result.b = R::fmadd(b_broadcast_col1_row2, a_row_2, self.matrix_result.b);
 
-        // Calculating the second step, forming the first step of calculating the 8x8 matrix.
-        let a_broadcast_col1_row5 = R::filled(a_ptr.add(4).read());
-        let a_broadcast_col1_row6 = R::filled(a_ptr.add(5).read());
-        let a_broadcast_col1_row7 = R::filled(a_ptr.add(6).read());
-        let a_broadcast_col1_row8 = R::filled(a_ptr.add(7).read());
-        self.matrix_result.e =
-            R::fmadd(a_broadcast_col1_row5, b_row_1, self.matrix_result.e);
-        self.matrix_result.f =
-            R::fmadd(a_broadcast_col1_row6, b_row_1, self.matrix_result.f);
-        self.matrix_result.g =
-            R::fmadd(a_broadcast_col1_row7, b_row_1, self.matrix_result.g);
-        self.matrix_result.h =
-            R::fmadd(a_broadcast_col1_row8, b_row_1, self.matrix_result.h);
+        // Col 3-4 of A
+        let b_broadcast_col1_row3 = R::filled(b_ptr.add(2).read());
+        let b_broadcast_col1_row4 = R::filled(b_ptr.add(3).read());
+        let a_row_3 = R::load(a_ptr.add(16));
+        let a_row_4 = R::load(a_ptr.add(24));
+        self.matrix_result.c = R::fmadd(b_broadcast_col1_row3, a_row_3, self.matrix_result.c);
+        self.matrix_result.d = R::fmadd(b_broadcast_col1_row4, a_row_4, self.matrix_result.d);
 
-        // Now we've gone down to the 2nd row of B, and target the 2nd col of A.
-        let a_broadcast_col2_row1 = R::filled(a_ptr.add(8).read());
-        let a_broadcast_col2_row2 = R::filled(a_ptr.add(9).read());
-        let a_broadcast_col2_row3 = R::filled(a_ptr.add(10).read());
-        let a_broadcast_col2_row4 = R::filled(a_ptr.add(11).read());
-        self.matrix_result.a =
-            R::fmadd(a_broadcast_col2_row1, b_row_2, self.matrix_result.a);
-        self.matrix_result.b =
-            R::fmadd(a_broadcast_col2_row2, b_row_2, self.matrix_result.b);
-        self.matrix_result.c =
-            R::fmadd(a_broadcast_col2_row3, b_row_2, self.matrix_result.c);
-        self.matrix_result.d =
-            R::fmadd(a_broadcast_col2_row4, b_row_2, self.matrix_result.d);
+        // Col 5-6 of A
+        let b_broadcast_col1_row5 = R::filled(b_ptr.add(4).read());
+        let b_broadcast_col1_row6 = R::filled(b_ptr.add(5).read());
+        let a_row_5 = R::load(a_ptr.add(32));
+        let a_row_6 = R::load(a_ptr.add(40));
+        self.matrix_result.e = R::fmadd(b_broadcast_col1_row5, a_row_5, self.matrix_result.e);
+        self.matrix_result.f = R::fmadd(b_broadcast_col1_row6, a_row_6, self.matrix_result.f);
 
-        let a_broadcast_col2_row5 = R::filled(a_ptr.add(12).read());
-        let a_broadcast_col2_row6 = R::filled(a_ptr.add(13).read());
-        let a_broadcast_col2_row7 = R::filled(a_ptr.add(14).read());
-        let a_broadcast_col2_row8 = R::filled(a_ptr.add(15).read());
-        self.matrix_result.e =
-            R::fmadd(a_broadcast_col2_row5, b_row_2, self.matrix_result.e);
-        self.matrix_result.f =
-            R::fmadd(a_broadcast_col2_row6, b_row_2, self.matrix_result.f);
-        self.matrix_result.g =
-            R::fmadd(a_broadcast_col2_row7, b_row_2, self.matrix_result.g);
-        self.matrix_result.h =
-            R::fmadd(a_broadcast_col2_row8, b_row_2, self.matrix_result.h);
+        // Col 7-8 of A
+        let b_broadcast_col1_row7 = R::filled(b_ptr.add(6).read());
+        let b_broadcast_col1_row8 = R::filled(b_ptr.add(7).read());
+        let a_row_7 = R::load(a_ptr.add(48));
+        let a_row_8 = R::load(a_ptr.add(56));
+        self.matrix_result.g = R::fmadd(b_broadcast_col1_row7, a_row_7, self.matrix_result.g);
+        self.matrix_result.h = R::fmadd(b_broadcast_col1_row8, a_row_8, self.matrix_result.h);
     }
 }
 
@@ -338,6 +320,9 @@ mod tests {
             );
         }
 
+        let mut transposed_buffer = vec![0.0; 8 * 8];
+        crate::transpose::transpose_matrix(8, 8, &result_buffer, &mut transposed_buffer);
+
         let mut expected = ndarray::Array2::zeros((8, 8));
         ndarray::linalg::general_mat_mul(
             1.0,
@@ -347,7 +332,7 @@ mod tests {
             &mut expected,
         );
 
-        assert_eq!(&expected.into_raw_vec(), &result_buffer);
+        assert_eq!(&expected.into_raw_vec(), &transposed_buffer);
     }
 
     #[test]
