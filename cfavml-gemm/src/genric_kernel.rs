@@ -200,6 +200,7 @@ where
         //   and then load the full-width of the transposed A lanes.
         // - TODO: Maybe we can swap A and B to avoid the transpositions?
         // - We probably need to redo the kernel to correctly handle the fact that B is column major.
+        // - I think we can try and get A to be the broadcast again ~maybe, unsure
 
         let mut offset = 0;
         while offset < self.a_buffer.len() {
