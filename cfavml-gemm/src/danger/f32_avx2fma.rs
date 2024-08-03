@@ -47,93 +47,13 @@ pub unsafe fn matmul(
     // - Transpose matrix A so it is now column-major.
     let b_buffer = prep_column_matrix_component(b_width, b_height, b);
 
-    let mut temp_buffer = unsafe { AlignedBuffer::<f32>::zeroed(BLOCK_Y * a_width) };
-    let mut result_buffer = temp_buffer.clone();
-
     let b = b_buffer.as_slice();
 
+    let a_ptr = a.as_ptr();
     let b_ptr = b.as_ptr();
     let result_ptr = result.as_mut_ptr();
-
-    // TODO: Implement this as a 16x16 kernel, operating in mini blocks of 4x16 ops.
-    //       much cheaper to transpose and copy data to and from.
-    let mut i = 0;
-    while i < a_height {
-        // Copy 4 x N rows of A and transpose.
-        let a_read_offset = i * a_width;
-        crate::transpose::transpose_matrix(
-            a_width,
-            16,
-            a.get_unchecked(a_read_offset..a_read_offset+16*a_width),
-            temp_buffer.as_mut_slice(),
-        );
-
-        let mut j = 0;
-        while j < b_width {
-            compute_16x16_matrix(
-                temp_buffer.as_ptr(),
-                b_ptr.add(j * b_height),
-                result_ptr.add(j + i*a_width),
-                a_width,
-            );
-
-            j += BLOCK_X;
-        }
-
-        i += BLOCK_Y;
-    }
 }
 
-
-#[inline(always)]
-unsafe fn compute_16x16_matrix(
-    a_ptr: *const f32,
-    b_ptr: *const f32,
-    result_ptr: *mut f32,
-    a_width: usize,
-) {
-    // A-B=row1 C-D=row2 E-F=row3 G-H=row4
-
-    for block in 0..4 {
-        let a_block_step = block * 4;
-        let result_offset = block * 4 * a_width;
-
-        let mut matrix = DenseLane::copy(_mm256_setzero_ps());
-
-        for col in 0..a_width {
-            let a_offset = (col * 16) + a_block_step;
-            let b_offset = col * 16;
-
-            let b_row1_part1 = _mm256_loadu_ps(b_ptr.add(b_offset + 0));
-            let b_row1_part2 = _mm256_loadu_ps(b_ptr.add(b_offset + 8));
-
-            // A Row 1 & 2
-            let a_broadcast_col1_row1 = _mm256_set1_ps(a_ptr.add(a_offset + 0).read());
-            let a_broadcast_col1_row2 = _mm256_set1_ps(a_ptr.add(a_offset + 1).read());
-            matrix.a = _mm256_fmadd_ps(b_row1_part1, a_broadcast_col1_row1, matrix.a);
-            matrix.b = _mm256_fmadd_ps(b_row1_part2, a_broadcast_col1_row1, matrix.b);
-            matrix.c = _mm256_fmadd_ps(b_row1_part1, a_broadcast_col1_row2, matrix.c);
-            matrix.d = _mm256_fmadd_ps(b_row1_part2, a_broadcast_col1_row2, matrix.d);
-
-            // A Row 3 & 4
-            let a_broadcast_col1_row3 = _mm256_set1_ps(a_ptr.add(a_offset + 2).read());
-            let a_broadcast_col1_row4 = _mm256_set1_ps(a_ptr.add(a_offset + 3).read());
-            matrix.e = _mm256_fmadd_ps(b_row1_part1, a_broadcast_col1_row3, matrix.e);
-            matrix.f = _mm256_fmadd_ps(b_row1_part2, a_broadcast_col1_row3, matrix.f);
-            matrix.g = _mm256_fmadd_ps(b_row1_part1, a_broadcast_col1_row4, matrix.g);
-            matrix.h = _mm256_fmadd_ps(b_row1_part2, a_broadcast_col1_row4, matrix.h);
-        }
-
-        _mm256_storeu_ps(result_ptr.add(result_offset + (0 * a_width) + 0), matrix.a);
-        _mm256_storeu_ps(result_ptr.add(result_offset + (0 * a_width) + 8), matrix.b);
-        _mm256_storeu_ps(result_ptr.add(result_offset + (1 * a_width) + 0), matrix.c);
-        _mm256_storeu_ps(result_ptr.add(result_offset + (1 * a_width) + 8), matrix.d);
-        _mm256_storeu_ps(result_ptr.add(result_offset + (2 * a_width) + 0), matrix.e);
-        _mm256_storeu_ps(result_ptr.add(result_offset + (2 * a_width) + 8), matrix.f);
-        _mm256_storeu_ps(result_ptr.add(result_offset + (3 * a_width) + 0), matrix.g);
-        _mm256_storeu_ps(result_ptr.add(result_offset + (3 * a_width) + 8), matrix.h);
-    }
-}
 
 unsafe fn prep_column_matrix_component(width: usize, height: usize, data: &[f32]) -> AlignedBuffer<f32> {
     let mut layout_buffer = unsafe { AlignedBuffer::<f32>::zeroed(width * height) };
