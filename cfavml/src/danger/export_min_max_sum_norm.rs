@@ -170,6 +170,14 @@ pub mod min_max_sum_ops_fallback {
     use super::*;
 
     export_op_horizontal!(
+        description = "Calculates the squared L2 norm of the provided vector",
+        ty = f32,
+        register = Fallback,
+        op = generic_squared_norm,
+        xconst = f32_xconst_fallback_nofma_norm,
+        xany = f32_xany_fallback_nofma_norm,
+    );
+    export_op_horizontal!(
         description = "Horizontal sum of the provided vector",
         ty = f32,
         register = Fallback,
@@ -210,6 +218,14 @@ pub mod min_max_sum_ops_fallback {
         xany = f32_xany_fallback_nofma_min_vertical,
     );
 
+    export_op_horizontal!(
+        description = "Calculates the squared L2 norm of the provided vector",
+        ty = f64,
+        register = Fallback,
+        op = generic_squared_norm,
+        xconst = f64_xconst_fallback_nofma_norm,
+        xany = f64_xany_fallback_nofma_norm,
+    );
     export_op_horizontal!(
         description = "Horizontal sum of the provided vector",
         ty = f64,
@@ -252,6 +268,14 @@ pub mod min_max_sum_ops_fallback {
     );
 
     export_op_horizontal!(
+        description = "Calculates the squared L2 norm of the provided vector",
+        ty = u8,
+        register = Fallback,
+        op = generic_squared_norm,
+        xconst = u8_xconst_fallback_nofma_norm,
+        xany = u8_xany_fallback_nofma_norm,
+    );
+    export_op_horizontal!(
         description = "Horizontal sum of the provided vector",
         ty = u8,
         register = Fallback,
@@ -292,6 +316,14 @@ pub mod min_max_sum_ops_fallback {
         xany = u8_xany_fallback_nofma_min_vertical,
     );
 
+    export_op_horizontal!(
+        description = "Calculates the squared L2 norm of the provided vector",
+        ty = u16,
+        register = Fallback,
+        op = generic_squared_norm,
+        xconst = u16_xconst_fallback_nofma_norm,
+        xany = u16_xany_fallback_nofma_norm,
+    );
     export_op_horizontal!(
         description = "Horizontal sum of the provided vector",
         ty = u16,
@@ -334,6 +366,14 @@ pub mod min_max_sum_ops_fallback {
     );
 
     export_op_horizontal!(
+        description = "Calculates the squared L2 norm of the provided vector",
+        ty = u32,
+        register = Fallback,
+        op = generic_squared_norm,
+        xconst = u32_xconst_fallback_nofma_norm,
+        xany = u32_xany_fallback_nofma_norm,
+    );
+    export_op_horizontal!(
         description = "Horizontal sum of the provided vector",
         ty = u32,
         register = Fallback,
@@ -374,6 +414,14 @@ pub mod min_max_sum_ops_fallback {
         xany = u32_xany_fallback_nofma_min_vertical,
     );
 
+    export_op_horizontal!(
+        description = "Calculates the squared L2 norm of the provided vector",
+        ty = u64,
+        register = Fallback,
+        op = generic_squared_norm,
+        xconst = u64_xconst_fallback_nofma_norm,
+        xany = u64_xany_fallback_nofma_norm,
+    );
     export_op_horizontal!(
         description = "Horizontal sum of the provided vector",
         ty = u64,
@@ -416,6 +464,14 @@ pub mod min_max_sum_ops_fallback {
     );
 
     export_op_horizontal!(
+        description = "Calculates the squared L2 norm of the provided vector",
+        ty = i8,
+        register = Fallback,
+        op = generic_squared_norm,
+        xconst = i8_xconst_fallback_nofma_norm,
+        xany = i8_xany_fallback_nofma_norm,
+    );
+    export_op_horizontal!(
         description = "Horizontal sum of the provided vector",
         ty = i8,
         register = Fallback,
@@ -456,6 +512,14 @@ pub mod min_max_sum_ops_fallback {
         xany = i8_xany_fallback_nofma_min_vertical,
     );
 
+    export_op_horizontal!(
+        description = "Calculates the squared L2 norm of the provided vector",
+        ty = i16,
+        register = Fallback,
+        op = generic_squared_norm,
+        xconst = i16_xconst_fallback_nofma_norm,
+        xany = i16_xany_fallback_nofma_norm,
+    );
     export_op_horizontal!(
         description = "Horizontal sum of the provided vector",
         ty = i16,
@@ -498,6 +562,14 @@ pub mod min_max_sum_ops_fallback {
     );
 
     export_op_horizontal!(
+        description = "Calculates the squared L2 norm of the provided vector",
+        ty = i32,
+        register = Fallback,
+        op = generic_squared_norm,
+        xconst = i32_xconst_fallback_nofma_norm,
+        xany = i32_xany_fallback_nofma_norm,
+    );
+    export_op_horizontal!(
         description = "Horizontal sum of the provided vector",
         ty = i32,
         register = Fallback,
@@ -538,6 +610,14 @@ pub mod min_max_sum_ops_fallback {
         xany = i32_xany_fallback_nofma_min_vertical,
     );
 
+    export_op_horizontal!(
+        description = "Calculates the squared L2 norm of the provided vector",
+        ty = i64,
+        register = Fallback,
+        op = generic_squared_norm,
+        xconst = i64_xconst_fallback_nofma_norm,
+        xany = i64_xany_fallback_nofma_norm,
+    );
     export_op_horizontal!(
         description = "Horizontal sum of the provided vector",
         ty = i64,
@@ -590,6 +670,15 @@ pub mod min_max_sum_ops_avx2 {
     use super::*;
 
     export_op_horizontal!(
+        description = "Calculates the squared L2 norm of the provided vector",
+        ty = f32,
+        register = Avx2,
+        op = generic_squared_norm,
+        xconst = f32_xconst_avx2_nofma_norm,
+        xany = f32_xany_avx2_nofma_norm,
+        features = "avx2"
+    );
+    export_op_horizontal!(
         description = "Horizontal sum of the provided vector",
         ty = f32,
         register = Avx2,
@@ -635,6 +724,15 @@ pub mod min_max_sum_ops_avx2 {
         features = "avx2"
     );
 
+    export_op_horizontal!(
+        description = "Calculates the squared L2 norm of the provided vector",
+        ty = f64,
+        register = Avx2,
+        op = generic_squared_norm,
+        xconst = f64_xconst_avx2_nofma_norm,
+        xany = f64_xany_avx2_nofma_norm,
+        features = "avx2"
+    );
     export_op_horizontal!(
         description = "Horizontal sum of the provided vector",
         ty = f64,
@@ -682,6 +780,15 @@ pub mod min_max_sum_ops_avx2 {
     );
 
     export_op_horizontal!(
+        description = "Calculates the squared L2 norm of the provided vector",
+        ty = u8,
+        register = Avx2,
+        op = generic_squared_norm,
+        xconst = u8_xconst_avx2_nofma_norm,
+        xany = u8_xany_avx2_nofma_norm,
+        features = "avx2"
+    );
+    export_op_horizontal!(
         description = "Horizontal sum of the provided vector",
         ty = u8,
         register = Avx2,
@@ -727,6 +834,15 @@ pub mod min_max_sum_ops_avx2 {
         features = "avx2"
     );
 
+    export_op_horizontal!(
+        description = "Calculates the squared L2 norm of the provided vector",
+        ty = u16,
+        register = Avx2,
+        op = generic_squared_norm,
+        xconst = u16_xconst_avx2_nofma_norm,
+        xany = u16_xany_avx2_nofma_norm,
+        features = "avx2"
+    );
     export_op_horizontal!(
         description = "Horizontal sum of the provided vector",
         ty = u16,
@@ -774,6 +890,15 @@ pub mod min_max_sum_ops_avx2 {
     );
 
     export_op_horizontal!(
+        description = "Calculates the squared L2 norm of the provided vector",
+        ty = u32,
+        register = Avx2,
+        op = generic_squared_norm,
+        xconst = u32_xconst_avx2_nofma_norm,
+        xany = u32_xany_avx2_nofma_norm,
+        features = "avx2"
+    );
+    export_op_horizontal!(
         description = "Horizontal sum of the provided vector",
         ty = u32,
         register = Avx2,
@@ -819,6 +944,15 @@ pub mod min_max_sum_ops_avx2 {
         features = "avx2"
     );
 
+    export_op_horizontal!(
+        description = "Calculates the squared L2 norm of the provided vector",
+        ty = u64,
+        register = Avx2,
+        op = generic_squared_norm,
+        xconst = u64_xconst_avx2_nofma_norm,
+        xany = u64_xany_avx2_nofma_norm,
+        features = "avx2"
+    );
     export_op_horizontal!(
         description = "Horizontal sum of the provided vector",
         ty = u64,
@@ -866,6 +1000,15 @@ pub mod min_max_sum_ops_avx2 {
     );
 
     export_op_horizontal!(
+        description = "Calculates the squared L2 norm of the provided vector",
+        ty = i8,
+        register = Avx2,
+        op = generic_squared_norm,
+        xconst = i8_xconst_avx2_nofma_norm,
+        xany = i8_xany_avx2_nofma_norm,
+        features = "avx2"
+    );
+    export_op_horizontal!(
         description = "Horizontal sum of the provided vector",
         ty = i8,
         register = Avx2,
@@ -911,6 +1054,15 @@ pub mod min_max_sum_ops_avx2 {
         features = "avx2"
     );
 
+    export_op_horizontal!(
+        description = "Calculates the squared L2 norm of the provided vector",
+        ty = i16,
+        register = Avx2,
+        op = generic_squared_norm,
+        xconst = i16_xconst_avx2_nofma_norm,
+        xany = i16_xany_avx2_nofma_norm,
+        features = "avx2"
+    );
     export_op_horizontal!(
         description = "Horizontal sum of the provided vector",
         ty = i16,
@@ -958,6 +1110,15 @@ pub mod min_max_sum_ops_avx2 {
     );
 
     export_op_horizontal!(
+        description = "Calculates the squared L2 norm of the provided vector",
+        ty = i32,
+        register = Avx2,
+        op = generic_squared_norm,
+        xconst = i32_xconst_avx2_nofma_norm,
+        xany = i32_xany_avx2_nofma_norm,
+        features = "avx2"
+    );
+    export_op_horizontal!(
         description = "Horizontal sum of the provided vector",
         ty = i32,
         register = Avx2,
@@ -1003,6 +1164,15 @@ pub mod min_max_sum_ops_avx2 {
         features = "avx2"
     );
 
+    export_op_horizontal!(
+        description = "Calculates the squared L2 norm of the provided vector",
+        ty = i64,
+        register = Avx2,
+        op = generic_squared_norm,
+        xconst = i64_xconst_avx2_nofma_norm,
+        xany = i64_xany_avx2_nofma_norm,
+        features = "avx2"
+    );
     export_op_horizontal!(
         description = "Horizontal sum of the provided vector",
         ty = i64,
@@ -1060,6 +1230,15 @@ pub mod min_max_sum_ops_avx512 {
     use super::*;
 
     export_op_horizontal!(
+        description = "Calculates the squared L2 norm of the provided vector",
+        ty = f32,
+        register = Avx512,
+        op = generic_squared_norm,
+        xconst = f32_xconst_avx512_nofma_norm,
+        xany = f32_xany_avx512_nofma_norm,
+        features = "avx512f"
+    );
+    export_op_horizontal!(
         description = "Horizontal sum of the provided vector",
         ty = f32,
         register = Avx512,
@@ -1105,6 +1284,15 @@ pub mod min_max_sum_ops_avx512 {
         features = "avx512f"
     );
 
+    export_op_horizontal!(
+        description = "Calculates the squared L2 norm of the provided vector",
+        ty = f64,
+        register = Avx512,
+        op = generic_squared_norm,
+        xconst = f64_xconst_avx512_nofma_norm,
+        xany = f64_xany_avx512_nofma_norm,
+        features = "avx512f"
+    );
     export_op_horizontal!(
         description = "Horizontal sum of the provided vector",
         ty = f64,
@@ -1152,6 +1340,15 @@ pub mod min_max_sum_ops_avx512 {
     );
 
     export_op_horizontal!(
+        description = "Calculates the squared L2 norm of the provided vector",
+        ty = u8,
+        register = Avx512,
+        op = generic_squared_norm,
+        xconst = u8_xconst_avx512_nofma_norm,
+        xany = u8_xany_avx512_nofma_norm,
+        features = "avx512f"
+    );
+    export_op_horizontal!(
         description = "Horizontal sum of the provided vector",
         ty = u8,
         register = Avx512,
@@ -1197,6 +1394,15 @@ pub mod min_max_sum_ops_avx512 {
         features = "avx512f"
     );
 
+    export_op_horizontal!(
+        description = "Calculates the squared L2 norm of the provided vector",
+        ty = u16,
+        register = Avx512,
+        op = generic_squared_norm,
+        xconst = u16_xconst_avx512_nofma_norm,
+        xany = u16_xany_avx512_nofma_norm,
+        features = "avx512f"
+    );
     export_op_horizontal!(
         description = "Horizontal sum of the provided vector",
         ty = u16,
@@ -1244,6 +1450,15 @@ pub mod min_max_sum_ops_avx512 {
     );
 
     export_op_horizontal!(
+        description = "Calculates the squared L2 norm of the provided vector",
+        ty = u32,
+        register = Avx512,
+        op = generic_squared_norm,
+        xconst = u32_xconst_avx512_nofma_norm,
+        xany = u32_xany_avx512_nofma_norm,
+        features = "avx512f"
+    );
+    export_op_horizontal!(
         description = "Horizontal sum of the provided vector",
         ty = u32,
         register = Avx512,
@@ -1289,6 +1504,15 @@ pub mod min_max_sum_ops_avx512 {
         features = "avx512f"
     );
 
+    export_op_horizontal!(
+        description = "Calculates the squared L2 norm of the provided vector",
+        ty = u64,
+        register = Avx512,
+        op = generic_squared_norm,
+        xconst = u64_xconst_avx512_nofma_norm,
+        xany = u64_xany_avx512_nofma_norm,
+        features = "avx512f"
+    );
     export_op_horizontal!(
         description = "Horizontal sum of the provided vector",
         ty = u64,
@@ -1336,6 +1560,15 @@ pub mod min_max_sum_ops_avx512 {
     );
 
     export_op_horizontal!(
+        description = "Calculates the squared L2 norm of the provided vector",
+        ty = i8,
+        register = Avx512,
+        op = generic_squared_norm,
+        xconst = i8_xconst_avx512_nofma_norm,
+        xany = i8_xany_avx512_nofma_norm,
+        features = "avx512f"
+    );
+    export_op_horizontal!(
         description = "Horizontal sum of the provided vector",
         ty = i8,
         register = Avx512,
@@ -1381,6 +1614,15 @@ pub mod min_max_sum_ops_avx512 {
         features = "avx512f"
     );
 
+    export_op_horizontal!(
+        description = "Calculates the squared L2 norm of the provided vector",
+        ty = i16,
+        register = Avx512,
+        op = generic_squared_norm,
+        xconst = i16_xconst_avx512_nofma_norm,
+        xany = i16_xany_avx512_nofma_norm,
+        features = "avx512f"
+    );
     export_op_horizontal!(
         description = "Horizontal sum of the provided vector",
         ty = i16,
@@ -1428,6 +1670,15 @@ pub mod min_max_sum_ops_avx512 {
     );
 
     export_op_horizontal!(
+        description = "Calculates the squared L2 norm of the provided vector",
+        ty = i32,
+        register = Avx512,
+        op = generic_squared_norm,
+        xconst = i32_xconst_avx512_nofma_norm,
+        xany = i32_xany_avx512_nofma_norm,
+        features = "avx512f"
+    );
+    export_op_horizontal!(
         description = "Horizontal sum of the provided vector",
         ty = i32,
         register = Avx512,
@@ -1473,6 +1724,15 @@ pub mod min_max_sum_ops_avx512 {
         features = "avx512f"
     );
 
+    export_op_horizontal!(
+        description = "Calculates the squared L2 norm of the provided vector",
+        ty = i64,
+        register = Avx512,
+        op = generic_squared_norm,
+        xconst = i64_xconst_avx512_nofma_norm,
+        xany = i64_xany_avx512_nofma_norm,
+        features = "avx512f"
+    );
     export_op_horizontal!(
         description = "Horizontal sum of the provided vector",
         ty = i64,
@@ -1530,6 +1790,15 @@ pub mod min_max_sum_ops_neon {
     use super::*;
 
     export_op_horizontal!(
+        description = "Calculates the squared L2 norm of the provided vector",
+        ty = f32,
+        register = Neon,
+        op = generic_squared_norm,
+        xconst = f32_xconst_avx512_nofma_norm,
+        xany = f32_xany_avx512_nofma_norm,
+        features = "neon"
+    );
+    export_op_horizontal!(
         description = "Horizontal sum of the provided vector",
         ty = f32,
         register = Neon,
@@ -1575,6 +1844,15 @@ pub mod min_max_sum_ops_neon {
         features = "neon"
     );
 
+    export_op_horizontal!(
+        description = "Calculates the squared L2 norm of the provided vector",
+        ty = f64,
+        register = Neon,
+        op = generic_squared_norm,
+        xconst = f64_xconst_avx512_nofma_norm,
+        xany = f64_xany_avx512_nofma_norm,
+        features = "neon"
+    );
     export_op_horizontal!(
         description = "Horizontal sum of the provided vector",
         ty = f64,
@@ -1622,6 +1900,15 @@ pub mod min_max_sum_ops_neon {
     );
 
     export_op_horizontal!(
+        description = "Calculates the squared L2 norm of the provided vector",
+        ty = u8,
+        register = Neon,
+        op = generic_squared_norm,
+        xconst = u8_xconst_avx512_nofma_norm,
+        xany = u8_xany_avx512_nofma_norm,
+        features = "neon"
+    );
+    export_op_horizontal!(
         description = "Horizontal sum of the provided vector",
         ty = u8,
         register = Neon,
@@ -1667,6 +1954,15 @@ pub mod min_max_sum_ops_neon {
         features = "neon"
     );
 
+    export_op_horizontal!(
+        description = "Calculates the squared L2 norm of the provided vector",
+        ty = u16,
+        register = Neon,
+        op = generic_squared_norm,
+        xconst = u16_xconst_avx512_nofma_norm,
+        xany = u16_xany_avx512_nofma_norm,
+        features = "neon"
+    );
     export_op_horizontal!(
         description = "Horizontal sum of the provided vector",
         ty = u16,
@@ -1714,6 +2010,15 @@ pub mod min_max_sum_ops_neon {
     );
 
     export_op_horizontal!(
+        description = "Calculates the squared L2 norm of the provided vector",
+        ty = u32,
+        register = Neon,
+        op = generic_squared_norm,
+        xconst = u32_xconst_avx512_nofma_norm,
+        xany = u32_xany_avx512_nofma_norm,
+        features = "neon"
+    );
+    export_op_horizontal!(
         description = "Horizontal sum of the provided vector",
         ty = u32,
         register = Neon,
@@ -1759,6 +2064,15 @@ pub mod min_max_sum_ops_neon {
         features = "neon"
     );
 
+    export_op_horizontal!(
+        description = "Calculates the squared L2 norm of the provided vector",
+        ty = u64,
+        register = Neon,
+        op = generic_squared_norm,
+        xconst = u64_xconst_avx512_nofma_norm,
+        xany = u64_xany_avx512_nofma_norm,
+        features = "neon"
+    );
     export_op_horizontal!(
         description = "Horizontal sum of the provided vector",
         ty = u64,
@@ -1806,6 +2120,15 @@ pub mod min_max_sum_ops_neon {
     );
 
     export_op_horizontal!(
+        description = "Calculates the squared L2 norm of the provided vector",
+        ty = i8,
+        register = Neon,
+        op = generic_squared_norm,
+        xconst = i8_xconst_avx512_nofma_norm,
+        xany = i8_xany_avx512_nofma_norm,
+        features = "neon"
+    );
+    export_op_horizontal!(
         description = "Horizontal sum of the provided vector",
         ty = i8,
         register = Neon,
@@ -1851,6 +2174,15 @@ pub mod min_max_sum_ops_neon {
         features = "neon"
     );
 
+    export_op_horizontal!(
+        description = "Calculates the squared L2 norm of the provided vector",
+        ty = i16,
+        register = Neon,
+        op = generic_squared_norm,
+        xconst = i16_xconst_avx512_nofma_norm,
+        xany = i16_xany_avx512_nofma_norm,
+        features = "neon"
+    );
     export_op_horizontal!(
         description = "Horizontal sum of the provided vector",
         ty = i16,
@@ -1898,6 +2230,15 @@ pub mod min_max_sum_ops_neon {
     );
 
     export_op_horizontal!(
+        description = "Calculates the squared L2 norm of the provided vector",
+        ty = i32,
+        register = Neon,
+        op = generic_squared_norm,
+        xconst = i32_xconst_avx512_nofma_norm,
+        xany = i32_xany_avx512_nofma_norm,
+        features = "neon"
+    );
+    export_op_horizontal!(
         description = "Horizontal sum of the provided vector",
         ty = i32,
         register = Neon,
@@ -1943,6 +2284,15 @@ pub mod min_max_sum_ops_neon {
         features = "neon"
     );
 
+    export_op_horizontal!(
+        description = "Calculates the squared L2 norm of the provided vector",
+        ty = i64,
+        register = Neon,
+        op = generic_squared_norm,
+        xconst = i64_xconst_avx512_nofma_norm,
+        xany = i64_xany_avx512_nofma_norm,
+        features = "neon"
+    );
     export_op_horizontal!(
         description = "Horizontal sum of the provided vector",
         ty = i64,
