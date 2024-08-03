@@ -177,7 +177,7 @@ macro_rules! export_vector_x_vector_op {
     };
 }
 
-/// Vector space distance ops on the fallback implementations.
+/// Vector arithmetic ops on the fallback implementations.
 ///
 /// These methods do not strictly require any CPU feature but do auto-vectorize
 /// well when target features are explicitly provided and can be used to

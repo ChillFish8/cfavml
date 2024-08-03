@@ -59,8 +59,8 @@ macro_rules! test_suite {
 
             #[test]
             fn [<test_ $im:lower _ $t _sum>]() {
-                let (l1, l2) = (vec![1 as $t; 1043], vec![3 as $t; 1043]);
-                unsafe { crate::danger::op_sum::test_sum::<$t, $im>(l1, l2) };
+                let l1 = vec![1 as $t; 1043];
+                unsafe { crate::danger::op_sum::test_sum::<$t, $im>(l1) };
             }
 
             #[test]
