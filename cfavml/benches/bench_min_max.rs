@@ -266,7 +266,7 @@ mod op_sum {
         Avx2: SimdRegister<T>,
         AutoMath: Math<T>,
     {
-        cfavml::danger::generic_sum_horizontal::<T, Avx2, AutoMath>(a.len(), a)
+        cfavml::danger::generic_sum::<T, Avx2, AutoMath>(a.len(), a)
     }
 
     cfavml_impls!(f32);
