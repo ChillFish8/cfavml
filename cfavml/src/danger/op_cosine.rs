@@ -73,7 +73,7 @@ pub(crate) fn cosine<T: Copy, M: Math<T>>(dot_product: T, norm_x: T, norm_y: T) 
     if M::cmp_eq(norm_x, M::zero()) && M::cmp_eq(norm_y, M::zero()) {
         M::zero()
     } else if M::cmp_eq(norm_x, M::zero()) || M::cmp_eq(norm_y, M::zero()) {
-        M::zero()
+        M::one()
     } else {
         M::sub(
             M::one(),
