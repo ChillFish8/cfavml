@@ -44,12 +44,14 @@ pub use self::export_distance_ops::distance_ops_fallback::*;
 #[cfg(target_arch = "aarch64")]
 pub use self::export_distance_ops::distance_ops_neon::*;
 #[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
-pub use self::export_min_max_sum_norm::min_max_sum_ops_avx2::*;
+pub use self::export_min_max_sum_norm::min_max_sum_norm_ops_avx2::*;
+#[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
+pub use self::export_min_max_sum_norm::norm_ops_avx2fma::*;
 #[cfg(all(any(target_arch = "x86", target_arch = "x86_64"), feature = "nightly"))]
-pub use self::export_min_max_sum_norm::min_max_sum_ops_avx512::*;
+pub use self::export_min_max_sum_norm::min_max_sum_norm_ops_avx512::*;
 pub use self::export_min_max_sum_norm::min_max_sum_ops_fallback::*;
 #[cfg(target_arch = "aarch64")]
-pub use self::export_min_max_sum_norm::min_max_sum_ops_neon::*;
+pub use self::export_min_max_sum_norm::min_max_sum_norm_ops_neon::*;
 #[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
 pub use self::impl_avx2::*;
 #[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
@@ -67,7 +69,7 @@ pub use self::op_euclidean::generic_euclidean;
 pub use self::op_max::{generic_max_horizontal, generic_max_vertical};
 pub use self::op_min::{generic_min_horizontal, generic_min_vertical};
 pub use self::op_norm::generic_squared_norm;
-pub use self::op_sum::generic_sum_horizontal;
+pub use self::op_sum::generic_sum;
 pub use self::op_vector_x_value::{
     generic_add_value,
     generic_div_value,

@@ -9,7 +9,7 @@ use crate::math::Math;
 /// The sizes of `a` must be equal to `dims`, the safety requirements of
 /// `M` definition the basic math operations and the requirements of `R` SIMD register
 /// must also be followed.
-pub unsafe fn generic_sum_horizontal<T, R, M>(dims: usize, a: &[T]) -> T
+pub unsafe fn generic_sum<T, R, M>(dims: usize, a: &[T]) -> T
 where
     T: Copy,
     R: SimdRegister<T>,
@@ -66,7 +66,7 @@ where
 
     let dims = l1.len();
 
-    let sum = generic_sum_horizontal::<T, R, AutoMath>(dims, &l1);
+    let sum = generic_sum::<T, R, AutoMath>(dims, &l1);
     let expected_sum = l1
         .iter()
         .fold(AutoMath::zero(), |a, b| AutoMath::add(a, *b));

@@ -64,7 +64,7 @@ provided as generic functions (with no target features):
 - `generic_dot_product`
 - `generic_euclidean`
 - `generic_cosine`
-- `generic_norm`
+- `generic_squared_norm`
 - `generic_max_horizontal`
 - `generic_max_vertical`
 - `generic_min_horizontal`

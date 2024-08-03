@@ -56,7 +56,7 @@ where
 }
 
 #[cfg(test)]
-pub(crate) unsafe fn test_norm<T, R>(l1: Vec<T>)
+pub(crate) unsafe fn test_squared_norm<T, R>(l1: Vec<T>)
 where
     T: Copy + PartialEq + std::fmt::Debug,
     R: SimdRegister<T>,
