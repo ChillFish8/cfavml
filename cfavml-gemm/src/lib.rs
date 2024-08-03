@@ -1,10 +1,7 @@
 #![doc = include_str!("../README.md")]
 
-mod genric_kernel;
 pub mod transpose;
 pub mod danger;
-
-pub use self::genric_kernel::GenericMatrixKernel;
 
 #[cfg(test)]
 mod test_utils;
