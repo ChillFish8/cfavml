@@ -76,6 +76,13 @@ impl<T: Copy> AlignedBuffer<T> {
 
     #[inline]
     /// Returns the buffer as a borrowed slice of `T`.
+    pub fn as_mut_ptr(&mut self) -> *mut T {
+        let ptr = self.buffer.as_mut_ptr();
+        ptr.cast()
+    }
+
+    #[inline]
+    /// Returns the buffer as a borrowed slice of `T`.
     pub fn as_mut_slice(&mut self) -> &mut [T] {
         let ptr = self.buffer.as_mut_ptr();
         unsafe { std::slice::from_raw_parts_mut(ptr.cast(), self.len) }

@@ -1,6 +1,5 @@
 use std::fmt::Debug;
 use std::{mem, ptr};
-use std::time::{Duration, Instant};
 
 use cfavml::danger::{DenseLane, SimdRegister};
 use cfavml_utils::aligned_buffer::AlignedBuffer;

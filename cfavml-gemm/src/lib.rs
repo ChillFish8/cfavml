@@ -2,6 +2,7 @@
 
 mod genric_kernel;
 pub mod transpose;
+pub mod danger;
 
 pub use self::genric_kernel::GenericMatrixKernel;
 

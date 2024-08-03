@@ -93,11 +93,11 @@ unsafe fn generic_transpose<T, R>(
     let data_ptr = data.as_ptr();
     let result_ptr = result.as_mut_ptr();
 
-    // let sub_matrix_block_size = R::elements_per_lane() * 2;
-    // let matrix_offset_step = R::elements_per_lane();
+    let sub_matrix_block_size = R::elements_per_lane() * 2;
+    let matrix_offset_step = R::elements_per_lane();
 
-    let width_remainder = width % R::elements_per_lane();
-    let height_remainder = height % R::elements_per_lane();
+    let width_remainder = width % sub_matrix_block_size;
+    let height_remainder = height % sub_matrix_block_size;
 
     let mut j = 0;
     while j < (height - height_remainder) {
@@ -113,48 +113,46 @@ unsafe fn generic_transpose<T, R>(
             let l1_transpose = R::transpose_register_matrix(l1);
             R::write_matrix(j + i * height, height, l1_transpose, result_ptr);
 
-            // // bottom-left
-            // let l1 =
-            //     R::load_matrix(i + (j + matrix_offset_step) * width, width, data_ptr);
-            // let l1_transpose = R::transpose_register_matrix(l1);
-            // R::write_matrix(
-            //     (j + matrix_offset_step) + i * height,
-            //     height,
-            //     l1_transpose,
-            //     result_ptr,
-            // );
-            //
-            // // top-right
-            // let l1 =
-            //     R::load_matrix((i + matrix_offset_step) + j * width, width, data_ptr);
-            // let l1_transpose = R::transpose_register_matrix(l1);
-            // R::write_matrix(
-            //     j + (i + matrix_offset_step) * height,
-            //     height,
-            //     l1_transpose,
-            //     result_ptr,
-            // );
-            //
-            // // bottom-right
-            // let l1 = R::load_matrix(
-            //     (i + matrix_offset_step) + (j + matrix_offset_step) * width,
-            //     width,
-            //     data_ptr,
-            // );
-            // let l1_transpose = R::transpose_register_matrix(l1);
-            // R::write_matrix(
-            //     (j + matrix_offset_step) + (i + matrix_offset_step) * height,
-            //     height,
-            //     l1_transpose,
-            //     result_ptr,
-            // );
+            // bottom-left
+            let l1 =
+                R::load_matrix(i + (j + matrix_offset_step) * width, width, data_ptr);
+            let l1_transpose = R::transpose_register_matrix(l1);
+            R::write_matrix(
+                (j + matrix_offset_step) + i * height,
+                height,
+                l1_transpose,
+                result_ptr,
+            );
 
-            // i += sub_matrix_block_size;
-            i += R::elements_per_lane();
+            // top-right
+            let l1 =
+                R::load_matrix((i + matrix_offset_step) + j * width, width, data_ptr);
+            let l1_transpose = R::transpose_register_matrix(l1);
+            R::write_matrix(
+                j + (i + matrix_offset_step) * height,
+                height,
+                l1_transpose,
+                result_ptr,
+            );
+
+            // bottom-right
+            let l1 = R::load_matrix(
+                (i + matrix_offset_step) + (j + matrix_offset_step) * width,
+                width,
+                data_ptr,
+            );
+            let l1_transpose = R::transpose_register_matrix(l1);
+            R::write_matrix(
+                (j + matrix_offset_step) + (i + matrix_offset_step) * height,
+                height,
+                l1_transpose,
+                result_ptr,
+            );
+
+            i += sub_matrix_block_size;
         }
 
-        // j += sub_matrix_block_size;
-        j += R::elements_per_lane();
+        j += sub_matrix_block_size;
     }
 
     // Handles the tail of each row that does not fit within 8 wide blocks.
