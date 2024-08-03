@@ -1,7 +1,7 @@
 #![doc = include_str!("../README.md")]
 
-pub mod transpose;
 pub mod danger;
+pub mod transpose;
 
 #[cfg(test)]
 mod test_utils;

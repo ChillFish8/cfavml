@@ -1,7 +1,7 @@
 use std::hint::black_box;
 
-use divan::Bencher;
 use cfavml::danger::*;
+use divan::Bencher;
 
 mod utils;
 
@@ -11,7 +11,6 @@ const FLOP: usize = DIMS * DIMS * 2 * DIMS;
 fn main() {
     divan::main()
 }
-
 
 #[cfg_attr(
     not(debug_assertions),
@@ -48,7 +47,6 @@ fn bench_gemm_cfavml(bencher: Bencher) {
     });
 }
 
-
 #[cfg_attr(
     not(debug_assertions),
     divan::bench(
@@ -68,19 +66,11 @@ fn bench_gemm_ndarray(bencher: Bencher) {
         let l2 = black_box(&l2);
         let mut result = black_box(result.clone());
 
-        ndarray::linalg::general_mat_mul(
-            1.0,
-            l1,
-            l2,
-            0.0,
-            &mut result,
-        );
+        ndarray::linalg::general_mat_mul(1.0, l1, l2, 0.0, &mut result);
 
         result
     });
 }
-
-
 
 #[cfg_attr(
     not(debug_assertions),
