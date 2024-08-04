@@ -26,12 +26,28 @@ impl Math<f32> for StdMath {
 
     #[inline(always)]
     fn sqrt(a: f32) -> f32 {
-        a.sqrt()
+        #[cfg(feature = "std")]
+        {
+            f32::sqrt(a)
+        }
+
+        #[cfg(not(feature = "std"))]
+        {
+            f32_sqrt_fast(a)
+        }
     }
 
     #[inline(always)]
     fn abs(a: f32) -> f32 {
-        a.abs()
+        #[cfg(feature = "std")]
+        {
+            f32::abs(a)
+        }
+
+        #[cfg(not(feature = "std"))]
+        {
+            f32_abs_fast(a)
+        }
     }
 
     #[inline(always)]
@@ -101,12 +117,28 @@ impl Math<f64> for StdMath {
 
     #[inline(always)]
     fn sqrt(a: f64) -> f64 {
-        a.sqrt()
+        #[cfg(feature = "std")]
+        {
+            f64::sqrt(a)
+        }
+
+        #[cfg(not(feature = "std"))]
+        {
+            f32_sqrt_fast(a as f32) as f64
+        }
     }
 
     #[inline(always)]
     fn abs(a: f64) -> f64 {
-        a.abs()
+        #[cfg(feature = "std")]
+        {
+            f64::abs(a)
+        }
+
+        #[cfg(not(feature = "std"))]
+        {
+            f32_abs_fast(a as f32) as f64
+        }
     }
 
     #[inline(always)]
@@ -178,7 +210,7 @@ macro_rules! define_int_ops {
 
             #[inline(always)]
             fn sqrt(a: $t) -> $t {
-                (a as f64).sqrt() as $t
+                StdMath::sqrt(a as f64) as $t
             }
 
             #[inline(always)]
@@ -251,7 +283,7 @@ macro_rules! define_int_ops {
 
             #[inline(always)]
             fn sqrt(a: $t) -> $t {
-                (a as f64).sqrt() as $t
+                StdMath::sqrt(a as f64) as $t
             }
 
             #[inline(always)]
@@ -311,3 +343,38 @@ define_int_ops!(unsigned u8);
 define_int_ops!(unsigned u16);
 define_int_ops!(unsigned u32);
 define_int_ops!(unsigned u64);
+
+#[allow(unused)]
+#[inline(always)]
+/// An approximate f32 sqrt, average deviation of ~5%.
+///
+/// This is an _approximate_ function, it is faster, but primarily designed
+/// to just be used for the no_std target since we cannot use the inbuilt methods.
+fn f32_sqrt_fast(a: f32) -> f32 {
+    if a >= 0.0 {
+        f32::from_bits((a.to_bits() + 0x3f80_0000) >> 1)
+    } else {
+        f32::NAN
+    }
+}
+
+#[allow(unused)]
+#[inline(always)]
+/// Computes the ABS of a f32.
+fn f32_abs_fast(a: f32) -> f32 {
+    const SIGN_MASK: u32 = 0b1000_0000_0000_0000_0000_0000_0000_0000;
+    f32::from_bits(a.to_bits() & !SIGN_MASK)
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_sqrt_sanity() {
+        let a = f32::sqrt(1.234294);
+        let b = f32_sqrt_fast(1.23429);
+        assert_eq!(a, 1.1109879);
+        assert_eq!(b, 1.117145);
+    }
+}

@@ -22,6 +22,8 @@ jobs:
       #   uses: taiki-e/install-action@cargo-llvm-cov
       - name: Install nextest
         uses: taiki-e/install-action@nextest
+      - name: Check CFAVML core builds no STD
+        run: cargo build -p cfavml --no-default-features
       - name: Test system - Stable
         run:  cargo nextest run --all --nocapture
       - name: Test system - Nightly

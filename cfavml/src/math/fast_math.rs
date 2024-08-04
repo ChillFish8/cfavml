@@ -1,6 +1,6 @@
 use core::intrinsics;
 
-use super::Math;
+use super::{Math, StdMath};
 
 /// Basic math operations backed by fast-math intrinsics.
 pub struct FastMath;
@@ -28,12 +28,12 @@ impl Math<f32> for FastMath {
 
     #[inline(always)]
     fn sqrt(a: f32) -> f32 {
-        a.sqrt()
+        StdMath::sqrt(a)
     }
 
     #[inline(always)]
     fn abs(a: f32) -> f32 {
-        a.abs()
+        StdMath::abs(a)
     }
 
     #[inline(always)]
@@ -119,12 +119,12 @@ impl Math<f64> for FastMath {
 
     #[inline(always)]
     fn sqrt(a: f64) -> f64 {
-        a.sqrt()
+        StdMath::sqrt(a)
     }
 
     #[inline(always)]
     fn abs(a: f64) -> f64 {
-        a.abs()
+        StdMath::abs(a)
     }
 
     #[inline(always)]
