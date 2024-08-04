@@ -251,7 +251,7 @@ mod euclidean_x1341 {
             simsimd::SpatialSimilarity::sqeuclidean(l1_view, l2_view).unwrap_or_default()
         });
     }
-    
+
     #[cfg_attr(not(debug_assertions), divan::bench)]
     fn cfavml_f32(bencher: Bencher) {
         let (l1, l2) = utils::get_sample_vectors::<f32>(DIMS);

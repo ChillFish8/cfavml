@@ -66,7 +66,7 @@ mod op_min {
             }
         };
     }
-    
+
     cfavml_impls!(f32);
     cfavml_impls!(f64);
     cfavml_impls!(u8);
