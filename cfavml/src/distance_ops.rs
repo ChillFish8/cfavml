@@ -604,3 +604,63 @@ export_safe_distance_op!(
     i64_xany_neon_nofma_squared_euclidean,
     i64_xany_fallback_nofma_squared_euclidean,
 );
+
+#[cfg(test)]
+/// Tests the exposed safe API.
+///
+/// These are more sanity checks than anything else, because they can change depending
+/// on the system running them (as they are runtime selected)
+mod tests {
+    use super::*;
+
+
+    macro_rules! test_distance {
+        ($t:ident) => {
+            paste::paste! {
+                #[test]
+                fn [< test_ $t _dot_product >]() {
+                    let l1 = [1 as $t, 2 as $t, 3 as $t, 4 as $t, 5 as $t];
+                    let l2 = [1 as $t, 2 as $t, 3 as $t, 4 as $t, 5 as $t];
+
+                    let res = [<$t _xany_dot >](&l1, &l2);
+
+                    let expected = crate::test_utils::simple_dot(&l1, &l2);
+                    assert_eq!(res, expected, "Dot product op miss-match");
+                }
+
+                #[test]
+                fn [< test_ $t _cosine >]() {
+                    let l1 = [1 as $t, 2 as $t, 1 as $t, 1 as $t, 2 as $t];
+                    let l2 = [1 as $t, 2 as $t, 2 as $t, 4 as $t, 2 as $t];
+                    
+                    let res = [<$t _xany_cosine >](&l1, &l2);
+
+                    let expected = crate::test_utils::simple_cosine(&l1, &l2);
+                    assert_eq!(res, expected, "Cosine op miss-match");
+                }
+
+                #[test]
+                fn [< test_ $t _euclidean >]() {
+                    let l1 = [1 as $t, 2 as $t, 3 as $t, 4 as $t, 5 as $t];
+                    let l2 = [1 as $t, 2 as $t, 3 as $t, 4 as $t, 5 as $t];
+                    
+                    let res = [<$t _xany_squared_euclidean >](&l1, &l2);
+
+                    let expected = crate::test_utils::simple_euclidean(&l1, &l2);
+                    assert_eq!(res, expected, "Euclidean op miss-match");
+                }
+            }
+        };
+    }
+
+    test_distance!(f32);
+    test_distance!(f64);
+    test_distance!(u8);
+    test_distance!(u16);
+    test_distance!(u32);
+    test_distance!(u64);
+    test_distance!(i8);
+    test_distance!(i16);
+    test_distance!(i32);
+    test_distance!(i64);
+}

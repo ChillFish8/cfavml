@@ -1441,3 +1441,91 @@ export_safe_arithmetic_vector_x_vector_op!(
     i64_xany_neon_nofma_div_vector,
     i64_xany_fallback_nofma_div_vector,
 );
+
+
+#[cfg(test)]
+/// Tests the exposed safe API.
+///
+/// These are more sanity checks than anything else, because they can change depending
+/// on the system running them (as they are runtime selected)
+mod tests {
+    use std::iter::zip;
+    use crate::math::{AutoMath, Math};
+    use super::*;
+
+    const DIMS: usize = 77;
+
+    macro_rules! test_arithmetic {
+        ($t:ident) => {
+            paste::paste! {
+                #[test]
+                fn [< test_ $t _add_ops >]() {
+                    let (l1, l2) = crate::test_utils::get_sample_vectors::<$t>(DIMS);
+
+                    let mut r = vec![$t::default(); DIMS];
+                    [<$t _xany_add_value >](1 as $t, &l1, &mut r);
+                    assert_eq!(r, l1.iter().map(|v| *v + 1 as $t).collect::<Vec<_>>(), "Add value op miss-match");
+
+                    let mut r = vec![$t::default(); DIMS];
+                    [<$t _xany_add_vector >](&l1, &l2, &mut r);
+                    let expected = zip(l1, l2).map(|(a, b)| AutoMath::add(a, b)).collect::<Vec<_>>();
+                    assert_eq!(r, expected, "Add vctor op miss-match");
+                }
+
+                #[test]
+                fn [< test_ $t _sub_ops >]() {
+                    let (l1, l2) = crate::test_utils::get_sample_vectors::<$t>(DIMS);
+
+                    let mut r = vec![$t::default(); DIMS];
+                    [<$t _xany_sub_value >](1 as $t, &l1, &mut r);
+                    assert_eq!(r, l1.iter().map(|v| *v - 1 as $t).collect::<Vec<_>>(), "Sub value op miss-match");
+
+                    let mut r = vec![$t::default(); DIMS];
+                    [<$t _xany_sub_vector >](&l1, &l2, &mut r);
+                    let expected = zip(l1, l2).map(|(a, b)| AutoMath::sub(a, b)).collect::<Vec<_>>();
+                    assert_eq!(r, expected, "Sub vector op miss-match");
+                }
+
+                #[test]
+                fn [< test_ $t _mul_ops >]() {
+                    let (l1, l2) = crate::test_utils::get_sample_vectors::<$t>(DIMS);
+
+                    let mut r = vec![$t::default(); DIMS];
+                    [<$t _xany_mul_value >](1 as $t, &l1, &mut r);
+                    assert_eq!(r, l1.iter().map(|v| *v * 1 as $t).collect::<Vec<_>>(), "Mul value op miss-match");
+
+                    let mut r = vec![$t::default(); DIMS];
+                    [<$t _xany_mul_vector >](&l1, &l2, &mut r);
+                    let expected = zip(l1, l2).map(|(a, b)| AutoMath::mul(a, b)).collect::<Vec<_>>();
+                    assert_eq!(r, expected, "Mul vector op miss-match");
+                }
+
+                #[test]
+                fn [< test_ $t _div_ops >]() {
+                    let (l1, l2) = crate::test_utils::get_sample_vectors::<$t>(DIMS);
+
+                    let mut r = vec![$t::default(); DIMS];
+                    [<$t _xany_div_value >](1 as $t, &l1, &mut r);
+                    assert_eq!(r, l1.iter().map(|v| *v / 1 as $t).collect::<Vec<_>>(), "Div value op miss-match");
+
+                    let mut r = vec![$t::default(); DIMS];
+                    [<$t _xany_div_vector >](&l1, &l2, &mut r);
+                    let expected = zip(l1, l2).map(|(a, b)| AutoMath::div(a, b)).collect::<Vec<_>>();
+                    assert_eq!(r, expected, "Div vector op miss-match");
+                }
+
+            }
+        };
+    }
+
+    test_arithmetic!(f32);
+    test_arithmetic!(f64);
+    test_arithmetic!(u8);
+    test_arithmetic!(u16);
+    test_arithmetic!(u32);
+    test_arithmetic!(u64);
+    test_arithmetic!(i8);
+    test_arithmetic!(i16);
+    test_arithmetic!(i32);
+    test_arithmetic!(i64);
+}
