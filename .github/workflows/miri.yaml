@@ -18,5 +18,7 @@ jobs:
           rustup toolchain install nightly --component miri
           rustup override set nightly
           cargo miri setup
+      - name: Install nextest
+        uses: taiki-e/install-action@nextest
       - name: Test with Miri
-        run: cargo miri test
+        run: cargo miri nextest run --all
