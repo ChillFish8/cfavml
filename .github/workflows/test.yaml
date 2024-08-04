@@ -8,8 +8,8 @@ on:
       - main
 
 jobs:
-  tests:
-    name: Run Tests
+  tests-stable:
+    name: Run Tests Stable
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest]
@@ -26,5 +26,27 @@ jobs:
         run: cargo build -p cfavml --no-default-features
       - name: Test system - Stable
         run:  cargo nextest run --all --nocapture
+  
+  tests-nightly:
+    name: Run Tests Nightly
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    environment: dev
+    steps:
+      - name: Checkout Branch
+        uses: actions/checkout@v4
+      # - name: Install cargo-llvm-cov
+      #   uses: taiki-e/install-action@cargo-llvm-cov
+      - name: Install Rust
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: nightly
+          override: true
+      - name: Install nextest
+        uses: taiki-e/install-action@nextest
+      - name: Check CFAVML core builds no STD
+        run: cargo +nightly build -p cfavml --no-default-features
       - name: Test system - Nightly
         run:  cargo +nightly nextest run --all --nocapture --features nightly
