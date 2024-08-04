@@ -1,3 +1,5 @@
+#![allow(clippy::missing_transmute_annotations)]
+
 mod core_simd_api;
 #[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
 mod impl_avx2;

@@ -9,6 +9,8 @@
 //! wrapper around various intrinsics with the exception of [DenseLane] and it's helpers
 //! providing high throughput operations on the instructions.
 
+#![allow(clippy::missing_safety_doc)]
+
 use core::mem;
 
 #[doc(hidden)]
@@ -118,6 +120,8 @@ pub trait SimdRegister<T: Copy> {
     /// Creates a new zeroed register.
     unsafe fn zeroed() -> Self::Register;
 
+    #[allow(clippy::identity_op)]
+    #[allow(clippy::erasing_op)]
     #[inline(always)]
     /// Loads `Self::element_per_dense` elements of `T` into a `DenseLane<Self::Register>`.
     unsafe fn load_dense(mem: *const T) -> DenseLane<Self::Register> {
@@ -290,6 +294,8 @@ pub trait SimdRegister<T: Copy> {
     /// Writes `mem::size_of::<Self::Register>() / mem::size_of::<T>()` elements to the pointer.
     unsafe fn write(mem: *mut T, reg: Self::Register);
 
+    #[allow(clippy::identity_op)]
+    #[allow(clippy::erasing_op)]
     #[inline(always)]
     /// Write a dense lane to the given memory.
     ///
