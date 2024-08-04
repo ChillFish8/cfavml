@@ -961,7 +961,7 @@ mod tests {
                     let (l1, _) = crate::test_utils::get_sample_vectors::<$t>(DIMS);
 
                     let res = [<$t _xany_sum >](&l1);
-                    assert_eq!(res, l1.iter().fold(AutoMath::zero(), |a, b| AutoMath::add(a, *b)), "Sum horizontal op miss-match");
+                    assert_eq!(res as f32, l1.iter().fold(AutoMath::zero(), |a, b| AutoMath::add(a, *b)) as f32, "Sum horizontal op miss-match");
                 }
             }
         };

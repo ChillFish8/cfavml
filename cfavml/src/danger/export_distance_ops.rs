@@ -1008,8 +1008,8 @@ pub mod distance_ops_neon {
         ty = i8,
         register = Fallback,
         op = generic_dot_product,
-        xconst = i8_xconst_neon_fma_dot,
-        xany = i8_xany_neon_fma_dot,
+        xconst = i8_xconst_neon_nofma_dot,
+        xany = i8_xany_neon_nofma_dot,
         features = "neon"
     );
     export_distance_op!(
@@ -1017,8 +1017,8 @@ pub mod distance_ops_neon {
         ty = i8,
         register = Fallback,
         op = generic_cosine,
-        xconst = i8_xconst_neon_fma_cosine,
-        xany = i8_xany_neon_fma_cosine,
+        xconst = i8_xconst_neon_nofma_cosine,
+        xany = i8_xany_neon_nofma_cosine,
         features = "neon"
     );
     export_distance_op!(
@@ -1026,8 +1026,8 @@ pub mod distance_ops_neon {
         ty = i8,
         register = Fallback,
         op = generic_euclidean,
-        xconst = i8_xconst_neon_fma_squared_euclidean,
-        xany = i8_xany_neon_fma_squared_euclidean,
+        xconst = i8_xconst_neon_nofma_squared_euclidean,
+        xany = i8_xany_neon_nofma_squared_euclidean,
         features = "neon"
     );
 
@@ -1036,8 +1036,8 @@ pub mod distance_ops_neon {
         ty = i16,
         register = Fallback,
         op = generic_dot_product,
-        xconst = i16_xconst_neon_fma_dot,
-        xany = i16_xany_neon_fma_dot,
+        xconst = i16_xconst_neon_nofma_dot,
+        xany = i16_xany_neon_nofma_dot,
         features = "neon"
     );
     export_distance_op!(
@@ -1045,8 +1045,8 @@ pub mod distance_ops_neon {
         ty = i16,
         register = Fallback,
         op = generic_cosine,
-        xconst = i16_xconst_neon_fma_cosine,
-        xany = i16_xany_neon_fma_cosine,
+        xconst = i16_xconst_neon_nofma_cosine,
+        xany = i16_xany_neon_nofma_cosine,
         features = "neon"
     );
     export_distance_op!(
@@ -1054,8 +1054,8 @@ pub mod distance_ops_neon {
         ty = i16,
         register = Fallback,
         op = generic_euclidean,
-        xconst = i16_xconst_neon_fma_squared_euclidean,
-        xany = i16_xany_neon_fma_squared_euclidean,
+        xconst = i16_xconst_neon_nofma_squared_euclidean,
+        xany = i16_xany_neon_nofma_squared_euclidean,
         features = "neon"
     );
 
@@ -1064,8 +1064,8 @@ pub mod distance_ops_neon {
         ty = i32,
         register = Fallback,
         op = generic_dot_product,
-        xconst = i32_xconst_neon_fma_dot,
-        xany = i32_xany_neon_fma_dot,
+        xconst = i32_xconst_neon_nofma_dot,
+        xany = i32_xany_neon_nofma_dot,
         features = "neon"
     );
     export_distance_op!(
@@ -1073,8 +1073,8 @@ pub mod distance_ops_neon {
         ty = i32,
         register = Fallback,
         op = generic_cosine,
-        xconst = i32_xconst_neon_fma_cosine,
-        xany = i32_xany_neon_fma_cosine,
+        xconst = i32_xconst_neon_nofma_cosine,
+        xany = i32_xany_neon_nofma_cosine,
         features = "neon"
     );
     export_distance_op!(
@@ -1082,8 +1082,8 @@ pub mod distance_ops_neon {
         ty = i32,
         register = Fallback,
         op = generic_euclidean,
-        xconst = i32_xconst_neon_fma_squared_euclidean,
-        xany = i32_xany_neon_fma_squared_euclidean,
+        xconst = i32_xconst_neon_nofma_squared_euclidean,
+        xany = i32_xany_neon_nofma_squared_euclidean,
         features = "neon"
     );
 
@@ -1092,8 +1092,8 @@ pub mod distance_ops_neon {
         ty = i64,
         register = Fallback,
         op = generic_dot_product,
-        xconst = i64_xconst_neon_fma_dot,
-        xany = i64_xany_neon_fma_dot,
+        xconst = i64_xconst_neon_nofma_dot,
+        xany = i64_xany_neon_nofma_dot,
         features = "neon"
     );
     export_distance_op!(
@@ -1101,8 +1101,8 @@ pub mod distance_ops_neon {
         ty = i64,
         register = Fallback,
         op = generic_cosine,
-        xconst = i64_xconst_neon_fma_cosine,
-        xany = i64_xany_neon_fma_cosine,
+        xconst = i64_xconst_neon_nofma_cosine,
+        xany = i64_xany_neon_nofma_cosine,
         features = "neon"
     );
     export_distance_op!(
@@ -1110,8 +1110,8 @@ pub mod distance_ops_neon {
         ty = i64,
         register = Fallback,
         op = generic_euclidean,
-        xconst = i64_xconst_neon_fma_squared_euclidean,
-        xany = i64_xany_neon_fma_squared_euclidean,
+        xconst = i64_xconst_neon_nofma_squared_euclidean,
+        xany = i64_xany_neon_nofma_squared_euclidean,
         features = "neon"
     );
 
@@ -1120,8 +1120,8 @@ pub mod distance_ops_neon {
         ty = u8,
         register = Fallback,
         op = generic_dot_product,
-        xconst = u8_xconst_neon_fma_dot,
-        xany = u8_xany_neon_fma_dot,
+        xconst = u8_xconst_neon_nofma_dot,
+        xany = u8_xany_neon_nofma_dot,
         features = "neon"
     );
     export_distance_op!(
@@ -1129,8 +1129,8 @@ pub mod distance_ops_neon {
         ty = u8,
         register = Fallback,
         op = generic_cosine,
-        xconst = u8_xconst_neon_fma_cosine,
-        xany = u8_xany_neon_fma_cosine,
+        xconst = u8_xconst_neon_nofma_cosine,
+        xany = u8_xany_neon_nofma_cosine,
         features = "neon"
     );
     export_distance_op!(
@@ -1138,8 +1138,8 @@ pub mod distance_ops_neon {
         ty = u8,
         register = Fallback,
         op = generic_euclidean,
-        xconst = u8_xconst_neon_fma_squared_euclidean,
-        xany = u8_xany_neon_fma_squared_euclidean,
+        xconst = u8_xconst_neon_nofma_squared_euclidean,
+        xany = u8_xany_neon_nofma_squared_euclidean,
         features = "neon"
     );
 
@@ -1148,8 +1148,8 @@ pub mod distance_ops_neon {
         ty = u16,
         register = Fallback,
         op = generic_dot_product,
-        xconst = u16_xconst_neon_fma_dot,
-        xany = u16_xany_neon_fma_dot,
+        xconst = u16_xconst_neon_nofma_dot,
+        xany = u16_xany_neon_nofma_dot,
         features = "neon"
     );
     export_distance_op!(
@@ -1157,8 +1157,8 @@ pub mod distance_ops_neon {
         ty = u16,
         register = Fallback,
         op = generic_cosine,
-        xconst = u16_xconst_neon_fma_cosine,
-        xany = u16_xany_neon_fma_cosine,
+        xconst = u16_xconst_neon_nofma_cosine,
+        xany = u16_xany_neon_nofma_cosine,
         features = "neon"
     );
     export_distance_op!(
@@ -1166,8 +1166,8 @@ pub mod distance_ops_neon {
         ty = u16,
         register = Fallback,
         op = generic_euclidean,
-        xconst = u16_xconst_neon_fma_squared_euclidean,
-        xany = u16_xany_neon_fma_squared_euclidean,
+        xconst = u16_xconst_neon_nofma_squared_euclidean,
+        xany = u16_xany_neon_nofma_squared_euclidean,
         features = "neon"
     );
 
@@ -1176,8 +1176,8 @@ pub mod distance_ops_neon {
         ty = u32,
         register = Fallback,
         op = generic_dot_product,
-        xconst = u32_xconst_neon_fma_dot,
-        xany = u32_xany_neon_fma_dot,
+        xconst = u32_xconst_neon_nofma_dot,
+        xany = u32_xany_neon_nofma_dot,
         features = "neon"
     );
     export_distance_op!(
@@ -1186,7 +1186,7 @@ pub mod distance_ops_neon {
         register = Fallback,
         op = generic_cosine,
         xconst = u32_xconst_neonk_nofma_cosine,
-        xany = u32_xany_neon_fma_cosine,
+        xany = u32_xany_neon_nofma_cosine,
         features = "neon"
     );
     export_distance_op!(
@@ -1194,8 +1194,8 @@ pub mod distance_ops_neon {
         ty = u32,
         register = Fallback,
         op = generic_euclidean,
-        xconst = u32_xconst_neon_fma_squared_euclidean,
-        xany = u32_xany_neon_fma_squared_euclidean,
+        xconst = u32_xconst_neon_nofma_squared_euclidean,
+        xany = u32_xany_neon_nofma_squared_euclidean,
         features = "neon"
     );
 
@@ -1204,8 +1204,8 @@ pub mod distance_ops_neon {
         ty = u64,
         register = Fallback,
         op = generic_dot_product,
-        xconst = u64_xconst_neon_fma_dot,
-        xany = u64_xany_neon_fma_dot,
+        xconst = u64_xconst_neon_nofma_dot,
+        xany = u64_xany_neon_nofma_dot,
         features = "neon"
     );
     export_distance_op!(
@@ -1213,8 +1213,8 @@ pub mod distance_ops_neon {
         ty = u64,
         register = Fallback,
         op = generic_cosine,
-        xconst = u64_xconst_neon_fma_cosine,
-        xany = u64_xany_neon_fma_cosine,
+        xconst = u64_xconst_neon_nofma_cosine,
+        xany = u64_xany_neon_nofma_cosine,
         features = "neon"
     );
     export_distance_op!(
@@ -1222,8 +1222,8 @@ pub mod distance_ops_neon {
         ty = u64,
         register = Fallback,
         op = generic_euclidean,
-        xconst = u64_xconst_neon_fma_squared_euclidean,
-        xany = u64_xany_neon_fma_squared_euclidean,
+        xconst = u64_xconst_neon_nofma_squared_euclidean,
+        xany = u64_xany_neon_nofma_squared_euclidean,
         features = "neon"
     );
 

@@ -177,12 +177,12 @@ export_safe_fma_norm_op!(
     f32_xconst_avx512_fma_squared_norm,
     f32_xconst_avx2_fma_squared_norm,
     f32_xconst_avx2_nofma_squared_norm,
-    f32_xconst_neon_nofma_squared_norm,
+    f32_xconst_neon_fma_squared_norm,
     f32_xconst_fallback_nofma_squared_norm,
     f32_xany_avx512_fma_squared_norm,
     f32_xany_avx2_fma_squared_norm,
     f32_xany_avx2_nofma_squared_norm,
-    f32_xany_neon_nofma_squared_norm,
+    f32_xany_neon_fma_squared_norm,
     f32_xany_fallback_nofma_squared_norm,
 );
 
@@ -194,12 +194,12 @@ export_safe_fma_norm_op!(
     f64_xconst_avx512_fma_squared_norm,
     f64_xconst_avx2_fma_squared_norm,
     f64_xconst_avx2_nofma_squared_norm,
-    f64_xconst_neon_nofma_squared_norm,
+    f64_xconst_neon_fma_squared_norm,
     f64_xconst_fallback_nofma_squared_norm,
     f64_xany_avx512_fma_squared_norm,
     f64_xany_avx2_fma_squared_norm,
     f64_xany_avx2_nofma_squared_norm,
-    f64_xany_neon_nofma_squared_norm,
+    f64_xany_neon_fma_squared_norm,
     f64_xany_fallback_nofma_squared_norm,
 );
 
