@@ -213,7 +213,7 @@ pub mod min_max_sum_ops_fallback {
         description = "Vertical min of the two provided vectors",
         ty = f32,
         register = Fallback,
-        op = generic_max_vertical,
+        op = generic_min_vertical,
         xconst = f32_xconst_fallback_nofma_min_vertical,
         xany = f32_xany_fallback_nofma_min_vertical,
     );
@@ -262,7 +262,7 @@ pub mod min_max_sum_ops_fallback {
         description = "Vertical min of the two provided vectors",
         ty = f64,
         register = Fallback,
-        op = generic_max_vertical,
+        op = generic_min_vertical,
         xconst = f64_xconst_fallback_nofma_min_vertical,
         xany = f64_xany_fallback_nofma_min_vertical,
     );
@@ -311,7 +311,7 @@ pub mod min_max_sum_ops_fallback {
         description = "Vertical min of the two provided vectors",
         ty = u8,
         register = Fallback,
-        op = generic_max_vertical,
+        op = generic_min_vertical,
         xconst = u8_xconst_fallback_nofma_min_vertical,
         xany = u8_xany_fallback_nofma_min_vertical,
     );
@@ -360,7 +360,7 @@ pub mod min_max_sum_ops_fallback {
         description = "Vertical min of the two provided vectors",
         ty = u16,
         register = Fallback,
-        op = generic_max_vertical,
+        op = generic_min_vertical,
         xconst = u16_xconst_fallback_nofma_min_vertical,
         xany = u16_xany_fallback_nofma_min_vertical,
     );
@@ -409,7 +409,7 @@ pub mod min_max_sum_ops_fallback {
         description = "Vertical min of the two provided vectors",
         ty = u32,
         register = Fallback,
-        op = generic_max_vertical,
+        op = generic_min_vertical,
         xconst = u32_xconst_fallback_nofma_min_vertical,
         xany = u32_xany_fallback_nofma_min_vertical,
     );
@@ -458,7 +458,7 @@ pub mod min_max_sum_ops_fallback {
         description = "Vertical min of the two provided vectors",
         ty = u64,
         register = Fallback,
-        op = generic_max_vertical,
+        op = generic_min_vertical,
         xconst = u64_xconst_fallback_nofma_min_vertical,
         xany = u64_xany_fallback_nofma_min_vertical,
     );
@@ -507,7 +507,7 @@ pub mod min_max_sum_ops_fallback {
         description = "Vertical min of the two provided vectors",
         ty = i8,
         register = Fallback,
-        op = generic_max_vertical,
+        op = generic_min_vertical,
         xconst = i8_xconst_fallback_nofma_min_vertical,
         xany = i8_xany_fallback_nofma_min_vertical,
     );
@@ -556,7 +556,7 @@ pub mod min_max_sum_ops_fallback {
         description = "Vertical min of the two provided vectors",
         ty = i16,
         register = Fallback,
-        op = generic_max_vertical,
+        op = generic_min_vertical,
         xconst = i16_xconst_fallback_nofma_min_vertical,
         xany = i16_xany_fallback_nofma_min_vertical,
     );
@@ -605,7 +605,7 @@ pub mod min_max_sum_ops_fallback {
         description = "Vertical min of the two provided vectors",
         ty = i32,
         register = Fallback,
-        op = generic_max_vertical,
+        op = generic_min_vertical,
         xconst = i32_xconst_fallback_nofma_min_vertical,
         xany = i32_xany_fallback_nofma_min_vertical,
     );
@@ -654,7 +654,7 @@ pub mod min_max_sum_ops_fallback {
         description = "Vertical min of the two provided vectors",
         ty = i64,
         register = Fallback,
-        op = generic_max_vertical,
+        op = generic_min_vertical,
         xconst = i64_xconst_fallback_nofma_min_vertical,
         xany = i64_xany_fallback_nofma_min_vertical,
     );
@@ -741,7 +741,7 @@ pub mod min_max_sum_norm_ops_avx2 {
         description = "Vertical min of the two provided vectors",
         ty = f32,
         register = Avx2,
-        op = generic_max_vertical,
+        op = generic_min_vertical,
         xconst = f32_xconst_avx2_nofma_min_vertical,
         xany = f32_xany_avx2_nofma_min_vertical,
         features = "avx2"
@@ -796,7 +796,7 @@ pub mod min_max_sum_norm_ops_avx2 {
         description = "Vertical min of the two provided vectors",
         ty = f64,
         register = Avx2,
-        op = generic_max_vertical,
+        op = generic_min_vertical,
         xconst = f64_xconst_avx2_nofma_min_vertical,
         xany = f64_xany_avx2_nofma_min_vertical,
         features = "avx2"
@@ -851,7 +851,7 @@ pub mod min_max_sum_norm_ops_avx2 {
         description = "Vertical min of the two provided vectors",
         ty = u8,
         register = Avx2,
-        op = generic_max_vertical,
+        op = generic_min_vertical,
         xconst = u8_xconst_avx2_nofma_min_vertical,
         xany = u8_xany_avx2_nofma_min_vertical,
         features = "avx2"
@@ -906,7 +906,7 @@ pub mod min_max_sum_norm_ops_avx2 {
         description = "Vertical min of the two provided vectors",
         ty = u16,
         register = Avx2,
-        op = generic_max_vertical,
+        op = generic_min_vertical,
         xconst = u16_xconst_avx2_nofma_min_vertical,
         xany = u16_xany_avx2_nofma_min_vertical,
         features = "avx2"
@@ -961,7 +961,7 @@ pub mod min_max_sum_norm_ops_avx2 {
         description = "Vertical min of the two provided vectors",
         ty = u32,
         register = Avx2,
-        op = generic_max_vertical,
+        op = generic_min_vertical,
         xconst = u32_xconst_avx2_nofma_min_vertical,
         xany = u32_xany_avx2_nofma_min_vertical,
         features = "avx2"
@@ -1016,7 +1016,7 @@ pub mod min_max_sum_norm_ops_avx2 {
         description = "Vertical min of the two provided vectors",
         ty = u64,
         register = Avx2,
-        op = generic_max_vertical,
+        op = generic_min_vertical,
         xconst = u64_xconst_avx2_nofma_min_vertical,
         xany = u64_xany_avx2_nofma_min_vertical,
         features = "avx2"
@@ -1071,7 +1071,7 @@ pub mod min_max_sum_norm_ops_avx2 {
         description = "Vertical min of the two provided vectors",
         ty = i8,
         register = Avx2,
-        op = generic_max_vertical,
+        op = generic_min_vertical,
         xconst = i8_xconst_avx2_nofma_min_vertical,
         xany = i8_xany_avx2_nofma_min_vertical,
         features = "avx2"
@@ -1126,7 +1126,7 @@ pub mod min_max_sum_norm_ops_avx2 {
         description = "Vertical min of the two provided vectors",
         ty = i16,
         register = Avx2,
-        op = generic_max_vertical,
+        op = generic_min_vertical,
         xconst = i16_xconst_avx2_nofma_min_vertical,
         xany = i16_xany_avx2_nofma_min_vertical,
         features = "avx2"
@@ -1181,7 +1181,7 @@ pub mod min_max_sum_norm_ops_avx2 {
         description = "Vertical min of the two provided vectors",
         ty = i32,
         register = Avx2,
-        op = generic_max_vertical,
+        op = generic_min_vertical,
         xconst = i32_xconst_avx2_nofma_min_vertical,
         xany = i32_xany_avx2_nofma_min_vertical,
         features = "avx2"
@@ -1236,7 +1236,7 @@ pub mod min_max_sum_norm_ops_avx2 {
         description = "Vertical min of the two provided vectors",
         ty = i64,
         register = Avx2,
-        op = generic_max_vertical,
+        op = generic_min_vertical,
         xconst = i64_xconst_avx2_nofma_min_vertical,
         xany = i64_xany_avx2_nofma_min_vertical,
         features = "avx2"
@@ -1301,7 +1301,7 @@ pub mod min_max_sum_norm_ops_avx512 {
         description = "Vertical min of the two provided vectors",
         ty = f32,
         register = Avx512,
-        op = generic_max_vertical,
+        op = generic_min_vertical,
         xconst = f32_xconst_avx512_nofma_min_vertical,
         xany = f32_xany_avx512_nofma_min_vertical,
         features = "avx512f"
@@ -1411,7 +1411,7 @@ pub mod min_max_sum_norm_ops_avx512 {
         description = "Vertical min of the two provided vectors",
         ty = u8,
         register = Avx512,
-        op = generic_max_vertical,
+        op = generic_min_vertical,
         xconst = u8_xconst_avx512_nofma_min_vertical,
         xany = u8_xany_avx512_nofma_min_vertical,
         features = "avx512f"
@@ -1466,7 +1466,7 @@ pub mod min_max_sum_norm_ops_avx512 {
         description = "Vertical min of the two provided vectors",
         ty = u16,
         register = Avx512,
-        op = generic_max_vertical,
+        op = generic_min_vertical,
         xconst = u16_xconst_avx512_nofma_min_vertical,
         xany = u16_xany_avx512_nofma_min_vertical,
         features = "avx512f"
@@ -1521,7 +1521,7 @@ pub mod min_max_sum_norm_ops_avx512 {
         description = "Vertical min of the two provided vectors",
         ty = u32,
         register = Avx512,
-        op = generic_max_vertical,
+        op = generic_min_vertical,
         xconst = u32_xconst_avx512_nofma_min_vertical,
         xany = u32_xany_avx512_nofma_min_vertical,
         features = "avx512f"
@@ -1576,7 +1576,7 @@ pub mod min_max_sum_norm_ops_avx512 {
         description = "Vertical min of the two provided vectors",
         ty = u64,
         register = Avx512,
-        op = generic_max_vertical,
+        op = generic_min_vertical,
         xconst = u64_xconst_avx512_nofma_min_vertical,
         xany = u64_xany_avx512_nofma_min_vertical,
         features = "avx512f"
@@ -1631,7 +1631,7 @@ pub mod min_max_sum_norm_ops_avx512 {
         description = "Vertical min of the two provided vectors",
         ty = i8,
         register = Avx512,
-        op = generic_max_vertical,
+        op = generic_min_vertical,
         xconst = i8_xconst_avx512_nofma_min_vertical,
         xany = i8_xany_avx512_nofma_min_vertical,
         features = "avx512f"
@@ -1686,7 +1686,7 @@ pub mod min_max_sum_norm_ops_avx512 {
         description = "Vertical min of the two provided vectors",
         ty = i16,
         register = Avx512,
-        op = generic_max_vertical,
+        op = generic_min_vertical,
         xconst = i16_xconst_avx512_nofma_min_vertical,
         xany = i16_xany_avx512_nofma_min_vertical,
         features = "avx512f"
@@ -1741,7 +1741,7 @@ pub mod min_max_sum_norm_ops_avx512 {
         description = "Vertical min of the two provided vectors",
         ty = i32,
         register = Avx512,
-        op = generic_max_vertical,
+        op = generic_min_vertical,
         xconst = i32_xconst_avx512_nofma_min_vertical,
         xany = i32_xany_avx512_nofma_min_vertical,
         features = "avx512f"
@@ -1796,7 +1796,7 @@ pub mod min_max_sum_norm_ops_avx512 {
         description = "Vertical min of the two provided vectors",
         ty = i64,
         register = Avx512,
-        op = generic_max_vertical,
+        op = generic_min_vertical,
         xconst = i64_xconst_avx512_nofma_min_vertical,
         xany = i64_xany_avx512_nofma_min_vertical,
         features = "avx512f"
@@ -1857,7 +1857,7 @@ pub mod min_max_sum_norm_ops_neon {
         description = "Vertical min of the two provided vectors",
         ty = f32,
         register = Neon,
-        op = generic_max_vertical,
+        op = generic_min_vertical,
         xconst = f32_xconst_neon_nofma_min_vertical,
         xany = f32_xany_neon_nofma_min_vertical,
         features = "neon"
@@ -1912,7 +1912,7 @@ pub mod min_max_sum_norm_ops_neon {
         description = "Vertical min of the two provided vectors",
         ty = f64,
         register = Neon,
-        op = generic_max_vertical,
+        op = generic_min_vertical,
         xconst = f64_xconst_neon_nofma_min_vertical,
         xany = f64_xany_neon_nofma_min_vertical,
         features = "neon"
@@ -1967,7 +1967,7 @@ pub mod min_max_sum_norm_ops_neon {
         description = "Vertical min of the two provided vectors",
         ty = u8,
         register = Neon,
-        op = generic_max_vertical,
+        op = generic_min_vertical,
         xconst = u8_xconst_neon_nofma_min_vertical,
         xany = u8_xany_neon_nofma_min_vertical,
         features = "neon"
@@ -2022,7 +2022,7 @@ pub mod min_max_sum_norm_ops_neon {
         description = "Vertical min of the two provided vectors",
         ty = u16,
         register = Neon,
-        op = generic_max_vertical,
+        op = generic_min_vertical,
         xconst = u16_xconst_neon_nofma_min_vertical,
         xany = u16_xany_neon_nofma_min_vertical,
         features = "neon"
@@ -2077,7 +2077,7 @@ pub mod min_max_sum_norm_ops_neon {
         description = "Vertical min of the two provided vectors",
         ty = u32,
         register = Neon,
-        op = generic_max_vertical,
+        op = generic_min_vertical,
         xconst = u32_xconst_neon_nofma_min_vertical,
         xany = u32_xany_neon_nofma_min_vertical,
         features = "neon"
@@ -2132,7 +2132,7 @@ pub mod min_max_sum_norm_ops_neon {
         description = "Vertical min of the two provided vectors",
         ty = u64,
         register = Neon,
-        op = generic_max_vertical,
+        op = generic_min_vertical,
         xconst = u64_xconst_neon_nofma_min_vertical,
         xany = u64_xany_neon_nofma_min_vertical,
         features = "neon"
@@ -2187,7 +2187,7 @@ pub mod min_max_sum_norm_ops_neon {
         description = "Vertical min of the two provided vectors",
         ty = i8,
         register = Neon,
-        op = generic_max_vertical,
+        op = generic_min_vertical,
         xconst = i8_xconst_neon_nofma_min_vertical,
         xany = i8_xany_neon_nofma_min_vertical,
         features = "neon"
@@ -2242,7 +2242,7 @@ pub mod min_max_sum_norm_ops_neon {
         description = "Vertical min of the two provided vectors",
         ty = i16,
         register = Neon,
-        op = generic_max_vertical,
+        op = generic_min_vertical,
         xconst = i16_xconst_neon_nofma_min_vertical,
         xany = i16_xany_neon_nofma_min_vertical,
         features = "neon"
@@ -2297,7 +2297,7 @@ pub mod min_max_sum_norm_ops_neon {
         description = "Vertical min of the two provided vectors",
         ty = i32,
         register = Neon,
-        op = generic_max_vertical,
+        op = generic_min_vertical,
         xconst = i32_xconst_neon_nofma_min_vertical,
         xany = i32_xany_neon_nofma_min_vertical,
         features = "neon"
@@ -2352,7 +2352,7 @@ pub mod min_max_sum_norm_ops_neon {
         description = "Vertical min of the two provided vectors",
         ty = i64,
         register = Neon,
-        op = generic_max_vertical,
+        op = generic_min_vertical,
         xconst = i64_xconst_neon_nofma_min_vertical,
         xany = i64_xany_neon_nofma_min_vertical,
         features = "neon"

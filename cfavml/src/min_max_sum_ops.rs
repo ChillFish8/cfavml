@@ -913,3 +913,68 @@ export_safe_vertical_op!(
     i64_xany_neon_nofma_min_vertical,
     i64_xany_fallback_nofma_min_vertical,
 );
+
+
+#[cfg(test)]
+/// Tests the exposed safe API.
+///
+/// These are more sanity checks than anything else, because they can change depending
+/// on the system running them (as they are runtime selected)
+mod tests {
+    use std::iter::zip;
+    use crate::math::{AutoMath, Math};
+    use super::*;
+
+    const DIMS: usize = 77;
+
+    macro_rules! test_min_max_sum {
+        ($t:ident) => {
+            paste::paste! {
+                #[test]
+                fn [< test_ $t _min_ops >]() {
+                    let (l1, l2) = crate::test_utils::get_sample_vectors::<$t>(DIMS);
+
+                    let res = [<$t _xany_min_horizontal >](&l1);
+                    assert_eq!(res, l1.iter().fold(AutoMath::max(), |a, b| AutoMath::cmp_min(a, *b)), "Min value op miss-match");
+
+                    let mut r = vec![$t::default(); DIMS];
+                    [<$t _xany_min_vertical >](&l1, &l2, &mut r);
+                    let expected = zip(l1, l2).map(|(a, b)| AutoMath::cmp_min(a, b)).collect::<Vec<_>>();
+                    assert_eq!(r, expected, "Min vector op miss-match");
+                }
+
+                #[test]
+                fn [< test_ $t _max_ops >]() {
+                    let (l1, l2) = crate::test_utils::get_sample_vectors::<$t>(DIMS);
+
+                    let res = [<$t _xany_max_horizontal >](&l1);
+                    assert_eq!(res, l1.iter().fold(AutoMath::min(), |a, b| AutoMath::cmp_max(a, *b)), "Max value op miss-match");
+
+                    let mut r = vec![$t::default(); DIMS];
+                    [<$t _xany_max_vertical >](&l1, &l2, &mut r);
+                    let expected = zip(l1, l2).map(|(a, b)| AutoMath::cmp_max(a, b)).collect::<Vec<_>>();
+                    assert_eq!(r, expected, "Min vector op miss-match");
+                }
+
+                #[test]
+                fn [< test_ $t _sum_ops >]() {
+                    let (l1, _) = crate::test_utils::get_sample_vectors::<$t>(DIMS);
+
+                    let res = [<$t _xany_sum >](&l1);
+                    assert_eq!(res, l1.iter().fold(AutoMath::zero(), |a, b| AutoMath::add(a, *b)), "Sum horizontal op miss-match");
+                }
+            }
+        };
+    }
+
+    test_min_max_sum!(f32);
+    test_min_max_sum!(f64);
+    test_min_max_sum!(u8);
+    test_min_max_sum!(u16);
+    test_min_max_sum!(u32);
+    test_min_max_sum!(u64);
+    test_min_max_sum!(i8);
+    test_min_max_sum!(i16);
+    test_min_max_sum!(i32);
+    test_min_max_sum!(i64);
+}
