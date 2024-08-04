@@ -2,7 +2,8 @@
 name = "cfavml"
 version = "0.1.0"
 edition = "2021"
-description = "CF's Accelerated Vector Math Library"
+description = "CF's Accelerated Vector Math Library providing SIMD optimzied routines for vector operations"
+keywords = ["linear-algebra", "vector", "simd"]
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 

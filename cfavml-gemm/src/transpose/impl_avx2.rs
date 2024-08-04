@@ -188,7 +188,7 @@ const fn _MM_SHUFFLE(z: u32, y: u32, x: u32, w: u32) -> i32 {
     ((z << 6) | (y << 4) | (x << 2) | w) as i32
 }
 
-#[cfg(all(test, not(miri)))]  // This is just very expensive to do
+#[cfg(all(test, not(miri)))] // This is just very expensive to do
 mod tests {
     use super::*;
     use crate::transpose::test_suite::run_test_suites_f32;

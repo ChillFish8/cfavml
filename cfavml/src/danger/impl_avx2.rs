@@ -102,7 +102,7 @@ impl SimdRegister<f32> for Avx2 {
         let lo = _mm256_castps256_ps128(reg);
 
         let maxed = _mm_max_ps(lo, hi);
-        let [a, b, c, d] = mem::transmute::<_, [f32; 4]>(maxed);
+        let [a, b, c, d] = mem::transmute::<__m128, [f32; 4]>(maxed);
 
         let m1 = a.max(b);
         let m2 = c.max(d);
@@ -1449,7 +1449,7 @@ impl SimdRegister<u32> for Avx2 {
         let lo = _mm256_castsi256_si128(reg);
 
         let sum = _mm_add_epi32(hi, lo);
-        let unpacked = mem::transmute::<_, [u32; 4]>(sum);
+        let unpacked = mem::transmute::<__m128i, [u32; 4]>(sum);
 
         let mut s1 = unpacked[0];
         let s2 = unpacked[1];
@@ -1468,7 +1468,7 @@ impl SimdRegister<u32> for Avx2 {
         let lo = _mm256_castsi256_si128(reg);
 
         let maxed = _mm_max_epu32(hi, lo);
-        let unpacked = mem::transmute::<_, [u32; 4]>(maxed);
+        let unpacked = mem::transmute::<__m128i, [u32; 4]>(maxed);
 
         let mut m1 = unpacked[0];
         let m2 = unpacked[1];
@@ -1487,7 +1487,7 @@ impl SimdRegister<u32> for Avx2 {
         let lo = _mm256_castsi256_si128(reg);
 
         let minimal = _mm_min_epu32(hi, lo);
-        let unpacked = mem::transmute::<_, [u32; 4]>(minimal);
+        let unpacked = mem::transmute::<__m128i, [u32; 4]>(minimal);
 
         let mut m1 = unpacked[0];
         let m2 = unpacked[1];
@@ -1547,15 +1547,15 @@ impl SimdRegister<u64> for Avx2 {
     /// a lot of cognitive load on the maintenance side, so for the foreseeable future
     /// non-floating point division operations will be non-simd.
     unsafe fn div(l1: Self::Register, l2: Self::Register) -> Self::Register {
-        let l1_unpacked = mem::transmute::<_, [u64; 4]>(l1);
-        let l2_unpacked = mem::transmute::<_, [u64; 4]>(l2);
+        let l1_unpacked = mem::transmute::<Self::Register, [u64; 4]>(l1);
+        let l2_unpacked = mem::transmute::<Self::Register, [u64; 4]>(l2);
 
         let mut result = [0u64; 4];
         for (idx, (l1, l2)) in zip(l1_unpacked, l2_unpacked).enumerate() {
             result[idx] = l1.wrapping_div(l2);
         }
 
-        mem::transmute::<_, Self::Register>(result)
+        mem::transmute::<[u64; 4], Self::Register>(result)
     }
 
     #[inline(always)]
@@ -1619,7 +1619,7 @@ impl SimdRegister<u64> for Avx2 {
         let lo = _mm256_castsi256_si128(reg);
 
         let sum = _mm_add_epi64(hi, lo);
-        let unpacked = mem::transmute::<_, [u64; 2]>(sum);
+        let unpacked = mem::transmute::<__m128i, [u64; 2]>(sum);
 
         let s1 = unpacked[0];
         let s2 = unpacked[1];
@@ -1637,7 +1637,7 @@ impl SimdRegister<u64> for Avx2 {
             _mm_cmpgt_epi64(_mm_xor_si128(hi, sign_bit), _mm_xor_si128(lo, sign_bit));
         let max = _mm_blendv_epi8(lo, hi, mask);
 
-        let [m1, m2] = mem::transmute::<_, [u64; 2]>(max);
+        let [m1, m2] = mem::transmute::<__m128i, [u64; 2]>(max);
 
         m1.max(m2)
     }
@@ -1652,7 +1652,7 @@ impl SimdRegister<u64> for Avx2 {
             _mm_cmpgt_epi64(_mm_xor_si128(hi, sign_bit), _mm_xor_si128(lo, sign_bit));
         let min = _mm_blendv_epi8(hi, lo, mask);
 
-        let [m1, m2] = mem::transmute::<_, [u64; 2]>(min);
+        let [m1, m2] = mem::transmute::<__m128i, [u64; 2]>(min);
 
         m1.min(m2)
     }
