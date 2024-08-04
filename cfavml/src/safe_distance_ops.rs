@@ -50,32 +50,13 @@ macro_rules! export_safe_distance_op {
             assert_eq!(a.len(), b.len(), "Input vector sizes do not match");
 
             unsafe {
-                #[cfg(all(
-                    any(target_arch = "x86", target_arch = "x86_64"),
-                    feature = "nightly"
-                ))]
-                if std::arch::is_x86_feature_detected!("avx512f") {
-                    return $avx512_const_name::<DIMS>(a, b);
-                }
-
-                #[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
-                if std::arch::is_x86_feature_detected!("avx2")
-                    && std::arch::is_x86_feature_detected!("fma")
-                {
-                    return $avx2fma_const_name::<DIMS>(a, b);
-                }
-
-                #[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
-                if std::arch::is_x86_feature_detected!("avx2") {
-                    return $avx2_const_name::<DIMS>(a, b);
-                }
-
-                #[cfg(target_arch = "aarch64")]
-                if std::arch::is_aarch64_feature_detected!("neon") {
-                    return $neon_const_name::<DIMS>(a, b);
-                }
-
-                $fallback_const_name::<DIMS>(a, b)
+                crate::dispatch!(
+                    avx512 = $avx512_const_name::<DIMS> => (a, b)
+                    avx2fma = $avx2fma_const_name::<DIMS> => (a, b)
+                    avx2 = $avx2_const_name::<DIMS> => (a, b)
+                    neon = $neon_const_name::<DIMS> => (a, b)
+                    fallback = $fallback_const_name::<DIMS> => (a, b)
+                )
             }
         }
 
@@ -84,32 +65,13 @@ macro_rules! export_safe_distance_op {
             assert_eq!(a.len(), b.len(), "Input vector sizes do not match");
 
             unsafe {
-                #[cfg(all(
-                    any(target_arch = "x86", target_arch = "x86_64"),
-                    feature = "nightly"
-                ))]
-                if std::arch::is_x86_feature_detected!("avx512f") {
-                    return $avx512_any_name(a, b);
-                }
-
-                #[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
-                if std::arch::is_x86_feature_detected!("avx2")
-                    && std::arch::is_x86_feature_detected!("fma")
-                {
-                    return $avx2fma_any_name(a, b);
-                }
-
-                #[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
-                if std::arch::is_x86_feature_detected!("avx2") {
-                    return $avx2_any_name(a, b);
-                }
-
-                #[cfg(target_arch = "aarch64")]
-                if std::arch::is_aarch64_feature_detected!("neon") {
-                    return $neon_any_name(a, b);
-                }
-
-                $fallback_any_name(a, b)
+                crate::dispatch!(
+                    avx512 = $avx512_any_name => (a, b)
+                    avx2fma = $avx2fma_any_name => (a, b)
+                    avx2 = $avx2_any_name => (a, b)
+                    neon = $neon_any_name => (a, b)
+                    fallback = $fallback_any_name => (a, b)
+                )
             }
         }
     };

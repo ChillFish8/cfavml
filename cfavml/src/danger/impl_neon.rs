@@ -162,3 +162,19 @@ impl SimdRegister<f64> for Neon {
         vst1q_f64(mem, reg)
     }
 }
+
+impl SimdRegister<i8> for Neon {}
+
+impl SimdRegister<i16> for Neon {}
+
+impl SimdRegister<i32> for Neon {}
+
+impl SimdRegister<i64> for Neon {}
+
+impl SimdRegister<u8> for Neon {}
+
+impl SimdRegister<u16> for Neon {}
+
+impl SimdRegister<u32> for Neon {}
+
+impl SimdRegister<u64> for Neon {}

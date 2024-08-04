@@ -35,51 +35,27 @@ macro_rules! export_safe_horizontal_op {
     ) => {
         #[doc = concat!("`", stringify!($t), "` ", $desc)]
         pub fn $const_name<const DIMS: usize>(a: &[$t]) -> $t {
+            assert_eq!(a.len(), DIMS, "Provided vector does not match size DIMS");
+
             unsafe {
-                #[cfg(all(
-                    any(target_arch = "x86", target_arch = "x86_64"),
-                    feature = "nightly"
-                ))]
-                if std::arch::is_x86_feature_detected!("avx512f") {
-                    return $avx512_const_name::<DIMS>(a);
-                }
-
-                #[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
-                if std::arch::is_x86_feature_detected!("avx2") {
-                    return $avx2_const_name::<DIMS>(a);
-                }
-
-                #[cfg(target_arch = "aarch64")]
-                if std::arch::is_aarch64_feature_detected!("neon") {
-                    return $neon_const_name::<DIMS>(a);
-                }
-
-                $fallback_const_name::<DIMS>(a)
+                crate::dispatch!(
+                    avx512 = $avx512_const_name::<DIMS> => (a)
+                    avx2 = $avx2_const_name::<DIMS> => (a)
+                    neon = $neon_const_name::<DIMS> => (a)
+                    fallback = $fallback_const_name::<DIMS> => (a)
+                )
             }
         }
 
         #[doc = concat!("`", stringify!($t), "` ", $desc)]
         pub fn $any_name(a: &[$t]) -> $t {
             unsafe {
-                #[cfg(all(
-                    any(target_arch = "x86", target_arch = "x86_64"),
-                    feature = "nightly"
-                ))]
-                if std::arch::is_x86_feature_detected!("avx512f") {
-                    return $avx512_any_name(a);
-                }
-
-                #[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
-                if std::arch::is_x86_feature_detected!("avx2") {
-                    return $avx2_any_name(a);
-                }
-
-                #[cfg(target_arch = "aarch64")]
-                if std::arch::is_aarch64_feature_detected!("neon") {
-                    return $neon_any_name(a);
-                }
-
-                $fallback_any_name(a)
+                crate::dispatch!(
+                    avx512 = $avx512_any_name => (a)
+                    avx2 = $avx2_any_name => (a)
+                    neon = $neon_any_name => (a)
+                    fallback = $fallback_any_name => (a)
+                )
             }
         }
     };
@@ -102,37 +78,17 @@ macro_rules! export_safe_vertical_op {
     ) => {
         #[doc = concat!("`", stringify!($t), "` ", $desc)]
         pub fn $const_name<const DIMS: usize>(a: &[$t], b: &[$t], result: &mut [$t]) {
-            assert_eq!(
-                a.len(),
-                b.len(),
-                "Input vector a and b do not match in size"
-            );
-            assert_eq!(
-                a.len(),
-                result.len(),
-                "Input vectors and result vector size do not match"
-            );
+            assert_eq!(a.len(), DIMS, "Input vector a does not match size DIMS");
+            assert_eq!(b.len(), DIMS, "Input vector b does not match size DIMS");
+            assert_eq!(result.len(), DIMS, "Result vector does not match size DIMS");
 
             unsafe {
-                #[cfg(all(
-                    any(target_arch = "x86", target_arch = "x86_64"),
-                    feature = "nightly"
-                ))]
-                if std::arch::is_x86_feature_detected!("avx512f") {
-                    return $avx512_const_name::<DIMS>(a, b, result);
-                }
-
-                #[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
-                if std::arch::is_x86_feature_detected!("avx2") {
-                    return $avx2_const_name::<DIMS>(a, b, result);
-                }
-
-                #[cfg(target_arch = "aarch64")]
-                if std::arch::is_aarch64_feature_detected!("neon") {
-                    return $neon_const_name::<DIMS>(a, b, result);
-                }
-
-                $fallback_const_name::<DIMS>(a, b, result)
+                crate::dispatch!(
+                    avx512 = $avx512_const_name::<DIMS> => (a, b, result)
+                    avx2 = $avx2_const_name::<DIMS> => (a, b, result)
+                    neon = $neon_const_name::<DIMS> => (a, b, result)
+                    fallback = $fallback_const_name::<DIMS> => (a, b, result)
+                )
             }
         }
 
@@ -150,25 +106,12 @@ macro_rules! export_safe_vertical_op {
             );
 
             unsafe {
-                #[cfg(all(
-                    any(target_arch = "x86", target_arch = "x86_64"),
-                    feature = "nightly"
-                ))]
-                if std::arch::is_x86_feature_detected!("avx512f") {
-                    return $avx512_any_name(a, b, result);
-                }
-
-                #[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
-                if std::arch::is_x86_feature_detected!("avx2") {
-                    return $avx2_any_name(a, b, result);
-                }
-
-                #[cfg(target_arch = "aarch64")]
-                if std::arch::is_aarch64_feature_detected!("neon") {
-                    return $neon_any_name(a, b, result);
-                }
-
-                $fallback_any_name(a, b, result)
+                crate::dispatch!(
+                    avx512 = $avx512_any_name => (a, b, result)
+                    avx2 = $avx2_any_name => (a, b, result)
+                    neon = $neon_any_name => (a, b, result)
+                    fallback = $fallback_any_name => (a, b, result)
+                )
             }
         }
     };

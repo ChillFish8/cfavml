@@ -1,4 +1,5 @@
 #![allow(internal_features)]
+#![cfg_attr(not(feature = "std"), no_std)]
 #![cfg_attr(docsrs, feature(doc_cfg, doc_auto_cfg))]
 #![cfg_attr(feature = "nightly", feature(core_intrinsics))]
 #![cfg_attr(
@@ -12,16 +13,17 @@
 #![doc = include_str!("../README.md")]
 
 pub mod danger;
+pub mod dispatch;
 pub mod math;
 
-mod arithmetic_ops;
-mod distance_ops;
-mod min_max_sum_ops;
-mod norm_ops;
+mod safe_arithmetic_ops;
+mod safe_distance_ops;
+mod safe_min_max_sum_ops;
+mod safe_norm_ops;
 #[cfg(test)]
 mod test_utils;
 
-pub use self::arithmetic_ops::*;
-pub use self::distance_ops::*;
-pub use self::min_max_sum_ops::*;
-pub use self::norm_ops::*;
+pub use self::safe_arithmetic_ops::*;
+pub use self::safe_distance_ops::*;
+pub use self::safe_min_max_sum_ops::*;
+pub use self::safe_norm_ops::*;
