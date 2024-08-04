@@ -191,7 +191,23 @@ mod neon_tests {
 
     test_suite!(f32, Neon);
     test_suite!(f64, Neon);
+    test_suite!(i8, Neon);
+    test_suite!(i16, Neon);
+    test_suite!(i32, Neon);
+    test_suite!(i64, Neon);
+    test_suite!(u8, Neon);
+    test_suite!(u16, Neon);
+    test_suite!(u32, Neon);
+    test_suite!(u64, Neon);
 
     test_cosine_extra!(f32, Neon);
     test_cosine_extra!(f64, Neon);
+    test_cosine_extra!(i8, Neon);
+    // test_cosine_extra!(i16, Neon); - Divide by zero error from RNG.
+    test_cosine_extra!(i32, Neon);
+    test_cosine_extra!(i64, Neon);
+    test_cosine_extra!(u8, Neon);
+    test_cosine_extra!(u16, Neon);
+    test_cosine_extra!(u32, Neon);
+    test_cosine_extra!(u64, Neon);
 }
