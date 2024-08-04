@@ -22,5 +22,7 @@ jobs:
       #   uses: taiki-e/install-action@cargo-llvm-cov
       - name: Install nextest
         uses: taiki-e/install-action@nextest
-      - name: Test system
-        run:  cargo nextest run --all-features --all --nocapture
+      - name: Test system - Stable
+        run:  cargo nextest run --all --nocapture
+      - name: Test system - Nightly
+        run:  cargo +nightly nextest run --all --nocapture --features nightly
