@@ -36,7 +36,7 @@ macro_rules! test_suite {
             #[test]
             fn [<test_ $im:lower _ $t _norm>]() {
                 let (l1, _) = crate::test_utils::get_sample_vectors::<$t>(1043);
-                unsafe { crate::danger::op_norm::test_norm::<$t, $im>(l1) };
+                unsafe { crate::danger::op_norm::test_squared_norm::<$t, $im>(l1) };
             }
 
             #[test]
