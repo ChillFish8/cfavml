@@ -9,7 +9,7 @@ Various accelerated vector operations over Rust primitives with SIMD.
 - AVX2
 - AVX2 + FMA
 - AVX512
-- NEON (`f32`/`f64` operations only currently)
+- NEON
 - Fallback (Typically optimized to SSE automatically by LLVM on x86)
 
 ### Supported Primitives
