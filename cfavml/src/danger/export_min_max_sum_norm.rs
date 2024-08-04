@@ -664,7 +664,7 @@ pub mod min_max_sum_ops_fallback {
 /// Vector norm ops on the avx2 + fma implementations.
 pub mod norm_ops_avx2fma {
     use super::*;
-    
+
     export_op_horizontal!(
         description = "Calculates the squared L2 norm of the provided vector",
         ty = f32,
@@ -672,7 +672,8 @@ pub mod norm_ops_avx2fma {
         op = generic_squared_norm,
         xconst = f32_xconst_avx2_fma_squared_norm,
         xany = f32_xany_avx2_fma_squared_norm,
-        features = "avx2", "fma"
+        features = "avx2",
+        "fma"
     );
     export_op_horizontal!(
         description = "Calculates the squared L2 norm of the provided vector",
@@ -681,7 +682,8 @@ pub mod norm_ops_avx2fma {
         op = generic_squared_norm,
         xconst = f64_xconst_avx2_fma_squared_norm,
         xany = f64_xany_avx2_fma_squared_norm,
-        features = "avx2", "fma"
+        features = "avx2",
+        "fma"
     );
 }
 

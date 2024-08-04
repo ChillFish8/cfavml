@@ -14,14 +14,14 @@
 pub mod danger;
 pub mod math;
 
-#[cfg(test)]
-mod test_utils;
-mod distance_ops;
 mod arithmetic_ops;
+mod distance_ops;
 mod min_max_sum_ops;
 mod norm_ops;
+#[cfg(test)]
+mod test_utils;
 
-pub use self::distance_ops::*;
 pub use self::arithmetic_ops::*;
+pub use self::distance_ops::*;
 pub use self::min_max_sum_ops::*;
 pub use self::norm_ops::*;

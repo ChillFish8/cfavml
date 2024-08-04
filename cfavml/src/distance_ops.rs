@@ -28,7 +28,6 @@
 //! ```
 use crate::danger::*;
 
-
 macro_rules! export_safe_distance_op {
     (
         description = $desc:expr,
@@ -45,61 +44,71 @@ macro_rules! export_safe_distance_op {
         $avx2_any_name:ident,
         $neon_any_name:ident,
         $fallback_any_name:ident,
-    ) => {      
+    ) => {
         #[doc = concat!("`", stringify!($t), "` ", $desc)]
         pub fn $const_name<const DIMS: usize>(a: &[$t], b: &[$t]) -> $t {
             assert_eq!(a.len(), b.len(), "Input vector sizes do not match");
-            
+
             unsafe {
-                #[cfg(all(any(target_arch = "x86", target_arch = "x86_64"), feature = "nightly"))]
+                #[cfg(all(
+                    any(target_arch = "x86", target_arch = "x86_64"),
+                    feature = "nightly"
+                ))]
                 if std::arch::is_x86_feature_detected!("avx512f") {
                     return $avx512_const_name::<DIMS>(a, b);
                 }
-        
+
                 #[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
-                if std::arch::is_x86_feature_detected!("avx2") && std::arch::is_x86_feature_detected!("fma") {
+                if std::arch::is_x86_feature_detected!("avx2")
+                    && std::arch::is_x86_feature_detected!("fma")
+                {
                     return $avx2fma_const_name::<DIMS>(a, b);
                 }
-                
+
                 #[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
                 if std::arch::is_x86_feature_detected!("avx2") {
                     return $avx2_const_name::<DIMS>(a, b);
                 }
-        
+
                 #[cfg(target_arch = "aarch64")]
                 if std::arch::is_aarch64_feature_detected!("neon") {
                     return $neon_const_name::<DIMS>(a, b);
                 }
-                
+
                 $fallback_const_name::<DIMS>(a, b)
             }
         }
-        
+
         #[doc = concat!("`", stringify!($t), "` ", $desc)]
         pub fn $any_name(a: &[$t], b: &[$t]) -> $t {
             assert_eq!(a.len(), b.len(), "Input vector sizes do not match");
-            
+
             unsafe {
-                #[cfg(all(any(target_arch = "x86", target_arch = "x86_64"), feature = "nightly"))]
+                #[cfg(all(
+                    any(target_arch = "x86", target_arch = "x86_64"),
+                    feature = "nightly"
+                ))]
                 if std::arch::is_x86_feature_detected!("avx512f") {
                     return $avx512_any_name(a, b);
                 }
-        
+
                 #[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
-                if std::arch::is_x86_feature_detected!("avx2") && std::arch::is_x86_feature_detected!("fma") {
+                if std::arch::is_x86_feature_detected!("avx2")
+                    && std::arch::is_x86_feature_detected!("fma")
+                {
                     return $avx2fma_any_name(a, b);
                 }
-                
+
                 #[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
                 if std::arch::is_x86_feature_detected!("avx2") {
                     return $avx2_any_name(a, b);
                 }
-        
+
                 #[cfg(target_arch = "aarch64")]
                 if std::arch::is_aarch64_feature_detected!("neon") {
                     return $neon_any_name(a, b);
                 }
-                
+
                 $fallback_any_name(a, b)
             }
         }
@@ -120,7 +129,7 @@ export_safe_distance_op!(
     f32_xany_avx2_fma_dot,
     f32_xany_avx2_nofma_dot,
     f32_xany_neon_fma_dot,
-    f32_xany_fallback_nofma_dot,    
+    f32_xany_fallback_nofma_dot,
 );
 export_safe_distance_op!(
     description = "Cosine distance of two provided vectors",
@@ -136,7 +145,7 @@ export_safe_distance_op!(
     f32_xany_avx2_fma_cosine,
     f32_xany_avx2_nofma_cosine,
     f32_xany_neon_fma_cosine,
-    f32_xany_fallback_nofma_cosine,    
+    f32_xany_fallback_nofma_cosine,
 );
 export_safe_distance_op!(
     description = "Squared Euclidean distance of two provided vectors",
@@ -152,7 +161,7 @@ export_safe_distance_op!(
     f32_xany_avx2_fma_squared_euclidean,
     f32_xany_avx2_nofma_squared_euclidean,
     f32_xany_neon_fma_squared_euclidean,
-    f32_xany_fallback_nofma_squared_euclidean,    
+    f32_xany_fallback_nofma_squared_euclidean,
 );
 
 export_safe_distance_op!(
@@ -169,7 +178,7 @@ export_safe_distance_op!(
     f64_xany_avx2_fma_dot,
     f64_xany_avx2_nofma_dot,
     f64_xany_neon_fma_dot,
-    f64_xany_fallback_nofma_dot,    
+    f64_xany_fallback_nofma_dot,
 );
 export_safe_distance_op!(
     description = "Cosine distance of two provided vectors",
@@ -185,7 +194,7 @@ export_safe_distance_op!(
     f64_xany_avx2_fma_cosine,
     f64_xany_avx2_nofma_cosine,
     f64_xany_neon_fma_cosine,
-    f64_xany_fallback_nofma_cosine,    
+    f64_xany_fallback_nofma_cosine,
 );
 export_safe_distance_op!(
     description = "Squared Euclidean distance of two provided vectors",
@@ -201,7 +210,7 @@ export_safe_distance_op!(
     f64_xany_avx2_fma_squared_euclidean,
     f64_xany_avx2_nofma_squared_euclidean,
     f64_xany_neon_fma_squared_euclidean,
-    f64_xany_fallback_nofma_squared_euclidean,    
+    f64_xany_fallback_nofma_squared_euclidean,
 );
 
 export_safe_distance_op!(
@@ -497,7 +506,6 @@ export_safe_distance_op!(
     i16_xany_neon_nofma_squared_euclidean,
     i16_xany_fallback_nofma_squared_euclidean,
 );
-
 
 export_safe_distance_op!(
     description = "Dot product of two provided vectors",
