@@ -212,7 +212,7 @@ macro_rules! define_int_ops {
 
             #[inline(always)]
             fn sqrt(a: $t) -> $t {
-                (a as f64).sqrt() as $t
+                FastMath::sqrt(a as f64) as $t
             }
 
             #[inline(always)]
@@ -285,7 +285,7 @@ macro_rules! define_int_ops {
 
             #[inline(always)]
             fn sqrt(a: $t) -> $t {
-                (a as f64).sqrt() as $t
+                FastMath::sqrt(a as f64) as $t
             }
 
             #[inline(always)]
