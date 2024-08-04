@@ -19,7 +19,9 @@ mod test_utils;
 mod distance_ops;
 mod arithmetic_ops;
 mod min_max_sum_ops;
+mod norm_ops;
 
 pub use self::distance_ops::*;
 pub use self::arithmetic_ops::*;
 pub use self::min_max_sum_ops::*;
+pub use self::norm_ops::*;
