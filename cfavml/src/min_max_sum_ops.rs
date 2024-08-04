@@ -925,7 +925,7 @@ mod tests {
     use super::*;
     use crate::math::{AutoMath, Math};
 
-    const DIMS: usize = 77;
+    const DIMS: usize = 67;
 
     macro_rules! test_min_max_sum {
         ($t:ident) => {
