@@ -13,12 +13,22 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+      - name: Install Rust
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: nightly
+          profile: minimal
+          components: rustfmt
+          override: true
       - name: Rustfmt Check
-        run: cargo +nightly fmt --all -- --check
+        uses: actions-rs/cargo@v1
+        with:
+          command: fmt
+          args: --all -- --check
 
   clippy:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
       - name: Clippy Check
-        run: cargo +nightly clippy -p cfavml --all-features --tests --examples --bins -- -Dclippy::todo
+        run: cargo clippy -p cfavml --all-features --tests --examples --bins -- -Dclippy::todo
