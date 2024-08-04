@@ -123,6 +123,7 @@ pub mod aligned {
     }
 }
 
+#[allow(unused)]
 #[inline(always)]
 pub fn cosine<T: Copy, M: Math<T>>(dot_product: T, norm_x: T, norm_y: T) -> T {
     if M::cmp_eq(norm_x, M::zero()) && M::cmp_eq(norm_y, M::zero()) {

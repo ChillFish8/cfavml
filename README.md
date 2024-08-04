@@ -12,86 +12,45 @@ Various accelerated vector operations over Rust primitives with SIMD.
 - NEON
 - Fallback (Typically optimized to SSE automatically by LLVM on x86)
 
-### Supported Primitives
+## Crates
 
-- `f32`
-- `f64`
-- `i8`
-- `i16`
-- `i32`
-- `i64`
-- `u8`
-- `u16`
-- `u32`
-- `u64`
+### `cfavml` 
 
-##### Note on non-`f32/f64` division
+This is the core base library, it has no dependencies and only depends on the `core` library,
+it does not perform any allocations.
 
-Division operations on non-floating point primitives are currently still scalar
-operations, as performing integer division is incredibly hard to do anymore efficiently
-with SIMD and adds a significant amount of cognitive overhead when reading the code.
+This library is guaranteed to be no-std compatible and can be adjusted by disabling the `std`
+feature flag:
 
-Although to be honest I have some serious questions about your application if you're doing
-heavy integer division...
-
-### Supported Operations & Distances
-
-- Dot Product
-- L2 Norm
-- Squared Euclidean
-- Cosine
-- Vector Min Value
-- Vector Max Value
-- Vector Sum Value
-- Vector Add Value
-- Vector Sub Value
-- Vector Mul Value
-- Vector Div Value
-- Vector Add Vector
-- Vector Sub Vector
-- Vector Mul Vector
-- Vector Div Vector
-
-### Dangerous routine naming convention
-
-If you've looked at the `danger` folder at all, you'll notice a few things, one SIMD operations
-are gated behind the `SimdRegister<T>` trait, this provides us with a generic abstraction
-over the various SIMD register types and architectures.
-
-This trait, combined with the `Math<T>` trait form the core of all operations and are
-provided as generic functions (with no target features):
-
-- `generic_dot_product`
-- `generic_euclidean`
-- `generic_cosine`
-- `generic_squared_norm`
-- `generic_max_horizontal`
-- `generic_max_vertical`
-- `generic_min_horizontal`
-- `generic_min_vertical`
-- `generic_sum_horizontal`
-- `generic_sum_vertical`
-- `generic_add_value`
-- `generic_sub_value`
-- `generic_mul_value`
-- `generic_div_value`
-- `generic_add_vector`
-- `generic_sub_vector`
-- `generic_mul_vector`
-- `generic_div_vector`
-
-We also provide pre-configured non-generic methods with have the relevant `target_feature`s
-specified, naturally these methods are immediately UB if you call them without the correct
-CPU flags being available.
-
-```
-<dtype>_x<dims>_<arch>_<(no)fma>_<op_name>
+##### Default Setup
+```toml
+cfavml = "0.1.0" 
 ```
 
-### Features
+##### No-std Setup
+```toml
+cfavml = { version = "0.1.0", default-features = false }
+```
 
-- `nightly` Enables optimizations available only on nightly platforms.
-  * This is required for AVX512 support due to it currently being unstable.
+### `cfavml-gemm`
+
+Generic matrix multiplication routines + transposition.
+
+This crate is a WIP and is not currently published.
+
+You should not use this crate currently.
+
+### `cfavml-utils`
+
+This crate is a WIP and is not currently published.
+
+Are a set of utilities primarily designed to just be use by the other cfavml sub-crates. 
+This contains a lightly wrapped rayon threadpool with CPU pinning and provides the ability 
+to create aligned buffers.
+
+NOTE:
+
+This library is _not_ no-std compatible and _does_ allocate.
 
 ### Is this a replacement for BLAS?
 

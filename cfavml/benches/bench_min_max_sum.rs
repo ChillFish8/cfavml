@@ -21,9 +21,6 @@ fn main() {
     )
 )]
 mod op_min {
-    use cfavml::danger::{Avx2, SimdRegister};
-    use cfavml::math::{AutoMath, Math};
-
     use super::*;
 
     macro_rules! ndarray_impls {
@@ -36,7 +33,7 @@ mod op_min {
 
                     bencher.bench_local(|| {
                         let l1_view = black_box(l1_view);
-                        l1_view.fold(<AutoMath as Math<$t>>::max(), |a, b| a.min(*b))
+                        l1_view.fold(<cfavml::math::AutoMath as cfavml::math::Math<$t>>::max(), |a, b| a.min(*b))
                     });
                 }
             }
@@ -58,28 +55,18 @@ mod op_min {
         ($t:ty) => {
             paste::paste! {
                 #[cfg_attr(not(debug_assertions), divan::bench)]
-                fn [< $t _min_cfavml_avx2>](bencher: Bencher) {
+                fn [< $t _min_cfavml>](bencher: Bencher) {
                     let (l1, _) = utils::get_sample_vectors::<$t>(DIMS);
 
                     bencher.bench_local(|| {
                         let l1_view = black_box(&l1);
-                        unsafe { generic_min(l1_view) }
+                        cfavml::[< $t _xany_min_horizontal >](l1_view)
                     });
                 }
             }
         };
     }
-
-    #[target_feature(enable = "avx2")]
-    unsafe fn generic_min<T>(a: &[T]) -> T
-    where
-        T: Copy,
-        Avx2: SimdRegister<T>,
-        AutoMath: Math<T>,
-    {
-        cfavml::danger::generic_min_horizontal::<T, Avx2, AutoMath>(a.len(), a)
-    }
-
+    
     cfavml_impls!(f32);
     cfavml_impls!(f64);
     cfavml_impls!(u8);
@@ -102,9 +89,6 @@ mod op_min {
     )
 )]
 mod op_max {
-    use cfavml::danger::{Avx2, SimdRegister};
-    use cfavml::math::{AutoMath, Math};
-
     use super::*;
 
     macro_rules! ndarray_impls {
@@ -117,7 +101,7 @@ mod op_max {
 
                     bencher.bench_local(|| {
                         let l1_view = black_box(l1_view);
-                        l1_view.fold(<AutoMath as Math<$t>>::min(), |a, b| a.max(*b))
+                        l1_view.fold(<cfavml::math::AutoMath as cfavml::math::Math<$t>>::min(), |a, b| a.max(*b))
                     });
                 }
             }
@@ -139,26 +123,16 @@ mod op_max {
         ($t:ty) => {
             paste::paste! {
                 #[cfg_attr(not(debug_assertions), divan::bench)]
-                fn [< $t _max_cfavml_avx2>](bencher: Bencher) {
+                fn [< $t _max_cfavml>](bencher: Bencher) {
                     let (l1, _) = utils::get_sample_vectors::<$t>(DIMS);
 
                     bencher.bench_local(|| {
                         let l1_view = black_box(&l1);
-                        unsafe { generic_max(l1_view) }
+                        cfavml::[< $t _xany_max_horizontal >](l1_view)
                     });
                 }
             }
         };
-    }
-
-    #[target_feature(enable = "avx2")]
-    unsafe fn generic_max<T>(a: &[T]) -> T
-    where
-        T: Copy,
-        Avx2: SimdRegister<T>,
-        AutoMath: Math<T>,
-    {
-        cfavml::danger::generic_max_horizontal::<T, Avx2, AutoMath>(a.len(), a)
     }
 
     cfavml_impls!(f32);
@@ -183,9 +157,6 @@ mod op_max {
     )
 )]
 mod op_sum {
-    use cfavml::danger::{Avx2, SimdRegister};
-    use cfavml::math::{AutoMath, Math};
-
     use super::*;
 
     macro_rules! naive_impls {
@@ -247,26 +218,16 @@ mod op_sum {
         ($t:ty) => {
             paste::paste! {
                 #[cfg_attr(not(debug_assertions), divan::bench)]
-                fn [< $t _sum_cfavml_avx2>](bencher: Bencher) {
+                fn [< $t _sum_cfavml>](bencher: Bencher) {
                     let (l1, _) = utils::get_sample_vectors::<$t>(DIMS);
 
                     bencher.bench_local(|| {
                         let l1_view = black_box(&l1);
-                        unsafe { generic_sum(l1_view) }
+                        cfavml::[< $t _xany_sum >](l1_view)
                     });
                 }
             }
         };
-    }
-
-    #[target_feature(enable = "avx2")]
-    unsafe fn generic_sum<T>(a: &[T]) -> T
-    where
-        T: Copy,
-        Avx2: SimdRegister<T>,
-        AutoMath: Math<T>,
-    {
-        cfavml::danger::generic_sum::<T, Avx2, AutoMath>(a.len(), a)
     }
 
     cfavml_impls!(f32);

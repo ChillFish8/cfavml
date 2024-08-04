@@ -55,5 +55,5 @@ name = "bench_distance_measures"
 harness = false
 
 [[bench]]
-name = "bench_min_max"
+name = "bench_min_max_sum"
 harness = false

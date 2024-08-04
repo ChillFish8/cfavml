@@ -4,6 +4,22 @@
 
 Various accelerated vector operations over Rust primitives with SIMD.
 
+This is the core base library, it has no dependencies and only depends on the `core` library,
+it does not perform any allocations.
+
+This library is guaranteed to be no-std compatible and can be adjusted by disabling the `std`
+feature flag:
+
+##### Default Setup
+```toml
+cfavml = "0.1.0" 
+```
+
+##### No-std Setup
+```toml
+cfavml = { version = "0.1.0", default-features = false }
+```
+
 ### Available SIMD Architectures
 
 - AVX2

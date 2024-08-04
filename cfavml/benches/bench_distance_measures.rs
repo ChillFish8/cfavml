@@ -3,7 +3,6 @@ extern crate blas_src;
 
 use std::hint::black_box;
 
-use cfavml::danger::*;
 use cfavml::math::*;
 use divan::Bencher;
 use ndarray::ArrayView1;
@@ -75,52 +74,29 @@ mod dot_product_x1341 {
         });
     }
 
-    macro_rules! define_cfavml_variants {
-        (
-            $t:ident,
-            $name:ident,
-            $op:expr
-        ) => {
-            #[cfg_attr(not(debug_assertions), divan::bench)]
-            fn $name(bencher: Bencher) {
-                let (l1, l2) = utils::get_sample_vectors::<$t>(DIMS);
+    #[cfg_attr(not(debug_assertions), divan::bench)]
+    fn cfavml_f32(bencher: Bencher) {
+        let (l1, l2) = utils::get_sample_vectors::<f32>(DIMS);
 
-                bencher.bench_local(|| {
-                    let l1_view = black_box(&l1);
-                    let l2_view = black_box(&l2);
-                    unsafe { $op(l1_view, l2_view) }
-                });
-            }
-        };
+        bencher.bench_local(|| {
+            let l1_view = black_box(l1.as_ref());
+            let l2_view = black_box(l2.as_ref());
+
+            cfavml::f32_xany_dot(l1_view, l2_view)
+        });
     }
 
-    define_cfavml_variants!(f32, cfavml_fallback_nofma_f32, f32_xany_fallback_nofma_dot);
-    define_cfavml_variants!(f64, cfavml_fallback_nofma_f64, f64_xany_fallback_nofma_dot);
+    #[cfg_attr(not(debug_assertions), divan::bench)]
+    fn cfavml_f64(bencher: Bencher) {
+        let (l1, l2) = utils::get_sample_vectors::<f64>(DIMS);
 
-    #[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
-    define_cfavml_variants!(f32, cfavml_avx2_nofma_f32, f32_xany_avx2_nofma_dot);
-    #[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
-    define_cfavml_variants!(f64, cfavml_avx2_nofma_f64, f64_xany_avx2_nofma_dot);
-    #[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
-    define_cfavml_variants!(f32, cfavml_avx2_fma_f32, f32_xany_avx2_fma_dot);
-    #[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
-    define_cfavml_variants!(f64, cfavml_avx2_fma_f64, f64_xany_avx2_fma_dot);
+        bencher.bench_local(|| {
+            let l1_view = black_box(l1.as_ref());
+            let l2_view = black_box(l2.as_ref());
 
-    #[cfg(all(
-        any(target_arch = "x86", target_arch = "x86_64"),
-        feature = "benchmark-avx512"
-    ))]
-    define_cfavml_variants!(f32, cfavml_avx512_fma_f32, f32_xany_avx512_fma_dot);
-    #[cfg(all(
-        any(target_arch = "x86", target_arch = "x86_64"),
-        feature = "benchmark-avx512"
-    ))]
-    define_cfavml_variants!(f64, cfavml_avx512_fma_f64, f64_xany_avx512_fma_dot);
-
-    #[cfg(target_arch = "aarch64")]
-    define_cfavml_variants!(f32, cfavml_neon_fma_f32, f32_xany_neon_fma_dot);
-    #[cfg(target_arch = "aarch64")]
-    define_cfavml_variants!(f64, cfavml_neon_fma_f64, f64_xany_neon_fma_dot);
+            cfavml::f64_xany_dot(l1_view, l2_view)
+        });
+    }
 }
 
 #[cfg_attr(
@@ -188,60 +164,29 @@ mod cosine_x1341 {
         });
     }
 
-    macro_rules! define_cfavml_variants {
-        (
-            $t:ident,
-            $name:ident,
-            $op:expr
-        ) => {
-            #[cfg_attr(not(debug_assertions), divan::bench)]
-            fn $name(bencher: Bencher) {
-                let (l1, l2) = utils::get_sample_vectors::<$t>(DIMS);
+    #[cfg_attr(not(debug_assertions), divan::bench)]
+    fn cfavml_f32(bencher: Bencher) {
+        let (l1, l2) = utils::get_sample_vectors::<f32>(DIMS);
 
-                bencher.bench_local(|| {
-                    let l1_view = black_box(&l1);
-                    let l2_view = black_box(&l2);
-                    unsafe { $op(l1_view, l2_view) }
-                });
-            }
-        };
+        bencher.bench_local(|| {
+            let l1_view = black_box(l1.as_ref());
+            let l2_view = black_box(l2.as_ref());
+
+            cfavml::f32_xany_cosine(l1_view, l2_view)
+        });
     }
 
-    define_cfavml_variants!(
-        f32,
-        cfavml_fallback_nofma_f32,
-        f32_xany_fallback_nofma_cosine
-    );
-    define_cfavml_variants!(
-        f64,
-        cfavml_fallback_nofma_f64,
-        f64_xany_fallback_nofma_cosine
-    );
+    #[cfg_attr(not(debug_assertions), divan::bench)]
+    fn cfavml_f64(bencher: Bencher) {
+        let (l1, l2) = utils::get_sample_vectors::<f64>(DIMS);
 
-    #[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
-    define_cfavml_variants!(f32, cfavml_avx2_nofma_f32, f32_xany_avx2_nofma_cosine);
-    #[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
-    define_cfavml_variants!(f64, cfavml_avx2_nofma_f64, f64_xany_avx2_nofma_cosine);
-    #[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
-    define_cfavml_variants!(f32, cfavml_avx2_fma_f32, f32_xany_avx2_fma_cosine);
-    #[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
-    define_cfavml_variants!(f64, cfavml_avx2_fma_f64, f64_xany_avx2_fma_cosine);
+        bencher.bench_local(|| {
+            let l1_view = black_box(l1.as_ref());
+            let l2_view = black_box(l2.as_ref());
 
-    #[cfg(all(
-        any(target_arch = "x86", target_arch = "x86_64"),
-        feature = "benchmark-avx512"
-    ))]
-    define_cfavml_variants!(f32, cfavml_avx512_fma_f32, f32_xany_avx512_fma_cosine);
-    #[cfg(all(
-        any(target_arch = "x86", target_arch = "x86_64"),
-        feature = "benchmark-avx512"
-    ))]
-    define_cfavml_variants!(f64, cfavml_avx512_fma_f64, f64_xany_avx512_fma_cosine);
-
-    #[cfg(target_arch = "aarch64")]
-    define_cfavml_variants!(f32, cfavml_neon_fma_f32, f32_xany_neon_fma_cosine);
-    #[cfg(target_arch = "aarch64")]
-    define_cfavml_variants!(f64, cfavml_neon_fma_f64, f64_xany_neon_fma_cosine);
+            cfavml::f64_xany_cosine(l1_view, l2_view)
+        });
+    }
 }
 
 #[cfg_attr(
@@ -306,91 +251,28 @@ mod euclidean_x1341 {
             simsimd::SpatialSimilarity::sqeuclidean(l1_view, l2_view).unwrap_or_default()
         });
     }
+    
+    #[cfg_attr(not(debug_assertions), divan::bench)]
+    fn cfavml_f32(bencher: Bencher) {
+        let (l1, l2) = utils::get_sample_vectors::<f32>(DIMS);
 
-    macro_rules! define_cfavml_variants {
-        (
-            $t:ident,
-            $name:ident,
-            $op:expr
-        ) => {
-            #[cfg_attr(not(debug_assertions), divan::bench)]
-            fn $name(bencher: Bencher) {
-                let (l1, l2) = utils::get_sample_vectors::<$t>(DIMS);
+        bencher.bench_local(|| {
+            let l1_view = black_box(l1.as_ref());
+            let l2_view = black_box(l2.as_ref());
 
-                bencher.bench_local(|| {
-                    let l1_view = black_box(&l1);
-                    let l2_view = black_box(&l2);
-                    unsafe { $op(l1_view, l2_view) }
-                });
-            }
-        };
+            cfavml::f32_xany_squared_euclidean(l1_view, l2_view)
+        });
     }
 
-    define_cfavml_variants!(
-        f32,
-        cfavml_fallback_nofma_f32,
-        f32_xany_fallback_nofma_squared_euclidean
-    );
-    define_cfavml_variants!(
-        f64,
-        cfavml_fallback_nofma_f64,
-        f64_xany_fallback_nofma_squared_euclidean
-    );
+    #[cfg_attr(not(debug_assertions), divan::bench)]
+    fn cfavml_f64(bencher: Bencher) {
+        let (l1, l2) = utils::get_sample_vectors::<f64>(DIMS);
 
-    #[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
-    define_cfavml_variants!(
-        f32,
-        cfavml_avx2_nofma_f32,
-        f32_xany_avx2_nofma_squared_euclidean
-    );
-    #[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
-    define_cfavml_variants!(
-        f64,
-        cfavml_avx2_nofma_f64,
-        f64_xany_avx2_nofma_squared_euclidean
-    );
-    #[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
-    define_cfavml_variants!(
-        f32,
-        cfavml_avx2_fma_f32,
-        f32_xany_avx2_fma_squared_euclidean
-    );
-    #[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
-    define_cfavml_variants!(
-        f64,
-        cfavml_avx2_fma_f64,
-        f64_xany_avx2_fma_squared_euclidean
-    );
+        bencher.bench_local(|| {
+            let l1_view = black_box(l1.as_ref());
+            let l2_view = black_box(l2.as_ref());
 
-    #[cfg(all(
-        any(target_arch = "x86", target_arch = "x86_64"),
-        feature = "benchmark-avx512"
-    ))]
-    define_cfavml_variants!(
-        f32,
-        cfavml_avx512_fma_f32,
-        f32_xany_avx512_fma_squared_euclidean
-    );
-    #[cfg(all(
-        any(target_arch = "x86", target_arch = "x86_64"),
-        feature = "benchmark-avx512"
-    ))]
-    define_cfavml_variants!(
-        f64,
-        cfavml_avx512_fma_f64,
-        f64_xany_avx512_fma_squared_euclidean
-    );
-
-    #[cfg(target_arch = "aarch64")]
-    define_cfavml_variants!(
-        f32,
-        cfavml_neon_fma_f32,
-        f32_xany_neon_fma_squared_euclidean
-    );
-    #[cfg(target_arch = "aarch64")]
-    define_cfavml_variants!(
-        f64,
-        cfavml_neon_fma_f64,
-        f64_xany_neon_fma_squared_euclidean
-    );
+            cfavml::f64_xany_squared_euclidean(l1_view, l2_view)
+        });
+    }
 }
