@@ -36,21 +36,53 @@ heavy integer division...
 
 ### Supported Operations & Distances
 
-- Dot Product
-- L2 Norm
-- Squared Euclidean
-- Cosine 
-- Vector Min Value
-- Vector Max Value
-- Vector Sum Value
-- Vector Add Value
-- Vector Sub Value
-- Vector Mul Value
-- Vector Div Value
-- Vector Add Vector
-- Vector Sub Vector
-- Vector Mul Vector
-- Vector Div Vector
+
+### Spacial distances
+
+These are routines that can be used for things like KNN classification or index building.
+
+- Dot product of two vectors
+- Cosine distance of two vectors
+- Squared Euclidean distance of two vectors
+
+### Arithmetic 
+
+- Add single value to vector
+- Sub single value from vector
+- Mul vector by single value
+- Div vector by single value
+- Add two vectors vertically
+- Sub two vectors vertically
+- Mul two vectors vertically
+- Div two vectors vertically
+
+### Comparison
+
+- Horizontal max element in a vector
+- Horizontal min element in a vector
+- Vertical max element of two vectors
+- Vertical min element of two vectors
+
+### Aggregation
+
+- Horizontal sum of a vector
+
+### Misc
+
+- Squared L2 norm of a vector
+
+
+### Safe API naming
+
+The safe API is exposed as a set of non-generic routines implemented for each primitive type
+and follows the current format:
+
+```no_test
+<dtype>_x<dims>_<op_name>
+```
+
+The system will automatically select the best routine for the CPU at runtime, it does
+not need to be explicitly compiled with any target features to use these optimizations.
 
 ### Dangerous routine naming convention
 
@@ -78,7 +110,6 @@ provided as generic functions (with no target features):
 - `generic_sub_vector`
 - `generic_mul_vector`
 - `generic_div_vector`
-- `generic_matmul_matrix` - This single handily is the cause of much of my pain. 
 
 We also provide pre-configured non-generic methods with have the relevant `target_feature`s 
 specified, naturally these methods are immediately UB if you call them without the correct
