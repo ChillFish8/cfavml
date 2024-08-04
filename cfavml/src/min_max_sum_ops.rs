@@ -914,7 +914,6 @@ export_safe_vertical_op!(
     i64_xany_fallback_nofma_min_vertical,
 );
 
-
 #[cfg(test)]
 /// Tests the exposed safe API.
 ///
@@ -922,8 +921,9 @@ export_safe_vertical_op!(
 /// on the system running them (as they are runtime selected)
 mod tests {
     use std::iter::zip;
-    use crate::math::{AutoMath, Math};
+
     use super::*;
+    use crate::math::{AutoMath, Math};
 
     const DIMS: usize = 77;
 

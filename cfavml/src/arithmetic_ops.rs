@@ -1442,7 +1442,6 @@ export_safe_arithmetic_vector_x_vector_op!(
     i64_xany_fallback_nofma_div_vector,
 );
 
-
 #[cfg(test)]
 /// Tests the exposed safe API.
 ///
@@ -1450,8 +1449,9 @@ export_safe_arithmetic_vector_x_vector_op!(
 /// on the system running them (as they are runtime selected)
 mod tests {
     use std::iter::zip;
-    use crate::math::{AutoMath, Math};
+
     use super::*;
+    use crate::math::{AutoMath, Math};
 
     const DIMS: usize = 77;
 

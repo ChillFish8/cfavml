@@ -613,7 +613,6 @@ export_safe_distance_op!(
 mod tests {
     use super::*;
 
-
     macro_rules! test_distance {
         ($t:ident) => {
             paste::paste! {
@@ -632,7 +631,7 @@ mod tests {
                 fn [< test_ $t _cosine >]() {
                     let l1 = [1 as $t, 2 as $t, 1 as $t, 1 as $t, 2 as $t];
                     let l2 = [1 as $t, 2 as $t, 2 as $t, 4 as $t, 2 as $t];
-                    
+
                     let res = [<$t _xany_cosine >](&l1, &l2);
 
                     let expected = crate::test_utils::simple_cosine(&l1, &l2);
@@ -643,7 +642,7 @@ mod tests {
                 fn [< test_ $t _euclidean >]() {
                     let l1 = [1 as $t, 2 as $t, 3 as $t, 4 as $t, 5 as $t];
                     let l2 = [1 as $t, 2 as $t, 3 as $t, 4 as $t, 5 as $t];
-                    
+
                     let res = [<$t _xany_squared_euclidean >](&l1, &l2);
 
                     let expected = crate::test_utils::simple_euclidean(&l1, &l2);
