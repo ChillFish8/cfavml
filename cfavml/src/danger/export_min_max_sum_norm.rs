@@ -161,6 +161,85 @@ macro_rules! export_op_vertical {
     };
 }
 
+
+macro_rules! export_op_value {
+    (
+        description = $desc:expr,
+        ty = $t:ident,
+        register = $im:ident,
+        op = $op:ident,
+        xconst = $xconst_name:ident,
+        xany = $xany_name:ident,
+    ) => {
+        #[doc = concat!("`", stringify!($t), "` ", $desc)]
+        ///
+        /// # Safety
+        ///
+        /// Vectors **`a`** and **`result`** must be equal in length to that specified in **`DIMS`**,
+        /// otherwise out of bound access can occur.
+        pub unsafe fn $xconst_name<const DIMS: usize>(
+            value: $t,
+            a: &[$t],
+            result: &mut [$t],
+        ) {
+            $op::<_, $im, AutoMath>(DIMS, value, a, result)
+        }
+
+        #[doc = concat!("`", stringify!($t), "` ", $desc)]
+        ///
+        /// # Safety
+        ///
+        /// Vectors **`a`** and **`result`** must be equal in length otherwise out of bound
+        /// access can occur.
+        pub unsafe fn $xany_name(
+            value: $t,
+            a: &[$t],
+            result: &mut [$t],
+        ) {
+            $op::<_, $im, AutoMath>(a.len(), value, a, result)
+        }
+    };
+    (
+        description = $desc:expr,
+        ty = $t:ident,
+        register = $im:ident,
+        op = $op:ident,
+        xconst = $xconst_name:ident,
+        xany = $xany_name:ident,
+        features = $($feat:expr $(,)?)*
+    ) => {
+        #[target_feature($(enable = $feat , )*)]
+        #[doc = concat!("`", stringify!($t), "` ", $desc)]
+        #[doc = "\n\n# Safety\n\n"]
+        #[doc = concat!("The following CPU flags must be available: ", $("**", $feat, "**", ", ",)*)]
+        ///
+        /// Vectors **`a`**, **`b`** and **`result`** must be equal in length to that specified in **`DIMS`**,
+        /// otherwise out of bound access can occur.
+        pub unsafe fn $xconst_name<const DIMS: usize>(
+            value: $t,
+            a: &[$t],
+            result: &mut [$t],
+        ) {
+            $op::<_, $im, AutoMath>(DIMS, value, a, result)
+        }
+
+        #[target_feature($(enable = $feat , )*)]
+        #[doc = concat!("`", stringify!($t), "` ", $desc)]
+        #[doc = "\n\n# Safety\n\n"]
+        #[doc = concat!("The following CPU flags must be available: ", $("**", $feat, "**", ", ",)*)]
+        ///
+        /// Vectors **`a`**, **`b`** and **`result`** must be equal in length otherwise out of bound
+        /// access can occur.
+        pub unsafe fn $xany_name(
+            value: $t,
+            a: &[$t],
+            result: &mut [$t],
+        ) {
+            $op::<_, $im, AutoMath>(a.len(), value, a, result)
+        }
+    };
+}
+
 /// Vector min/max/sum ops on the fallback implementations.
 ///
 /// These methods do not strictly require any CPU feature but do auto-vectorize
@@ -217,6 +296,22 @@ pub mod min_max_sum_ops_fallback {
         xconst = f32_xconst_fallback_nofma_min_vertical,
         xany = f32_xany_fallback_nofma_min_vertical,
     );
+    export_op_value!(
+        description = "Vertical max of a provided vector and a single broadcast value",
+        ty = f32,
+        register = Fallback,
+        op = generic_max_value,
+        xconst = f32_xconst_fallback_nofma_max_value,
+        xany = f32_xany_fallback_nofma_max_value,
+    );
+    export_op_value!(
+        description = "Vertical max of a provided vector and a single broadcast value",
+        ty = f32,
+        register = Fallback,
+        op = generic_min_value,
+        xconst = f32_xconst_fallback_nofma_min_value,
+        xany = f32_xany_fallback_nofma_min_value,
+    );
 
     export_op_horizontal!(
         description = "Calculates the squared L2 norm of the provided vector",
@@ -265,6 +360,22 @@ pub mod min_max_sum_ops_fallback {
         op = generic_min_vertical,
         xconst = f64_xconst_fallback_nofma_min_vertical,
         xany = f64_xany_fallback_nofma_min_vertical,
+    );
+    export_op_value!(
+        description = "Vertical max of a provided vector and a single broadcast value",
+        ty = f64,
+        register = Fallback,
+        op = generic_max_value,
+        xconst = f64_xconst_fallback_nofma_max_value,
+        xany = f64_xany_fallback_nofma_max_value,
+    );
+    export_op_value!(
+        description = "Vertical max of a provided vector and a single broadcast value",
+        ty = f64,
+        register = Fallback,
+        op = generic_min_value,
+        xconst = f64_xconst_fallback_nofma_min_value,
+        xany = f64_xany_fallback_nofma_min_value,
     );
 
     export_op_horizontal!(
@@ -315,6 +426,22 @@ pub mod min_max_sum_ops_fallback {
         xconst = u8_xconst_fallback_nofma_min_vertical,
         xany = u8_xany_fallback_nofma_min_vertical,
     );
+    export_op_value!(
+        description = "Vertical max of a provided vector and a single broadcast value",
+        ty = u8,
+        register = Fallback,
+        op = generic_max_value,
+        xconst = u8_xconst_fallback_nofma_max_value,
+        xany = u8_xany_fallback_nofma_max_value,
+    );
+    export_op_value!(
+        description = "Vertical min of a provided vector and a single broadcast value",
+        ty = u8,
+        register = Fallback,
+        op = generic_min_value,
+        xconst = u8_xconst_fallback_nofma_min_value,
+        xany = u8_xany_fallback_nofma_min_value,
+    );
 
     export_op_horizontal!(
         description = "Calculates the squared L2 norm of the provided vector",
@@ -363,6 +490,22 @@ pub mod min_max_sum_ops_fallback {
         op = generic_min_vertical,
         xconst = u16_xconst_fallback_nofma_min_vertical,
         xany = u16_xany_fallback_nofma_min_vertical,
+    );
+    export_op_value!(
+        description = "Vertical max of a provided vector and a single broadcast value",
+        ty = u16,
+        register = Fallback,
+        op = generic_max_value,
+        xconst = u16_xconst_fallback_nofma_max_value,
+        xany = u16_xany_fallback_nofma_max_value,
+    );
+    export_op_value!(
+        description = "Vertical min of a provided vector and a single broadcast value",
+        ty = u16,
+        register = Fallback,
+        op = generic_min_value,
+        xconst = u16_xconst_fallback_nofma_min_value,
+        xany = u16_xany_fallback_nofma_min_value,
     );
 
     export_op_horizontal!(
@@ -413,6 +556,22 @@ pub mod min_max_sum_ops_fallback {
         xconst = u32_xconst_fallback_nofma_min_vertical,
         xany = u32_xany_fallback_nofma_min_vertical,
     );
+    export_op_value!(
+        description = "Vertical max of a provided vector and a single broadcast value",
+        ty = u32,
+        register = Fallback,
+        op = generic_max_value,
+        xconst = u32_xconst_fallback_nofma_max_value,
+        xany = u32_xany_fallback_nofma_max_value,
+    );
+    export_op_value!(
+        description = "Vertical min of a provided vector and a single broadcast value",
+        ty = u32,
+        register = Fallback,
+        op = generic_min_value,
+        xconst = u32_xconst_fallback_nofma_min_value,
+        xany = u32_xany_fallback_nofma_min_value,
+    );
 
     export_op_horizontal!(
         description = "Calculates the squared L2 norm of the provided vector",
@@ -461,6 +620,22 @@ pub mod min_max_sum_ops_fallback {
         op = generic_min_vertical,
         xconst = u64_xconst_fallback_nofma_min_vertical,
         xany = u64_xany_fallback_nofma_min_vertical,
+    );
+    export_op_value!(
+        description = "Vertical max of a provided vector and a single broadcast value",
+        ty = u64,
+        register = Fallback,
+        op = generic_max_value,
+        xconst = u64_xconst_fallback_nofma_max_value,
+        xany = u64_xany_fallback_nofma_max_value,
+    );
+    export_op_value!(
+        description = "Vertical min of a provided vector and a single broadcast value",
+        ty = u64,
+        register = Fallback,
+        op = generic_min_value,
+        xconst = u64_xconst_fallback_nofma_min_value,
+        xany = u64_xany_fallback_nofma_min_value,
     );
 
     export_op_horizontal!(
@@ -511,6 +686,22 @@ pub mod min_max_sum_ops_fallback {
         xconst = i8_xconst_fallback_nofma_min_vertical,
         xany = i8_xany_fallback_nofma_min_vertical,
     );
+    export_op_value!(
+        description = "Vertical max of a provided vector and a single broadcast value",
+        ty = i8,
+        register = Fallback,
+        op = generic_max_value,
+        xconst = i8_xconst_fallback_nofma_max_value,
+        xany = i8_xany_fallback_nofma_max_value,
+    );
+    export_op_value!(
+        description = "Vertical min of a provided vector and a single broadcast value",
+        ty = i8,
+        register = Fallback,
+        op = generic_min_value,
+        xconst = i8_xconst_fallback_nofma_min_value,
+        xany = i8_xany_fallback_nofma_min_value,
+    );
 
     export_op_horizontal!(
         description = "Calculates the squared L2 norm of the provided vector",
@@ -559,6 +750,22 @@ pub mod min_max_sum_ops_fallback {
         op = generic_min_vertical,
         xconst = i16_xconst_fallback_nofma_min_vertical,
         xany = i16_xany_fallback_nofma_min_vertical,
+    );
+    export_op_value!(
+        description = "Vertical max of a provided vector and a single broadcast value",
+        ty = i16,
+        register = Fallback,
+        op = generic_max_value,
+        xconst = i16_xconst_fallback_nofma_max_value,
+        xany = i16_xany_fallback_nofma_max_value,
+    );
+    export_op_value!(
+        description = "Vertical min of a provided vector and a single broadcast value",
+        ty = i16,
+        register = Fallback,
+        op = generic_min_value,
+        xconst = i16_xconst_fallback_nofma_min_value,
+        xany = i16_xany_fallback_nofma_min_value,
     );
 
     export_op_horizontal!(
@@ -609,6 +816,22 @@ pub mod min_max_sum_ops_fallback {
         xconst = i32_xconst_fallback_nofma_min_vertical,
         xany = i32_xany_fallback_nofma_min_vertical,
     );
+    export_op_value!(
+        description = "Vertical max of a provided vector and a single broadcast value",
+        ty = i32,
+        register = Fallback,
+        op = generic_max_value,
+        xconst = i32_xconst_fallback_nofma_max_value,
+        xany = i32_xany_fallback_nofma_max_value,
+    );
+    export_op_value!(
+        description = "Vertical min of a provided vector and a single broadcast value",
+        ty = i32,
+        register = Fallback,
+        op = generic_min_value,
+        xconst = i32_xconst_fallback_nofma_min_value,
+        xany = i32_xany_fallback_nofma_min_value,
+    );
 
     export_op_horizontal!(
         description = "Calculates the squared L2 norm of the provided vector",
@@ -657,6 +880,22 @@ pub mod min_max_sum_ops_fallback {
         op = generic_min_vertical,
         xconst = i64_xconst_fallback_nofma_min_vertical,
         xany = i64_xany_fallback_nofma_min_vertical,
+    );
+    export_op_value!(
+        description = "Vertical max of a provided vector and a single broadcast value",
+        ty = i64,
+        register = Fallback,
+        op = generic_max_value,
+        xconst = i64_xconst_fallback_nofma_max_value,
+        xany = i64_xany_fallback_nofma_max_value,
+    );
+    export_op_value!(
+        description = "Vertical min of a provided vector and a single broadcast value",
+        ty = i64,
+        register = Fallback,
+        op = generic_min_value,
+        xconst = i64_xconst_fallback_nofma_min_value,
+        xany = i64_xany_fallback_nofma_min_value,
     );
 }
 
@@ -746,6 +985,22 @@ pub mod min_max_sum_norm_ops_avx2 {
         xany = f32_xany_avx2_nofma_min_vertical,
         features = "avx2"
     );
+    export_op_value!(
+        description = "Vertical max of a provided vector and a single broadcast value",
+        ty = f32,
+        register = Avx2,
+        op = generic_max_value,
+        xconst = f32_xconst_avx2_nofma_max_value,
+        xany = f32_xany_avx2_nofma_max_value,
+    );
+    export_op_value!(
+        description = "Vertical min of a provided vector and a single broadcast value",
+        ty = f32,
+        register = Avx2,
+        op = generic_min_value,
+        xconst = f32_xconst_avx2_nofma_min_value,
+        xany = f32_xany_avx2_nofma_min_value,
+    );
 
     export_op_horizontal!(
         description = "Calculates the squared L2 norm of the provided vector",
@@ -800,6 +1055,22 @@ pub mod min_max_sum_norm_ops_avx2 {
         xconst = f64_xconst_avx2_nofma_min_vertical,
         xany = f64_xany_avx2_nofma_min_vertical,
         features = "avx2"
+    );
+    export_op_value!(
+        description = "Vertical max of a provided vector and a single broadcast value",
+        ty = f64,
+        register = Avx2,
+        op = generic_max_value,
+        xconst = f64_xconst_avx2_nofma_max_value,
+        xany = f64_xany_avx2_nofma_max_value,
+    );
+    export_op_value!(
+        description = "Vertical min of a provided vector and a single broadcast value",
+        ty = f64,
+        register = Avx2,
+        op = generic_min_value,
+        xconst = f64_xconst_avx2_nofma_min_value,
+        xany = f64_xany_avx2_nofma_min_value,
     );
 
     export_op_horizontal!(
@@ -856,6 +1127,22 @@ pub mod min_max_sum_norm_ops_avx2 {
         xany = u8_xany_avx2_nofma_min_vertical,
         features = "avx2"
     );
+    export_op_value!(
+        description = "Vertical max of a provided vector and a single broadcast value",
+        ty = u8,
+        register = Avx2,
+        op = generic_max_value,
+        xconst = u8_xconst_avx2_nofma_max_value,
+        xany = u8_xany_avx2_nofma_max_value,
+    );
+    export_op_value!(
+        description = "Vertical min of a provided vector and a single broadcast value",
+        ty = u8,
+        register = Avx2,
+        op = generic_min_value,
+        xconst = u8_xconst_avx2_nofma_min_value,
+        xany = u8_xany_avx2_nofma_min_value,
+    );
 
     export_op_horizontal!(
         description = "Calculates the squared L2 norm of the provided vector",
@@ -910,6 +1197,22 @@ pub mod min_max_sum_norm_ops_avx2 {
         xconst = u16_xconst_avx2_nofma_min_vertical,
         xany = u16_xany_avx2_nofma_min_vertical,
         features = "avx2"
+    );
+    export_op_value!(
+        description = "Vertical max of a provided vector and a single broadcast value",
+        ty = u16,
+        register = Avx2,
+        op = generic_max_value,
+        xconst = u16_xconst_avx2_nofma_max_value,
+        xany = u16_xany_avx2_nofma_max_value,
+    );
+    export_op_value!(
+        description = "Vertical min of a provided vector and a single broadcast value",
+        ty = u16,
+        register = Avx2,
+        op = generic_min_value,
+        xconst = u16_xconst_avx2_nofma_min_value,
+        xany = u16_xany_avx2_nofma_min_value,
     );
 
     export_op_horizontal!(
@@ -966,6 +1269,22 @@ pub mod min_max_sum_norm_ops_avx2 {
         xany = u32_xany_avx2_nofma_min_vertical,
         features = "avx2"
     );
+    export_op_value!(
+        description = "Vertical max of a provided vector and a single broadcast value",
+        ty = u32,
+        register = Avx2,
+        op = generic_max_value,
+        xconst = u32_xconst_avx2_nofma_max_value,
+        xany = u32_xany_avx2_nofma_max_value,
+    );
+    export_op_value!(
+        description = "Vertical min of a provided vector and a single broadcast value",
+        ty = u32,
+        register = Avx2,
+        op = generic_min_value,
+        xconst = u32_xconst_avx2_nofma_min_value,
+        xany = u32_xany_avx2_nofma_min_value,
+    );
 
     export_op_horizontal!(
         description = "Calculates the squared L2 norm of the provided vector",
@@ -1020,6 +1339,22 @@ pub mod min_max_sum_norm_ops_avx2 {
         xconst = u64_xconst_avx2_nofma_min_vertical,
         xany = u64_xany_avx2_nofma_min_vertical,
         features = "avx2"
+    );
+    export_op_value!(
+        description = "Vertical max of a provided vector and a single broadcast value",
+        ty = u64,
+        register = Avx2,
+        op = generic_max_value,
+        xconst = u64_xconst_avx2_nofma_max_value,
+        xany = u64_xany_avx2_nofma_max_value,
+    );
+    export_op_value!(
+        description = "Vertical min of a provided vector and a single broadcast value",
+        ty = u64,
+        register = Avx2,
+        op = generic_min_value,
+        xconst = u64_xconst_avx2_nofma_min_value,
+        xany = u64_xany_avx2_nofma_min_value,
     );
 
     export_op_horizontal!(
@@ -1076,6 +1411,22 @@ pub mod min_max_sum_norm_ops_avx2 {
         xany = i8_xany_avx2_nofma_min_vertical,
         features = "avx2"
     );
+    export_op_value!(
+        description = "Vertical max of a provided vector and a single broadcast value",
+        ty = i8,
+        register = Avx2,
+        op = generic_max_value,
+        xconst = i8_xconst_avx2_nofma_max_value,
+        xany = i8_xany_avx2_nofma_max_value,
+    );
+    export_op_value!(
+        description = "Vertical min of a provided vector and a single broadcast value",
+        ty = i8,
+        register = Avx2,
+        op = generic_min_value,
+        xconst = i8_xconst_avx2_nofma_min_value,
+        xany = i8_xany_avx2_nofma_min_value,
+    );
 
     export_op_horizontal!(
         description = "Calculates the squared L2 norm of the provided vector",
@@ -1130,6 +1481,22 @@ pub mod min_max_sum_norm_ops_avx2 {
         xconst = i16_xconst_avx2_nofma_min_vertical,
         xany = i16_xany_avx2_nofma_min_vertical,
         features = "avx2"
+    );
+    export_op_value!(
+        description = "Vertical max of a provided vector and a single broadcast value",
+        ty = i16,
+        register = Avx2,
+        op = generic_max_value,
+        xconst = i16_xconst_avx2_nofma_max_value,
+        xany = i16_xany_avx2_nofma_max_value,
+    );
+    export_op_value!(
+        description = "Vertical min of a provided vector and a single broadcast value",
+        ty = i16,
+        register = Avx2,
+        op = generic_min_value,
+        xconst = i16_xconst_avx2_nofma_min_value,
+        xany = i16_xany_avx2_nofma_min_value,
     );
 
     export_op_horizontal!(
@@ -1186,6 +1553,22 @@ pub mod min_max_sum_norm_ops_avx2 {
         xany = i32_xany_avx2_nofma_min_vertical,
         features = "avx2"
     );
+    export_op_value!(
+        description = "Vertical max of a provided vector and a single broadcast value",
+        ty = i32,
+        register = Avx2,
+        op = generic_max_value,
+        xconst = i32_xconst_avx2_nofma_max_value,
+        xany = i32_xany_avx2_nofma_max_value,
+    );
+    export_op_value!(
+        description = "Vertical min of a provided vector and a single broadcast value",
+        ty = i32,
+        register = Avx2,
+        op = generic_min_value,
+        xconst = i32_xconst_avx2_nofma_min_value,
+        xany = i32_xany_avx2_nofma_min_value,
+    );
 
     export_op_horizontal!(
         description = "Calculates the squared L2 norm of the provided vector",
@@ -1240,6 +1623,22 @@ pub mod min_max_sum_norm_ops_avx2 {
         xconst = i64_xconst_avx2_nofma_min_vertical,
         xany = i64_xany_avx2_nofma_min_vertical,
         features = "avx2"
+    );
+    export_op_value!(
+        description = "Vertical max of a provided vector and a single broadcast value",
+        ty = i64,
+        register = Avx2,
+        op = generic_max_value,
+        xconst = i64_xconst_avx2_nofma_max_value,
+        xany = i64_xany_avx2_nofma_max_value,
+    );
+    export_op_value!(
+        description = "Vertical min of a provided vector and a single broadcast value",
+        ty = i64,
+        register = Avx2,
+        op = generic_min_value,
+        xconst = i64_xconst_avx2_nofma_min_value,
+        xany = i64_xany_avx2_nofma_min_value,
     );
 }
 
@@ -1306,6 +1705,22 @@ pub mod min_max_sum_norm_ops_avx512 {
         xany = f32_xany_avx512_nofma_min_vertical,
         features = "avx512f"
     );
+    export_op_value!(
+        description = "Vertical max of a provided vector and a single broadcast value",
+        ty = f32,
+        register = Avx512,
+        op = generic_max_value,
+        xconst = f32_xconst_avx512_nofma_max_value,
+        xany = f32_xany_avx512_nofma_max_value,
+    );
+    export_op_value!(
+        description = "Vertical min of a provided vector and a single broadcast value",
+        ty = f32,
+        register = Avx512,
+        op = generic_min_value,
+        xconst = f32_xconst_avx512_nofma_min_value,
+        xany = f32_xany_avx512_nofma_min_value,
+    );
 
     export_op_horizontal!(
         description = "Calculates the squared L2 norm of the provided vector",
@@ -1360,6 +1775,22 @@ pub mod min_max_sum_norm_ops_avx512 {
         xconst = f64_xconst_avx512_nofma_min_vertical,
         xany = f64_xany_avx512_nofma_min_vertical,
         features = "avx512f"
+    );
+    export_op_value!(
+        description = "Vertical max of a provided vector and a single broadcast value",
+        ty = f64,
+        register = Avx512,
+        op = generic_max_value,
+        xconst = f64_xconst_avx512_nofma_max_value,
+        xany = f64_xany_avx512_nofma_max_value,
+    );
+    export_op_value!(
+        description = "Vertical min of a provided vector and a single broadcast value",
+        ty = f64,
+        register = Avx512,
+        op = generic_min_value,
+        xconst = f64_xconst_avx512_nofma_min_value,
+        xany = f64_xany_avx512_nofma_min_value,
     );
 
     export_op_horizontal!(
@@ -1416,6 +1847,22 @@ pub mod min_max_sum_norm_ops_avx512 {
         xany = u8_xany_avx512_nofma_min_vertical,
         features = "avx512f"
     );
+    export_op_value!(
+        description = "Vertical max of a provided vector and a single broadcast value",
+        ty = u8,
+        register = Avx512,
+        op = generic_max_value,
+        xconst = u8_xconst_avx512_nofma_max_value,
+        xany = u8_xany_avx512_nofma_max_value,
+    );
+    export_op_value!(
+        description = "Vertical min of a provided vector and a single broadcast value",
+        ty = u8,
+        register = Avx512,
+        op = generic_min_value,
+        xconst = u8_xconst_avx512_nofma_min_value,
+        xany = u8_xany_avx512_nofma_min_value,
+    );
 
     export_op_horizontal!(
         description = "Calculates the squared L2 norm of the provided vector",
@@ -1470,6 +1917,22 @@ pub mod min_max_sum_norm_ops_avx512 {
         xconst = u16_xconst_avx512_nofma_min_vertical,
         xany = u16_xany_avx512_nofma_min_vertical,
         features = "avx512f"
+    );
+    export_op_value!(
+        description = "Vertical max of a provided vector and a single broadcast value",
+        ty = u16,
+        register = Avx512,
+        op = generic_max_value,
+        xconst = u16_xconst_avx512_nofma_max_value,
+        xany = u16_xany_avx512_nofma_max_value,
+    );
+    export_op_value!(
+        description = "Vertical min of a provided vector and a single broadcast value",
+        ty = u16,
+        register = Avx512,
+        op = generic_min_value,
+        xconst = u16_xconst_avx512_nofma_min_value,
+        xany = u16_xany_avx512_nofma_min_value,
     );
 
     export_op_horizontal!(
@@ -1526,6 +1989,22 @@ pub mod min_max_sum_norm_ops_avx512 {
         xany = u32_xany_avx512_nofma_min_vertical,
         features = "avx512f"
     );
+    export_op_value!(
+        description = "Vertical max of a provided vector and a single broadcast value",
+        ty = u32,
+        register = Avx512,
+        op = generic_max_value,
+        xconst = u32_xconst_avx512_nofma_max_value,
+        xany = u32_xany_avx512_nofma_max_value,
+    );
+    export_op_value!(
+        description = "Vertical min of a provided vector and a single broadcast value",
+        ty = u32,
+        register = Avx512,
+        op = generic_min_value,
+        xconst = u32_xconst_avx512_nofma_min_value,
+        xany = u32_xany_avx512_nofma_min_value,
+    );
 
     export_op_horizontal!(
         description = "Calculates the squared L2 norm of the provided vector",
@@ -1580,6 +2059,22 @@ pub mod min_max_sum_norm_ops_avx512 {
         xconst = u64_xconst_avx512_nofma_min_vertical,
         xany = u64_xany_avx512_nofma_min_vertical,
         features = "avx512f"
+    );
+    export_op_value!(
+        description = "Vertical max of a provided vector and a single broadcast value",
+        ty = u64,
+        register = Avx512,
+        op = generic_max_value,
+        xconst = u64_xconst_avx512_nofma_max_value,
+        xany = u64_xany_avx512_nofma_max_value,
+    );
+    export_op_value!(
+        description = "Vertical min of a provided vector and a single broadcast value",
+        ty = u64,
+        register = Avx512,
+        op = generic_min_value,
+        xconst = u64_xconst_avx512_nofma_min_value,
+        xany = u64_xany_avx512_nofma_min_value,
     );
 
     export_op_horizontal!(
@@ -1636,6 +2131,22 @@ pub mod min_max_sum_norm_ops_avx512 {
         xany = i8_xany_avx512_nofma_min_vertical,
         features = "avx512f"
     );
+    export_op_value!(
+        description = "Vertical max of a provided vector and a single broadcast value",
+        ty = i8,
+        register = Avx512,
+        op = generic_max_value,
+        xconst = i8_xconst_avx512_nofma_max_value,
+        xany = i8_xany_avx512_nofma_max_value,
+    );
+    export_op_value!(
+        description = "Vertical min of a provided vector and a single broadcast value",
+        ty = i8,
+        register = Avx512,
+        op = generic_min_value,
+        xconst = i8_xconst_avx512_nofma_min_value,
+        xany = i8_xany_avx512_nofma_min_value,
+    );
 
     export_op_horizontal!(
         description = "Calculates the squared L2 norm of the provided vector",
@@ -1690,6 +2201,22 @@ pub mod min_max_sum_norm_ops_avx512 {
         xconst = i16_xconst_avx512_nofma_min_vertical,
         xany = i16_xany_avx512_nofma_min_vertical,
         features = "avx512f"
+    );
+    export_op_value!(
+        description = "Vertical max of a provided vector and a single broadcast value",
+        ty = i16,
+        register = Avx512,
+        op = generic_max_value,
+        xconst = i16_xconst_avx512_nofma_max_value,
+        xany = i16_xany_avx512_nofma_max_value,
+    );
+    export_op_value!(
+        description = "Vertical min of a provided vector and a single broadcast value",
+        ty = i16,
+        register = Avx512,
+        op = generic_min_value,
+        xconst = i16_xconst_avx512_nofma_min_value,
+        xany = i16_xany_avx512_nofma_min_value,
     );
 
     export_op_horizontal!(
@@ -1746,6 +2273,22 @@ pub mod min_max_sum_norm_ops_avx512 {
         xany = i32_xany_avx512_nofma_min_vertical,
         features = "avx512f"
     );
+    export_op_value!(
+        description = "Vertical max of a provided vector and a single broadcast value",
+        ty = i32,
+        register = Avx512,
+        op = generic_max_value,
+        xconst = i32_xconst_avx512_nofma_max_value,
+        xany = i32_xany_avx512_nofma_max_value,
+    );
+    export_op_value!(
+        description = "Vertical min of a provided vector and a single broadcast value",
+        ty = i32,
+        register = Avx512,
+        op = generic_min_value,
+        xconst = i32_xconst_avx512_nofma_min_value,
+        xany = i32_xany_avx512_nofma_min_value,
+    );
 
     export_op_horizontal!(
         description = "Calculates the squared L2 norm of the provided vector",
@@ -1800,6 +2343,22 @@ pub mod min_max_sum_norm_ops_avx512 {
         xconst = i64_xconst_avx512_nofma_min_vertical,
         xany = i64_xany_avx512_nofma_min_vertical,
         features = "avx512f"
+    );
+    export_op_value!(
+        description = "Vertical max of a provided vector and a single broadcast value",
+        ty = i64,
+        register = Avx512,
+        op = generic_max_value,
+        xconst = i64_xconst_avx512_nofma_max_value,
+        xany = i64_xany_avx512_nofma_max_value,
+    );
+    export_op_value!(
+        description = "Vertical min of a provided vector and a single broadcast value",
+        ty = i64,
+        register = Avx512,
+        op = generic_min_value,
+        xconst = i64_xconst_avx512_nofma_min_value,
+        xany = i64_xany_avx512_nofma_min_value,
     );
 }
 
@@ -1862,6 +2421,22 @@ pub mod min_max_sum_norm_ops_neon {
         xany = f32_xany_neon_nofma_min_vertical,
         features = "neon"
     );
+    export_op_value!(
+        description = "Vertical max of a provided vector and a single broadcast value",
+        ty = f32,
+        register = Neon,
+        op = generic_max_value,
+        xconst = f32_xconst_neon_nofma_max_value,
+        xany = f32_xany_neon_nofma_max_value,
+    );
+    export_op_value!(
+        description = "Vertical min of a provided vector and a single broadcast value",
+        ty = f32,
+        register = Neon,
+        op = generic_min_value,
+        xconst = f32_xconst_neon_nofma_min_value,
+        xany = f32_xany_neon_nofma_min_value,
+    );
 
     export_op_horizontal!(
         description = "Calculates the squared L2 norm of the provided vector",
@@ -1916,6 +2491,22 @@ pub mod min_max_sum_norm_ops_neon {
         xconst = f64_xconst_neon_nofma_min_vertical,
         xany = f64_xany_neon_nofma_min_vertical,
         features = "neon"
+    );
+    export_op_value!(
+        description = "Vertical max of a provided vector and a single broadcast value",
+        ty = f64,
+        register = Neon,
+        op = generic_max_value,
+        xconst = f64_xconst_neon_nofma_max_value,
+        xany = f64_xany_neon_nofma_max_value,
+    );
+    export_op_value!(
+        description = "Vertical min of a provided vector and a single broadcast value",
+        ty = f64,
+        register = Neon,
+        op = generic_min_value,
+        xconst = f64_xconst_neon_nofma_min_value,
+        xany = f64_xany_neon_nofma_min_value,
     );
 
     export_op_horizontal!(
@@ -1972,6 +2563,22 @@ pub mod min_max_sum_norm_ops_neon {
         xany = u8_xany_neon_nofma_min_vertical,
         features = "neon"
     );
+    export_op_value!(
+        description = "Vertical max of a provided vector and a single broadcast value",
+        ty = u8,
+        register = Neon,
+        op = generic_max_value,
+        xconst = u8_xconst_neon_nofma_max_value,
+        xany = u8_xany_neon_nofma_max_value,
+    );
+    export_op_value!(
+        description = "Vertical min of a provided vector and a single broadcast value",
+        ty = u8,
+        register = Neon,
+        op = generic_min_value,
+        xconst = u8_xconst_neon_nofma_min_value,
+        xany = u8_xany_neon_nofma_min_value,
+    );
 
     export_op_horizontal!(
         description = "Calculates the squared L2 norm of the provided vector",
@@ -2026,6 +2633,22 @@ pub mod min_max_sum_norm_ops_neon {
         xconst = u16_xconst_neon_nofma_min_vertical,
         xany = u16_xany_neon_nofma_min_vertical,
         features = "neon"
+    );
+    export_op_value!(
+        description = "Vertical max of a provided vector and a single broadcast value",
+        ty = u16,
+        register = Neon,
+        op = generic_max_value,
+        xconst = u16_xconst_neon_nofma_max_value,
+        xany = u16_xany_neon_nofma_max_value,
+    );
+    export_op_value!(
+        description = "Vertical min of a provided vector and a single broadcast value",
+        ty = u16,
+        register = Neon,
+        op = generic_min_value,
+        xconst = u16_xconst_neon_nofma_min_value,
+        xany = u16_xany_neon_nofma_min_value,
     );
 
     export_op_horizontal!(
@@ -2082,6 +2705,22 @@ pub mod min_max_sum_norm_ops_neon {
         xany = u32_xany_neon_nofma_min_vertical,
         features = "neon"
     );
+    export_op_value!(
+        description = "Vertical max of a provided vector and a single broadcast value",
+        ty = u32,
+        register = Neon,
+        op = generic_max_value,
+        xconst = u32_xconst_neon_nofma_max_value,
+        xany = u32_xany_neon_nofma_max_value,
+    );
+    export_op_value!(
+        description = "Vertical min of a provided vector and a single broadcast value",
+        ty = u32,
+        register = Neon,
+        op = generic_min_value,
+        xconst = u32_xconst_neon_nofma_min_value,
+        xany = u32_xany_neon_nofma_min_value,
+    );
 
     export_op_horizontal!(
         description = "Calculates the squared L2 norm of the provided vector",
@@ -2136,6 +2775,22 @@ pub mod min_max_sum_norm_ops_neon {
         xconst = u64_xconst_neon_nofma_min_vertical,
         xany = u64_xany_neon_nofma_min_vertical,
         features = "neon"
+    );
+    export_op_value!(
+        description = "Vertical max of a provided vector and a single broadcast value",
+        ty = u64,
+        register = Neon,
+        op = generic_max_value,
+        xconst = u64_xconst_neon_nofma_max_value,
+        xany = u64_xany_neon_nofma_max_value,
+    );
+    export_op_value!(
+        description = "Vertical min of a provided vector and a single broadcast value",
+        ty = u64,
+        register = Neon,
+        op = generic_min_value,
+        xconst = u64_xconst_neon_nofma_min_value,
+        xany = u64_xany_neon_nofma_min_value,
     );
 
     export_op_horizontal!(
@@ -2192,6 +2847,22 @@ pub mod min_max_sum_norm_ops_neon {
         xany = i8_xany_neon_nofma_min_vertical,
         features = "neon"
     );
+    export_op_value!(
+        description = "Vertical max of a provided vector and a single broadcast value",
+        ty = i8,
+        register = Neon,
+        op = generic_max_value,
+        xconst = i8_xconst_neon_nofma_max_value,
+        xany = i8_xany_neon_nofma_max_value,
+    );
+    export_op_value!(
+        description = "Vertical min of a provided vector and a single broadcast value",
+        ty = i8,
+        register = Neon,
+        op = generic_min_value,
+        xconst = i8_xconst_neon_nofma_min_value,
+        xany = i8_xany_neon_nofma_min_value,
+    );
 
     export_op_horizontal!(
         description = "Calculates the squared L2 norm of the provided vector",
@@ -2246,6 +2917,22 @@ pub mod min_max_sum_norm_ops_neon {
         xconst = i16_xconst_neon_nofma_min_vertical,
         xany = i16_xany_neon_nofma_min_vertical,
         features = "neon"
+    );
+    export_op_value!(
+        description = "Vertical max of a provided vector and a single broadcast value",
+        ty = i16,
+        register = Neon,
+        op = generic_max_value,
+        xconst = i16_xconst_neon_nofma_max_value,
+        xany = i16_xany_neon_nofma_max_value,
+    );
+    export_op_value!(
+        description = "Vertical min of a provided vector and a single broadcast value",
+        ty = i16,
+        register = Neon,
+        op = generic_min_value,
+        xconst = i16_xconst_neon_nofma_min_value,
+        xany = i16_xany_neon_nofma_min_value,
     );
 
     export_op_horizontal!(
@@ -2302,6 +2989,22 @@ pub mod min_max_sum_norm_ops_neon {
         xany = i32_xany_neon_nofma_min_vertical,
         features = "neon"
     );
+    export_op_value!(
+        description = "Vertical max of a provided vector and a single broadcast value",
+        ty = i32,
+        register = Neon,
+        op = generic_max_value,
+        xconst = i32_xconst_neon_nofma_max_value,
+        xany = i32_xany_neon_nofma_max_value,
+    );
+    export_op_value!(
+        description = "Vertical min of a provided vector and a single broadcast value",
+        ty = i32,
+        register = Neon,
+        op = generic_min_value,
+        xconst = i32_xconst_neon_nofma_min_value,
+        xany = i32_xany_neon_nofma_min_value,
+    );
 
     export_op_horizontal!(
         description = "Calculates the squared L2 norm of the provided vector",
@@ -2356,5 +3059,21 @@ pub mod min_max_sum_norm_ops_neon {
         xconst = i64_xconst_neon_nofma_min_vertical,
         xany = i64_xany_neon_nofma_min_vertical,
         features = "neon"
+    );
+    export_op_value!(
+        description = "Vertical max of a provided vector and a single broadcast value",
+        ty = i64,
+        register = Neon,
+        op = generic_max_value,
+        xconst = i64_xconst_neon_nofma_max_value,
+        xany = i64_xany_neon_nofma_max_value,
+    );
+    export_op_value!(
+        description = "Vertical min of a provided vector and a single broadcast value",
+        ty = i64,
+        register = Neon,
+        op = generic_min_value,
+        xconst = i64_xconst_neon_nofma_min_value,
+        xany = i64_xany_neon_nofma_min_value,
     );
 }

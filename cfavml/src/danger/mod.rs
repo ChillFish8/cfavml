@@ -68,8 +68,8 @@ pub(crate) use self::op_cosine::cosine;
 pub use self::op_cosine::generic_cosine;
 pub use self::op_dot_product::generic_dot_product;
 pub use self::op_euclidean::generic_euclidean;
-pub use self::op_max::{generic_max_horizontal, generic_max_vertical};
-pub use self::op_min::{generic_min_horizontal, generic_min_vertical};
+pub use self::op_max::{generic_max_horizontal, generic_max_vertical, generic_max_value};
+pub use self::op_min::{generic_min_horizontal, generic_min_vertical, generic_min_value};
 pub use self::op_norm::generic_squared_norm;
 pub use self::op_sum::generic_sum;
 pub use self::op_vector_x_value::{

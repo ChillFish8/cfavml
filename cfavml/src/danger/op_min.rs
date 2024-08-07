@@ -119,6 +119,63 @@ pub unsafe fn generic_min_vertical<T, R, M>(
     }
 }
 
+#[inline(always)]
+/// A generic min implementation over one vector of a given set of dimensions
+/// and a single value target.
+///
+/// # Safety
+///
+/// The sizes of `a` must be equal to `dims`, the safety requirements of
+/// `M` definition the basic math operations and the requirements of `R` SIMD register
+/// must also be followed.
+pub unsafe fn generic_min_value<T, R, M>(
+    dims: usize,
+    value: T,
+    a: &[T],
+    result: &mut [T],
+) where
+    T: Copy,
+    R: SimdRegister<T>,
+    M: Math<T>,
+{
+    debug_assert_eq!(a.len(), dims, "Vector a does not match size `dims`");
+
+    let broadcast_dense = R::filled_dense(value);
+
+    let offset_from = dims % R::elements_per_dense();
+    let a_ptr = a.as_ptr();
+    let result_ptr = result.as_mut_ptr();
+
+    // Operate over dense lanes first.
+    let mut i = 0;
+    while i < (dims - offset_from) {
+        let l1 = R::load_dense(a_ptr.add(i));
+        let min = R::min_dense(l1, broadcast_dense);
+        R::write_dense(result_ptr.add(i), min);
+
+        i += R::elements_per_dense();
+    }
+
+    let broadcast_reg = broadcast_dense.a;
+
+    // Operate over single registers next.
+    let offset_from = offset_from % R::elements_per_lane();
+    while i < (dims - offset_from) {
+        let l1 = R::load(a_ptr.add(i));
+        let min = R::min(l1, broadcast_reg);
+        R::write(result_ptr.add(i), min);
+
+        i += R::elements_per_lane();
+    }
+
+    while i < dims {
+        let v1 = *a.get_unchecked(i);
+        *result.get_unchecked_mut(i) = M::cmp_min(v1, value);
+
+        i += 1;
+    }
+}
+
 #[cfg(test)]
 pub(crate) unsafe fn test_min<T, R>(l1: Vec<T>, l2: Vec<T>)
 where
@@ -136,11 +193,20 @@ where
     for (a, b) in l1.iter().copied().zip(l2) {
         expected_result.push(AutoMath::cmp_min(a, b));
     }
-    assert_eq!(result, expected_result, "value missmatch");
+    assert_eq!(result, expected_result, "value mismatch");
 
+    let dims = l1.len();
+    let mut result = vec![AutoMath::max(); dims];
+    generic_min_value::<T, R, AutoMath>(dims, AutoMath::zero(), &l1, &mut result);
+    let mut expected_result = Vec::new();
+    for a in l1.iter().copied() {
+        expected_result.push(AutoMath::cmp_min(a, AutoMath::zero()));
+    }
+    assert_eq!(result, expected_result, "value mismatch");
+    
     let min = generic_min_horizontal::<T, R, AutoMath>(dims, &l1);
     let expected_min = l1
         .iter()
         .fold(AutoMath::max(), |a, b| AutoMath::cmp_min(a, *b));
-    assert_eq!(min, expected_min, "value missmatch on horizontal");
+    assert_eq!(min, expected_min, "value mismatch on horizontal");
 }
