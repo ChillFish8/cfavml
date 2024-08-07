@@ -161,7 +161,6 @@ macro_rules! export_op_vertical {
     };
 }
 
-
 macro_rules! export_op_value {
     (
         description = $desc:expr,

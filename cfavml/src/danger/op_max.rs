@@ -121,8 +121,8 @@ pub unsafe fn generic_max_vertical<T, R, M>(
 
 #[inline(always)]
 /// A generic max implementation over one vector of a given set of dimensions
-/// and a single value target. 
-/// 
+/// and a single value target.
+///
 /// This routine is primarily aimed for workloads like Relu activation where
 /// you want to cap the value at zero or above.
 ///
@@ -144,7 +144,7 @@ pub unsafe fn generic_max_value<T, R, M>(
     debug_assert_eq!(a.len(), dims, "Vector a does not match size `dims`");
 
     let broadcast_dense = R::filled_dense(value);
-    
+
     let offset_from = dims % R::elements_per_dense();
     let a_ptr = a.as_ptr();
     let result_ptr = result.as_mut_ptr();
@@ -158,7 +158,7 @@ pub unsafe fn generic_max_value<T, R, M>(
 
         i += R::elements_per_dense();
     }
-    
+
     let broadcast_reg = broadcast_dense.a;
 
     // Operate over single registers next.
@@ -205,11 +205,10 @@ where
         expected_result.push(AutoMath::cmp_max(a, AutoMath::zero()));
     }
     assert_eq!(result, expected_result, "value mismatch");
-    
+
     let max = generic_max_horizontal::<T, R, AutoMath>(dims, &l1);
     let expected_max = l1
         .iter()
         .fold(AutoMath::min(), |a, b| AutoMath::cmp_max(a, *b));
     assert_eq!(max, expected_max, "value mismatch on horizontal");
-    
 }

@@ -203,7 +203,7 @@ where
         expected_result.push(AutoMath::cmp_min(a, AutoMath::zero()));
     }
     assert_eq!(result, expected_result, "value mismatch");
-    
+
     let min = generic_min_horizontal::<T, R, AutoMath>(dims, &l1);
     let expected_min = l1
         .iter()
