@@ -117,6 +117,56 @@ macro_rules! export_safe_vertical_op {
     };
 }
 
+macro_rules! export_safe_value_op {
+    (
+        description = $desc:expr,
+        ty = $t:ty,
+        const_name = $const_name:ident,
+        any_name = $any_name:ident,
+        $avx512_const_name:ident,
+        $avx2_const_name:ident,
+        $neon_const_name:ident,
+        $fallback_const_name:ident,
+        $avx512_any_name:ident,
+        $avx2_any_name:ident,
+        $neon_any_name:ident,
+        $fallback_any_name:ident,
+    ) => {
+        #[doc = concat!("`", stringify!($t), "` ", $desc)]
+        pub fn $const_name<const DIMS: usize>(value: $t, a: &[$t], result: &mut [$t]) {
+            assert_eq!(a.len(), DIMS, "Input vector a does not match size DIMS");
+            assert_eq!(result.len(), DIMS, "Result vector does not match size DIMS");
+
+            unsafe {
+                crate::dispatch!(
+                    avx512 = $avx512_const_name::<DIMS> => (value, a, result)
+                    avx2 = $avx2_const_name::<DIMS> => (value, a, result)
+                    neon = $neon_const_name::<DIMS> => (value, a, result)
+                    fallback = $fallback_const_name::<DIMS> => (value, a, result)
+                )
+            }
+        }
+
+        #[doc = concat!("`", stringify!($t), "` ", $desc)]
+        pub fn $any_name(value: $t, a: &[$t], result: &mut [$t]) {
+            assert_eq!(
+                a.len(),
+                result.len(),
+                "Input vectors and result vector size do not match"
+            );
+
+            unsafe {
+                crate::dispatch!(
+                    avx512 = $avx512_any_name => (value, a, result)
+                    avx2 = $avx2_any_name => (value, a, result)
+                    neon = $neon_any_name => (value, a, result)
+                    fallback = $fallback_any_name => (value, a, result)
+                )
+            }
+        }
+    };
+}
+
 export_safe_horizontal_op!(
     description = "Performs a horizontal sum of all elements in vector `a`",
     ty = f32,
@@ -857,6 +907,316 @@ export_safe_vertical_op!(
     i64_xany_fallback_nofma_min_vertical,
 );
 
+export_safe_value_op!(
+    description =
+        "Performs a vertical min of a provided vector and a single broadcast value",
+    ty = f32,
+    const_name = f32_xconst_max_value,
+    any_name = f32_xany_max_value,
+    f32_xconst_avx512_nofma_max_value,
+    f32_xconst_avx2_nofma_max_value,
+    f32_xconst_neon_nofma_max_value,
+    f32_xconst_fallback_nofma_max_value,
+    f32_xany_avx512_nofma_max_value,
+    f32_xany_avx2_nofma_max_value,
+    f32_xany_neon_nofma_max_value,
+    f32_xany_fallback_nofma_max_value,
+);
+export_safe_value_op!(
+    description =
+        "Performs a vertical min of a provided vector and a single broadcast value",
+    ty = f32,
+    const_name = f32_xconst_min_value,
+    any_name = f32_xany_min_value,
+    f32_xconst_avx512_nofma_min_value,
+    f32_xconst_avx2_nofma_min_value,
+    f32_xconst_neon_nofma_min_value,
+    f32_xconst_fallback_nofma_min_value,
+    f32_xany_avx512_nofma_min_value,
+    f32_xany_avx2_nofma_min_value,
+    f32_xany_neon_nofma_min_value,
+    f32_xany_fallback_nofma_min_value,
+);
+
+export_safe_value_op!(
+    description =
+        "Performs a vertical max of a provided vector and a single broadcast value",
+    ty = f64,
+    const_name = f64_xconst_max_value,
+    any_name = f64_xany_max_value,
+    f64_xconst_avx512_nofma_max_value,
+    f64_xconst_avx2_nofma_max_value,
+    f64_xconst_neon_nofma_max_value,
+    f64_xconst_fallback_nofma_max_value,
+    f64_xany_avx512_nofma_max_value,
+    f64_xany_avx2_nofma_max_value,
+    f64_xany_neon_nofma_max_value,
+    f64_xany_fallback_nofma_max_value,
+);
+export_safe_value_op!(
+    description =
+        "Performs a vertical min of a provided vector and a single broadcast value",
+    ty = f64,
+    const_name = f64_xconst_min_value,
+    any_name = f64_xany_min_value,
+    f64_xconst_avx512_nofma_min_value,
+    f64_xconst_avx2_nofma_min_value,
+    f64_xconst_neon_nofma_min_value,
+    f64_xconst_fallback_nofma_min_value,
+    f64_xany_avx512_nofma_min_value,
+    f64_xany_avx2_nofma_min_value,
+    f64_xany_neon_nofma_min_value,
+    f64_xany_fallback_nofma_min_value,
+);
+
+export_safe_value_op!(
+    description =
+        "Performs a vertical min of a provided vector and a single broadcast value",
+    ty = i8,
+    const_name = i8_xconst_max_value,
+    any_name = i8_xany_max_value,
+    i8_xconst_avx512_nofma_max_value,
+    i8_xconst_avx2_nofma_max_value,
+    i8_xconst_neon_nofma_max_value,
+    i8_xconst_fallback_nofma_max_value,
+    i8_xany_avx512_nofma_max_value,
+    i8_xany_avx2_nofma_max_value,
+    i8_xany_neon_nofma_max_value,
+    i8_xany_fallback_nofma_max_value,
+);
+export_safe_value_op!(
+    description =
+        "Performs a vertical min of a provided vector and a single broadcast value",
+    ty = i8,
+    const_name = i8_xconst_min_value,
+    any_name = i8_xany_min_value,
+    i8_xconst_avx512_nofma_min_value,
+    i8_xconst_avx2_nofma_min_value,
+    i8_xconst_neon_nofma_min_value,
+    i8_xconst_fallback_nofma_min_value,
+    i8_xany_avx512_nofma_min_value,
+    i8_xany_avx2_nofma_min_value,
+    i8_xany_neon_nofma_min_value,
+    i8_xany_fallback_nofma_min_value,
+);
+
+export_safe_value_op!(
+    description =
+        "Performs a vertical max of a provided vector and a single broadcast value",
+    ty = i16,
+    const_name = i16_xconst_max_value,
+    any_name = i16_xany_max_value,
+    i16_xconst_avx512_nofma_max_value,
+    i16_xconst_avx2_nofma_max_value,
+    i16_xconst_neon_nofma_max_value,
+    i16_xconst_fallback_nofma_max_value,
+    i16_xany_avx512_nofma_max_value,
+    i16_xany_avx2_nofma_max_value,
+    i16_xany_neon_nofma_max_value,
+    i16_xany_fallback_nofma_max_value,
+);
+export_safe_value_op!(
+    description =
+        "Performs a vertical min of a provided vector and a single broadcast value",
+    ty = i16,
+    const_name = i16_xconst_min_value,
+    any_name = i16_xany_min_value,
+    i16_xconst_avx512_nofma_min_value,
+    i16_xconst_avx2_nofma_min_value,
+    i16_xconst_neon_nofma_min_value,
+    i16_xconst_fallback_nofma_min_value,
+    i16_xany_avx512_nofma_min_value,
+    i16_xany_avx2_nofma_min_value,
+    i16_xany_neon_nofma_min_value,
+    i16_xany_fallback_nofma_min_value,
+);
+
+export_safe_value_op!(
+    description =
+        "Performs a vertical max of a provided vector and a single broadcast value",
+    ty = i32,
+    const_name = i32_xconst_max_value,
+    any_name = i32_xany_max_value,
+    i32_xconst_avx512_nofma_max_value,
+    i32_xconst_avx2_nofma_max_value,
+    i32_xconst_neon_nofma_max_value,
+    i32_xconst_fallback_nofma_max_value,
+    i32_xany_avx512_nofma_max_value,
+    i32_xany_avx2_nofma_max_value,
+    i32_xany_neon_nofma_max_value,
+    i32_xany_fallback_nofma_max_value,
+);
+export_safe_value_op!(
+    description =
+        "Performs a vertical min of a provided vector and a single broadcast value",
+    ty = i32,
+    const_name = i32_xconst_min_value,
+    any_name = i32_xany_min_value,
+    i32_xconst_avx512_nofma_min_value,
+    i32_xconst_avx2_nofma_min_value,
+    i32_xconst_neon_nofma_min_value,
+    i32_xconst_fallback_nofma_min_value,
+    i32_xany_avx512_nofma_min_value,
+    i32_xany_avx2_nofma_min_value,
+    i32_xany_neon_nofma_min_value,
+    i32_xany_fallback_nofma_min_value,
+);
+
+export_safe_value_op!(
+    description =
+        "Performs a vertical max of a provided vector and a single broadcast value",
+    ty = i64,
+    const_name = i64_xconst_max_value,
+    any_name = i64_xany_max_value,
+    i64_xconst_avx512_nofma_max_value,
+    i64_xconst_avx2_nofma_max_value,
+    i64_xconst_neon_nofma_max_value,
+    i64_xconst_fallback_nofma_max_value,
+    i64_xany_avx512_nofma_max_value,
+    i64_xany_avx2_nofma_max_value,
+    i64_xany_neon_nofma_max_value,
+    i64_xany_fallback_nofma_max_value,
+);
+export_safe_value_op!(
+    description =
+        "Performs a vertical min of a provided vector and a single broadcast value",
+    ty = i64,
+    const_name = i64_xconst_min_value,
+    any_name = i64_xany_min_value,
+    i64_xconst_avx512_nofma_min_value,
+    i64_xconst_avx2_nofma_min_value,
+    i64_xconst_neon_nofma_min_value,
+    i64_xconst_fallback_nofma_min_value,
+    i64_xany_avx512_nofma_min_value,
+    i64_xany_avx2_nofma_min_value,
+    i64_xany_neon_nofma_min_value,
+    i64_xany_fallback_nofma_min_value,
+);
+
+export_safe_value_op!(
+    description =
+        "Performs a vertical max of a provided vector and a single broadcast value",
+    ty = u8,
+    const_name = u8_xconst_max_value,
+    any_name = u8_xany_max_value,
+    u8_xconst_avx512_nofma_max_value,
+    u8_xconst_avx2_nofma_max_value,
+    u8_xconst_neon_nofma_max_value,
+    u8_xconst_fallback_nofma_max_value,
+    u8_xany_avx512_nofma_max_value,
+    u8_xany_avx2_nofma_max_value,
+    u8_xany_neon_nofma_max_value,
+    u8_xany_fallback_nofma_max_value,
+);
+export_safe_value_op!(
+    description =
+        "Performs a vertical min of a provided vector and a single broadcast value",
+    ty = u8,
+    const_name = u8_xconst_min_value,
+    any_name = u8_xany_min_value,
+    u8_xconst_avx512_nofma_min_value,
+    u8_xconst_avx2_nofma_min_value,
+    u8_xconst_neon_nofma_min_value,
+    u8_xconst_fallback_nofma_min_value,
+    u8_xany_avx512_nofma_min_value,
+    u8_xany_avx2_nofma_min_value,
+    u8_xany_neon_nofma_min_value,
+    u8_xany_fallback_nofma_min_value,
+);
+
+export_safe_value_op!(
+    description =
+        "Performs a vertical max of a provided vector and a single broadcast value",
+    ty = u16,
+    const_name = u16_xconst_max_value,
+    any_name = u16_xany_max_value,
+    u16_xconst_avx512_nofma_max_value,
+    u16_xconst_avx2_nofma_max_value,
+    u16_xconst_neon_nofma_max_value,
+    u16_xconst_fallback_nofma_max_value,
+    u16_xany_avx512_nofma_max_value,
+    u16_xany_avx2_nofma_max_value,
+    u16_xany_neon_nofma_max_value,
+    u16_xany_fallback_nofma_max_value,
+);
+export_safe_value_op!(
+    description =
+        "Performs a vertical min of a provided vector and a single broadcast value",
+    ty = u16,
+    const_name = u16_xconst_min_value,
+    any_name = u16_xany_min_value,
+    u16_xconst_avx512_nofma_min_value,
+    u16_xconst_avx2_nofma_min_value,
+    u16_xconst_neon_nofma_min_value,
+    u16_xconst_fallback_nofma_min_value,
+    u16_xany_avx512_nofma_min_value,
+    u16_xany_avx2_nofma_min_value,
+    u16_xany_neon_nofma_min_value,
+    u16_xany_fallback_nofma_min_value,
+);
+
+export_safe_value_op!(
+    description =
+        "Performs a vertical max of a provided vector and a single broadcast value",
+    ty = u32,
+    const_name = u32_xconst_max_value,
+    any_name = u32_xany_max_value,
+    u32_xconst_avx512_nofma_max_value,
+    u32_xconst_avx2_nofma_max_value,
+    u32_xconst_neon_nofma_max_value,
+    u32_xconst_fallback_nofma_max_value,
+    u32_xany_avx512_nofma_max_value,
+    u32_xany_avx2_nofma_max_value,
+    u32_xany_neon_nofma_max_value,
+    u32_xany_fallback_nofma_max_value,
+);
+export_safe_value_op!(
+    description =
+        "Performs a vertical min of a provided vector and a single broadcast value",
+    ty = u32,
+    const_name = u32_xconst_min_value,
+    any_name = u32_xany_min_value,
+    u32_xconst_avx512_nofma_min_value,
+    u32_xconst_avx2_nofma_min_value,
+    u32_xconst_neon_nofma_min_value,
+    u32_xconst_fallback_nofma_min_value,
+    u32_xany_avx512_nofma_min_value,
+    u32_xany_avx2_nofma_min_value,
+    u32_xany_neon_nofma_min_value,
+    u32_xany_fallback_nofma_min_value,
+);
+
+export_safe_value_op!(
+    description =
+        "Performs a vertical max of a provided vector and a single broadcast value",
+    ty = u64,
+    const_name = u64_xconst_max_value,
+    any_name = u64_xany_max_value,
+    u64_xconst_avx512_nofma_max_value,
+    u64_xconst_avx2_nofma_max_value,
+    u64_xconst_neon_nofma_max_value,
+    u64_xconst_fallback_nofma_max_value,
+    u64_xany_avx512_nofma_max_value,
+    u64_xany_avx2_nofma_max_value,
+    u64_xany_neon_nofma_max_value,
+    u64_xany_fallback_nofma_max_value,
+);
+export_safe_value_op!(
+    description =
+        "Performs a vertical min of a provided vector and a single broadcast value",
+    ty = u64,
+    const_name = u64_xconst_min_value,
+    any_name = u64_xany_min_value,
+    u64_xconst_avx512_nofma_min_value,
+    u64_xconst_avx2_nofma_min_value,
+    u64_xconst_neon_nofma_min_value,
+    u64_xconst_fallback_nofma_min_value,
+    u64_xany_avx512_nofma_min_value,
+    u64_xany_avx2_nofma_min_value,
+    u64_xany_neon_nofma_min_value,
+    u64_xany_fallback_nofma_min_value,
+);
+
 #[cfg(test)]
 /// Tests the exposed safe API.
 ///
@@ -881,6 +1241,14 @@ mod tests {
                     assert_eq!(res, l1.iter().fold(AutoMath::max(), |a, b| AutoMath::cmp_min(a, *b)), "Min value op miss-match");
 
                     let mut r = vec![$t::default(); DIMS];
+                    [<$t _xany_min_value >](AutoMath::zero(), &l1, &mut r);
+                    let expected = l1.iter()
+                        .copied()
+                        .map(|a| AutoMath::cmp_min(a, AutoMath::zero()))
+                        .collect::<Vec<_>>();
+                    assert_eq!(r, expected, "Min vector by value op miss-match");
+
+                    let mut r = vec![$t::default(); DIMS];
                     [<$t _xany_min_vertical >](&l1, &l2, &mut r);
                     let expected = zip(l1, l2).map(|(a, b)| AutoMath::cmp_min(a, b)).collect::<Vec<_>>();
                     assert_eq!(r, expected, "Min vector op miss-match");
@@ -892,6 +1260,14 @@ mod tests {
 
                     let res = [<$t _xany_max_horizontal >](&l1);
                     assert_eq!(res, l1.iter().fold(AutoMath::min(), |a, b| AutoMath::cmp_max(a, *b)), "Max value op miss-match");
+
+                    let mut r = vec![$t::default(); DIMS];
+                    [<$t _xany_max_value >](AutoMath::zero(), &l1, &mut r);
+                    let expected = l1.iter()
+                        .copied()
+                        .map(|a| AutoMath::cmp_max(a, AutoMath::zero()))
+                        .collect::<Vec<_>>();
+                    assert_eq!(r, expected, "Min vector by value op miss-match");
 
                     let mut r = vec![$t::default(); DIMS];
                     [<$t _xany_max_vertical >](&l1, &l2, &mut r);

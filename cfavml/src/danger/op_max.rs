@@ -63,7 +63,7 @@ where
 ///
 /// NOTE:
 /// This implementation with compared the values of `a` and `b` and store the max
-/// of the each element in `b`.
+/// of the element in `b`.
 ///
 /// # Safety
 ///
@@ -119,6 +119,66 @@ pub unsafe fn generic_max_vertical<T, R, M>(
     }
 }
 
+#[inline(always)]
+/// A generic max implementation over one vector of a given set of dimensions
+/// and a single value target.
+///
+/// This routine is primarily aimed for workloads like Relu activation where
+/// you want to cap the value at zero or above.
+///
+/// # Safety
+///
+/// The sizes of `a` must be equal to `dims`, the safety requirements of
+/// `M` definition the basic math operations and the requirements of `R` SIMD register
+/// must also be followed.
+pub unsafe fn generic_max_value<T, R, M>(
+    dims: usize,
+    value: T,
+    a: &[T],
+    result: &mut [T],
+) where
+    T: Copy,
+    R: SimdRegister<T>,
+    M: Math<T>,
+{
+    debug_assert_eq!(a.len(), dims, "Vector a does not match size `dims`");
+
+    let broadcast_dense = R::filled_dense(value);
+
+    let offset_from = dims % R::elements_per_dense();
+    let a_ptr = a.as_ptr();
+    let result_ptr = result.as_mut_ptr();
+
+    // Operate over dense lanes first.
+    let mut i = 0;
+    while i < (dims - offset_from) {
+        let l1 = R::load_dense(a_ptr.add(i));
+        let max = R::max_dense(l1, broadcast_dense);
+        R::write_dense(result_ptr.add(i), max);
+
+        i += R::elements_per_dense();
+    }
+
+    let broadcast_reg = broadcast_dense.a;
+
+    // Operate over single registers next.
+    let offset_from = offset_from % R::elements_per_lane();
+    while i < (dims - offset_from) {
+        let l1 = R::load(a_ptr.add(i));
+        let max = R::max(l1, broadcast_reg);
+        R::write(result_ptr.add(i), max);
+
+        i += R::elements_per_lane();
+    }
+
+    while i < dims {
+        let v1 = *a.get_unchecked(i);
+        *result.get_unchecked_mut(i) = M::cmp_max(v1, value);
+
+        i += 1;
+    }
+}
+
 #[cfg(test)]
 pub(crate) unsafe fn test_max<T, R>(l1: Vec<T>, l2: Vec<T>)
 where
@@ -131,16 +191,24 @@ where
     let dims = l1.len();
     let mut result = vec![AutoMath::min(); dims];
     generic_max_vertical::<T, R, AutoMath>(dims, &l1, &l2, &mut result);
-
     let mut expected_result = Vec::new();
     for (a, b) in l1.iter().copied().zip(l2) {
         expected_result.push(AutoMath::cmp_max(a, b));
     }
-    assert_eq!(result, expected_result, "value missmatch");
+    assert_eq!(result, expected_result, "value mismatch");
+
+    let dims = l1.len();
+    let mut result = vec![AutoMath::min(); dims];
+    generic_max_value::<T, R, AutoMath>(dims, AutoMath::zero(), &l1, &mut result);
+    let mut expected_result = Vec::new();
+    for a in l1.iter().copied() {
+        expected_result.push(AutoMath::cmp_max(a, AutoMath::zero()));
+    }
+    assert_eq!(result, expected_result, "value mismatch");
 
     let max = generic_max_horizontal::<T, R, AutoMath>(dims, &l1);
     let expected_max = l1
         .iter()
         .fold(AutoMath::min(), |a, b| AutoMath::cmp_max(a, *b));
-    assert_eq!(max, expected_max, "value missmatch on horizontal");
+    assert_eq!(max, expected_max, "value mismatch on horizontal");
 }
