@@ -909,7 +909,7 @@ export_safe_vertical_op!(
 
 export_safe_value_op!(
     description =
-        "Performs a vertical max of a provided vector and a single broadcast value",
+        "Performs a vertical min of a provided vector and a single broadcast value",
     ty = f32,
     const_name = f32_xconst_max_value,
     any_name = f32_xany_max_value,
@@ -924,7 +924,7 @@ export_safe_value_op!(
 );
 export_safe_value_op!(
     description =
-        "Performs a vertical max of a provided vector and a single broadcast value",
+        "Performs a vertical min of a provided vector and a single broadcast value",
     ty = f32,
     const_name = f32_xconst_min_value,
     any_name = f32_xany_min_value,
@@ -955,7 +955,7 @@ export_safe_value_op!(
 );
 export_safe_value_op!(
     description =
-        "Performs a vertical max of a provided vector and a single broadcast value",
+        "Performs a vertical min of a provided vector and a single broadcast value",
     ty = f64,
     const_name = f64_xconst_min_value,
     any_name = f64_xany_min_value,
@@ -971,7 +971,7 @@ export_safe_value_op!(
 
 export_safe_value_op!(
     description =
-        "Performs a vertical max of a provided vector and a single broadcast value",
+        "Performs a vertical min of a provided vector and a single broadcast value",
     ty = i8,
     const_name = i8_xconst_max_value,
     any_name = i8_xany_max_value,
@@ -986,7 +986,7 @@ export_safe_value_op!(
 );
 export_safe_value_op!(
     description =
-        "Performs a vertical max of a provided vector and a single broadcast value",
+        "Performs a vertical min of a provided vector and a single broadcast value",
     ty = i8,
     const_name = i8_xconst_min_value,
     any_name = i8_xany_min_value,
@@ -1017,7 +1017,7 @@ export_safe_value_op!(
 );
 export_safe_value_op!(
     description =
-        "Performs a vertical max of a provided vector and a single broadcast value",
+        "Performs a vertical min of a provided vector and a single broadcast value",
     ty = i16,
     const_name = i16_xconst_min_value,
     any_name = i16_xany_min_value,
@@ -1048,7 +1048,7 @@ export_safe_value_op!(
 );
 export_safe_value_op!(
     description =
-        "Performs a vertical max of a provided vector and a single broadcast value",
+        "Performs a vertical min of a provided vector and a single broadcast value",
     ty = i32,
     const_name = i32_xconst_min_value,
     any_name = i32_xany_min_value,
@@ -1079,7 +1079,7 @@ export_safe_value_op!(
 );
 export_safe_value_op!(
     description =
-        "Performs a vertical max of a provided vector and a single broadcast value",
+        "Performs a vertical min of a provided vector and a single broadcast value",
     ty = i64,
     const_name = i64_xconst_min_value,
     any_name = i64_xany_min_value,
@@ -1110,7 +1110,7 @@ export_safe_value_op!(
 );
 export_safe_value_op!(
     description =
-        "Performs a vertical max of a provided vector and a single broadcast value",
+        "Performs a vertical min of a provided vector and a single broadcast value",
     ty = u8,
     const_name = u8_xconst_min_value,
     any_name = u8_xany_min_value,
@@ -1141,7 +1141,7 @@ export_safe_value_op!(
 );
 export_safe_value_op!(
     description =
-        "Performs a vertical max of a provided vector and a single broadcast value",
+        "Performs a vertical min of a provided vector and a single broadcast value",
     ty = u16,
     const_name = u16_xconst_min_value,
     any_name = u16_xany_min_value,
@@ -1172,7 +1172,7 @@ export_safe_value_op!(
 );
 export_safe_value_op!(
     description =
-        "Performs a vertical max of a provided vector and a single broadcast value",
+        "Performs a vertical min of a provided vector and a single broadcast value",
     ty = u32,
     const_name = u32_xconst_min_value,
     any_name = u32_xany_min_value,
@@ -1203,7 +1203,7 @@ export_safe_value_op!(
 );
 export_safe_value_op!(
     description =
-        "Performs a vertical max of a provided vector and a single broadcast value",
+        "Performs a vertical min of a provided vector and a single broadcast value",
     ty = u64,
     const_name = u64_xconst_min_value,
     any_name = u64_xany_min_value,
@@ -1241,6 +1241,14 @@ mod tests {
                     assert_eq!(res, l1.iter().fold(AutoMath::max(), |a, b| AutoMath::cmp_min(a, *b)), "Min value op miss-match");
 
                     let mut r = vec![$t::default(); DIMS];
+                    [<$t _xany_min_value >](AutoMath::zero(), &l1, &mut r);
+                    let expected = l1.iter()
+                        .copied()
+                        .map(|a| AutoMath::cmp_min(a, AutoMath::zero()))
+                        .collect::<Vec<_>>();
+                    assert_eq!(r, expected, "Min vector by value op miss-match");
+
+                    let mut r = vec![$t::default(); DIMS];
                     [<$t _xany_min_vertical >](&l1, &l2, &mut r);
                     let expected = zip(l1, l2).map(|(a, b)| AutoMath::cmp_min(a, b)).collect::<Vec<_>>();
                     assert_eq!(r, expected, "Min vector op miss-match");
@@ -1252,6 +1260,14 @@ mod tests {
 
                     let res = [<$t _xany_max_horizontal >](&l1);
                     assert_eq!(res, l1.iter().fold(AutoMath::min(), |a, b| AutoMath::cmp_max(a, *b)), "Max value op miss-match");
+
+                    let mut r = vec![$t::default(); DIMS];
+                    [<$t _xany_max_value >](AutoMath::zero(), &l1, &mut r);
+                    let expected = l1.iter()
+                        .copied()
+                        .map(|a| AutoMath::cmp_max(a, AutoMath::zero()))
+                        .collect::<Vec<_>>();
+                    assert_eq!(r, expected, "Min vector by value op miss-match");
 
                     let mut r = vec![$t::default(); DIMS];
                     [<$t _xany_max_vertical >](&l1, &l2, &mut r);
