@@ -1,3 +1,5 @@
+#![allow(clippy::missing_safety_doc)]
+
 use cfavml::danger::*;
 
 macro_rules! export_dense_op {
@@ -54,7 +56,7 @@ macro_rules! export_vector_x_vector_op {
             #[inline(never)]
             #[target_feature($(enable = $feat ,)*)]
             pub unsafe fn [<impl_ $im:lower _ $t _ $op>](a: &[$t], b: &[$t], res: &mut [$t]) {
-                let res = $op::<_, $im, cfavml::math::AutoMath>(a.len(), a, b, res)  ;
+                let res = $op::<_, $im, cfavml::math::AutoMath, _>(a.len(), a, b, res)  ;
                 std::hint::black_box(res);
             }
         }
@@ -63,7 +65,7 @@ macro_rules! export_vector_x_vector_op {
         paste::paste!{
             #[inline(never)]
             pub unsafe fn [<impl_ $im:lower _ $t _ $op>](a: &[$t], b: &[$t], res: &mut [$t]) {
-                let res = $op::<_, $im, cfavml::math::AutoMath>(a.len(), a, b, res)  ;
+                let res = $op::<_, $im, cfavml::math::AutoMath, _>(a.len(), a, b, res)  ;
                 std::hint::black_box(res);
             }
         }
@@ -76,7 +78,7 @@ macro_rules! export_vector_x_value_op {
             #[inline(never)]
             #[target_feature($(enable = $feat ,)*)]
             pub unsafe fn [<impl_ $im:lower _ $t _ $op>](value: $t, a: &[$t], res: &mut [$t]) {
-                let res = $op::<_, $im, cfavml::math::AutoMath>(a.len(), value, a, res)  ;
+                let res = $op::<_, $im, cfavml::math::AutoMath, _>(a.len(), value, a, res)  ;
                 std::hint::black_box(res);
             }
         }
@@ -85,7 +87,7 @@ macro_rules! export_vector_x_value_op {
         paste::paste!{
             #[inline(never)]
             pub unsafe fn [<impl_ $im:lower _ $t _ $op>](value: $t, a: &[$t], res: &mut [$t]) {
-                let res = $op::<_, $im, cfavml::math::AutoMath>(a.len(), value, a, res)  ;
+                let res = $op::<_, $im, cfavml::math::AutoMath, _>(a.len(), value, a, res)  ;
                 std::hint::black_box(res);
             }
         }

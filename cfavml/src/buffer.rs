@@ -24,6 +24,10 @@ pub trait WriteOnlyBuffer: sealed::Sealed {
 
     #[inline(always)]
     /// Write a value to a specific index in the buffer.
+    ///
+    /// # Safety
+    ///
+    /// The `idx` must be within bounds of the buffer length.
     unsafe fn write_at(&mut self, idx: usize, value: Self::Item) {
         let ptr = self.as_write_only_ptr();
         ptr.add(idx).write(value)
