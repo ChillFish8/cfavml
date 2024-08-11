@@ -47,7 +47,8 @@ macro_rules! export_safe_distance_op {
     ) => {
         #[doc = concat!("`", stringify!($t), "` ", $desc)]
         pub fn $const_name<const DIMS: usize>(a: &[$t], b: &[$t]) -> $t {
-            assert_eq!(a.len(), b.len(), "Input vector sizes do not match");
+            assert_eq!(a.len(), DIMS, "Input vector a does not match DIMS");
+            assert_eq!(b.len(), DIMS, "Input vector b does not match DIMS");
 
             unsafe {
                 crate::dispatch!(

@@ -31,8 +31,8 @@
 //! let a = [1.0, 2.0, 3.0];
 //! let b = [1.0, 2.0, 3.0];
 //!
-//! let mut result_from_value = [0.0; DIMS];
-//! let mut result_from_vector = [0.0; DIMS];
+//! let mut result_from_value = [0.0f32; DIMS];
+//! let mut result_from_vector = [0.0f32; DIMS];
 //!
 //! f32_xany_add_value(1.0, &a, &mut result_from_value);
 //! assert_eq!(result_from_value, [2.0, 3.0, 4.0]);
@@ -51,8 +51,8 @@
 //! let a = [1.0, 2.0, 3.0];
 //! let b = [1.0, 2.0, 3.0];
 //!
-//! let mut result_from_value = [0.0; DIMS];
-//! let mut result_from_vector = [0.0; DIMS];
+//! let mut result_from_value = [0.0f32; DIMS];
+//! let mut result_from_vector = [0.0f32; DIMS];
 //!
 //! f32_xany_sub_value(1.0, &a, &mut result_from_value);
 //! assert_eq!(result_from_value, [0.0, 1.0, 2.0]);
@@ -70,8 +70,8 @@
 //! let a = [1.0, 2.0, 3.0];
 //! let b = [1.0, 2.0, 3.0];
 //!
-//! let mut result_from_value = [0.0; DIMS];
-//! let mut result_from_vector = [0.0; DIMS];
+//! let mut result_from_value = [0.0f32; DIMS];
+//! let mut result_from_vector = [0.0f32; DIMS];
 //!
 //! f32_xany_mul_value(2.0, &a, &mut result_from_value);
 //! assert_eq!(result_from_value, [2.0, 4.0, 6.0]);
@@ -95,8 +95,8 @@
 //! let a = [1.0, 2.0, 3.0];
 //! let b = [1.0, 2.0, 3.0];
 //!
-//! let mut result_from_value = [0.0; DIMS];
-//! let mut result_from_vector = [0.0; DIMS];
+//! let mut result_from_value = [0.0f32; DIMS];
+//! let mut result_from_vector = [0.0f32; DIMS];
 //!
 //! f32_xany_div_value(2.0, &a, &mut result_from_value);
 //! assert_eq!(result_from_value, [0.5, 1.0, 1.5]);
@@ -104,6 +104,7 @@
 //! f32_xany_div_vector(&a, &b, &mut result_from_vector);
 //! assert_eq!(result_from_vector, [1.0, 1.0, 1.0]);
 //! ```
+use crate::buffer::WriteOnlyBuffer;
 use crate::danger::*;
 
 macro_rules! export_safe_arithmetic_vector_x_value_op {
@@ -122,11 +123,16 @@ macro_rules! export_safe_arithmetic_vector_x_value_op {
         $fallback_any_name:ident,
     ) => {
         #[doc = concat!("`", stringify!($t), "` ", $desc)]
-        pub fn $const_name<const DIMS: usize>(value: $t, a: &[$t], result: &mut [$t]) {
+        pub fn $const_name<const DIMS: usize>(
+            value: $t,
+            a: &[$t],
+            result: impl WriteOnlyBuffer<Item = $t>,
+        ) {
+            assert_eq!(a.len(), DIMS, "Input vector a does not match DIMS");
             assert_eq!(
-                a.len(),
-                result.len(),
-                "Input vector and result vector size do not match"
+                result.raw_buffer_len(),
+                DIMS,
+                "Output vector result does not match DIMS"
             );
 
             unsafe {
@@ -141,10 +147,10 @@ macro_rules! export_safe_arithmetic_vector_x_value_op {
         }
 
         #[doc = concat!("`", stringify!($t), "` ", $desc)]
-        pub fn $any_name(value: $t, a: &[$t], result: &mut [$t]) {
+        pub fn $any_name(value: $t, a: &[$t], result: impl WriteOnlyBuffer<Item = $t>) {
             assert_eq!(
                 a.len(),
-                result.len(),
+                result.raw_buffer_len(),
                 "Input vector and result vector size do not match"
             );
 
@@ -177,15 +183,16 @@ macro_rules! export_safe_arithmetic_vector_x_vector_op {
         $fallback_any_name:ident,
     ) => {
         #[doc = concat!("`", stringify!($t), "` ", $desc)]
-        pub fn $const_name<const DIMS: usize>(a: &[$t], b: &[$t], result: &mut [$t]) {
+        pub fn $const_name<const DIMS: usize>(
+            a: &[$t],
+            b: &[$t],
+            result: impl WriteOnlyBuffer<Item = $t>,
+        ) {
+            assert_eq!(a.len(), DIMS, "Input vector a does not match DIMS");
+            assert_eq!(b.len(), DIMS, "Input vector b does not match DIMS");
             assert_eq!(
                 a.len(),
-                b.len(),
-                "Input vector a and b do not match in size"
-            );
-            assert_eq!(
-                a.len(),
-                result.len(),
+                result.raw_buffer_len(),
                 "Input vectors and result vector size do not match"
             );
 
@@ -201,7 +208,7 @@ macro_rules! export_safe_arithmetic_vector_x_vector_op {
         }
 
         #[doc = concat!("`", stringify!($t), "` ", $desc)]
-        pub fn $any_name(a: &[$t], b: &[$t], result: &mut [$t]) {
+        pub fn $any_name(a: &[$t], b: &[$t], result: impl WriteOnlyBuffer<Item = $t>) {
             assert_eq!(
                 a.len(),
                 b.len(),
@@ -209,7 +216,7 @@ macro_rules! export_safe_arithmetic_vector_x_vector_op {
             );
             assert_eq!(
                 a.len(),
-                result.len(),
+                result.raw_buffer_len(),
                 "Input vectors and result vector size do not match"
             );
 

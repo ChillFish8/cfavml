@@ -61,6 +61,32 @@ mod sealed {
     impl Sealed for &mut [MaybeUninit<u32>] {}
     impl Sealed for &mut [MaybeUninit<u64>] {}
 
+    impl<const N: usize> Sealed for &mut [f32; N] {}
+    impl<const N: usize> Sealed for &mut [f64; N] {}
+
+    impl<const N: usize> Sealed for &mut [i8; N] {}
+    impl<const N: usize> Sealed for &mut [i16; N] {}
+    impl<const N: usize> Sealed for &mut [i32; N] {}
+    impl<const N: usize> Sealed for &mut [i64; N] {}
+
+    impl<const N: usize> Sealed for &mut [u8; N] {}
+    impl<const N: usize> Sealed for &mut [u16; N] {}
+    impl<const N: usize> Sealed for &mut [u32; N] {}
+    impl<const N: usize> Sealed for &mut [u64; N] {}
+
+    impl<const N: usize> Sealed for &mut [MaybeUninit<f32>; N] {}
+    impl<const N: usize> Sealed for &mut [MaybeUninit<f64>; N] {}
+
+    impl<const N: usize> Sealed for &mut [MaybeUninit<i8>; N] {}
+    impl<const N: usize> Sealed for &mut [MaybeUninit<i16>; N] {}
+    impl<const N: usize> Sealed for &mut [MaybeUninit<i32>; N] {}
+    impl<const N: usize> Sealed for &mut [MaybeUninit<i64>; N] {}
+
+    impl<const N: usize> Sealed for &mut [MaybeUninit<u8>; N] {}
+    impl<const N: usize> Sealed for &mut [MaybeUninit<u16>; N] {}
+    impl<const N: usize> Sealed for &mut [MaybeUninit<u32>; N] {}
+    impl<const N: usize> Sealed for &mut [MaybeUninit<u64>; N] {}
+
     impl Sealed for &mut Vec<f32> {}
     impl Sealed for &mut Vec<f64> {}
 
@@ -110,6 +136,20 @@ macro_rules! add_slice_impl {
             #[inline(always)]
             fn raw_buffer_len(&self) -> usize {
                 self.len()
+            }
+
+            #[inline(always)]
+            unsafe fn as_write_only_ptr(&mut self) -> *mut Self::Item {
+                self.as_mut_ptr().cast()
+            }
+        }
+
+        impl<const N: usize> WriteOnlyBuffer for &mut [$t; N] {
+            type Item = $inner;
+
+            #[inline(always)]
+            fn raw_buffer_len(&self) -> usize {
+                N
             }
 
             #[inline(always)]

@@ -26,6 +26,7 @@ divan = "0.1.14"
 ndarray = { version = "0.15.6", features = ["blas"] }
 blas-src = { version = "0.8", features = ["openblas"] }
 openblas-src = { version = "0.10", features = ["cblas", "system"] }
+mimalloc = { version = "0.1.43", default-features = false }
 
 [target.'cfg(not(unix))'.dev-dependencies]
 ndarray = "0.15.6"
@@ -68,6 +69,3 @@ rustdoc-args = ["--cfg", "docsrs"]
 name = "bench_arithmetic"
 harness = false
 
-[[bench]]
-name = "bench_nonsense"
-harness = false
