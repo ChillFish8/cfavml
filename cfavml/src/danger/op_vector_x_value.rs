@@ -1,3 +1,4 @@
+use crate::buffer::WriteOnlyBuffer;
 use crate::danger::core_simd_api::{DenseLane, SimdRegister};
 use crate::math::Math;
 
@@ -9,19 +10,20 @@ use crate::math::Math;
 /// The sizes of `a` and `result` must be equal to `dims`, the safety requirements of
 /// `M` definition the basic math operations and the requirements of `R` SIMD register
 /// must also be followed.
-pub unsafe fn generic_add_value<T, R, M>(
+pub unsafe fn generic_add_value<T, R, M, B>(
     dims: usize,
     value: T,
     a: &[T],
-    result: &mut [T],
+    mut result: B,
 ) where
     T: Copy,
     R: SimdRegister<T>,
     M: Math<T>,
+    B: WriteOnlyBuffer<Item = T>,
 {
     debug_assert_eq!(a.len(), dims, "Vector a does not match size `dims`");
     debug_assert_eq!(
-        result.len(),
+        result.raw_buffer_len(),
         dims,
         "Vector result does not match size `dims`"
     );
@@ -31,7 +33,7 @@ pub unsafe fn generic_add_value<T, R, M>(
 
     let offset_from = dims % R::elements_per_dense();
     let a_ptr = a.as_ptr();
-    let result_ptr = result.as_mut_ptr();
+    let result_ptr = result.as_write_only_ptr();
 
     // Operate over dense lanes first.
     let mut i = 0;
@@ -55,7 +57,7 @@ pub unsafe fn generic_add_value<T, R, M>(
 
     while i < dims {
         let a = *a.get_unchecked(i);
-        *result.get_unchecked_mut(i) = M::add(a, value);
+        result.write_at(i, M::add(a, value));
 
         i += 1;
     }
@@ -69,19 +71,20 @@ pub unsafe fn generic_add_value<T, R, M>(
 /// The sizes of `a` and `result` must be equal to `dims`, the safety requirements of
 /// `M` definition the basic math operations and the requirements of `R` SIMD register
 /// must also be followed.
-pub unsafe fn generic_sub_value<T, R, M>(
+pub unsafe fn generic_sub_value<T, R, M, B>(
     dims: usize,
     value: T,
     a: &[T],
-    result: &mut [T],
+    mut result: B,
 ) where
     T: Copy,
     R: SimdRegister<T>,
     M: Math<T>,
+    B: WriteOnlyBuffer<Item = T>,
 {
     debug_assert_eq!(a.len(), dims, "Vector a does not match size `dims`");
     debug_assert_eq!(
-        result.len(),
+        result.raw_buffer_len(),
         dims,
         "Vector result does not match size `dims`"
     );
@@ -91,7 +94,7 @@ pub unsafe fn generic_sub_value<T, R, M>(
 
     let offset_from = dims % R::elements_per_dense();
     let a_ptr = a.as_ptr();
-    let result_ptr = result.as_mut_ptr();
+    let result_ptr = result.as_write_only_ptr();
 
     // Operate over dense lanes first.
     let mut i = 0;
@@ -115,7 +118,7 @@ pub unsafe fn generic_sub_value<T, R, M>(
 
     while i < dims {
         let a = *a.get_unchecked(i);
-        *result.get_unchecked_mut(i) = M::sub(a, value);
+        result.write_at(i, M::sub(a, value));
 
         i += 1;
     }
@@ -129,19 +132,20 @@ pub unsafe fn generic_sub_value<T, R, M>(
 /// The sizes of `a` and `result` must be equal to `dims`, the safety requirements of
 /// `M` definition the basic math operations and the requirements of `R` SIMD register
 /// must also be followed.
-pub unsafe fn generic_mul_value<T, R, M>(
+pub unsafe fn generic_mul_value<T, R, M, B>(
     dims: usize,
     value: T,
     a: &[T],
-    result: &mut [T],
+    mut result: B,
 ) where
     T: Copy,
     R: SimdRegister<T>,
     M: Math<T>,
+    B: WriteOnlyBuffer<Item = T>,
 {
     debug_assert_eq!(a.len(), dims, "Vector a does not match size `dims`");
     debug_assert_eq!(
-        result.len(),
+        result.raw_buffer_len(),
         dims,
         "Vector result does not match size `dims`"
     );
@@ -151,7 +155,7 @@ pub unsafe fn generic_mul_value<T, R, M>(
 
     let offset_from = dims % R::elements_per_dense();
     let a_ptr = a.as_ptr();
-    let result_ptr = result.as_mut_ptr();
+    let result_ptr = result.as_write_only_ptr();
 
     // Operate over dense lanes first.
     let mut i = 0;
@@ -175,7 +179,7 @@ pub unsafe fn generic_mul_value<T, R, M>(
 
     while i < dims {
         let a = *a.get_unchecked(i);
-        *result.get_unchecked_mut(i) = M::mul(a, value);
+        result.write_at(i, M::mul(a, value));
 
         i += 1;
     }
@@ -194,19 +198,20 @@ pub unsafe fn generic_mul_value<T, R, M>(
 /// The sizes of `a` and `result` must be equal to `dims`, the safety requirements of
 /// `M` definition the basic math operations and the requirements of `R` SIMD register
 /// must also be followed.
-pub unsafe fn generic_div_value<T, R, M>(
+pub unsafe fn generic_div_value<T, R, M, B>(
     dims: usize,
     value: T,
     a: &[T],
-    result: &mut [T],
+    mut result: B,
 ) where
     T: Copy,
     R: SimdRegister<T>,
     M: Math<T>,
+    B: WriteOnlyBuffer<Item = T>,
 {
     debug_assert_eq!(a.len(), dims, "Vector a does not match size `dims`");
     debug_assert_eq!(
-        result.len(),
+        result.raw_buffer_len(),
         dims,
         "Vector result does not match size `dims`"
     );
@@ -216,7 +221,7 @@ pub unsafe fn generic_div_value<T, R, M>(
 
     let offset_from = dims % R::elements_per_dense();
     let a_ptr = a.as_ptr();
-    let result_ptr = result.as_mut_ptr();
+    let result_ptr = result.as_write_only_ptr();
 
     // Operate over dense lanes first.
     let mut i = 0;
@@ -240,7 +245,7 @@ pub unsafe fn generic_div_value<T, R, M>(
 
     while i < dims {
         let a = *a.get_unchecked(i);
-        *result.get_unchecked_mut(i) = M::div(a, value);
+        result.write_at(i, M::div(a, value));
 
         i += 1;
     }
@@ -257,12 +262,13 @@ pub(crate) mod tests {
         T: Copy + PartialEq + std::fmt::Debug,
         R: SimdRegister<T>,
         crate::math::AutoMath: Math<T>,
+        for<'a> &'a mut Vec<T>: WriteOnlyBuffer<Item = T>,
     {
         use crate::math::AutoMath;
 
         let dims = l1.len();
         let mut result = vec![AutoMath::zero(); dims];
-        generic_add_value::<T, R, AutoMath>(dims, value, &l1, &mut result);
+        generic_add_value::<T, R, AutoMath, _>(dims, value, &l1, &mut result);
 
         let mut expected_result = Vec::new();
         for a in l1 {
@@ -276,12 +282,13 @@ pub(crate) mod tests {
         T: Copy + PartialEq + std::fmt::Debug,
         R: SimdRegister<T>,
         crate::math::AutoMath: Math<T>,
+        for<'a> &'a mut Vec<T>: WriteOnlyBuffer<Item = T>,
     {
         use crate::math::AutoMath;
 
         let dims = l1.len();
         let mut result = vec![AutoMath::zero(); dims];
-        generic_sub_value::<T, R, AutoMath>(dims, value, &l1, &mut result);
+        generic_sub_value::<T, R, AutoMath, _>(dims, value, &l1, &mut result);
 
         let mut expected_result = Vec::new();
         for a in l1 {
@@ -295,12 +302,13 @@ pub(crate) mod tests {
         T: Copy + PartialEq + std::fmt::Debug,
         R: SimdRegister<T>,
         crate::math::AutoMath: Math<T>,
+        for<'a> &'a mut Vec<T>: WriteOnlyBuffer<Item = T>,
     {
         use crate::math::AutoMath;
 
         let dims = l1.len();
         let mut result = vec![AutoMath::zero(); dims];
-        generic_div_value::<T, R, AutoMath>(dims, value, &l1, &mut result);
+        generic_div_value::<T, R, AutoMath, _>(dims, value, &l1, &mut result);
 
         let mut expected_result = Vec::new();
         for a in l1 {
@@ -314,12 +322,13 @@ pub(crate) mod tests {
         T: Copy + PartialEq + std::fmt::Debug,
         R: SimdRegister<T>,
         crate::math::AutoMath: Math<T>,
+        for<'a> &'a mut Vec<T>: WriteOnlyBuffer<Item = T>,
     {
         use crate::math::AutoMath;
 
         let dims = l1.len();
         let mut result = vec![AutoMath::zero(); dims];
-        generic_mul_value::<T, R, AutoMath>(dims, value, &l1, &mut result);
+        generic_mul_value::<T, R, AutoMath, _>(dims, value, &l1, &mut result);
 
         let mut expected_result = Vec::new();
         for a in l1 {

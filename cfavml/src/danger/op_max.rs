@@ -1,3 +1,4 @@
+use crate::buffer::WriteOnlyBuffer;
 use crate::danger::core_simd_api::SimdRegister;
 use crate::math::Math;
 
@@ -70,15 +71,16 @@ where
 /// The sizes of `a`, `b` must be equal to `dims`, the safety requirements of
 /// `M` definition the basic math operations and the requirements of `R` SIMD register
 /// must also be followed.
-pub unsafe fn generic_max_vertical<T, R, M>(
+pub unsafe fn generic_max_vertical<T, R, M, B>(
     dims: usize,
     a: &[T],
     b: &[T],
-    result: &mut [T],
+    mut result: B,
 ) where
     T: Copy,
     R: SimdRegister<T>,
     M: Math<T>,
+    B: WriteOnlyBuffer<Item = T>,
 {
     debug_assert_eq!(a.len(), dims, "Vector a does not match size `dims`");
     debug_assert_eq!(b.len(), dims, "Vector result does not match size `dims`");
@@ -86,7 +88,7 @@ pub unsafe fn generic_max_vertical<T, R, M>(
     let offset_from = dims % R::elements_per_dense();
     let a_ptr = a.as_ptr();
     let b_ptr = b.as_ptr();
-    let result_ptr = result.as_mut_ptr();
+    let result_ptr = result.as_write_only_ptr();
 
     // Operate over dense lanes first.
     let mut i = 0;
@@ -113,7 +115,7 @@ pub unsafe fn generic_max_vertical<T, R, M>(
     while i < dims {
         let v1 = *a.get_unchecked(i);
         let v2 = *b.get_unchecked(i);
-        *result.get_unchecked_mut(i) = M::cmp_max(v1, v2);
+        result.write_at(i, M::cmp_max(v1, v2));
 
         i += 1;
     }
@@ -131,15 +133,16 @@ pub unsafe fn generic_max_vertical<T, R, M>(
 /// The sizes of `a` must be equal to `dims`, the safety requirements of
 /// `M` definition the basic math operations and the requirements of `R` SIMD register
 /// must also be followed.
-pub unsafe fn generic_max_value<T, R, M>(
+pub unsafe fn generic_max_value<T, R, M, B>(
     dims: usize,
     value: T,
     a: &[T],
-    result: &mut [T],
+    mut result: B,
 ) where
     T: Copy,
     R: SimdRegister<T>,
     M: Math<T>,
+    B: WriteOnlyBuffer<Item = T>,
 {
     debug_assert_eq!(a.len(), dims, "Vector a does not match size `dims`");
 
@@ -147,7 +150,7 @@ pub unsafe fn generic_max_value<T, R, M>(
 
     let offset_from = dims % R::elements_per_dense();
     let a_ptr = a.as_ptr();
-    let result_ptr = result.as_mut_ptr();
+    let result_ptr = result.as_write_only_ptr();
 
     // Operate over dense lanes first.
     let mut i = 0;
@@ -173,7 +176,7 @@ pub unsafe fn generic_max_value<T, R, M>(
 
     while i < dims {
         let v1 = *a.get_unchecked(i);
-        *result.get_unchecked_mut(i) = M::cmp_max(v1, value);
+        result.write_at(i, M::cmp_max(v1, value));
 
         i += 1;
     }
@@ -185,12 +188,13 @@ where
     T: Copy + PartialEq + std::fmt::Debug,
     R: SimdRegister<T>,
     crate::math::AutoMath: Math<T>,
+    for<'a> &'a mut Vec<T>: WriteOnlyBuffer<Item = T>,
 {
     use crate::math::AutoMath;
 
     let dims = l1.len();
     let mut result = vec![AutoMath::min(); dims];
-    generic_max_vertical::<T, R, AutoMath>(dims, &l1, &l2, &mut result);
+    generic_max_vertical::<T, R, AutoMath, _>(dims, &l1, &l2, &mut result);
     let mut expected_result = Vec::new();
     for (a, b) in l1.iter().copied().zip(l2) {
         expected_result.push(AutoMath::cmp_max(a, b));
@@ -199,7 +203,7 @@ where
 
     let dims = l1.len();
     let mut result = vec![AutoMath::min(); dims];
-    generic_max_value::<T, R, AutoMath>(dims, AutoMath::zero(), &l1, &mut result);
+    generic_max_value::<T, R, AutoMath, _>(dims, AutoMath::zero(), &l1, &mut result);
     let mut expected_result = Vec::new();
     for a in l1.iter().copied() {
         expected_result.push(AutoMath::cmp_max(a, AutoMath::zero()));

@@ -19,6 +19,7 @@
 //!
 
 use super::*;
+use crate::buffer::WriteOnlyBuffer;
 use crate::math::AutoMath;
 
 macro_rules! export_vector_x_value_op {
@@ -39,9 +40,9 @@ macro_rules! export_vector_x_value_op {
         pub unsafe fn $xconst_name<const DIMS: usize>(
             value: $t,
             a: &[$t],
-            result: &mut [$t],
+            result: impl WriteOnlyBuffer<Item = $t>,
         ) {
-            $op::<_, $im, AutoMath>(DIMS, value, a, result)
+            $op::<_, $im, AutoMath, _>(DIMS, value, a, result)
         }
 
         #[doc = concat!("`", stringify!($t), "` ", $desc)]
@@ -53,9 +54,9 @@ macro_rules! export_vector_x_value_op {
         pub unsafe fn $xany_name(
             value: $t,
             a: &[$t],
-            result: &mut [$t],
+            result: impl WriteOnlyBuffer<Item = $t>,
         ) {
-            $op::<_, $im, AutoMath>(a.len(), value, a, result)
+            $op::<_, $im, AutoMath, _>(a.len(), value, a, result)
         }
     };
     (
@@ -77,9 +78,9 @@ macro_rules! export_vector_x_value_op {
         pub unsafe fn $xconst_name<const DIMS: usize>(
             value: $t,
             a: &[$t],
-            result: &mut [$t],
+            result: impl WriteOnlyBuffer<Item = $t>,
         ) {
-            $op::<_, $im, AutoMath>(DIMS, value, a, result)
+            $op::<_, $im, AutoMath, _>(DIMS, value, a, result)
         }
 
         #[target_feature($(enable = $feat , )*)]
@@ -92,9 +93,9 @@ macro_rules! export_vector_x_value_op {
         pub unsafe fn $xany_name(
             value: $t,
             a: &[$t],
-            result: &mut [$t],
+            result: impl WriteOnlyBuffer<Item = $t>,
         ) {
-            $op::<_, $im, AutoMath>(a.len(), value, a, result)
+            $op::<_, $im, AutoMath, _>(a.len(), value, a, result)
         }
     };
 }
@@ -117,9 +118,9 @@ macro_rules! export_vector_x_vector_op {
         pub unsafe fn $xconst_name<const DIMS: usize>(
             a: &[$t],
             b: &[$t],
-            result: &mut [$t],
+            result: impl WriteOnlyBuffer<Item = $t>,
         ) {
-            $op::<_, $im, AutoMath>(DIMS, a, b, result)
+            $op::<_, $im, AutoMath, _>(DIMS, a, b, result)
         }
 
         #[doc = concat!("`", stringify!($t), "` ", $desc)]
@@ -131,9 +132,9 @@ macro_rules! export_vector_x_vector_op {
         pub unsafe fn $xany_name(
             a: &[$t],
             b: &[$t],
-            result: &mut [$t],
+            result: impl WriteOnlyBuffer<Item = $t>,
         ) {
-            $op::<_, $im, AutoMath>(a.len(), a, b, result)
+            $op::<_, $im, AutoMath, _>(a.len(), a, b, result)
         }
     };
     (
@@ -155,9 +156,9 @@ macro_rules! export_vector_x_vector_op {
         pub unsafe fn $xconst_name<const DIMS: usize>(
             a: &[$t],
             b: &[$t],
-            result: &mut [$t],
+            result: impl WriteOnlyBuffer<Item = $t>,
         ) {
-            $op::<_, $im, AutoMath>(DIMS, a, b, result)
+            $op::<_, $im, AutoMath, _>(DIMS, a, b, result)
         }
 
         #[target_feature($(enable = $feat , )*)]
@@ -170,9 +171,9 @@ macro_rules! export_vector_x_vector_op {
         pub unsafe fn $xany_name(
             a: &[$t],
             b: &[$t],
-            result: &mut [$t],
+            result: impl WriteOnlyBuffer<Item = $t>,
         ) {
-            $op::<_, $im, AutoMath>(a.len(), a, b, result)
+            $op::<_, $im, AutoMath, _>(a.len(), a, b, result)
         }
     };
 }

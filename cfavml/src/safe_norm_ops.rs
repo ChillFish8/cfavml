@@ -42,11 +42,12 @@ macro_rules! export_safe_fma_norm_op {
 
             unsafe {
                 crate::dispatch!(
-                    avx512 = $avx512_const_name::<DIMS> => (a)
-                    avx2fma = $avx2fma_const_name::<DIMS> => (a)
-                    avx2 = $avx2_const_name::<DIMS> => (a)
-                    neon = $neon_const_name::<DIMS> => (a)
-                    fallback = $fallback_const_name::<DIMS> => (a)
+                    avx512 = $avx512_const_name::<DIMS>,
+                    avx2fma = $avx2fma_const_name::<DIMS>,
+                    avx2 = $avx2_const_name::<DIMS>,
+                    neon = $neon_const_name::<DIMS>,
+                    fallback = $fallback_const_name::<DIMS>,
+                    args = (a)
                 )
             }
         }
@@ -55,11 +56,12 @@ macro_rules! export_safe_fma_norm_op {
         pub fn $any_name(a: &[$t]) -> $t {
             unsafe {
                 crate::dispatch!(
-                    avx512 = $avx512_any_name => (a)
-                    avx2fma = $avx2fma_any_name => (a)
-                    avx2 = $avx2_any_name => (a)
-                    neon = $neon_any_name => (a)
-                    fallback = $fallback_any_name => (a)
+                    avx512 = $avx512_any_name,
+                    avx2fma = $avx2fma_any_name,
+                    avx2 = $avx2_any_name,
+                    neon = $neon_any_name,
+                    fallback = $fallback_any_name,
+                    args = (a)
                 )
             }
         }
@@ -87,10 +89,11 @@ macro_rules! export_safe_nofma_norm_op {
 
             unsafe {
                 crate::dispatch!(
-                    avx512 = $avx512_const_name::<DIMS> => (a)
-                    avx2 = $avx2_const_name::<DIMS> => (a)
-                    neon = $neon_const_name::<DIMS> => (a)
-                    fallback = $fallback_const_name::<DIMS> => (a)
+                    avx512 = $avx512_const_name::<DIMS>,
+                    avx2 = $avx2_const_name::<DIMS>,
+                    neon = $neon_const_name::<DIMS>,
+                    fallback = $fallback_const_name::<DIMS>,
+                    args = (a)
                 )
             }
         }
@@ -99,10 +102,11 @@ macro_rules! export_safe_nofma_norm_op {
         pub fn $any_name(a: &[$t]) -> $t {
             unsafe {
                 crate::dispatch!(
-                    avx512 = $avx512_any_name => (a)
-                    avx2 = $avx2_any_name => (a)
-                    neon = $neon_any_name => (a)
-                    fallback = $fallback_any_name => (a)
+                    avx512 = $avx512_any_name,
+                    avx2 = $avx2_any_name,
+                    neon = $neon_any_name,
+                    fallback = $fallback_any_name,
+                    args = (a)
                 )
             }
         }

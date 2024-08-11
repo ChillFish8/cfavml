@@ -1,6 +1,7 @@
 use std::fmt::Debug;
 
 use super::*;
+use crate::buffer::WriteOnlyBuffer;
 use crate::danger::SimdRegister;
 use crate::math::{AutoMath, Math};
 
@@ -82,6 +83,7 @@ fn test_vector_x_value_all<T: Copy + PartialEq + Debug, R>(l1: Vec<T>, value: T)
 where
     R: SimdRegister<T>,
     AutoMath: Math<T>,
+    for<'a> &'a mut Vec<T>: WriteOnlyBuffer<Item = T>,
 {
     unsafe {
         op_vector_x_value::tests::test_add::<_, R>(l1.clone(), value);
@@ -95,6 +97,7 @@ fn test_vector_x_vector_all<T: Copy + PartialEq + Debug, R>(l1: Vec<T>, l2: Vec<
 where
     R: SimdRegister<T>,
     AutoMath: Math<T>,
+    for<'a> &'a mut Vec<T>: WriteOnlyBuffer<Item = T>,
 {
     unsafe {
         op_vector_x_vector::tests::test_add::<_, R>(l1.clone(), l2.clone());

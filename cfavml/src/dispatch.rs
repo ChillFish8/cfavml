@@ -27,10 +27,11 @@
 /// let b = 123;
 ///
 /// dispatch!(
-///     avx2fma = my_fma_function => (a, b)
-///     avx2 = my_avx2_function => (a, b)
-///     neon = my_neon_function => (a, b)
-///     fallback = my_fallback_function => (a, b)  // Required!
+///     avx2fma = my_fma_function,
+///     avx2 = my_avx2_function,
+///     neon = my_neon_function,
+///     fallback = my_fallback_function,  // Required!
+///     args = (a, b)
 /// );
 ///
 /// fn my_avx2_function(a: usize, b: usize) {}
@@ -41,41 +42,42 @@
 ///
 macro_rules! dispatch {
     (
-        $(avx512 = $avx512_fn:expr => ( $($arg1:expr $(,)?)* ) )?
-        $(avx2fma = $avx2fma_fn:expr =>( $($arg2:expr $(,)?)* ) )?
-        $(avx2 = $avx2_fn:expr => ( $($arg3:expr $(,)?)* ) )?
-        $(neon = $neon_fn:expr => ( $($arg4:expr $(,)?)* ) )?
-        fallback = $fallback_fn:expr => ( $($arg5:expr $(,)?)* )
+        $(avx512 = $avx512_fn:expr,)?
+        $(avx2fma = $avx2fma_fn:expr,)?
+        $(avx2 = $avx2_fn:expr,)?
+        $(neon = $neon_fn:expr,)?
+        fallback = $fallback_fn:expr,
+        args = $args:tt
     ) => {{
         $(
             #[cfg(all(any(target_arch = "x86", target_arch = "x86_64"), feature = "nightly"))]
             if $crate::dispatch::is_avx512_available() {
-                return $avx512_fn($($arg1, )*);
+                return $avx512_fn $args;
             }
         )?
 
         $(
             #[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
             if $crate::dispatch::is_avx2_available() && $crate::dispatch::is_fma_available() {
-                return $avx2fma_fn($($arg2, )*);
+                return $avx2fma_fn $args;
             }
         )?
 
         $(
             #[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
             if $crate::dispatch::is_avx2_available() {
-                return $avx2_fn($($arg3, )*);
+                return $avx2_fn $args;
             }
         )?
 
         $(
             #[cfg(target_arch = "aarch64")]
             if $crate::dispatch::is_neon_available() {
-                return $neon_fn($($arg4, )*);
+                return $neon_fn $args;
             }
         )?
 
-        $fallback_fn($($arg5, )*)
+        $fallback_fn $args
     }};
 }
 

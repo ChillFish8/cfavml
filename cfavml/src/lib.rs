@@ -16,6 +16,7 @@ pub mod danger;
 pub mod dispatch;
 pub mod math;
 
+pub mod buffer;
 mod safe_arithmetic_ops;
 mod safe_distance_ops;
 mod safe_min_max_sum_ops;

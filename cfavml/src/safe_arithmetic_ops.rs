@@ -131,10 +131,11 @@ macro_rules! export_safe_arithmetic_vector_x_value_op {
 
             unsafe {
                 crate::dispatch!(
-                    avx512 = $avx512_const_name::<DIMS> => (value, a, result)
-                    avx2 = $avx2_const_name::<DIMS> => (value, a, result)
-                    neon = $neon_const_name::<DIMS> => (value, a, result)
-                    fallback = $fallback_const_name::<DIMS> => (value, a, result)
+                    avx512 = $avx512_const_name::<DIMS>,
+                    avx2 = $avx2_const_name::<DIMS>,
+                    neon = $neon_const_name::<DIMS>,
+                    fallback = $fallback_const_name::<DIMS>,
+                    args = (value, a, result)
                 );
             }
         }
@@ -149,10 +150,11 @@ macro_rules! export_safe_arithmetic_vector_x_value_op {
 
             unsafe {
                 crate::dispatch!(
-                    avx512 = $avx512_any_name => (value, a, result)
-                    avx2 = $avx2_any_name => (value, a, result)
-                    neon = $neon_any_name => (value, a, result)
-                    fallback = $fallback_any_name => (value, a, result)
+                    avx512 = $avx512_any_name,
+                    avx2 = $avx2_any_name,
+                    neon = $neon_any_name,
+                    fallback = $fallback_any_name,
+                    args = (value, a, result)
                 );
             }
         }
@@ -189,10 +191,11 @@ macro_rules! export_safe_arithmetic_vector_x_vector_op {
 
             unsafe {
                 crate::dispatch!(
-                    avx512 = $avx512_const_name::<DIMS> => (a, b, result)
-                    avx2 = $avx2_const_name::<DIMS> => (a, b, result)
-                    neon = $neon_const_name::<DIMS> => (a, b, result)
-                    fallback = $fallback_const_name::<DIMS> => (a, b, result)
+                    avx512 = $avx512_const_name::<DIMS>,
+                    avx2 = $avx2_const_name::<DIMS>,
+                    neon = $neon_const_name::<DIMS>,
+                    fallback = $fallback_const_name::<DIMS>,
+                    args = (a, b, result)
                 );
             }
         }
@@ -212,10 +215,11 @@ macro_rules! export_safe_arithmetic_vector_x_vector_op {
 
             unsafe {
                 crate::dispatch!(
-                    avx512 = $avx512_any_name => (a, b, result)
-                    avx2 = $avx2_any_name => (a, b, result)
-                    neon = $neon_any_name => (a, b, result)
-                    fallback = $fallback_any_name => (a, b, result)
+                    avx512 = $avx512_any_name,
+                    avx2 = $avx2_any_name,
+                    neon = $neon_any_name,
+                    fallback = $fallback_any_name,
+                    args = (a, b, result)
                 );
             }
         }

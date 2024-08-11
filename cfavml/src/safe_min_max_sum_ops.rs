@@ -16,6 +16,7 @@
 //! - Min vector vertically
 //! - Max vector vertically
 //!
+use crate::buffer::WriteOnlyBuffer;
 use crate::danger::*;
 
 macro_rules! export_safe_horizontal_op {
@@ -39,10 +40,11 @@ macro_rules! export_safe_horizontal_op {
 
             unsafe {
                 crate::dispatch!(
-                    avx512 = $avx512_const_name::<DIMS> => (a)
-                    avx2 = $avx2_const_name::<DIMS> => (a)
-                    neon = $neon_const_name::<DIMS> => (a)
-                    fallback = $fallback_const_name::<DIMS> => (a)
+                    avx512 = $avx512_const_name::<DIMS>,
+                    avx2 = $avx2_const_name::<DIMS>,
+                    neon = $neon_const_name::<DIMS>,
+                    fallback = $fallback_const_name::<DIMS>,
+                    args = (a)
                 )
             }
         }
@@ -51,10 +53,11 @@ macro_rules! export_safe_horizontal_op {
         pub fn $any_name(a: &[$t]) -> $t {
             unsafe {
                 crate::dispatch!(
-                    avx512 = $avx512_any_name => (a)
-                    avx2 = $avx2_any_name => (a)
-                    neon = $neon_any_name => (a)
-                    fallback = $fallback_any_name => (a)
+                    avx512 = $avx512_any_name,
+                    avx2 = $avx2_any_name,
+                    neon = $neon_any_name,
+                    fallback = $fallback_any_name,
+                    args = (a)
                 )
             }
         }
@@ -77,23 +80,32 @@ macro_rules! export_safe_vertical_op {
         $fallback_any_name:ident,
     ) => {
         #[doc = concat!("`", stringify!($t), "` ", $desc)]
-        pub fn $const_name<const DIMS: usize>(a: &[$t], b: &[$t], result: &mut [$t]) {
+        pub fn $const_name<const DIMS: usize>(
+            a: &[$t],
+            b: &[$t],
+            result: impl WriteOnlyBuffer<Item = $t>,
+        ) {
             assert_eq!(a.len(), DIMS, "Input vector a does not match size DIMS");
             assert_eq!(b.len(), DIMS, "Input vector b does not match size DIMS");
-            assert_eq!(result.len(), DIMS, "Result vector does not match size DIMS");
+            assert_eq!(
+                result.raw_buffer_len(),
+                DIMS,
+                "Result vector does not match size DIMS"
+            );
 
             unsafe {
                 crate::dispatch!(
-                    avx512 = $avx512_const_name::<DIMS> => (a, b, result)
-                    avx2 = $avx2_const_name::<DIMS> => (a, b, result)
-                    neon = $neon_const_name::<DIMS> => (a, b, result)
-                    fallback = $fallback_const_name::<DIMS> => (a, b, result)
+                    avx512 = $avx512_const_name::<DIMS>,
+                    avx2 = $avx2_const_name::<DIMS>,
+                    neon = $neon_const_name::<DIMS>,
+                    fallback = $fallback_const_name::<DIMS>,
+                    args = (a, b, result)
                 )
             }
         }
 
         #[doc = concat!("`", stringify!($t), "` ", $desc)]
-        pub fn $any_name(a: &[$t], b: &[$t], result: &mut [$t]) {
+        pub fn $any_name(a: &[$t], b: &[$t], result: impl WriteOnlyBuffer<Item = $t>) {
             assert_eq!(
                 a.len(),
                 b.len(),
@@ -101,16 +113,17 @@ macro_rules! export_safe_vertical_op {
             );
             assert_eq!(
                 a.len(),
-                result.len(),
+                result.raw_buffer_len(),
                 "Input vectors and result vector size do not match"
             );
 
             unsafe {
                 crate::dispatch!(
-                    avx512 = $avx512_any_name => (a, b, result)
-                    avx2 = $avx2_any_name => (a, b, result)
-                    neon = $neon_any_name => (a, b, result)
-                    fallback = $fallback_any_name => (a, b, result)
+                    avx512 = $avx512_any_name,
+                    avx2 = $avx2_any_name,
+                    neon = $neon_any_name,
+                    fallback = $fallback_any_name,
+                    args = (a, b, result)
                 )
             }
         }
@@ -133,34 +146,44 @@ macro_rules! export_safe_value_op {
         $fallback_any_name:ident,
     ) => {
         #[doc = concat!("`", stringify!($t), "` ", $desc)]
-        pub fn $const_name<const DIMS: usize>(value: $t, a: &[$t], result: &mut [$t]) {
+        pub fn $const_name<const DIMS: usize>(
+            value: $t,
+            a: &[$t],
+            result: impl WriteOnlyBuffer<Item = $t>,
+        ) {
             assert_eq!(a.len(), DIMS, "Input vector a does not match size DIMS");
-            assert_eq!(result.len(), DIMS, "Result vector does not match size DIMS");
+            assert_eq!(
+                result.raw_buffer_len(),
+                DIMS,
+                "Result vector does not match size DIMS"
+            );
 
             unsafe {
                 crate::dispatch!(
-                    avx512 = $avx512_const_name::<DIMS> => (value, a, result)
-                    avx2 = $avx2_const_name::<DIMS> => (value, a, result)
-                    neon = $neon_const_name::<DIMS> => (value, a, result)
-                    fallback = $fallback_const_name::<DIMS> => (value, a, result)
+                    avx512 = $avx512_const_name::<DIMS>,
+                    avx2 = $avx2_const_name::<DIMS>,
+                    neon = $neon_const_name::<DIMS>,
+                    fallback = $fallback_const_name::<DIMS>,
+                    args = (value, a, result)
                 )
             }
         }
 
         #[doc = concat!("`", stringify!($t), "` ", $desc)]
-        pub fn $any_name(value: $t, a: &[$t], result: &mut [$t]) {
+        pub fn $any_name(value: $t, a: &[$t], result: impl WriteOnlyBuffer<Item = $t>) {
             assert_eq!(
                 a.len(),
-                result.len(),
+                result.raw_buffer_len(),
                 "Input vectors and result vector size do not match"
             );
 
             unsafe {
                 crate::dispatch!(
-                    avx512 = $avx512_any_name => (value, a, result)
-                    avx2 = $avx2_any_name => (value, a, result)
-                    neon = $neon_any_name => (value, a, result)
-                    fallback = $fallback_any_name => (value, a, result)
+                    avx512 = $avx512_any_name,
+                    avx2 = $avx2_any_name,
+                    neon = $neon_any_name,
+                    fallback = $fallback_any_name,
+                    args = (value, a, result)
                 )
             }
         }

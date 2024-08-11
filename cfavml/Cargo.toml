@@ -56,10 +56,18 @@ benchmark-avx512 = []
 all-features = true
 rustdoc-args = ["--cfg", "docsrs"]
 
+# [[bench]]
+# name = "bench_distance_measures"
+# harness = false
+#
+# [[bench]]
+# name = "bench_min_max_sum"
+# harness = false
+
 [[bench]]
-name = "bench_distance_measures"
+name = "bench_arithmetic"
 harness = false
 
 [[bench]]
-name = "bench_min_max_sum"
+name = "bench_nonsense"
 harness = false

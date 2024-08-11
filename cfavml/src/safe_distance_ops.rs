@@ -51,11 +51,12 @@ macro_rules! export_safe_distance_op {
 
             unsafe {
                 crate::dispatch!(
-                    avx512 = $avx512_const_name::<DIMS> => (a, b)
-                    avx2fma = $avx2fma_const_name::<DIMS> => (a, b)
-                    avx2 = $avx2_const_name::<DIMS> => (a, b)
-                    neon = $neon_const_name::<DIMS> => (a, b)
-                    fallback = $fallback_const_name::<DIMS> => (a, b)
+                    avx512 = $avx512_const_name::<DIMS>,
+                    avx2fma = $avx2fma_const_name::<DIMS>,
+                    avx2 = $avx2_const_name::<DIMS>,
+                    neon = $neon_const_name::<DIMS>,
+                    fallback = $fallback_const_name::<DIMS>,
+                    args = (a, b)
                 )
             }
         }
@@ -66,11 +67,12 @@ macro_rules! export_safe_distance_op {
 
             unsafe {
                 crate::dispatch!(
-                    avx512 = $avx512_any_name => (a, b)
-                    avx2fma = $avx2fma_any_name => (a, b)
-                    avx2 = $avx2_any_name => (a, b)
-                    neon = $neon_any_name => (a, b)
-                    fallback = $fallback_any_name => (a, b)
+                    avx512 = $avx512_any_name,
+                    avx2fma = $avx2fma_any_name,
+                    avx2 = $avx2_any_name,
+                    neon = $neon_any_name,
+                    fallback = $fallback_any_name,
+                    args = (a, b)
                 )
             }
         }
