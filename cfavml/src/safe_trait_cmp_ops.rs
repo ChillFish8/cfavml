@@ -12,7 +12,7 @@ pub trait CmpOps: Sized {
     ///
     /// ### Pseudocode
     ///
-    /// ```py
+    /// ```ignore
     /// result = -inf
     ///
     /// for i in range(dims):
@@ -31,7 +31,7 @@ pub trait CmpOps: Sized {
     ///
     /// ### Pseudocode
     ///
-    /// ```py
+    /// ```ignore
     /// result = [0; dims]
     ///
     /// for i in range(dims):
@@ -59,7 +59,7 @@ pub trait CmpOps: Sized {
     ///
     /// ### Pseudocode
     ///
-    /// ```py
+    /// ```ignore
     /// result = [0; dims]
     ///
     /// for i in range(dims):
@@ -86,7 +86,7 @@ pub trait CmpOps: Sized {
     ///
     /// ### Pseudocode
     ///
-    /// ```py
+    /// ```ignore
     /// result = inf
     ///
     /// for i in range(dims):
@@ -101,7 +101,7 @@ pub trait CmpOps: Sized {
     ///
     /// ### Pseudocode
     ///
-    /// ```py
+    /// ```ignore
     /// result = [0; dims]
     ///
     /// for i in range(dims):
@@ -129,7 +129,7 @@ pub trait CmpOps: Sized {
     ///
     /// ### Pseudocode
     ///
-    /// ```py
+    /// ```ignore
     /// result = [0; dims]
     ///
     /// for i in range(dims):

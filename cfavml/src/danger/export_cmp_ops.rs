@@ -30,7 +30,7 @@ macro_rules! define_max_impls {
             in `result` of size `dims`.
 
             ### Pseudocode
-            ```py
+            ```ignore
             result = [0; dims]
 
             for i in range(dims):
@@ -79,7 +79,7 @@ macro_rules! define_max_impls {
             and stores the result in `result` of size `dims`.
 
             ### Pseudocode
-            ```py
+            ```ignore
             result = [0; dims]
 
             for i in range(dims):
@@ -129,7 +129,7 @@ macro_rules! define_max_impls {
             returning the max value.
 
             ### Pseudocode
-            ```py
+            ```ignore
             result = -inf
 
             for i in range(dims):
@@ -211,7 +211,7 @@ macro_rules! define_min_impls {
             in `result` of size `dims`.
 
             ### Pseudocode
-            ```py
+            ```ignore
             result = [0; dims]
 
             for i in range(dims):
@@ -260,7 +260,7 @@ macro_rules! define_min_impls {
             and stores the result in `result` of size `dims`.
 
             ### Pseudocode
-            ```py
+            ```ignore
             result = [0; dims]
 
             for i in range(dims):
@@ -310,7 +310,7 @@ macro_rules! define_min_impls {
             returning the min value.
 
             ### Pseudocode
-            ```py
+            ```ignore
             result = -inf
 
             for i in range(dims):

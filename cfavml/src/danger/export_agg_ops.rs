@@ -18,7 +18,7 @@ macro_rules! define_sum_impl {
             Performs a horizontal sum of all elements in vector `a` of size `dims` returning the total.
 
             ### Pseudocode
-            ```py
+            ```ignore
             result = 0
 
             for i in range(dims):

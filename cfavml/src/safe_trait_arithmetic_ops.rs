@@ -13,7 +13,7 @@ pub trait ArithmeticOps: Sized {
     ///
     /// ### Pseudocode
     ///
-    /// ```py
+    /// ```ignore
     /// result = [0; dims]
     ///
     /// for i in range(dims):
@@ -41,7 +41,7 @@ pub trait ArithmeticOps: Sized {
     ///
     /// ### Pseudocode
     ///
-    /// ```py
+    /// ```ignore
     /// result = [0; dims]
     ///
     /// for i in range(dims):
@@ -69,7 +69,7 @@ pub trait ArithmeticOps: Sized {
     ///
     /// ### Pseudocode
     ///
-    /// ```py
+    /// ```ignore
     /// result = [0; dims]
     ///
     /// for i in range(dims):
@@ -97,7 +97,7 @@ pub trait ArithmeticOps: Sized {
     ///
     /// ### Pseudocode
     ///
-    /// ```py
+    /// ```ignore
     /// result = [0; dims]
     ///
     /// for i in range(dims):
@@ -125,7 +125,7 @@ pub trait ArithmeticOps: Sized {
     ///
     /// ### Pseudocode
     ///
-    /// ```py
+    /// ```ignore
     /// result = [0; dims]
     ///
     /// for i in range(dims):
@@ -153,7 +153,7 @@ pub trait ArithmeticOps: Sized {
     ///
     /// ### Pseudocode
     ///
-    /// ```py
+    /// ```ignore
     /// result = [0; dims]
     ///
     /// for i in range(dims):
@@ -181,7 +181,7 @@ pub trait ArithmeticOps: Sized {
     ///
     /// ### Pseudocode
     ///
-    /// ```py
+    /// ```ignore
     /// result = [0; dims]
     ///
     /// for i in range(dims):
@@ -209,7 +209,7 @@ pub trait ArithmeticOps: Sized {
     ///
     /// ### Pseudocode
     ///
-    /// ```py
+    /// ```ignore
     /// result = [0; dims]
     ///
     /// for i in range(dims):

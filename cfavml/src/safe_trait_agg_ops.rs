@@ -11,7 +11,7 @@ pub trait AggOps: Sized {
     ///
     /// ### Pseudocode
     ///
-    /// ```py
+    /// ```ignore
     /// result = 0
     ///
     /// for i in range(dims):

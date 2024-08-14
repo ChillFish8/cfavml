@@ -20,7 +20,7 @@ macro_rules! define_cosine_impl {
             Calculates the cosine similarity distance between two vectors of size `dims`.
 
             ### Pseudocode
-            ```py
+            ```ignore
             result = 0
             norm_a = 0
             norm_b = 0
@@ -89,7 +89,7 @@ macro_rules! define_dot_impl {
             Calculates the dot product between two vectors of size `dims`.
 
             ### Pseudocode
-            ```py
+            ```ignore
             result = 0;
 
             for i in range(dims):
@@ -149,7 +149,7 @@ macro_rules! define_euclidean_impl {
             Calculates the squared Euclidean distance between two vectors of size `dims`.
 
             ### Pseudocode
-            ```py
+            ```ignore
             result = 0;
 
             for i in range(dims):
@@ -222,7 +222,7 @@ macro_rules! define_norm_impl {
             Calculates the squared L2 norm of vector `a` of size `dims`.
 
             ### Pseudocode
-            ```py
+            ```ignore
             result = 0;
 
             for i in range(dims):

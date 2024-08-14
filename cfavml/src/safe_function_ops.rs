@@ -16,7 +16,7 @@ use crate::safe_trait_distance_ops::DistanceOps;
 /// Calculates the cosine similarity distance of vectors `a` and `b`.
 ///
 /// ### Pseudocode
-/// ```py
+/// ```ignore
 /// result = 0
 /// norm_a = 0
 /// norm_b = 0
@@ -46,7 +46,7 @@ pub fn cosine<T: DistanceOps>(a: &[T], b: &[T]) -> T {
 ///
 /// ### Pseudocode
 ///
-/// ```py
+/// ```ignore
 /// result = 0
 ///
 /// for i in range(dims):
@@ -67,7 +67,7 @@ pub fn dot<T: DistanceOps>(a: &[T], b: &[T]) -> T {
 ///
 /// ### Pseudocode
 ///
-/// ```py
+/// ```ignore
 /// result = 0
 ///
 /// for i in range(dims):
@@ -89,7 +89,7 @@ pub fn squared_euclidean<T: DistanceOps>(a: &[T], b: &[T]) -> T {
 ///
 /// ### Pseudocode
 ///
-/// ```py
+/// ```ignore
 /// result = 0
 ///
 /// for i in range(dims):
@@ -106,7 +106,7 @@ pub fn squared_norm<T: DistanceOps>(a: &[T]) -> T {
 ///
 /// ### Pseudocode
 ///
-/// ```py
+/// ```ignore
 /// result = 0
 ///
 /// for i in range(dims):
@@ -123,7 +123,7 @@ pub fn sum<T: AggOps>(a: &[T]) -> T {
 ///
 /// ### Pseudocode
 ///
-/// ```py
+/// ```ignore
 /// result = -inf
 ///
 /// for i in range(dims):
@@ -141,7 +141,7 @@ pub fn max_horizontal<T: CmpOps>(a: &[T]) -> T {
 ///
 /// ### Pseudocode
 ///
-/// ```py
+/// ```ignore
 /// result = [0; dims]
 ///
 /// for i in range(dims):
@@ -174,7 +174,7 @@ where
 ///
 /// ### Pseudocode
 ///
-/// ```py
+/// ```ignore
 /// result = [0; dims]
 ///
 /// for i in range(dims):
@@ -206,7 +206,7 @@ where
 ///
 /// ### Pseudocode
 ///
-/// ```py
+/// ```ignore
 /// result = inf
 ///
 /// for i in range(dims):
@@ -224,7 +224,7 @@ pub fn min_horizontal<T: CmpOps>(a: &[T]) -> T {
 ///
 /// ### Pseudocode
 ///
-/// ```py
+/// ```ignore
 /// result = [0; dims]
 ///
 /// for i in range(dims):
@@ -257,7 +257,7 @@ where
 ///
 /// ### Pseudocode
 ///
-/// ```py
+/// ```ignore
 /// result = [0; dims]
 ///
 /// for i in range(dims):
@@ -289,7 +289,7 @@ where
 ///
 /// ### Pseudocode
 ///
-/// ```py
+/// ```ignore
 /// result = [0; dims]
 ///
 /// for i in range(dims):
@@ -321,7 +321,7 @@ where
 ///
 /// ### Pseudocode
 ///
-/// ```py
+/// ```ignore
 /// result = [0; dims]
 ///
 /// for i in range(dims):
@@ -353,7 +353,7 @@ where
 ///
 /// ### Pseudocode
 ///
-/// ```py
+/// ```ignore
 /// result = [0; dims]
 ///
 /// for i in range(dims):
@@ -385,7 +385,7 @@ where
 ///
 /// ### Pseudocode
 ///
-/// ```py
+/// ```ignore
 /// result = [0; dims]
 ///
 /// for i in range(dims):
@@ -417,7 +417,7 @@ where
 ///
 /// ### Pseudocode
 ///
-/// ```py
+/// ```ignore
 /// result = [0; dims]
 ///
 /// for i in range(dims):
@@ -449,7 +449,7 @@ where
 ///
 /// ### Pseudocode
 ///
-/// ```py
+/// ```ignore
 /// result = [0; dims]
 ///
 /// for i in range(dims):
@@ -481,7 +481,7 @@ where
 ///
 /// ### Pseudocode
 ///
-/// ```py
+/// ```ignore
 /// result = [0; dims]
 ///
 /// for i in range(dims):
@@ -513,7 +513,7 @@ where
 ///
 /// ### Pseudocode
 ///
-/// ```py
+/// ```ignore
 /// result = [0; dims]
 ///
 /// for i in range(dims):

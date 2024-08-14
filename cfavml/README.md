@@ -12,12 +12,12 @@ feature flag:
 
 ##### Default Setup
 ```toml
-cfavml = "0.1.0" 
+cfavml = "0.2.0" 
 ```
 
 ##### No-std Setup
 ```toml
-cfavml = { version = "0.1.0", default-features = false }
+cfavml = { version = "0.2.0", default-features = false }
 ```
 
 ### Available SIMD Architectures
@@ -78,6 +78,8 @@ These are routines that can be used for things like KNN classification or index 
 - Horizontal min element in a vector
 - Vertical max element of two vectors
 - Vertical min element of two vectors
+- Vertical max element of a vector and broadcast value
+- Vertical min element of a vector and broadcast value
 
 ### Aggregation
 
@@ -86,19 +88,6 @@ These are routines that can be used for things like KNN classification or index 
 ### Misc
 
 - Squared L2 norm of a vector
-
-
-### Safe API naming
-
-The safe API is exposed as a set of non-generic routines implemented for each primitive type
-and follows the current format:
-
-```no_test
-<dtype>_x<dims>_<op_name>
-```
-
-The system will automatically select the best routine for the CPU at runtime, it does
-not need to be explicitly compiled with any target features to use these optimizations.
 
 ### Dangerous routine naming convention
 
@@ -127,13 +116,10 @@ provided as generic functions (with no target features):
 - `generic_mul_vector`
 - `generic_div_vector`
 
-We also provide pre-configured non-generic methods with have the relevant `target_feature`s 
-specified, naturally these methods are immediately UB if you call them without the correct
-CPU flags being available.
-
-```no_test
-<dtype>_x<dims>_<arch>_<(no)fma>_<op_name>
-```
+We also export functions with the target_features pre-specified for
+each SIMD register type and is found under the `cfavml::danger::export_*` 
+modules. Although it is not recommended to use these routines directly
+unless you know what you are doing.
 
 ### Features
 
