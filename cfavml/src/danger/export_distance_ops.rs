@@ -365,6 +365,10 @@ mod tests {
     );
     define_cosine_extra_test!(generic_fallback, types = f32, f64, i8, u8);
 
+    #[cfg(all(
+        any(target_arch = "x86", target_arch = "x86_64"),
+        target_feature = "avx2"
+    ))]
     define_distance_test!(
         generic_avx2,
         types = f32,
@@ -378,9 +382,23 @@ mod tests {
         u32,
         u64
     );
+    #[cfg(all(
+        any(target_arch = "x86", target_arch = "x86_64"),
+        target_feature = "avx2"
+    ))]
     define_cosine_extra_test!(generic_avx2, types = f32, f64, i8, u8);
 
+    #[cfg(all(
+        any(target_arch = "x86", target_arch = "x86_64"),
+        target_feature = "avx2",
+        target_feature = "fma"
+    ))]
     define_distance_test!(generic_avx2fma, types = f32, f64);
+    #[cfg(all(
+        any(target_arch = "x86", target_arch = "x86_64"),
+        target_feature = "avx2",
+        target_feature = "fma"
+    ))]
     define_cosine_extra_test!(generic_avx2fma, types = f32, f64);
 
     #[cfg(all(

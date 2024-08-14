@@ -25,6 +25,8 @@ jobs:
       - name: Check CFAVML core builds no STD
         run: cargo build -p cfavml --no-default-features
       - name: Test system - Stable
+        env:
+          RUSTFLAGS: "-C target-cpu=native"
         run:  cargo nextest run --all --nocapture
   
   tests-nightly:
@@ -49,4 +51,6 @@ jobs:
       - name: Check CFAVML core builds no STD
         run: cargo +nightly build -p cfavml --no-default-features
       - name: Test system - Nightly
+        env:
+          RUSTFLAGS: "-C target-cpu=native"
         run:  cargo +nightly nextest run --all --nocapture --features nightly

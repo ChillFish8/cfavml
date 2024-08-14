@@ -103,6 +103,10 @@ mod tests {
         u32,
         u64
     );
+    #[cfg(all(
+        any(target_arch = "x86", target_arch = "x86_64"),
+        target_feature = "avx2"
+    ))]
     define_agg_test!(
         generic_avx2,
         types = f32,

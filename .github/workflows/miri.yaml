@@ -21,4 +21,6 @@ jobs:
       - name: Install nextest
         uses: taiki-e/install-action@nextest
       - name: Test with Miri
+        env:
+          RUSTFLAGS: "-C target-cpu=native"
         run: cargo miri nextest run --all
