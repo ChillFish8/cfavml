@@ -9,7 +9,7 @@ use crate::math::Math;
 /// The sizes of `a` and `b` must be equal to `dims`, the safety requirements of
 /// `M` definition the basic math operations and the requirements of `R` SIMD register
 /// must also be followed.
-pub unsafe fn generic_euclidean<T, R, M>(dims: usize, a: &[T], b: &[T]) -> T
+pub unsafe fn generic_squared_euclidean<T, R, M>(dims: usize, a: &[T], b: &[T]) -> T
 where
     T: Copy,
     R: SimdRegister<T>,
@@ -73,7 +73,7 @@ where
     use crate::math::AutoMath;
 
     let dims = l1.len();
-    let value = generic_euclidean::<T, R, AutoMath>(dims, &l1, &l2);
+    let value = generic_squared_euclidean::<T, R, AutoMath>(dims, &l1, &l2);
     let expected_value = crate::test_utils::simple_euclidean(&l1, &l2);
     assert!(
         AutoMath::is_close(value, expected_value),

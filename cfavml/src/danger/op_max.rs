@@ -71,7 +71,7 @@ where
 /// The sizes of `a`, `b` and `result`  must be equal to `dims`, the safety requirements of
 /// `M` definition the basic math operations and the requirements of `R` SIMD register
 /// must also be followed.
-pub unsafe fn generic_max_vertical<T, R, M, B>(
+pub unsafe fn generic_max_vector<T, R, M, B>(
     dims: usize,
     a: &[T],
     b: &[T],
@@ -194,7 +194,7 @@ where
 
     let dims = l1.len();
     let mut result = vec![AutoMath::min(); dims];
-    generic_max_vertical::<T, R, AutoMath, _>(dims, &l1, &l2, &mut result);
+    generic_max_vector::<T, R, AutoMath, _>(dims, &l1, &l2, &mut result);
     let mut expected_result = Vec::new();
     for (a, b) in l1.iter().copied().zip(l2) {
         expected_result.push(AutoMath::cmp_max(a, b));

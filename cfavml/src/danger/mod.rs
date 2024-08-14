@@ -20,6 +20,10 @@ mod op_sum;
 mod op_vector_x_value;
 mod op_vector_x_vector;
 
+pub mod export_agg_ops;
+pub mod export_arithmetic_ops;
+pub mod export_cmp_ops;
+pub mod export_distance_ops;
 #[cfg(test)]
 mod impl_test;
 #[cfg(test)]
@@ -39,17 +43,9 @@ pub use self::impl_neon::*;
 pub(crate) use self::op_cosine::cosine;
 pub use self::op_cosine::generic_cosine;
 pub use self::op_dot_product::generic_dot_product;
-pub use self::op_euclidean::generic_euclidean;
-pub use self::op_max::{
-    generic_max_horizontal,
-    generic_max_value,
-    generic_max_vertical,
-};
-pub use self::op_min::{
-    generic_min_horizontal,
-    generic_min_value,
-    generic_min_vertical,
-};
+pub use self::op_euclidean::generic_squared_euclidean;
+pub use self::op_max::{generic_max_horizontal, generic_max_value, generic_max_vector};
+pub use self::op_min::{generic_min_horizontal, generic_min_value, generic_min_vector};
 pub use self::op_norm::generic_squared_norm;
 pub use self::op_sum::generic_sum;
 pub use self::op_vector_x_value::{

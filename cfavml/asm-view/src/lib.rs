@@ -138,7 +138,7 @@ export_dense_op!(f64, Fallback, min_dense);
 
 export_distance_op!(i8, Fallback, generic_cosine);
 export_distance_op!(i8, Fallback, generic_dot_product);
-export_distance_op!(i8, Fallback, generic_euclidean);
+export_distance_op!(i8, Fallback, generic_squared_euclidean);
 export_vector_x_vector_op!(i8, Fallback, generic_add_vector);
 export_vector_x_vector_op!(i8, Fallback, generic_sub_vector);
 export_vector_x_vector_op!(i8, Fallback, generic_mul_vector);
@@ -150,7 +150,7 @@ export_vector_x_value_op!(i8, Fallback, generic_div_value);
 
 export_distance_op!(f32, Fallback, generic_cosine);
 export_distance_op!(f32, Fallback, generic_dot_product);
-export_distance_op!(f32, Fallback, generic_euclidean);
+export_distance_op!(f32, Fallback, generic_squared_euclidean);
 export_vector_x_vector_op!(f32, Fallback, generic_add_vector);
 export_vector_x_vector_op!(f32, Fallback, generic_sub_vector);
 export_vector_x_vector_op!(f32, Fallback, generic_mul_vector);
@@ -162,7 +162,7 @@ export_vector_x_value_op!(f32, Fallback, generic_div_value);
 
 export_distance_op!(f64, Fallback, generic_cosine);
 export_distance_op!(f64, Fallback, generic_dot_product);
-export_distance_op!(f64, Fallback, generic_euclidean);
+export_distance_op!(f64, Fallback, generic_squared_euclidean);
 export_vector_x_vector_op!(f64, Fallback, generic_add_vector);
 export_vector_x_vector_op!(f64, Fallback, generic_sub_vector);
 export_vector_x_vector_op!(f64, Fallback, generic_mul_vector);
@@ -220,7 +220,7 @@ pub mod avx2_ops {
 
     export_distance_op!(i8, Avx2, generic_cosine, features = "avx2");
     export_distance_op!(i8, Avx2, generic_dot_product, features = "avx2");
-    export_distance_op!(i8, Avx2, generic_euclidean, features = "avx2");
+    export_distance_op!(i8, Avx2, generic_squared_euclidean, features = "avx2");
     export_vector_x_vector_op!(i8, Avx2, generic_add_vector, features = "avx2");
     export_vector_x_vector_op!(i8, Avx2, generic_sub_vector, features = "avx2");
     export_vector_x_vector_op!(i8, Avx2, generic_mul_vector, features = "avx2");
@@ -232,7 +232,7 @@ pub mod avx2_ops {
 
     export_distance_op!(f32, Avx2, generic_cosine, features = "avx2");
     export_distance_op!(f32, Avx2, generic_dot_product, features = "avx2");
-    export_distance_op!(f32, Avx2, generic_euclidean, features = "avx2");
+    export_distance_op!(f32, Avx2, generic_squared_euclidean, features = "avx2");
     export_vector_x_vector_op!(f32, Avx2, generic_add_vector, features = "avx2");
     export_vector_x_vector_op!(f32, Avx2, generic_sub_vector, features = "avx2");
     export_vector_x_vector_op!(f32, Avx2, generic_mul_vector, features = "avx2");
@@ -244,7 +244,7 @@ pub mod avx2_ops {
 
     export_distance_op!(f64, Avx2, generic_cosine, features = "avx2");
     export_distance_op!(f64, Avx2, generic_dot_product, features = "avx2");
-    export_distance_op!(f64, Avx2, generic_euclidean, features = "avx2");
+    export_distance_op!(f64, Avx2, generic_squared_euclidean, features = "avx2");
     export_vector_x_vector_op!(f64, Avx2, generic_add_vector, features = "avx2");
     export_vector_x_vector_op!(f64, Avx2, generic_sub_vector, features = "avx2");
     export_vector_x_vector_op!(f64, Avx2, generic_mul_vector, features = "avx2");
@@ -261,12 +261,24 @@ pub mod avx2_fma_ops {
 
     export_distance_op!(f32, Avx2Fma, generic_cosine, features = "avx2", "fma");
     export_distance_op!(f32, Avx2Fma, generic_dot_product, features = "avx2", "fma");
-    export_distance_op!(f32, Avx2Fma, generic_euclidean, features = "avx2", "fma");
+    export_distance_op!(
+        f32,
+        Avx2Fma,
+        generic_squared_euclidean,
+        features = "avx2",
+        "fma"
+    );
     export_vector_x_value_op!(f32, Avx2Fma, generic_div_value, features = "avx2", "fma");
 
     export_distance_op!(f64, Avx2Fma, generic_cosine, features = "avx2", "fma");
     export_distance_op!(f64, Avx2Fma, generic_dot_product, features = "avx2", "fma");
-    export_distance_op!(f64, Avx2Fma, generic_euclidean, features = "avx2", "fma");
+    export_distance_op!(
+        f64,
+        Avx2Fma,
+        generic_squared_euclidean,
+        features = "avx2",
+        "fma"
+    );
 }
 
 #[cfg(target_arch = "aarch64")]
