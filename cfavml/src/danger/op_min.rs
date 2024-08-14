@@ -64,23 +64,23 @@ where
 ///
 /// NOTE:
 /// This implementation with compared the values of `a` and `b` and store the min
-/// of the each element in `b`.
+/// of the two elements in `result`.
 ///
 /// # Safety
 ///
-/// The sizes of `a`, `b` must be equal to `dims`, the safety requirements of
+/// The sizes of `a`, `b` and `result` must be equal to `dims`, the safety requirements of
 /// `M` definition the basic math operations and the requirements of `R` SIMD register
 /// must also be followed.
 pub unsafe fn generic_min_vertical<T, R, M, B>(
     dims: usize,
     a: &[T],
     b: &[T],
-    mut result: B,
+    mut result: &mut [B],
 ) where
     T: Copy,
     R: SimdRegister<T>,
     M: Math<T>,
-    B: WriteOnlyBuffer<Item = T>,
+    for<'a> &'a mut [B]: WriteOnlyBuffer<Item = T>,
 {
     debug_assert_eq!(a.len(), dims, "Vector a does not match size `dims`");
     debug_assert_eq!(b.len(), dims, "Vector result does not match size `dims`");
@@ -127,19 +127,19 @@ pub unsafe fn generic_min_vertical<T, R, M, B>(
 ///
 /// # Safety
 ///
-/// The sizes of `a` must be equal to `dims`, the safety requirements of
+/// The sizes of `a` and `result` must be equal to `dims`, the safety requirements of
 /// `M` definition the basic math operations and the requirements of `R` SIMD register
 /// must also be followed.
 pub unsafe fn generic_min_value<T, R, M, B>(
     dims: usize,
     value: T,
     a: &[T],
-    mut result: B,
+    mut result: &mut [B],
 ) where
     T: Copy,
     R: SimdRegister<T>,
     M: Math<T>,
-    B: WriteOnlyBuffer<Item = T>,
+    for<'a> &'a mut [B]: WriteOnlyBuffer<Item = T>,
 {
     debug_assert_eq!(a.len(), dims, "Vector a does not match size `dims`");
 
@@ -185,7 +185,7 @@ where
     T: Copy + PartialEq + std::fmt::Debug,
     R: SimdRegister<T>,
     crate::math::AutoMath: Math<T>,
-    for<'a> &'a mut Vec<T>: WriteOnlyBuffer<Item = T>,
+    for<'a> &'a mut [T]: WriteOnlyBuffer<Item = T>,
 {
     use crate::math::AutoMath;
 

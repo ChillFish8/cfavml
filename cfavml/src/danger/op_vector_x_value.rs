@@ -14,12 +14,12 @@ pub unsafe fn generic_add_value<T, R, M, B>(
     dims: usize,
     value: T,
     a: &[T],
-    mut result: B,
+    mut result: &mut [B],
 ) where
     T: Copy,
     R: SimdRegister<T>,
     M: Math<T>,
-    B: WriteOnlyBuffer<Item = T>,
+    for<'a> &'a mut [B]: WriteOnlyBuffer<Item = T>,
 {
     debug_assert_eq!(a.len(), dims, "Vector a does not match size `dims`");
     debug_assert_eq!(
@@ -75,12 +75,12 @@ pub unsafe fn generic_sub_value<T, R, M, B>(
     dims: usize,
     value: T,
     a: &[T],
-    mut result: B,
+    mut result: &mut [B],
 ) where
     T: Copy,
     R: SimdRegister<T>,
     M: Math<T>,
-    B: WriteOnlyBuffer<Item = T>,
+    for<'a> &'a mut [B]: WriteOnlyBuffer<Item = T>,
 {
     debug_assert_eq!(a.len(), dims, "Vector a does not match size `dims`");
     debug_assert_eq!(
@@ -136,12 +136,12 @@ pub unsafe fn generic_mul_value<T, R, M, B>(
     dims: usize,
     value: T,
     a: &[T],
-    mut result: B,
+    mut result: &mut [B],
 ) where
     T: Copy,
     R: SimdRegister<T>,
     M: Math<T>,
-    B: WriteOnlyBuffer<Item = T>,
+    for<'a> &'a mut [B]: WriteOnlyBuffer<Item = T>,
 {
     debug_assert_eq!(a.len(), dims, "Vector a does not match size `dims`");
     debug_assert_eq!(
@@ -202,12 +202,12 @@ pub unsafe fn generic_div_value<T, R, M, B>(
     dims: usize,
     value: T,
     a: &[T],
-    mut result: B,
+    mut result: &mut [B],
 ) where
     T: Copy,
     R: SimdRegister<T>,
     M: Math<T>,
-    B: WriteOnlyBuffer<Item = T>,
+    for<'a> &'a mut [B]: WriteOnlyBuffer<Item = T>,
 {
     debug_assert_eq!(a.len(), dims, "Vector a does not match size `dims`");
     debug_assert_eq!(
@@ -262,7 +262,7 @@ pub(crate) mod tests {
         T: Copy + PartialEq + std::fmt::Debug,
         R: SimdRegister<T>,
         crate::math::AutoMath: Math<T>,
-        for<'a> &'a mut Vec<T>: WriteOnlyBuffer<Item = T>,
+        for<'a> &'a mut [T]: WriteOnlyBuffer<Item = T>,
     {
         use crate::math::AutoMath;
 
@@ -282,7 +282,7 @@ pub(crate) mod tests {
         T: Copy + PartialEq + std::fmt::Debug,
         R: SimdRegister<T>,
         crate::math::AutoMath: Math<T>,
-        for<'a> &'a mut Vec<T>: WriteOnlyBuffer<Item = T>,
+        for<'a> &'a mut [T]: WriteOnlyBuffer<Item = T>,
     {
         use crate::math::AutoMath;
 
@@ -302,7 +302,7 @@ pub(crate) mod tests {
         T: Copy + PartialEq + std::fmt::Debug,
         R: SimdRegister<T>,
         crate::math::AutoMath: Math<T>,
-        for<'a> &'a mut Vec<T>: WriteOnlyBuffer<Item = T>,
+        for<'a> &'a mut [T]: WriteOnlyBuffer<Item = T>,
     {
         use crate::math::AutoMath;
 
@@ -322,7 +322,7 @@ pub(crate) mod tests {
         T: Copy + PartialEq + std::fmt::Debug,
         R: SimdRegister<T>,
         crate::math::AutoMath: Math<T>,
-        for<'a> &'a mut Vec<T>: WriteOnlyBuffer<Item = T>,
+        for<'a> &'a mut [T]: WriteOnlyBuffer<Item = T>,
     {
         use crate::math::AutoMath;
 

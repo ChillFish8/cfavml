@@ -17,14 +17,5 @@ pub mod dispatch;
 pub mod math;
 
 pub mod buffer;
-mod safe_arithmetic_ops;
-mod safe_distance_ops;
-mod safe_min_max_sum_ops;
-mod safe_norm_ops;
 #[cfg(test)]
 mod test_utils;
-
-pub use self::safe_arithmetic_ops::*;
-pub use self::safe_distance_ops::*;
-pub use self::safe_min_max_sum_ops::*;
-pub use self::safe_norm_ops::*;
