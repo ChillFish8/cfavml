@@ -149,33 +149,33 @@ pub trait SimdRegister<T: Copy> {
         DenseLane::copy(Self::zeroed())
     }
 
-    /// Perform a element wize add on two dense lanes.
+    /// Perform a element wise add on two dense lanes.
     unsafe fn add(l1: Self::Register, l2: Self::Register) -> Self::Register;
 
-    /// Perform a element wize add on two dense lanes.
+    /// Perform a element wise add on two dense lanes.
     unsafe fn sub(l1: Self::Register, l2: Self::Register) -> Self::Register;
 
-    /// Perform a element wize multiplication on two dense lanes.
+    /// Perform a element wise multiplication on two dense lanes.
     unsafe fn mul(l1: Self::Register, l2: Self::Register) -> Self::Register;
 
-    /// Perform a element wize add on two dense lanes.
+    /// Perform a element wise add on two dense lanes.
     unsafe fn div(l1: Self::Register, l2: Self::Register) -> Self::Register;
 
-    /// Perform a element wize multiply add operations on two dense lanes with an accumulator.
+    /// Perform a element wise multiply add operations on two dense lanes with an accumulator.
     unsafe fn fmadd(
         l1: Self::Register,
         l2: Self::Register,
         acc: Self::Register,
     ) -> Self::Register;
 
-    /// Perform a element wize max operations on two dense lanes.
+    /// Perform a element wise max operations on two dense lanes.
     unsafe fn max(l1: Self::Register, l2: Self::Register) -> Self::Register;
 
-    /// Perform a element wize min operations on two dense lanes.
+    /// Perform a element wise min operations on two dense lanes.
     unsafe fn min(l1: Self::Register, l2: Self::Register) -> Self::Register;
 
     #[inline(always)]
-    /// Perform a element wize add on two dense lanes.
+    /// Perform a element wise add on two dense lanes.
     unsafe fn add_dense(
         l1: DenseLane<Self::Register>,
         l2: DenseLane<Self::Register>,
@@ -184,7 +184,7 @@ pub trait SimdRegister<T: Copy> {
     }
 
     #[inline(always)]
-    /// Perform a element wize add on two dense lanes.
+    /// Perform a element wise add on two dense lanes.
     unsafe fn sub_dense(
         l1: DenseLane<Self::Register>,
         l2: DenseLane<Self::Register>,
@@ -193,7 +193,7 @@ pub trait SimdRegister<T: Copy> {
     }
 
     #[inline(always)]
-    /// Perform a element wize multiplication on two dense lanes.
+    /// Perform a element wise multiplication on two dense lanes.
     unsafe fn mul_dense(
         l1: DenseLane<Self::Register>,
         l2: DenseLane<Self::Register>,
@@ -202,7 +202,7 @@ pub trait SimdRegister<T: Copy> {
     }
 
     #[inline(always)]
-    /// Perform a element wize add on two dense lanes.
+    /// Perform a element wise add on two dense lanes.
     unsafe fn div_dense(
         l1: DenseLane<Self::Register>,
         l2: DenseLane<Self::Register>,
@@ -211,7 +211,7 @@ pub trait SimdRegister<T: Copy> {
     }
 
     #[inline(always)]
-    /// Perform a element wize multiply add operations on two dense lanes with an accumulator.
+    /// Perform a element wise multiply add operations on two dense lanes with an accumulator.
     unsafe fn fmadd_dense(
         l1: DenseLane<Self::Register>,
         l2: DenseLane<Self::Register>,
@@ -221,7 +221,7 @@ pub trait SimdRegister<T: Copy> {
     }
 
     #[inline(always)]
-    /// Perform a element wize max operations on two dense lanes.
+    /// Perform a element wise max operations on two dense lanes.
     unsafe fn max_dense(
         l1: DenseLane<Self::Register>,
         l2: DenseLane<Self::Register>,
@@ -230,7 +230,7 @@ pub trait SimdRegister<T: Copy> {
     }
 
     #[inline(always)]
-    /// Perform a element wize min operations on two dense lanes.
+    /// Perform a element wise min operations on two dense lanes.
     unsafe fn min_dense(
         l1: DenseLane<Self::Register>,
         l2: DenseLane<Self::Register>,

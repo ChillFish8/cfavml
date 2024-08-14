@@ -14,7 +14,7 @@ use crate::transpose::{generic_transpose, TransposeMatrix};
 /// `width * height`.
 ///
 /// This function also assumes `avx2` CPU features are available.
-pub unsafe fn f32_xany_avx2_nofma_transpose(
+pub unsafe fn f32_xany_avx2_transpose(
     width: usize,
     height: usize,
     data: &[f32],
@@ -33,7 +33,7 @@ pub unsafe fn f32_xany_avx2_nofma_transpose(
 /// `width * height`.
 ///
 /// This function also assumes `avx2` CPU features are available.
-pub unsafe fn f64_xany_avx2_nofma_transpose(
+pub unsafe fn f64_xany_avx2_transpose(
     width: usize,
     height: usize,
     data: &[f64],

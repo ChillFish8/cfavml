@@ -21,28 +21,28 @@ slower.
 ##### Exported non-generic impls
 
 **Dynamic Size**
-- `f32_xany_avx512_fma_gemm`
-- `f64_xany_avx512_fma_gemm`
-- `f32_xany_avx2_nofma_gemm`
-- `f64_xany_avx2_nofma_gemm`
-- `f32_xany_avx2_fma_gemm`
-- `f64_xany_avx2_fma_gemm`
-- `f32_xany_neon_fma_gemm`
-- `f64_xany_neon_fma_gemm`
-- `f32_xany_fallback_nofma_gemm`
-- `f64_xany_fallback_nofma_gemm`
+- `f32_xany_avx512_gemm`
+- `f64_xany_avx512_gemm`
+- `f32_xany_avx2_gemm`
+- `f64_xany_avx2_gemm`
+- `f32_xany_avx2fma_gemm`
+- `f64_xany_avx2fma_gemm`
+- `f32_xany_neon_gemm`
+- `f64_xany_neon_gemm`
+- `f32_xany_fallback_gemm`
+- `f64_xany_fallback_gemm`
 
 **Const Size**
-- `f32_xconst_avx512_fma_gemm`
-- `f64_xconst_avx512_fma_gemm`
-- `f32_xconst_avx2_nofma_gemm`
-- `f64_xconst_avx2_nofma_gemm`
-- `f32_xconst_avx2_fma_gemm`
-- `f64_xconst_avx2_fma_gemm`
-- `f32_xconst_neon_fma_gemm`
-- `f64_xconst_neon_fma_gemm`
-- `f32_xconst_fallback_nofma_gemm`
-- `f64_xconst_fallback_nofma_gemm`
+- `f32_xconst_avx512_gemm`
+- `f64_xconst_avx512_gemm`
+- `f32_xconst_avx2_gemm`
+- `f64_xconst_avx2_gemm`
+- `f32_xconst_avx2fma_gemm`
+- `f64_xconst_avx2fma_gemm`
+- `f32_xconst_neon_gemm`
+- `f64_xconst_neon_gemm`
+- `f32_xconst_fallback_gemm`
+- `f64_xconst_fallback_gemm`
 
 ## Notes on Threading
 

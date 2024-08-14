@@ -7,7 +7,7 @@ pub mod transpose;
 mod test_utils;
 
 /// Assumes Row-Major Order.
-pub unsafe fn f32_avx2_fma_gemm(
+pub unsafe fn f32_avx2fma_gemm(
     shape_a: (usize, usize),
     shape_b: (usize, usize),
     a: &[f32],

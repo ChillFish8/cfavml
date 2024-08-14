@@ -5,7 +5,7 @@
 
 use crate::danger::{
     generic_cosine,
-    generic_dot_product,
+    generic_dot,
     generic_squared_euclidean,
     generic_squared_norm,
     SimdRegister,
@@ -66,24 +66,20 @@ macro_rules! define_cosine_impl {
     };
 }
 
-define_cosine_impl!(generic_fallback_nofma_cosine, Fallback);
+define_cosine_impl!(generic_fallback_cosine, Fallback);
 #[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
-define_cosine_impl!(generic_avx2_nofma_cosine, Avx2, target_features = "avx2");
+define_cosine_impl!(generic_avx2_cosine, Avx2, target_features = "avx2");
 #[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
 define_cosine_impl!(
-    generic_avx2_fma_cosine,
+    generic_avx2fma_cosine,
     Avx2Fma,
     target_features = "avx2",
     "fma"
 );
 #[cfg(all(any(target_arch = "x86", target_arch = "x86_64"), feature = "nightly"))]
-define_cosine_impl!(
-    generic_avx512_fma_cosine,
-    Avx512,
-    target_features = "avx512f"
-);
+define_cosine_impl!(generic_avx512_cosine, Avx512, target_features = "avx512f");
 #[cfg(target_arch = "aarch64")]
-define_cosine_impl!(generic_neon_fma_cosine, Neon, target_features = "neon");
+define_cosine_impl!(generic_neon_cosine, Neon, target_features = "neon");
 
 macro_rules! define_dot_impl {
     ($name:ident, $imp:ident $(,)? $(target_features = $($feat:expr $(,)?)+)?) => {
@@ -121,7 +117,7 @@ macro_rules! define_dot_impl {
             crate::danger::$imp: SimdRegister<T>,
             AutoMath: Math<T>,
         {
-            generic_dot_product::<T, crate::danger::$imp, AutoMath>(
+            generic_dot::<T, crate::danger::$imp, AutoMath>(
                 dims,
                 a,
                 b,
@@ -130,28 +126,20 @@ macro_rules! define_dot_impl {
     };
 }
 
-define_dot_impl!(generic_fallback_nofma_dot_product, Fallback);
+define_dot_impl!(generic_fallback_dot, Fallback);
+#[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
+define_dot_impl!(generic_avx2_dot, Avx2, target_features = "avx2");
 #[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
 define_dot_impl!(
-    generic_avx2_nofma_dot_product,
-    Avx2,
-    target_features = "avx2"
-);
-#[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
-define_dot_impl!(
-    generic_avx2_fma_dot_product,
+    generic_avx2fma_dot,
     Avx2Fma,
     target_features = "avx2",
     "fma"
 );
 #[cfg(all(any(target_arch = "x86", target_arch = "x86_64"), feature = "nightly"))]
-define_dot_impl!(
-    generic_avx512_fma_dot_product,
-    Avx512,
-    target_features = "avx512f"
-);
+define_dot_impl!(generic_avx512_dot, Avx512, target_features = "avx512f");
 #[cfg(target_arch = "aarch64")]
-define_dot_impl!(generic_neon_fma_dot_product, Neon, target_features = "neon");
+define_dot_impl!(generic_neon_dot, Neon, target_features = "neon");
 
 macro_rules! define_euclidean_impl {
     ($name:ident, $imp:ident $(,)? $(target_features = $($feat:expr $(,)?)+)?) => {
@@ -199,29 +187,29 @@ macro_rules! define_euclidean_impl {
     };
 }
 
-define_euclidean_impl!(generic_fallback_nofma_squared_euclidean, Fallback);
+define_euclidean_impl!(generic_fallback_squared_euclidean, Fallback);
 #[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
 define_euclidean_impl!(
-    generic_avx2_nofma_squared_euclidean,
+    generic_avx2_squared_euclidean,
     Avx2,
     target_features = "avx2"
 );
 #[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
 define_euclidean_impl!(
-    generic_avx2_fma_squared_euclidean,
+    generic_avx2fma_squared_euclidean,
     Avx2Fma,
     target_features = "avx2",
     "fma"
 );
 #[cfg(all(any(target_arch = "x86", target_arch = "x86_64"), feature = "nightly"))]
 define_euclidean_impl!(
-    generic_avx512_fma_squared_euclidean,
+    generic_avx512_squared_euclidean,
     Avx512,
     target_features = "avx512f"
 );
 #[cfg(target_arch = "aarch64")]
 define_euclidean_impl!(
-    generic_neon_fma_squared_euclidean,
+    generic_neon_squared_euclidean,
     Neon,
     target_features = "neon"
 );
@@ -270,29 +258,21 @@ macro_rules! define_norm_impl {
     };
 }
 
-define_norm_impl!(generic_fallback_nofma_squared_norm, Fallback);
+define_norm_impl!(generic_fallback_squared_norm, Fallback);
+#[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
+define_norm_impl!(generic_avx2_squared_norm, Avx2, target_features = "avx2");
 #[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
 define_norm_impl!(
-    generic_avx2_nofma_squared_norm,
-    Avx2,
-    target_features = "avx2"
-);
-#[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
-define_norm_impl!(
-    generic_avx2_fma_squared_norm,
+    generic_avx2fma_squared_norm,
     Avx2Fma,
     target_features = "avx2",
     "fma",
 );
 #[cfg(all(any(target_arch = "x86", target_arch = "x86_64"), feature = "nightly"))]
 define_norm_impl!(
-    generic_avx512_fma_squared_norm,
+    generic_avx512_squared_norm,
     Avx512,
     target_features = "avx512f"
 );
 #[cfg(target_arch = "aarch64")]
-define_norm_impl!(
-    generic_neon_fma_squared_norm,
-    Neon,
-    target_features = "neon"
-);
+define_norm_impl!(generic_neon_squared_norm, Neon, target_features = "neon");

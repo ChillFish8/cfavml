@@ -57,14 +57,10 @@ macro_rules! define_sum_impl {
     };
 }
 
-define_sum_impl!(generic_fallback_nofma_sum, Fallback);
+define_sum_impl!(generic_fallback_sum, Fallback);
 #[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
-define_sum_impl!(generic_avx2_nofma_sum, Avx2, target_features = "avx2");
+define_sum_impl!(generic_avx2_sum, Avx2, target_features = "avx2");
 #[cfg(all(any(target_arch = "x86", target_arch = "x86_64"), feature = "nightly"))]
-define_sum_impl!(
-    generic_avx512_nofma_sum,
-    Avx512,
-    target_features = "avx512f"
-);
+define_sum_impl!(generic_avx512_sum, Avx512, target_features = "avx512f");
 #[cfg(target_arch = "aarch64")]
 define_sum_impl!(generic_neon_nofma_sum, Neon, target_features = "neon");

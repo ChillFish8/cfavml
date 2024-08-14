@@ -169,23 +169,23 @@ macro_rules! define_max_impls {
 }
 
 define_max_impls!(
-    vertical = generic_fallback_nofma_max_vector,
-    value = generic_fallback_nofma_max_value,
-    horizontal = generic_fallback_nofma_max_horizontal,
+    vertical = generic_fallback_max_vector,
+    value = generic_fallback_max_value,
+    horizontal = generic_fallback_max_horizontal,
     Fallback,
 );
 #[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
 define_max_impls!(
-    vertical = generic_avx2_nofma_max_vector,
-    value = generic_avx2_nofma_max_value,
-    horizontal = generic_avx2_nofma_max_horizontal,
+    vertical = generic_avx2_max_vector,
+    value = generic_avx2_max_value,
+    horizontal = generic_avx2_max_horizontal,
     Avx2,
 );
 #[cfg(all(any(target_arch = "x86", target_arch = "x86_64"), feature = "nightly"))]
 define_max_impls!(
-    vertical = generic_avx512_nofma_max_vector,
-    value = generic_avx512_nofma_max_value,
-    horizontal = generic_avx512_nofma_max_horizontal,
+    vertical = generic_avx512_max_vector,
+    value = generic_avx512_max_value,
+    horizontal = generic_avx512_max_horizontal,
     Avx512,
 );
 #[cfg(target_arch = "aarch64")]
@@ -350,23 +350,23 @@ macro_rules! define_min_impls {
 }
 
 define_min_impls!(
-    vertical = generic_fallback_nofma_min_vector,
-    value = generic_fallback_nofma_min_value,
-    horizontal = generic_fallback_nofma_min_horizontal,
+    vertical = generic_fallback_min_vector,
+    value = generic_fallback_min_value,
+    horizontal = generic_fallback_min_horizontal,
     Fallback,
 );
 #[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
 define_min_impls!(
-    vertical = generic_avx2_nofma_min_vector,
-    value = generic_avx2_nofma_min_value,
-    horizontal = generic_avx2_nofma_min_horizontal,
+    vertical = generic_avx2_min_vector,
+    value = generic_avx2_min_value,
+    horizontal = generic_avx2_min_horizontal,
     Avx2,
 );
 #[cfg(all(any(target_arch = "x86", target_arch = "x86_64"), feature = "nightly"))]
 define_min_impls!(
-    vertical = generic_avx512_nofma_min_vector,
-    value = generic_avx512_nofma_min_value,
-    horizontal = generic_avx512_nofma_min_horizontal,
+    vertical = generic_avx512_min_vector,
+    value = generic_avx512_min_value,
+    horizontal = generic_avx512_min_horizontal,
     Avx512,
 );
 #[cfg(target_arch = "aarch64")]

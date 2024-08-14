@@ -420,38 +420,38 @@ macro_rules! define_arithmetic_impls {
 }
 
 define_arithmetic_impls!(
-    add_value = generic_fallback_nofma_add_value,
-    add_vector = generic_fallback_nofma_add_vector,
-    sub_value = generic_fallback_nofma_sub_value,
-    sub_vector = generic_fallback_nofma_sub_vector,
-    mul_value = generic_fallback_nofma_mul_value,
-    mul_vector = generic_fallback_nofma_mul_vector,
-    div_value = generic_fallback_nofma_div_value,
-    div_vector = generic_fallback_nofma_div_vector,
+    add_value = generic_fallback_add_value,
+    add_vector = generic_fallback_add_vector,
+    sub_value = generic_fallback_sub_value,
+    sub_vector = generic_fallback_sub_vector,
+    mul_value = generic_fallback_mul_value,
+    mul_vector = generic_fallback_mul_vector,
+    div_value = generic_fallback_div_value,
+    div_vector = generic_fallback_div_vector,
     Fallback,
 );
 #[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
 define_arithmetic_impls!(
-    add_value = generic_avx2_nofma_add_value,
-    add_vector = generic_avx2_nofma_add_vector,
-    sub_value = generic_avx2_nofma_sub_value,
-    sub_vector = generic_avx2_nofma_sub_vector,
-    mul_value = generic_avx2_nofma_mul_value,
-    mul_vector = generic_avx2_nofma_mul_vector,
-    div_value = generic_avx2_nofma_div_value,
-    div_vector = generic_avx2_nofma_div_vector,
+    add_value = generic_avx2_add_value,
+    add_vector = generic_avx2_add_vector,
+    sub_value = generic_avx2_sub_value,
+    sub_vector = generic_avx2_sub_vector,
+    mul_value = generic_avx2_mul_value,
+    mul_vector = generic_avx2_mul_vector,
+    div_value = generic_avx2_div_value,
+    div_vector = generic_avx2_div_vector,
     Avx2,
 );
 #[cfg(all(any(target_arch = "x86", target_arch = "x86_64"), feature = "nightly"))]
 define_arithmetic_impls!(
-    add_value = generic_avx512_nofma_add_value,
-    add_vector = generic_avx512_nofma_add_vector,
-    sub_value = generic_avx512_nofma_sub_value,
-    sub_vector = generic_avx512_nofma_sub_vector,
-    mul_value = generic_avx512_nofma_mul_value,
-    mul_vector = generic_avx512_nofma_mul_vector,
-    div_value = generic_avx512_nofma_div_value,
-    div_vector = generic_avx512_nofma_div_vector,
+    add_value = generic_avx512_add_value,
+    add_vector = generic_avx512_add_vector,
+    sub_value = generic_avx512_sub_value,
+    sub_vector = generic_avx512_sub_vector,
+    mul_value = generic_avx512_mul_value,
+    mul_vector = generic_avx512_mul_vector,
+    div_value = generic_avx512_div_value,
+    div_vector = generic_avx512_div_vector,
     Avx512,
 );
 #[cfg(target_arch = "aarch64")]

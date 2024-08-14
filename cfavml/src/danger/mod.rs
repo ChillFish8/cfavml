@@ -4,14 +4,14 @@ mod core_simd_api;
 #[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
 mod impl_avx2;
 #[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
-mod impl_avx2_fma;
+mod impl_avx2fma;
 #[cfg(all(any(target_arch = "x86", target_arch = "x86_64"), feature = "nightly"))]
 mod impl_avx512;
 mod impl_fallback;
 #[cfg(target_arch = "aarch64")]
 mod impl_neon;
 mod op_cosine;
-mod op_dot_product;
+mod op_dot;
 mod op_euclidean;
 mod op_max;
 mod op_min;
@@ -33,7 +33,7 @@ pub use self::core_simd_api::{DenseLane, SimdRegister};
 #[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
 pub use self::impl_avx2::*;
 #[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
-pub use self::impl_avx2_fma::*;
+pub use self::impl_avx2fma::*;
 #[cfg(all(any(target_arch = "x86", target_arch = "x86_64"), feature = "nightly"))]
 pub use self::impl_avx512::*;
 pub use self::impl_fallback::*;
@@ -42,7 +42,7 @@ pub use self::impl_neon::*;
 #[cfg(test)]
 pub(crate) use self::op_cosine::cosine;
 pub use self::op_cosine::generic_cosine;
-pub use self::op_dot_product::generic_dot_product;
+pub use self::op_dot::generic_dot;
 pub use self::op_euclidean::generic_squared_euclidean;
 pub use self::op_max::{generic_max_horizontal, generic_max_value, generic_max_vector};
 pub use self::op_min::{generic_min_horizontal, generic_min_value, generic_min_vector};

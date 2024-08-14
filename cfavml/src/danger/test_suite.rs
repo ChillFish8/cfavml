@@ -29,9 +29,9 @@ macro_rules! test_suite {
             }
 
             #[test]
-            fn [<test_ $im:lower _ $t _dot_product>]() {
+            fn [<test_ $im:lower _ $t _dot>]() {
                 let (l1, l2) = crate::test_utils::get_sample_vectors::<$t>(1043);
-                unsafe { crate::danger::op_dot_product::test_dot::<$t, $im>(l1, l2) };
+                unsafe { crate::danger::op_dot::test_dot::<$t, $im>(l1, l2) };
             }
 
             #[test]
@@ -178,7 +178,7 @@ mod avx512_tests {
 }
 
 #[cfg(all(target_feature = "avx2", target_feature = "fma", test))]
-mod avx2_fma_tests {
+mod avx2fma_tests {
     use super::*;
 
     test_suite!(f32, Avx2Fma);

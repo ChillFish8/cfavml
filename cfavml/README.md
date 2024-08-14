@@ -109,7 +109,7 @@ over the various SIMD register types and architectures.
 This trait, combined with the `Math<T>` trait form the core of all operations and are
 provided as generic functions (with no target features):
 
-- `generic_dot_product`
+- `generic_dot`
 - `generic_euclidean`
 - `generic_cosine`
 - `generic_squared_norm`

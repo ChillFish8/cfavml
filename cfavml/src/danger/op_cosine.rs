@@ -64,7 +64,7 @@ where
         i += 1;
     }
 
-    let dot = super::op_dot_product::generic_dot_product::<T, R, M>(dims, a, b);
+    let dot = super::op_dot::generic_dot::<T, R, M>(dims, a, b);
     cosine::<T, M>(dot, norm_a, norm_b)
 }
 

@@ -39,7 +39,7 @@ where
         #[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
         unsafe {
             if is_x86_feature_detected!("avx2") {
-                return f32_xany_avx2_nofma_transpose(width, height, data, result);
+                return f32_xany_avx2_transpose(width, height, data, result);
             }
         }
     } else if TypeId::of::<T>() == TypeId::of::<f64>()
@@ -51,7 +51,7 @@ where
         #[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
         unsafe {
             if is_x86_feature_detected!("avx2") {
-                return f64_xany_avx2_nofma_transpose(width, height, data, result);
+                return f64_xany_avx2_transpose(width, height, data, result);
             }
         }
     }

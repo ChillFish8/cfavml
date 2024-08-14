@@ -137,7 +137,7 @@ export_dense_op!(f64, Fallback, max_dense);
 export_dense_op!(f64, Fallback, min_dense);
 
 export_distance_op!(i8, Fallback, generic_cosine);
-export_distance_op!(i8, Fallback, generic_dot_product);
+export_distance_op!(i8, Fallback, generic_dot);
 export_distance_op!(i8, Fallback, generic_squared_euclidean);
 export_vector_x_vector_op!(i8, Fallback, generic_add_vector);
 export_vector_x_vector_op!(i8, Fallback, generic_sub_vector);
@@ -149,7 +149,7 @@ export_vector_x_value_op!(i8, Fallback, generic_mul_value);
 export_vector_x_value_op!(i8, Fallback, generic_div_value);
 
 export_distance_op!(f32, Fallback, generic_cosine);
-export_distance_op!(f32, Fallback, generic_dot_product);
+export_distance_op!(f32, Fallback, generic_dot);
 export_distance_op!(f32, Fallback, generic_squared_euclidean);
 export_vector_x_vector_op!(f32, Fallback, generic_add_vector);
 export_vector_x_vector_op!(f32, Fallback, generic_sub_vector);
@@ -161,7 +161,7 @@ export_vector_x_value_op!(f32, Fallback, generic_mul_value);
 export_vector_x_value_op!(f32, Fallback, generic_div_value);
 
 export_distance_op!(f64, Fallback, generic_cosine);
-export_distance_op!(f64, Fallback, generic_dot_product);
+export_distance_op!(f64, Fallback, generic_dot);
 export_distance_op!(f64, Fallback, generic_squared_euclidean);
 export_vector_x_vector_op!(f64, Fallback, generic_add_vector);
 export_vector_x_vector_op!(f64, Fallback, generic_sub_vector);
@@ -219,7 +219,7 @@ pub mod avx2_ops {
     export_dense_op!(f64, Avx2, min_dense, features = "avx2");
 
     export_distance_op!(i8, Avx2, generic_cosine, features = "avx2");
-    export_distance_op!(i8, Avx2, generic_dot_product, features = "avx2");
+    export_distance_op!(i8, Avx2, generic_dot, features = "avx2");
     export_distance_op!(i8, Avx2, generic_squared_euclidean, features = "avx2");
     export_vector_x_vector_op!(i8, Avx2, generic_add_vector, features = "avx2");
     export_vector_x_vector_op!(i8, Avx2, generic_sub_vector, features = "avx2");
@@ -231,7 +231,7 @@ pub mod avx2_ops {
     export_vector_x_value_op!(i8, Avx2, generic_div_value, features = "avx2");
 
     export_distance_op!(f32, Avx2, generic_cosine, features = "avx2");
-    export_distance_op!(f32, Avx2, generic_dot_product, features = "avx2");
+    export_distance_op!(f32, Avx2, generic_dot, features = "avx2");
     export_distance_op!(f32, Avx2, generic_squared_euclidean, features = "avx2");
     export_vector_x_vector_op!(f32, Avx2, generic_add_vector, features = "avx2");
     export_vector_x_vector_op!(f32, Avx2, generic_sub_vector, features = "avx2");
@@ -243,7 +243,7 @@ pub mod avx2_ops {
     export_vector_x_value_op!(f32, Avx2, generic_div_value, features = "avx2");
 
     export_distance_op!(f64, Avx2, generic_cosine, features = "avx2");
-    export_distance_op!(f64, Avx2, generic_dot_product, features = "avx2");
+    export_distance_op!(f64, Avx2, generic_dot, features = "avx2");
     export_distance_op!(f64, Avx2, generic_squared_euclidean, features = "avx2");
     export_vector_x_vector_op!(f64, Avx2, generic_add_vector, features = "avx2");
     export_vector_x_vector_op!(f64, Avx2, generic_sub_vector, features = "avx2");
@@ -256,11 +256,11 @@ pub mod avx2_ops {
 }
 
 #[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
-pub mod avx2_fma_ops {
+pub mod avx2fma_ops {
     use super::*;
 
     export_distance_op!(f32, Avx2Fma, generic_cosine, features = "avx2", "fma");
-    export_distance_op!(f32, Avx2Fma, generic_dot_product, features = "avx2", "fma");
+    export_distance_op!(f32, Avx2Fma, generic_dot, features = "avx2", "fma");
     export_distance_op!(
         f32,
         Avx2Fma,
@@ -271,7 +271,7 @@ pub mod avx2_fma_ops {
     export_vector_x_value_op!(f32, Avx2Fma, generic_div_value, features = "avx2", "fma");
 
     export_distance_op!(f64, Avx2Fma, generic_cosine, features = "avx2", "fma");
-    export_distance_op!(f64, Avx2Fma, generic_dot_product, features = "avx2", "fma");
+    export_distance_op!(f64, Avx2Fma, generic_dot, features = "avx2", "fma");
     export_distance_op!(
         f64,
         Avx2Fma,
@@ -300,7 +300,7 @@ pub mod neon_ops {
     export_dense_op!(f64, Neon, min_dense, features = "neon");
 
     export_distance_op!(f32, Neon, generic_cosine, features = "neon");
-    export_distance_op!(f32, Neon, generic_dot_product, features = "neon");
+    export_distance_op!(f32, Neon, generic_dot, features = "neon");
     export_distance_op!(f32, Neon, generic_euclidean, features = "neon");
     export_vector_x_vector_op!(f32, Neon, generic_add_vector, features = "neon");
     export_vector_x_vector_op!(f32, Neon, generic_sub_vector, features = "neon");
@@ -312,7 +312,7 @@ pub mod neon_ops {
     export_vector_x_value_op!(f32, Neon, generic_div_value, features = "neon");
 
     export_distance_op!(f64, Neon, generic_cosine, features = "neon");
-    export_distance_op!(f64, Neon, generic_dot_product, features = "neon");
+    export_distance_op!(f64, Neon, generic_dot, features = "neon");
     export_distance_op!(f64, Neon, generic_euclidean, features = "neon");
     export_vector_x_vector_op!(f64, Neon, generic_add_vector, features = "neon");
     export_vector_x_vector_op!(f64, Neon, generic_sub_vector, features = "neon");
