@@ -16,6 +16,7 @@ use crate::safe_trait_distance_ops::DistanceOps;
 /// Calculates the cosine similarity distance of vectors `a` and `b`.
 ///
 /// ### Pseudocode
+///
 /// ```ignore
 /// result = 0
 /// norm_a = 0

@@ -18,6 +18,7 @@ macro_rules! define_sum_impl {
             Performs a horizontal sum of all elements in vector `a` of size `dims` returning the total.
 
             ### Pseudocode
+
             ```ignore
             result = 0
 
@@ -64,3 +65,87 @@ define_sum_impl!(generic_avx2_sum, Avx2, target_features = "avx2");
 define_sum_impl!(generic_avx512_sum, Avx512, target_features = "avx512f");
 #[cfg(target_arch = "aarch64")]
 define_sum_impl!(generic_neon_nofma_sum, Neon, target_features = "neon");
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    macro_rules! define_agg_test {
+        ($variant:ident, types = $($t:ident $(,)?)+) => {
+            $(
+                paste::paste! {
+                    #[test]
+                    fn [< $variant _sum_ $t >]() {
+                        let (l1, _) = crate::test_utils::get_sample_vectors::<$t>(533);
+
+                        let actual_sum = unsafe { [< $variant _sum >](l1.len(), &l1) };
+                        let expected_sum: $t = l1.iter().fold($t::default(), |a, b| AutoMath::add(a, *b));
+                        assert!(
+                            AutoMath::is_close(actual_sum, expected_sum),
+                            "Routine result does not match expected sum, {actual_sum:?} vs {expected_sum:?}",
+                        );
+                    }
+                }
+            )*
+        };
+    }
+
+    define_agg_test!(
+        generic_fallback,
+        types = f32,
+        f64,
+        i8,
+        i16,
+        i32,
+        i64,
+        u8,
+        u16,
+        u32,
+        u64
+    );
+    define_agg_test!(
+        generic_avx2,
+        types = f32,
+        f64,
+        i8,
+        i16,
+        i32,
+        i64,
+        u8,
+        u16,
+        u32,
+        u64
+    );
+    #[cfg(all(
+        any(target_arch = "x86", target_arch = "x86_64"),
+        feature = "nightly",
+        target_feature = "avx512f"
+    ))]
+    define_agg_test!(
+        generic_avx512,
+        types = f32,
+        f64,
+        i8,
+        i16,
+        i32,
+        i64,
+        u8,
+        u16,
+        u32,
+        u64
+    );
+    #[cfg(target_arch = "aarch64")]
+    define_agg_test!(
+        generic_neon,
+        types = f32,
+        f64,
+        i8,
+        i16,
+        i32,
+        i64,
+        u8,
+        u16,
+        u32,
+        u64
+    );
+}

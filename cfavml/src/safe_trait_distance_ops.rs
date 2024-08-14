@@ -10,6 +10,7 @@ pub trait DistanceOps: Sized {
     /// Calculates the cosine similarity distance of vectors `a` and `b` of size `dims`.
     ///
     /// ### Pseudocode
+    ///
     /// ```ignore
     /// result = 0
     /// norm_a = 0
@@ -36,6 +37,7 @@ pub trait DistanceOps: Sized {
     /// Calculates the cosine similarity distance of vectors `a` and `b` of size `dims`.
     ///
     /// ### Pseudocode
+    ///
     /// ```ignore
     /// result = 0
     ///
@@ -53,6 +55,7 @@ pub trait DistanceOps: Sized {
     /// Calculates the squared Euclidean distance of vectors `a` and `b` of size `dims`.
     ///
     /// ### Pseudocode
+    ///
     /// ```ignore
     /// result = 0
     ///
@@ -71,6 +74,7 @@ pub trait DistanceOps: Sized {
     /// Calculates the squared L2 norm of vector `a` of size `dims`.
     ///
     /// ### Pseudocode
+    ///
     /// ```ignore
     /// result = 0
     ///

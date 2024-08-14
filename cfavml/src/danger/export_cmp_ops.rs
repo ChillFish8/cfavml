@@ -30,6 +30,7 @@ macro_rules! define_max_impls {
             in `result` of size `dims`.
 
             ### Pseudocode
+
             ```ignore
             result = [0; dims]
 
@@ -79,6 +80,7 @@ macro_rules! define_max_impls {
             and stores the result in `result` of size `dims`.
 
             ### Pseudocode
+
             ```ignore
             result = [0; dims]
 
@@ -129,6 +131,7 @@ macro_rules! define_max_impls {
             returning the max value.
 
             ### Pseudocode
+
             ```ignore
             result = -inf
 
@@ -211,6 +214,7 @@ macro_rules! define_min_impls {
             in `result` of size `dims`.
 
             ### Pseudocode
+
             ```ignore
             result = [0; dims]
 
@@ -260,6 +264,7 @@ macro_rules! define_min_impls {
             and stores the result in `result` of size `dims`.
 
             ### Pseudocode
+
             ```ignore
             result = [0; dims]
 
@@ -310,6 +315,7 @@ macro_rules! define_min_impls {
             returning the min value.
 
             ### Pseudocode
+
             ```ignore
             result = -inf
 
@@ -376,3 +382,135 @@ define_min_impls!(
     horizontal = generic_neon_nofma_min_horizontal,
     Neon,
 );
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    macro_rules! define_inner_test {
+        ($variant:ident, op = $op:ident, ty = $t:ident, fold_on = $fold_cb:ident) => {
+            paste::paste! {
+                #[test]
+                fn [< $variant _ $op _horizontal_ $t >]() {
+                    let (l1, _) = crate::test_utils::get_sample_vectors::<$t>(533);
+
+                    let result = unsafe { [< $variant _ $op _horizontal >](l1.len(), &l1) };
+
+                    let expected = l1.iter()
+                        .copied()
+                        .fold(AutoMath::$fold_cb(), |a, b| AutoMath::[< cmp_ $op >](a, b));
+                    assert_eq!(
+                        result,
+                        expected,
+                        "Routine result does not match expected",
+                    );
+                }
+
+                #[test]
+                fn [< $variant _ $op _value_ $t >]() {
+                    let (l1, _) = crate::test_utils::get_sample_vectors::<$t>(533);
+
+                    let mut result = vec![$t::default(); 533];
+                    unsafe { [< $variant _ $op _value >](l1.len(), 2 as $t, &l1, &mut result) };
+
+                    let expected = l1.iter()
+                        .copied()
+                        .map(|v| AutoMath::[< cmp_ $op >](v, 2 as $t))
+                        .collect::<Vec<_>>();
+                    assert_eq!(
+                        result,
+                        expected,
+                        "Routine result does not match expected",
+                    );
+                }
+
+                #[test]
+                fn [< $variant _ $op _vector_ $t >]() {
+                    let (l1, l2) = crate::test_utils::get_sample_vectors::<$t>(533);
+
+                    let mut result = vec![$t::default(); 533];
+                    unsafe { [< $variant _ $op _vector >](l1.len(), &l1, &l2, &mut result) };
+
+                    let expected = l1.iter()
+                        .copied()
+                        .zip(l2.iter().copied())
+                        .map(|(a, b)| AutoMath::[< cmp_ $op >](a, b))
+                        .collect::<Vec<_>>();
+                    assert_eq!(
+                        result,
+                        expected,
+                        "Routine result does not match expected",
+                    );
+                }
+            }
+        };
+    }
+
+    macro_rules! define_cmp_test {
+        ($variant:ident, types = $($t:ident $(,)?)+) => {
+            $(
+                define_inner_test!($variant, op = min, ty = $t, fold_on = max);
+                define_inner_test!($variant, op = max, ty = $t, fold_on = min);
+            )*
+        };
+    }
+
+    define_cmp_test!(
+        generic_fallback,
+        types = f32,
+        f64,
+        i8,
+        i16,
+        i32,
+        i64,
+        u8,
+        u16,
+        u32,
+        u64
+    );
+    define_cmp_test!(
+        generic_avx2,
+        types = f32,
+        f64,
+        i8,
+        i16,
+        i32,
+        i64,
+        u8,
+        u16,
+        u32,
+        u64
+    );
+    #[cfg(all(
+        any(target_arch = "x86", target_arch = "x86_64"),
+        feature = "nightly",
+        target_feature = "avx512f"
+    ))]
+    define_cmp_test!(
+        generic_avx512,
+        types = f32,
+        f64,
+        i8,
+        i16,
+        i32,
+        i64,
+        u8,
+        u16,
+        u32,
+        u64
+    );
+    #[cfg(target_arch = "aarch64")]
+    define_cmp_test!(
+        generic_neon,
+        types = f32,
+        f64,
+        i8,
+        i16,
+        i32,
+        i64,
+        u8,
+        u16,
+        u32,
+        u64
+    );
+}

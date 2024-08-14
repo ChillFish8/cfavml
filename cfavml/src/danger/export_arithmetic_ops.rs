@@ -35,6 +35,7 @@ macro_rules! define_arithmetic_impls {
             Adds a single value to each element in vector `a` of size `dims`.
 
             ### Pseudocode
+
             ```ignore
             result = [0; dims]
 
@@ -84,6 +85,7 @@ macro_rules! define_arithmetic_impls {
             in `result` vector of size `dims`.
 
             ### Pseudocode
+
             ```ignore
             result = [0; dims]
 
@@ -132,6 +134,7 @@ macro_rules! define_arithmetic_impls {
             Subtracts a single value from each element in vector `a` of size `dims`.
 
             ### Pseudocode
+
             ```ignore
             result = [0; dims]
 
@@ -181,6 +184,7 @@ macro_rules! define_arithmetic_impls {
             in `result` vector of size `dims`.
 
             ### Pseudocode
+
             ```ignore
             result = [0; dims]
 
@@ -229,6 +233,7 @@ macro_rules! define_arithmetic_impls {
             Multiplies each element in vector `a` of size `dims` by `value`.
 
             ### Pseudocode
+
             ```ignore
             result = [0; dims]
 
@@ -278,6 +283,7 @@ macro_rules! define_arithmetic_impls {
             in `result` vector of size `dims`.
 
             ### Pseudocode
+
             ```ignore
             result = [0; dims]
 
@@ -326,6 +332,7 @@ macro_rules! define_arithmetic_impls {
             Divides each element in vector `a` of size `dims` by `value`.
 
             ### Pseudocode
+
             ```ignore
             result = [0; dims]
 
@@ -375,6 +382,7 @@ macro_rules! define_arithmetic_impls {
             in `result` vector of size `dims`.
 
             ### Pseudocode
+
             ```ignore
             result = [0; dims]
 
@@ -466,3 +474,121 @@ define_arithmetic_impls!(
     div_vector = generic_neon_nofma_div_vector,
     Neon,
 );
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    macro_rules! define_inner_test {
+        ($variant:ident, op = $op:ident, ty = $t:ident) => {
+            paste::paste! {
+                #[test]
+                fn [< $variant _ $op _value_ $t >]() {
+                    let (l1, _) = crate::test_utils::get_sample_vectors::<$t>(533);
+
+                    let mut result = vec![$t::default(); 533];
+                    unsafe { [< $variant _ $op _value >](l1.len(), 2 as $t, &l1, &mut result) };
+
+                    let expected = l1.iter()
+                        .copied()
+                        .map(|v| AutoMath::$op(v, 2 as $t))
+                        .collect::<Vec<_>>();
+                    assert_eq!(
+                        result,
+                        expected,
+                        "Routine result does not match expected",
+                    );
+                }
+
+                #[test]
+                fn [< $variant _ $op _vector_ $t >]() {
+                    let (l1, l2) = crate::test_utils::get_sample_vectors::<$t>(533);
+
+                    let mut result = vec![$t::default(); 533];
+                    unsafe { [< $variant _ $op _vector >](l1.len(), &l1, &l2, &mut result) };
+
+                    let expected = l1.iter()
+                        .copied()
+                        .zip(l2.iter().copied())
+                        .map(|(a, b)| AutoMath::$op(a, b))
+                        .collect::<Vec<_>>();
+                    assert_eq!(
+                        result,
+                        expected,
+                        "Routine result does not match expected",
+                    );
+                }
+            }
+        };
+    }
+
+    macro_rules! define_arithmetic_test {
+        ($variant:ident, types = $($t:ident $(,)?)+) => {
+            $(
+                define_inner_test!($variant, op = add, ty = $t);
+                define_inner_test!($variant, op = sub, ty = $t);
+                define_inner_test!($variant, op = mul, ty = $t);
+                define_inner_test!($variant, op = div, ty = $t);
+            )*
+        };
+    }
+
+    define_arithmetic_test!(
+        generic_fallback,
+        types = f32,
+        f64,
+        i8,
+        i16,
+        i32,
+        i64,
+        u8,
+        u16,
+        u32,
+        u64
+    );
+    define_arithmetic_test!(
+        generic_avx2,
+        types = f32,
+        f64,
+        i8,
+        i16,
+        i32,
+        i64,
+        u8,
+        u16,
+        u32,
+        u64
+    );
+    #[cfg(all(
+        any(target_arch = "x86", target_arch = "x86_64"),
+        feature = "nightly",
+        target_feature = "avx512f"
+    ))]
+    define_arithmetic_test!(
+        generic_avx512,
+        types = f32,
+        f64,
+        i8,
+        i16,
+        i32,
+        i64,
+        u8,
+        u16,
+        u32,
+        u64
+    );
+    #[cfg(target_arch = "aarch64")]
+    define_arithmetic_test!(
+        generic_neon,
+        types = f32,
+        f64,
+        i8,
+        i16,
+        i32,
+        i64,
+        u8,
+        u16,
+        u32,
+        u64
+    );
+}
