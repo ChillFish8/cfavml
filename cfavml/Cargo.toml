@@ -46,10 +46,6 @@ std = []
 # If you are compiling for no-std you will need to pass default-features = false
 default = ["std"]
 
-# Enables avx512 benchmarks
-# NOTE: This is just internal only
-benchmark-avx512 = []
-
 [package.metadata.docs.rs]
 all-features = true
 rustdoc-args = ["--cfg", "docsrs"]
