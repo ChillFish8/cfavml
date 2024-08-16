@@ -19,14 +19,14 @@ license = "MIT OR Apache-2.0"
 rand = "0.8.5"
 rand_chacha = "0.3.1"
 paste = "1.0.14"
-simsimd = "4.4.0"
 divan = "0.1.14"
+num-traits = "0.2.19"
+mimalloc = { version = "0.1.43", default-features = false }
 
 [target.'cfg(unix)'.dev-dependencies]
 ndarray = { version = "0.15.6", features = ["blas"] }
 blas-src = { version = "0.8", features = ["openblas"] }
 openblas-src = { version = "0.10", features = ["cblas", "system"] }
-mimalloc = { version = "0.1.43", default-features = false }
 
 [target.'cfg(not(unix))'.dev-dependencies]
 ndarray = "0.15.6"
@@ -46,9 +46,6 @@ std = []
 # If you are compiling for no-std you will need to pass default-features = false
 default = ["std"]
 
-# Enables algined memory with benchmarks
-# NOTE: This is just internal only
-benchmark-aligned = []
 # Enables avx512 benchmarks
 # NOTE: This is just internal only
 benchmark-avx512 = []
@@ -57,15 +54,15 @@ benchmark-avx512 = []
 all-features = true
 rustdoc-args = ["--cfg", "docsrs"]
 
-# [[bench]]
-# name = "bench_distance_measures"
-# harness = false
+[[bench]]
+name = "bench_distance_measures"
+harness = false
 #
 # [[bench]]
 # name = "bench_min_max_sum"
 # harness = false
 
-[[bench]]
-name = "bench_arithmetic"
-harness = false
+# [[bench]]
+# name = "bench_arithmetic"
+# harness = false
 
