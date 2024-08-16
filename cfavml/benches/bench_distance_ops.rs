@@ -173,7 +173,7 @@ mod euclidean {
             let l1_view = black_box(l1.as_ref());
             let l2_view = black_box(l2.as_ref());
 
-            cfavml::cosine(l1_view, l2_view)
+            cfavml::squared_euclidean(l1_view, l2_view)
         });
     }
 }

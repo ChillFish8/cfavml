@@ -66,6 +66,7 @@ power management:
 ### Results
 
 - [Run 2024-08-16](benchmark-runs/hetzner-cpx51-amd-cfavml-v0_2_0-2024-08-16.txt)
+    - Note: Euclidean distance measures are omitted due to a mistake in the benchmark code.
 
 
 ## Benchmarks - Intel Xeon (Skylake)
@@ -111,6 +112,7 @@ power management:
 ### Results
 
 - [Run 2024-08-16](benchmark-runs/hetzner-cx52-intel-cfavml-v0_2_0-2024-08-16.txt)
+    - Note: Euclidean distance measures are omitted due to a mistake in the benchmark code.
 
 
 ## Benchmarks - Ampere (ARM)
@@ -125,6 +127,7 @@ Ndarray compiled with openblas installed via `libopenblas-dev`.
 ### Results
 
 - [Run 2024-08-16](benchmark-runs/hetzner-cax41-ampere-cfavml-v0_2_0-2024-08-16.txt)
+    - Note: Euclidean distance measures are omitted due to a mistake in the benchmark code.
 
 
 ## Benchmarks - AMD Ryzen™ 7 
@@ -171,3 +174,4 @@ power management: ts ttp tm hwpstate cpb eff_freq_ro [13] [14] [15]
 ### Results
 
 - [Run 2024-08-16](benchmark-runs/hetzner-ax42-amd-cfavml-v0_2_0-2024-08-16)
+  - Note: Euclidean distance measures are omitted due to a mistake in the benchmark code.

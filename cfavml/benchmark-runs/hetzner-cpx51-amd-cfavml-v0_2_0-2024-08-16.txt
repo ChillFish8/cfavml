@@ -703,14 +703,3 @@ bench_distance_ops  fastest       │ slowest       │ median        │ mean  
 │     │             3.165 Gitem/s │ 119.9 Mitem/s │ 3.108 Gitem/s │ 2.886 Gitem/s │         │
 │     ╰─ u8         667.4 ns      │ 12.95 µs      │ 678.3 ns      │ 734.6 ns      │ 500     │ 2500000
 │                   2.301 Gitem/s │ 118.5 Mitem/s │ 2.264 Gitem/s │ 2.09 Gitem/s  │         │
-╰─ euclidean                      │               │               │               │         │
-   ├─ cfavml                      │               │               │               │         │
-   │  ├─ f32        197.7 ns      │ 291 ns        │ 202.1 ns      │ 207.5 ns      │ 500     │ 2500000
-   │  │             7.766 Gitem/s │ 5.276 Gitem/s │ 7.599 Gitem/s │ 7.402 Gitem/s │         │
-   │  ╰─ f64        393.6 ns      │ 12.78 µs      │ 402.2 ns      │ 461 ns        │ 500     │ 2500000
-   │                3.902 Gitem/s │ 120.1 Mitem/s │ 3.818 Gitem/s │ 3.331 Gitem/s │         │
-   ╰─ ndarray                     │               │               │               │         │
-      ├─ f32        321.7 ns      │ 472.6 ns      │ 329.4 ns      │ 340.7 ns      │ 500     │ 2500000
-      │             4.774 Gitem/s │ 3.249 Gitem/s │ 4.662 Gitem/s │ 4.507 Gitem/s │         │
-      ╰─ f64        565.5 ns      │ 13.04 µs      │ 583.7 ns      │ 669.1 ns      │ 500     │ 2500000
-                    2.715 Gitem/s │ 117.7 Mitem/s │ 2.631 Gitem/s │ 2.295 Gitem/s │         │
