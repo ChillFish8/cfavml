@@ -31,24 +31,7 @@ macro_rules! define_arithmetic_impls {
     ) => {
         #[inline]
         $(#[target_feature($(enable = $feat, )*)])*
-        #[doc = r#"
-            Adds a single value to each element in vector `a` of size `dims`.
-
-            ### Pseudocode
-
-            ```ignore
-            result = [0; dims]
-
-            for i in range(dims):
-                result[i] = a[i] + value
-
-            return result
-            ```
-
-            # Safety
-
-            This routine assumes:
-        "#]
+        #[doc = include_str!("../export_docs/arithmetic_add_value.md")]
         $(
 
             #[doc = concat!("- ", $("**`+", $feat, "`** ", )*)]
@@ -80,25 +63,7 @@ macro_rules! define_arithmetic_impls {
 
         #[inline]
         $(#[target_feature($(enable = $feat, )*)])*
-        #[doc = r#"
-            Performs an element wise add of `a` and `b` of size `dims` and store the result
-            in `result` vector of size `dims`.
-
-            ### Pseudocode
-
-            ```ignore
-            result = [0; dims]
-
-            for i in range(dims):
-                result[i] = a[i] + b[i]
-
-            return result
-            ```
-
-            # Safety
-
-            This routine assumes:
-        "#]
+        #[doc = include_str!("../export_docs/arithmetic_add_vector.md")]
         $(
 
             #[doc = concat!("- ", $("**`+", $feat, "`** ", )*)]
@@ -130,24 +95,7 @@ macro_rules! define_arithmetic_impls {
 
         #[inline]
         $(#[target_feature($(enable = $feat, )*)])*
-        #[doc = r#"
-            Subtracts a single value from each element in vector `a` of size `dims`.
-
-            ### Pseudocode
-
-            ```ignore
-            result = [0; dims]
-
-            for i in range(dims):
-                result[i] = a[i] - value
-
-            return result
-            ```
-
-            # Safety
-
-            This routine assumes:
-        "#]
+        #[doc = include_str!("../export_docs/arithmetic_sub_value.md")]
         $(
 
             #[doc = concat!("- ", $("**`+", $feat, "`** ", )*)]
@@ -179,25 +127,7 @@ macro_rules! define_arithmetic_impls {
 
         #[inline]
         $(#[target_feature($(enable = $feat, )*)])*
-        #[doc = r#"
-            Performs an element wise subtraction of `a` and `b` of size `dims` and store the result
-            in `result` vector of size `dims`.
-
-            ### Pseudocode
-
-            ```ignore
-            result = [0; dims]
-
-            for i in range(dims):
-                result[i] = a[i] - b[i]
-
-            return result
-            ```
-
-            # Safety
-
-            This routine assumes:
-        "#]
+        #[doc = include_str!("../export_docs/arithmetic_sub_vector.md")]
         $(
 
             #[doc = concat!("- ", $("**`+", $feat, "`** ", )*)]
@@ -229,24 +159,7 @@ macro_rules! define_arithmetic_impls {
 
         #[inline]
         $(#[target_feature($(enable = $feat, )*)])*
-        #[doc = r#"
-            Multiplies each element in vector `a` of size `dims` by `value`.
-
-            ### Pseudocode
-
-            ```ignore
-            result = [0; dims]
-
-            for i in range(dims):
-                result[i] = a[i] * value
-
-            return result
-            ```
-
-            # Safety
-
-            This routine assumes:
-        "#]
+        #[doc = include_str!("../export_docs/arithmetic_mul_value.md")]
         $(
 
             #[doc = concat!("- ", $("**`+", $feat, "`** ", )*)]
@@ -278,25 +191,7 @@ macro_rules! define_arithmetic_impls {
 
         #[inline]
         $(#[target_feature($(enable = $feat, )*)])*
-        #[doc = r#"
-            Performs an element wise multiplication of `a` and `b` of size `dims` and store the result
-            in `result` vector of size `dims`.
-
-            ### Pseudocode
-
-            ```ignore
-            result = [0; dims]
-
-            for i in range(dims):
-                result[i] = a[i] * b[i]
-
-            return result
-            ```
-
-            # Safety
-
-            This routine assumes:
-        "#]
+        #[doc = include_str!("../export_docs/arithmetic_mul_vector.md")]
         $(
 
             #[doc = concat!("- ", $("**`+", $feat, "`** ", )*)]
@@ -328,24 +223,7 @@ macro_rules! define_arithmetic_impls {
 
         #[inline]
         $(#[target_feature($(enable = $feat, )*)])*
-        #[doc = r#"
-            Divides each element in vector `a` of size `dims` by `value`.
-
-            ### Pseudocode
-
-            ```ignore
-            result = [0; dims]
-
-            for i in range(dims):
-                result[i] = a[i] / value
-
-            return result
-            ```
-
-            # Safety
-
-            This routine assumes:
-        "#]
+        #[doc = include_str!("../export_docs/arithmetic_div_value.md")]
         $(
 
             #[doc = concat!("- ", $("**`+", $feat, "`** ", )*)]
@@ -377,25 +255,7 @@ macro_rules! define_arithmetic_impls {
 
         #[inline]
         $(#[target_feature($(enable = $feat, )*)])*
-        #[doc = r#"
-            Performs an element wise division of `a` and `b` of size `dims` and store the result
-            in `result` vector of size `dims`.
-
-            ### Pseudocode
-
-            ```ignore
-            result = [0; dims]
-
-            for i in range(dims):
-                result[i] = a[i] / b[i]
-
-            return result
-            ```
-
-            # Safety
-
-            This routine assumes:
-        "#]
+        #[doc = include_str!("../export_docs/arithmetic_div_vector.md")]
         $(
 
             #[doc = concat!("- ", $("**`+", $feat, "`** ", )*)]

@@ -25,25 +25,7 @@ macro_rules! define_max_impls {
     ) => {
         #[inline]
         $(#[target_feature($(enable = $feat, )*)])*
-        #[doc = r#"
-            Takes the element wise max of two vectors of size `dims` and stores the result
-            in `result` of size `dims`.
-
-            ### Pseudocode
-
-            ```ignore
-            result = [0; dims]
-
-            for i in range(dims):
-                result[i] = max(a[i], b[i])
-
-            return result
-            ```
-
-            # Safety
-
-            This routine assumes:
-        "#]
+        #[doc = include_str!("../export_docs/cmp_max_vector.md")]
         $(
 
             #[doc = concat!("- ", $("**`+", $feat, "`** ", )*)]
@@ -75,25 +57,7 @@ macro_rules! define_max_impls {
 
         #[inline]
         $(#[target_feature($(enable = $feat, )*)])*
-        #[doc = r#"
-            Takes the element wise max of the provided broadcast value and a vector of size `dims`
-            and stores the result in `result` of size `dims`.
-
-            ### Pseudocode
-
-            ```ignore
-            result = [0; dims]
-
-            for i in range(dims):
-                result[i] = max(value, a[i])
-
-            return result
-            ```
-
-            # Safety
-
-            This routine assumes:
-        "#]
+        #[doc = include_str!("../export_docs/cmp_max_value.md")]
         $(
 
             #[doc = concat!("- ", $("**`+", $feat, "`** ", )*)]
@@ -126,25 +90,7 @@ macro_rules! define_max_impls {
 
         #[inline]
         $(#[target_feature($(enable = $feat, )*)])*
-        #[doc = r#"
-            Performs a horizontal max of all elements in the provided vector `a` of size `dims`
-            returning the max value.
-
-            ### Pseudocode
-
-            ```ignore
-            result = -inf
-
-            for i in range(dims):
-                result = max(result, a[i])
-
-            return result
-            ```
-
-            # Safety
-
-            This routine assumes:
-        "#]
+        #[doc = include_str!("../export_docs/cmp_max_horizontal.md")]
         $(
 
             #[doc = concat!("- ", $("**`+", $feat, "`** ", )*)]
@@ -212,25 +158,7 @@ macro_rules! define_min_impls {
     ) => {
         #[inline]
         $(#[target_feature($(enable = $feat, )*)])*
-        #[doc = r#"
-            Takes the element wise min of two vectors of size `dims` and stores the result
-            in `result` of size `dims`.
-
-            ### Pseudocode
-
-            ```ignore
-            result = [0; dims]
-
-            for i in range(dims):
-                result[i] = min(a[i], b[i])
-
-            return result
-            ```
-
-            # Safety
-
-            This routine assumes:
-        "#]
+        #[doc = include_str!("../export_docs/cmp_min_vector.md")]
         $(
 
             #[doc = concat!("- ", $("**`+", $feat, "`** ", )*)]
@@ -262,25 +190,7 @@ macro_rules! define_min_impls {
 
         #[inline]
         $(#[target_feature($(enable = $feat, )*)])*
-        #[doc = r#"
-            Takes the element wise min of the provided broadcast value and a vector of size `dims`
-            and stores the result in `result` of size `dims`.
-
-            ### Pseudocode
-
-            ```ignore
-            result = [0; dims]
-
-            for i in range(dims):
-                result[i] = min(value, a[i])
-
-            return result
-            ```
-
-            # Safety
-
-            This routine assumes:
-        "#]
+        #[doc = include_str!("../export_docs/cmp_min_value.md")]
         $(
 
             #[doc = concat!("- ", $("**`+", $feat, "`** ", )*)]
@@ -313,25 +223,7 @@ macro_rules! define_min_impls {
 
         #[inline]
         $(#[target_feature($(enable = $feat, )*)])*
-        #[doc = r#"
-            Performs a horizontal min of all elements in the provided vector `a` of size `dims`
-            returning the min value.
-
-            ### Pseudocode
-
-            ```ignore
-            result = -inf
-
-            for i in range(dims):
-                result = min(result, a[i])
-
-            return result
-            ```
-
-            # Safety
-
-            This routine assumes:
-        "#]
+        #[doc = include_str!("../export_docs/cmp_min_horizontal.md")]
         $(
 
             #[doc = concat!("- ", $("**`+", $feat, "`** ", )*)]
