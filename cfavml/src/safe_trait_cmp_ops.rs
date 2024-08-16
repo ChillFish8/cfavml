@@ -172,7 +172,7 @@ macro_rules! cmp_ops {
 
             fn max_value<B>(dims: usize, value: Self, a: &[Self], result: &mut [B])
             where
-                for<'a> &'a mut [B]: WriteOnlyBuffer<Item=Self>,
+                for<'a> &'a mut [B]: WriteOnlyBuffer<Item = Self>,
             {
                 assert_eq!(a.len(), dims, "Input vector `a` does not match size `dims`");
                 assert_eq!(
@@ -194,7 +194,7 @@ macro_rules! cmp_ops {
 
             fn max_vector<B>(dims: usize, a: &[Self], b: &[Self], result: &mut [B])
             where
-                for<'a> &'a mut [B]: WriteOnlyBuffer<Item=Self>,
+                for<'a> &'a mut [B]: WriteOnlyBuffer<Item = Self>,
             {
                 assert_eq!(a.len(), dims, "Input vector `a` does not match size `dims`");
                 assert_eq!(b.len(), dims, "Input vector `b` does not match size `dims`");
@@ -231,7 +231,7 @@ macro_rules! cmp_ops {
 
             fn min_value<B>(dims: usize, value: Self, a: &[Self], result: &mut [B])
             where
-                for<'a> &'a mut [B]: WriteOnlyBuffer<Item=Self>,
+                for<'a> &'a mut [B]: WriteOnlyBuffer<Item = Self>,
             {
                 assert_eq!(a.len(), dims, "Input vector `a` does not match size `dims`");
                 assert_eq!(
@@ -253,7 +253,7 @@ macro_rules! cmp_ops {
 
             fn min_vector<B>(dims: usize, a: &[Self], b: &[Self], result: &mut [B])
             where
-                for<'a> &'a mut [B]: WriteOnlyBuffer<Item=Self>,
+                for<'a> &'a mut [B]: WriteOnlyBuffer<Item = Self>,
             {
                 assert_eq!(a.len(), dims, "Input vector `a` does not match size `dims`");
                 assert_eq!(b.len(), dims, "Input vector `b` does not match size `dims`");
@@ -274,7 +274,7 @@ macro_rules! cmp_ops {
                 }
             }
         }
-    }
+    };
 }
 
 cmp_ops!(f32);
