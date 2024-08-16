@@ -64,7 +64,7 @@ define_sum_impl!(generic_avx2_sum, Avx2, target_features = "avx2");
 #[cfg(all(any(target_arch = "x86", target_arch = "x86_64"), feature = "nightly"))]
 define_sum_impl!(generic_avx512_sum, Avx512, target_features = "avx512f");
 #[cfg(target_arch = "aarch64")]
-define_sum_impl!(generic_neon_nofma_sum, Neon, target_features = "neon");
+define_sum_impl!(generic_neon_sum, Neon, target_features = "neon");
 
 #[cfg(test)]
 mod tests {

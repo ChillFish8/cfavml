@@ -466,14 +466,14 @@ define_arithmetic_impls!(
 );
 #[cfg(target_arch = "aarch64")]
 define_arithmetic_impls!(
-    add_value = generic_neon_nofma_add_value,
-    add_vector = generic_neon_nofma_add_vector,
-    sub_value = generic_neon_nofma_sub_value,
-    sub_vector = generic_neon_nofma_sub_vector,
-    mul_value = generic_neon_nofma_mul_value,
-    mul_vector = generic_neon_nofma_mul_vector,
-    div_value = generic_neon_nofma_div_value,
-    div_vector = generic_neon_nofma_div_vector,
+    add_value = generic_neon_add_value,
+    add_vector = generic_neon_add_vector,
+    sub_value = generic_neon_sub_value,
+    sub_vector = generic_neon_sub_vector,
+    mul_value = generic_neon_mul_value,
+    mul_vector = generic_neon_mul_vector,
+    div_value = generic_neon_div_value,
+    div_vector = generic_neon_div_vector,
     Neon,
     target_features = "neon"
 );

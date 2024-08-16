@@ -195,9 +195,9 @@ define_max_impls!(
 );
 #[cfg(target_arch = "aarch64")]
 define_max_impls!(
-    vertical = generic_neon_nofma_max_vector,
-    value = generic_neon_nofma_max_value,
-    horizontal = generic_neon_nofma_max_horizontal,
+    vertical = generic_neon_max_vector,
+    value = generic_neon_max_value,
+    horizontal = generic_neon_max_horizontal,
     Neon,
     target_features = "neon"
 );
@@ -382,9 +382,9 @@ define_min_impls!(
 );
 #[cfg(target_arch = "aarch64")]
 define_min_impls!(
-    vertical = generic_neon_nofma_min_vector,
-    value = generic_neon_nofma_min_value,
-    horizontal = generic_neon_nofma_min_horizontal,
+    vertical = generic_neon_min_vector,
+    value = generic_neon_min_value,
+    horizontal = generic_neon_min_horizontal,
     Neon,
     target_features = "neon"
 );
