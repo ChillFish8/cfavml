@@ -55,14 +55,14 @@ all-features = true
 rustdoc-args = ["--cfg", "docsrs"]
 
 [[bench]]
-name = "bench_distance_measures"
+name = "bench_distance_ops"
 harness = false
-#
-# [[bench]]
-# name = "bench_min_max_sum"
-# harness = false
 
-# [[bench]]
-# name = "bench_arithmetic"
-# harness = false
+[[bench]]
+name = "bench_agg_ops"
+harness = false
+
+[[bench]]
+name = "bench_cmp_ops"
+harness = false
 
