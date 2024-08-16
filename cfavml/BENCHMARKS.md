@@ -113,7 +113,7 @@ power management:
 - [Run 2024-08-16](benchmark-runs/hetzner-cx52-intel-cfavml-v0_2_0-2024-08-16.txt)
 
 
-## Bencharmks - Ampere (ARM)
+## Benchmarks - Ampere (ARM)
 
 Ran on a Hetzner `CAX41 Ampere ARM 64-bit`.
 
@@ -125,3 +125,49 @@ Ndarray compiled with openblas installed via `libopenblas-dev`.
 ### Results
 
 - [Run 2024-08-16](benchmark-runs/hetzner-cax41-ampere-cfavml-v0_2_0-2024-08-16.txt)
+
+
+## Benchmarks - AMD Ryzen™ 7 
+
+Ran on a Hetzner AX42 (`AMD Ryzen™ 7 PRO 8700GE`)
+
+CPU Supports `AVX512`, `AVX2`, `FMA` and the `SSE` families.
+
+Ndarray compiled with openblas installed via `libopenblas-dev`.
+`OMP_NUM_THRESD=1`
+
+#### CPU Info
+
+```
+processor	: 0
+vendor_id	: AuthenticAMD
+cpu family	: 25
+model		: 117
+model name	: AMD Ryzen 7 PRO 8700GE w/ Radeon 780M Graphics
+stepping	: 2
+microcode	: 0xa705203
+cpu MHz		: 400.000
+cache size	: 1024 KB
+physical id	: 0
+siblings	: 16
+core id		: 0
+cpu cores	: 8
+apicid		: 0
+initial apicid	: 0
+fpu		: yes
+fpu_exception	: yes
+cpuid level	: 16
+wp		: yes
+flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ht syscall nx mmxext fxsr_opt pdpe1gb rdtscp lm constant_tsc rep_good amd_lbr_v2 nopl nonstop_tsc cpuid extd_apicid aperfmperf rapl pni pclmulqdq monitor ssse3 fma cx16 sse4_1 sse4_2 movbe popcnt aes xsave avx f16c rdrand lahf_lm cmp_legacy svm extapic cr8_legacy abm sse4a misalignsse 3dnowprefetch osvw ibs skinit wdt tce topoext perfctr_core perfctr_nb bpext perfctr_llc mwaitx cpb cat_l3 cdp_l3 hw_pstate ssbd mba perfmon_v2 ibrs ibpb stibp ibrs_enhanced vmmcall fsgsbase bmi1 avx2 smep bmi2 erms invpcid cqm rdt_a avx512f avx512dq rdseed adx smap avx512ifma clflushopt clwb avx512cd sha_ni avx512bw avx512vl xsaveopt xsavec xgetbv1 xsaves cqm_llc cqm_occup_llc cqm_mbm_total cqm_mbm_local user_shstk avx512_bf16 clzero irperf xsaveerptr rdpru wbnoinvd cppc arat npt lbrv svm_lock nrip_save tsc_scale vmcb_clean flushbyasid decodeassists pausefilter pfthreshold avic v_vmsave_vmload vgif x2avic v_spec_ctrl vnmi avx512vbmi umip pku ospke avx512_vbmi2 gfni vaes vpclmulqdq avx512_vnni avx512_bitalg avx512_vpopcntdq rdpid overflow_recov succor smca fsrm flush_l1d
+bugs		: sysret_ss_attrs spectre_v1 spectre_v2 spec_store_bypass srso
+bogomips	: 7300.52
+TLB size	: 3584 4K pages
+clflush size	: 64
+cache_alignment	: 64
+address sizes	: 48 bits physical, 48 bits virtual
+power management: ts ttp tm hwpstate cpb eff_freq_ro [13] [14] [15]
+```
+
+### Results
+
+- [Run 2024-08-16](benchmark-runs/hetzner-ax42-amd-cfavml-v0_2_0-2024-08-16)
