@@ -449,6 +449,7 @@ define_arithmetic_impls!(
     div_value = generic_avx2_div_value,
     div_vector = generic_avx2_div_vector,
     Avx2,
+    target_features = "avx2"
 );
 #[cfg(all(any(target_arch = "x86", target_arch = "x86_64"), feature = "nightly"))]
 define_arithmetic_impls!(
@@ -461,6 +462,7 @@ define_arithmetic_impls!(
     div_value = generic_avx512_div_value,
     div_vector = generic_avx512_div_vector,
     Avx512,
+    target_features = "avx512f"
 );
 #[cfg(target_arch = "aarch64")]
 define_arithmetic_impls!(
@@ -473,6 +475,7 @@ define_arithmetic_impls!(
     div_value = generic_neon_nofma_div_value,
     div_vector = generic_neon_nofma_div_vector,
     Neon,
+    target_features = "neon"
 );
 
 #[cfg(test)]

@@ -183,6 +183,7 @@ define_max_impls!(
     value = generic_avx2_max_value,
     horizontal = generic_avx2_max_horizontal,
     Avx2,
+    target_features = "avx2"
 );
 #[cfg(all(any(target_arch = "x86", target_arch = "x86_64"), feature = "nightly"))]
 define_max_impls!(
@@ -190,6 +191,7 @@ define_max_impls!(
     value = generic_avx512_max_value,
     horizontal = generic_avx512_max_horizontal,
     Avx512,
+    target_features = "avx512f"
 );
 #[cfg(target_arch = "aarch64")]
 define_max_impls!(
@@ -197,6 +199,7 @@ define_max_impls!(
     value = generic_neon_nofma_max_value,
     horizontal = generic_neon_nofma_max_horizontal,
     Neon,
+    target_features = "neon"
 );
 
 macro_rules! define_min_impls {
@@ -367,6 +370,7 @@ define_min_impls!(
     value = generic_avx2_min_value,
     horizontal = generic_avx2_min_horizontal,
     Avx2,
+    target_features = "avx2"
 );
 #[cfg(all(any(target_arch = "x86", target_arch = "x86_64"), feature = "nightly"))]
 define_min_impls!(
@@ -374,6 +378,7 @@ define_min_impls!(
     value = generic_avx512_min_value,
     horizontal = generic_avx512_min_horizontal,
     Avx512,
+    target_features = "avx512f"
 );
 #[cfg(target_arch = "aarch64")]
 define_min_impls!(
@@ -381,6 +386,7 @@ define_min_impls!(
     value = generic_neon_nofma_min_value,
     horizontal = generic_neon_nofma_min_horizontal,
     Neon,
+    target_features = "neon"
 );
 
 #[cfg(test)]
