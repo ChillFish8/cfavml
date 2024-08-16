@@ -153,122 +153,137 @@ pub trait CmpOps: Sized {
         for<'a> &'a mut [B]: WriteOnlyBuffer<Item = Self>;
 }
 
-impl CmpOps for f32 {
-    fn max_horizontal(dims: usize, a: &[Self]) -> Self {
-        assert_eq!(a.len(), dims, "Input vector `a` does not match size `dims`");
+macro_rules! cmp_ops {
+    ($t:ty) => {
+        impl CmpOps for $t {
+            fn max_horizontal(dims: usize, a: &[Self]) -> Self {
+                assert_eq!(a.len(), dims, "Input vector `a` does not match size `dims`");
 
-        unsafe {
-            crate::dispatch!(
-                avx512 = export_cmp_ops::generic_avx512_max_horizontal,
-                avx2 = export_cmp_ops::generic_avx2_max_horizontal,
-                neon = export_cmp_ops::generic_neon_max_horizontal,
-                fallback = export_cmp_ops::generic_fallback_max_horizontal,
-                args = (dims, a)
-            )
-        }
-    }
+                unsafe {
+                    crate::dispatch!(
+                        avx512 = export_cmp_ops::generic_avx512_max_horizontal,
+                        avx2 = export_cmp_ops::generic_avx2_max_horizontal,
+                        neon = export_cmp_ops::generic_neon_max_horizontal,
+                        fallback = export_cmp_ops::generic_fallback_max_horizontal,
+                        args = (dims, a)
+                    )
+                }
+            }
 
-    fn max_value<B>(dims: usize, value: Self, a: &[Self], result: &mut [B])
-    where
-        for<'a> &'a mut [B]: WriteOnlyBuffer<Item = Self>,
-    {
-        assert_eq!(a.len(), dims, "Input vector `a` does not match size `dims`");
-        assert_eq!(
-            result.len(),
-            dims,
-            "Input vector `result` does not match size `dims`"
-        );
+            fn max_value<B>(dims: usize, value: Self, a: &[Self], result: &mut [B])
+            where
+                for<'a> &'a mut [B]: WriteOnlyBuffer<Item=Self>,
+            {
+                assert_eq!(a.len(), dims, "Input vector `a` does not match size `dims`");
+                assert_eq!(
+                    result.len(),
+                    dims,
+                    "Input vector `result` does not match size `dims`"
+                );
 
-        unsafe {
-            crate::dispatch!(
-                avx512 = export_cmp_ops::generic_avx512_max_value,
-                avx2 = export_cmp_ops::generic_avx2_max_value,
-                neon = export_cmp_ops::generic_neon_max_value,
-                fallback = export_cmp_ops::generic_fallback_max_value,
-                args = (dims, value, a, result)
-            )
-        }
-    }
+                unsafe {
+                    crate::dispatch!(
+                        avx512 = export_cmp_ops::generic_avx512_max_value,
+                        avx2 = export_cmp_ops::generic_avx2_max_value,
+                        neon = export_cmp_ops::generic_neon_max_value,
+                        fallback = export_cmp_ops::generic_fallback_max_value,
+                        args = (dims, value, a, result)
+                    )
+                }
+            }
 
-    fn max_vector<B>(dims: usize, a: &[Self], b: &[Self], result: &mut [B])
-    where
-        for<'a> &'a mut [B]: WriteOnlyBuffer<Item = Self>,
-    {
-        assert_eq!(a.len(), dims, "Input vector `a` does not match size `dims`");
-        assert_eq!(b.len(), dims, "Input vector `b` does not match size `dims`");
-        assert_eq!(
-            result.len(),
-            dims,
-            "Input vector `result` does not match size `dims`"
-        );
+            fn max_vector<B>(dims: usize, a: &[Self], b: &[Self], result: &mut [B])
+            where
+                for<'a> &'a mut [B]: WriteOnlyBuffer<Item=Self>,
+            {
+                assert_eq!(a.len(), dims, "Input vector `a` does not match size `dims`");
+                assert_eq!(b.len(), dims, "Input vector `b` does not match size `dims`");
+                assert_eq!(
+                    result.len(),
+                    dims,
+                    "Input vector `result` does not match size `dims`"
+                );
 
-        unsafe {
-            crate::dispatch!(
-                avx512 = export_cmp_ops::generic_avx512_max_vector,
-                avx2 = export_cmp_ops::generic_avx2_max_vector,
-                neon = export_cmp_ops::generic_neon_max_vector,
-                fallback = export_cmp_ops::generic_fallback_max_vector,
-                args = (dims, a, b, result)
-            )
-        }
-    }
+                unsafe {
+                    crate::dispatch!(
+                        avx512 = export_cmp_ops::generic_avx512_max_vector,
+                        avx2 = export_cmp_ops::generic_avx2_max_vector,
+                        neon = export_cmp_ops::generic_neon_max_vector,
+                        fallback = export_cmp_ops::generic_fallback_max_vector,
+                        args = (dims, a, b, result)
+                    )
+                }
+            }
 
-    fn min_horizontal(dims: usize, a: &[Self]) -> Self {
-        assert_eq!(a.len(), dims, "Input vector `a` does not match size `dims`");
+            fn min_horizontal(dims: usize, a: &[Self]) -> Self {
+                assert_eq!(a.len(), dims, "Input vector `a` does not match size `dims`");
 
-        unsafe {
-            crate::dispatch!(
-                avx512 = export_cmp_ops::generic_avx512_min_horizontal,
-                avx2 = export_cmp_ops::generic_avx2_min_horizontal,
-                neon = export_cmp_ops::generic_neon_min_horizontal,
-                fallback = export_cmp_ops::generic_fallback_min_horizontal,
-                args = (dims, a)
-            )
-        }
-    }
+                unsafe {
+                    crate::dispatch!(
+                        avx512 = export_cmp_ops::generic_avx512_min_horizontal,
+                        avx2 = export_cmp_ops::generic_avx2_min_horizontal,
+                        neon = export_cmp_ops::generic_neon_min_horizontal,
+                        fallback = export_cmp_ops::generic_fallback_min_horizontal,
+                        args = (dims, a)
+                    )
+                }
+            }
 
-    fn min_value<B>(dims: usize, value: Self, a: &[Self], result: &mut [B])
-    where
-        for<'a> &'a mut [B]: WriteOnlyBuffer<Item = Self>,
-    {
-        assert_eq!(a.len(), dims, "Input vector `a` does not match size `dims`");
-        assert_eq!(
-            result.len(),
-            dims,
-            "Input vector `result` does not match size `dims`"
-        );
+            fn min_value<B>(dims: usize, value: Self, a: &[Self], result: &mut [B])
+            where
+                for<'a> &'a mut [B]: WriteOnlyBuffer<Item=Self>,
+            {
+                assert_eq!(a.len(), dims, "Input vector `a` does not match size `dims`");
+                assert_eq!(
+                    result.len(),
+                    dims,
+                    "Input vector `result` does not match size `dims`"
+                );
 
-        unsafe {
-            crate::dispatch!(
-                avx512 = export_cmp_ops::generic_avx512_min_value,
-                avx2 = export_cmp_ops::generic_avx2_min_value,
-                neon = export_cmp_ops::generic_neon_min_value,
-                fallback = export_cmp_ops::generic_fallback_min_value,
-                args = (dims, value, a, result)
-            )
-        }
-    }
+                unsafe {
+                    crate::dispatch!(
+                        avx512 = export_cmp_ops::generic_avx512_min_value,
+                        avx2 = export_cmp_ops::generic_avx2_min_value,
+                        neon = export_cmp_ops::generic_neon_min_value,
+                        fallback = export_cmp_ops::generic_fallback_min_value,
+                        args = (dims, value, a, result)
+                    )
+                }
+            }
 
-    fn min_vector<B>(dims: usize, a: &[Self], b: &[Self], result: &mut [B])
-    where
-        for<'a> &'a mut [B]: WriteOnlyBuffer<Item = Self>,
-    {
-        assert_eq!(a.len(), dims, "Input vector `a` does not match size `dims`");
-        assert_eq!(b.len(), dims, "Input vector `b` does not match size `dims`");
-        assert_eq!(
-            result.len(),
-            dims,
-            "Input vector `result` does not match size `dims`"
-        );
+            fn min_vector<B>(dims: usize, a: &[Self], b: &[Self], result: &mut [B])
+            where
+                for<'a> &'a mut [B]: WriteOnlyBuffer<Item=Self>,
+            {
+                assert_eq!(a.len(), dims, "Input vector `a` does not match size `dims`");
+                assert_eq!(b.len(), dims, "Input vector `b` does not match size `dims`");
+                assert_eq!(
+                    result.len(),
+                    dims,
+                    "Input vector `result` does not match size `dims`"
+                );
 
-        unsafe {
-            crate::dispatch!(
-                avx512 = export_cmp_ops::generic_avx512_min_vector,
-                avx2 = export_cmp_ops::generic_avx2_min_vector,
-                neon = export_cmp_ops::generic_neon_min_vector,
-                fallback = export_cmp_ops::generic_fallback_min_vector,
-                args = (dims, a, b, result)
-            )
+                unsafe {
+                    crate::dispatch!(
+                        avx512 = export_cmp_ops::generic_avx512_min_vector,
+                        avx2 = export_cmp_ops::generic_avx2_min_vector,
+                        neon = export_cmp_ops::generic_neon_min_vector,
+                        fallback = export_cmp_ops::generic_fallback_min_vector,
+                        args = (dims, a, b, result)
+                    )
+                }
+            }
         }
     }
 }
+
+cmp_ops!(f32);
+cmp_ops!(f64);
+cmp_ops!(i8);
+cmp_ops!(i16);
+cmp_ops!(i32);
+cmp_ops!(i64);
+cmp_ops!(u8);
+cmp_ops!(u16);
+cmp_ops!(u32);
+cmp_ops!(u64);

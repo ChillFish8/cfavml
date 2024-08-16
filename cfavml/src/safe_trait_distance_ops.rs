@@ -93,7 +93,6 @@ pub trait DistanceOps: Sized {
 macro_rules! float_distance_ops {
     ($t:ty) => {
         impl DistanceOps for $t {
-            #[inline]
             fn cosine(dims: usize, a: &[Self], b: &[Self]) -> Self {
                 assert_eq!(a.len(), dims, "Input vector `a` does not match size `dims`");
                 assert_eq!(b.len(), dims, "Input vector `b` does not match size `dims`");
@@ -110,7 +109,6 @@ macro_rules! float_distance_ops {
                 }
             }
 
-            #[inline]
             fn dot(dims: usize, a: &[Self], b: &[Self]) -> Self {
                 assert_eq!(a.len(), dims, "Input vector `a` does not match size `dims`");
                 assert_eq!(b.len(), dims, "Input vector `b` does not match size `dims`");
@@ -127,7 +125,6 @@ macro_rules! float_distance_ops {
                 }
             }
 
-            #[inline]
             fn squared_euclidean(dims: usize, a: &[Self], b: &[Self]) -> Self {
                 assert_eq!(a.len(), dims, "Input vector `a` does not match size `dims`");
                 assert_eq!(b.len(), dims, "Input vector `b` does not match size `dims`");
@@ -145,7 +142,6 @@ macro_rules! float_distance_ops {
                 }
             }
 
-            #[inline]
             fn squared_norm(dims: usize, a: &[Self]) -> Self {
                 assert_eq!(a.len(), dims, "Input vector `a` does not match size `dims`");
 
@@ -167,7 +163,6 @@ macro_rules! float_distance_ops {
 macro_rules! scalar_distance_ops {
     ($t:ty) => {
         impl DistanceOps for $t {
-            #[inline]
             fn cosine(dims: usize, a: &[Self], b: &[Self]) -> Self {
                 assert_eq!(a.len(), dims, "Input vector `a` does not match size `dims`");
                 assert_eq!(b.len(), dims, "Input vector `b` does not match size `dims`");
@@ -183,7 +178,6 @@ macro_rules! scalar_distance_ops {
                 }
             }
 
-            #[inline]
             fn dot(dims: usize, a: &[Self], b: &[Self]) -> Self {
                 assert_eq!(a.len(), dims, "Input vector `a` does not match size `dims`");
                 assert_eq!(b.len(), dims, "Input vector `b` does not match size `dims`");
@@ -199,7 +193,6 @@ macro_rules! scalar_distance_ops {
                 }
             }
 
-            #[inline]
             fn squared_euclidean(dims: usize, a: &[Self], b: &[Self]) -> Self {
                 assert_eq!(a.len(), dims, "Input vector `a` does not match size `dims`");
                 assert_eq!(b.len(), dims, "Input vector `b` does not match size `dims`");
@@ -216,7 +209,6 @@ macro_rules! scalar_distance_ops {
                 }
             }
 
-            #[inline]
             fn squared_norm(dims: usize, a: &[Self]) -> Self {
                 assert_eq!(a.len(), dims, "Input vector `a` does not match size `dims`");
 
