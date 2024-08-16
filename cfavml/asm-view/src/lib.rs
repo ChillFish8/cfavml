@@ -301,7 +301,7 @@ pub mod neon_ops {
 
     export_distance_op!(f32, Neon, generic_cosine, features = "neon");
     export_distance_op!(f32, Neon, generic_dot, features = "neon");
-    export_distance_op!(f32, Neon, generic_euclidean, features = "neon");
+    export_distance_op!(f32, Neon, generic_squared_euclidean, features = "neon");
     export_vector_x_vector_op!(f32, Neon, generic_add_vector, features = "neon");
     export_vector_x_vector_op!(f32, Neon, generic_sub_vector, features = "neon");
     export_vector_x_vector_op!(f32, Neon, generic_mul_vector, features = "neon");
@@ -313,7 +313,7 @@ pub mod neon_ops {
 
     export_distance_op!(f64, Neon, generic_cosine, features = "neon");
     export_distance_op!(f64, Neon, generic_dot, features = "neon");
-    export_distance_op!(f64, Neon, generic_euclidean, features = "neon");
+    export_distance_op!(f64, Neon, generic_squared_euclidean, features = "neon");
     export_vector_x_vector_op!(f64, Neon, generic_add_vector, features = "neon");
     export_vector_x_vector_op!(f64, Neon, generic_sub_vector, features = "neon");
     export_vector_x_vector_op!(f64, Neon, generic_mul_vector, features = "neon");

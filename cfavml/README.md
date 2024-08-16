@@ -99,7 +99,7 @@ This trait, combined with the `Math<T>` trait form the core of all operations an
 provided as generic functions (with no target features):
 
 - `generic_dot`
-- `generic_euclidean`
+- `generic_squared_euclidean`
 - `generic_cosine`
 - `generic_squared_norm`
 - `generic_max_horizontal`
