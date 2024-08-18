@@ -240,7 +240,7 @@ pub(crate) mod tests {
 
         let dims = l1.len();
         let mut result = vec![AutoMath::zero(); dims];
-        generic_cmp_eq_vector::<T, R, AutoMath, _>(dims, &l1, &l2, &mut result);
+        generic_cmp_neq_vector::<T, R, AutoMath, _>(dims, &l1, &l2, &mut result);
 
         let mut expected_result = Vec::new();
         for (a, b) in zip(l1, l2) {
@@ -260,7 +260,7 @@ pub(crate) mod tests {
 
         let dims = l1.len();
         let mut result = vec![AutoMath::zero(); dims];
-        generic_cmp_eq_vector::<T, R, AutoMath, _>(dims, &l1, &l2, &mut result);
+        generic_cmp_lt_vector::<T, R, AutoMath, _>(dims, &l1, &l2, &mut result);
 
         let mut expected_result = Vec::new();
         for (a, b) in zip(l1, l2) {
@@ -280,7 +280,7 @@ pub(crate) mod tests {
 
         let dims = l1.len();
         let mut result = vec![AutoMath::zero(); dims];
-        generic_cmp_eq_vector::<T, R, AutoMath, _>(dims, &l1, &l2, &mut result);
+        generic_cmp_lte_vector::<T, R, AutoMath, _>(dims, &l1, &l2, &mut result);
 
         let mut expected_result = Vec::new();
         for (a, b) in zip(l1, l2) {
@@ -300,7 +300,7 @@ pub(crate) mod tests {
 
         let dims = l1.len();
         let mut result = vec![AutoMath::zero(); dims];
-        generic_cmp_eq_vector::<T, R, AutoMath, _>(dims, &l1, &l2, &mut result);
+        generic_cmp_gt_vector::<T, R, AutoMath, _>(dims, &l1, &l2, &mut result);
 
         let mut expected_result = Vec::new();
         for (a, b) in zip(l1, l2) {
@@ -320,7 +320,7 @@ pub(crate) mod tests {
 
         let dims = l1.len();
         let mut result = vec![AutoMath::zero(); dims];
-        generic_cmp_eq_vector::<T, R, AutoMath, _>(dims, &l1, &l2, &mut result);
+        generic_cmp_gte_vector::<T, R, AutoMath, _>(dims, &l1, &l2, &mut result);
 
         let mut expected_result = Vec::new();
         for (a, b) in zip(l1, l2) {

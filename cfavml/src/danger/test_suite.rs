@@ -65,21 +65,33 @@ macro_rules! test_suite {
             }
 
             #[test]
-            fn [<test_ $im:lower _ $t _vector_x_value>]() {
+            fn [<test_ $im:lower _ $t _arithmetic_value>]() {
                 let (l1, _) = (vec![1 as $t; 1043], vec![3 as $t; 1043]);
-                test_vector_x_value_all::<$t, $im>(l1, 2 as $t);
+                test_arithmetic_value_all::<$t, $im>(l1, 2 as $t);
             }
 
             #[test]
-            fn [<test_ $im:lower _ $t _vector_x_vector>]() {
+            fn [<test_ $im:lower _ $t _arithmetic_vector>]() {
                 let (l1, l2) = (vec![1 as $t; 1043], vec![3 as $t; 1043]);
-                test_vector_x_vector_all::<$t, $im>(l1, l2);
+                test_arithmetic_vector_all::<$t, $im>(l1, l2);
+            }
+            
+            #[test]
+            fn [<test_ $im:lower _ $t _cmp_value>]() {
+                let (l1, _) = (vec![1 as $t; 1043], vec![3 as $t; 1043]);
+                test_cmp_value_all::<$t, $im>(l1, 2 as $t);
+            }
+
+            #[test]
+            fn [<test_ $im:lower _ $t _cmp_vector>]() {
+                let (l1, l2) = (vec![1 as $t; 1043], vec![3 as $t; 1043]);
+                test_cmp_vector_all::<$t, $im>(l1, l2);
             }
         }
     };
 }
 
-fn test_vector_x_value_all<T: Copy + PartialEq + Debug, R>(l1: Vec<T>, value: T)
+fn test_arithmetic_value_all<T: Copy + PartialEq + Debug, R>(l1: Vec<T>, value: T)
 where
     R: SimdRegister<T>,
     AutoMath: Math<T>,
@@ -93,7 +105,7 @@ where
     };
 }
 
-fn test_vector_x_vector_all<T: Copy + PartialEq + Debug, R>(l1: Vec<T>, l2: Vec<T>)
+fn test_arithmetic_vector_all<T: Copy + PartialEq + Debug, R>(l1: Vec<T>, l2: Vec<T>)
 where
     R: SimdRegister<T>,
     AutoMath: Math<T>,
@@ -104,6 +116,37 @@ where
         op_arithmetic_vector::tests::test_sub::<_, R>(l1.clone(), l2.clone());
         op_arithmetic_vector::tests::test_div::<_, R>(l1.clone(), l2.clone());
         op_arithmetic_vector::tests::test_mul::<_, R>(l1, l2);
+    };
+}
+fn test_cmp_vector_all<T: Copy + PartialEq + Debug, R>(l1: Vec<T>, l2: Vec<T>)
+where
+    R: SimdRegister<T>,
+    AutoMath: Math<T>,
+    for<'a> &'a mut [T]: WriteOnlyBuffer<Item = T>,
+{
+    unsafe {
+        op_cmp_vector::tests::test_eq::<_, R>(l1.clone(), l2.clone());
+        op_cmp_vector::tests::test_neq::<_, R>(l1.clone(), l2.clone());
+        op_cmp_vector::tests::test_lt::<_, R>(l1.clone(), l2.clone());
+        op_cmp_vector::tests::test_lte::<_, R>(l1.clone(), l2.clone());
+        op_cmp_vector::tests::test_gt::<_, R>(l1.clone(), l2.clone());
+        op_cmp_vector::tests::test_gte::<_, R>(l1, l2);
+    };
+}
+
+fn test_cmp_value_all<T: Copy + PartialEq + Debug, R>(l1: Vec<T>, value: T)
+where
+    R: SimdRegister<T>,
+    AutoMath: Math<T>,
+    for<'a> &'a mut [T]: WriteOnlyBuffer<Item = T>,
+{
+    unsafe {
+        op_cmp_value::tests::test_eq::<_, R>(l1.clone(), value);
+        op_cmp_value::tests::test_neq::<_, R>(l1.clone(), value);
+        op_cmp_value::tests::test_lt::<_, R>(l1.clone(), value);
+        op_cmp_value::tests::test_lte::<_, R>(l1.clone(), value);
+        op_cmp_value::tests::test_gt::<_, R>(l1.clone(), value);
+        op_cmp_value::tests::test_gte::<_, R>(l1, value);
     };
 }
 
