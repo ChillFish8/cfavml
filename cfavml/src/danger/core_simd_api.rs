@@ -29,6 +29,18 @@ macro_rules! apply_dense {
             h: $op($l1.h),
         }
     }};
+    ($op:expr, $l1:ident, value = $l2:expr) => {{
+        DenseLane {
+            a: $op($l1.a, $l2),
+            b: $op($l1.b, $l2),
+            c: $op($l1.c, $l2),
+            d: $op($l1.d, $l2),
+            e: $op($l1.e, $l2),
+            f: $op($l1.f, $l2),
+            g: $op($l1.g, $l2),
+            h: $op($l1.h, $l2),
+        }
+    }};
     ($op:expr, $l1:ident, $l2:ident) => {{
         DenseLane {
             a: $op($l1.a, $l2.a),

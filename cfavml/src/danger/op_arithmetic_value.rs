@@ -1,7 +1,7 @@
-use crate::buffer::WriteOnlyBuffer;
-use super::core_simd_api::SimdRegister;
-use crate::math::Math;
 use super::core_routine_boilerplate::apply_vector_x_value_kernel;
+use super::core_simd_api::SimdRegister;
+use crate::buffer::WriteOnlyBuffer;
+use crate::math::Math;
 
 #[inline(always)]
 /// A generic vector addition implementation over one vector and single value.
@@ -127,7 +127,6 @@ pub unsafe fn generic_div_value<T, R, M, B>(
         M::div,
     )
 }
-
 
 #[cfg(test)]
 pub(crate) mod tests {

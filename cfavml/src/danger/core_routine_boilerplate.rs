@@ -1,7 +1,6 @@
 use crate::buffer::WriteOnlyBuffer;
 use crate::danger::{DenseLane, SimdRegister};
 
-
 #[inline(always)]
 pub(crate) unsafe fn apply_vector_x_value_kernel<T, R, B>(
     dims: usize,

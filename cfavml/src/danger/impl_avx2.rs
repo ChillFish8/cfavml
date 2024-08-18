@@ -427,8 +427,7 @@ impl SimdRegister<i8> for Avx2 {
     #[inline(always)]
     unsafe fn gte(l1: Self::Register, l2: Self::Register) -> Self::Register {
         let swapped_cmp = _mm256_cmpgt_epi8(l2, l1);
-        let mask = _mm256_xor_si256(swapped_cmp, _mm256_set1_epi8(-1));
-        _mm256_and_si256(mask, _mm256_set1_epi8(1))
+        _mm256_andnot_si256(swapped_cmp, _mm256_set1_epi8(1))
     }
 
     #[inline(always)]
@@ -457,6 +456,62 @@ impl SimdRegister<i8> for Avx2 {
     ) -> DenseLane<Self::Register> {
         let res = <Self as SimdRegister<i8>>::mul_dense(l1, l2);
         <Self as SimdRegister<i8>>::add_dense(res, acc)
+    }
+
+    #[inline(always)]
+    unsafe fn eq_dense(
+        l1: DenseLane<Self::Register>,
+        l2: DenseLane<Self::Register>,
+    ) -> DenseLane<Self::Register> {
+        let mask = apply_dense!(_mm256_cmpeq_epi8, l1, l2);
+        apply_dense!(_mm256_and_si256, mask, value = _mm256_set1_epi8(1))
+    }
+
+    #[inline(always)]
+    unsafe fn neq_dense(
+        l1: DenseLane<Self::Register>,
+        l2: DenseLane<Self::Register>,
+    ) -> DenseLane<Self::Register> {
+        let mask = apply_dense!(_mm256_cmpeq_epi8, l1, l2);
+        apply_dense!(_mm256_andnot_si256, mask, value = _mm256_set1_epi8(1))
+    }
+
+    #[inline(always)]
+    unsafe fn lt_dense(
+        l1: DenseLane<Self::Register>,
+        l2: DenseLane<Self::Register>,
+    ) -> DenseLane<Self::Register> {
+        <Self as SimdRegister<i8>>::gt_dense(l2, l1)
+    }
+
+    #[inline(always)]
+    unsafe fn lte_dense(
+        l1: DenseLane<Self::Register>,
+        l2: DenseLane<Self::Register>,
+    ) -> DenseLane<Self::Register> {
+        <Self as SimdRegister<i8>>::gte_dense(l2, l1)
+    }
+
+    #[inline(always)]
+    unsafe fn gt_dense(
+        l1: DenseLane<Self::Register>,
+        l2: DenseLane<Self::Register>,
+    ) -> DenseLane<Self::Register> {
+        let mask = apply_dense!(_mm256_cmpgt_epi8, l1, l2);
+        apply_dense!(_mm256_and_si256, mask, value = _mm256_set1_epi8(1))
+    }
+
+    #[inline(always)]
+    unsafe fn gte_dense(
+        l1: DenseLane<Self::Register>,
+        l2: DenseLane<Self::Register>,
+    ) -> DenseLane<Self::Register> {
+        let swapped_cmp = apply_dense!(_mm256_cmpgt_epi8, l2, l1);
+        apply_dense!(
+            _mm256_andnot_si256,
+            swapped_cmp,
+            value = _mm256_set1_epi8(1)
+        )
     }
 
     #[inline(always)]
@@ -689,6 +744,62 @@ impl SimdRegister<i16> for Avx2 {
     }
 
     #[inline(always)]
+    unsafe fn eq_dense(
+        l1: DenseLane<Self::Register>,
+        l2: DenseLane<Self::Register>,
+    ) -> DenseLane<Self::Register> {
+        let mask = apply_dense!(_mm256_cmpeq_epi16, l1, l2);
+        apply_dense!(_mm256_srli_epi16::<15>, mask)
+    }
+
+    #[inline(always)]
+    unsafe fn neq_dense(
+        l1: DenseLane<Self::Register>,
+        l2: DenseLane<Self::Register>,
+    ) -> DenseLane<Self::Register> {
+        let mask = apply_dense!(_mm256_cmpeq_epi16, l1, l2);
+        apply_dense!(_mm256_andnot_si256, mask, value = _mm256_set1_epi16(1))
+    }
+
+    #[inline(always)]
+    unsafe fn lt_dense(
+        l1: DenseLane<Self::Register>,
+        l2: DenseLane<Self::Register>,
+    ) -> DenseLane<Self::Register> {
+        <Self as SimdRegister<i16>>::gt_dense(l2, l1)
+    }
+
+    #[inline(always)]
+    unsafe fn lte_dense(
+        l1: DenseLane<Self::Register>,
+        l2: DenseLane<Self::Register>,
+    ) -> DenseLane<Self::Register> {
+        <Self as SimdRegister<i16>>::gte_dense(l2, l1)
+    }
+
+    #[inline(always)]
+    unsafe fn gt_dense(
+        l1: DenseLane<Self::Register>,
+        l2: DenseLane<Self::Register>,
+    ) -> DenseLane<Self::Register> {
+        let mask = apply_dense!(_mm256_cmpgt_epi16, l1, l2);
+        apply_dense!(_mm256_srli_epi16::<15>, mask)
+    }
+
+    #[inline(always)]
+    unsafe fn gte_dense(
+        l1: DenseLane<Self::Register>,
+        l2: DenseLane<Self::Register>,
+    ) -> DenseLane<Self::Register> {
+        let swapped_cmp = apply_dense!(_mm256_cmpgt_epi16, l2, l1);
+        apply_dense!(
+            _mm256_andnot_si256,
+            swapped_cmp,
+            value = _mm256_set1_epi16(1)
+        )
+    }
+
+    #[inline(always)]
     unsafe fn sum_to_value(reg: Self::Register) -> i16 {
         // There is a bit of an assumption the compile will optimize these scalar impls
         // out, but the SIMD version is a bit complicated and is difficult to get to
@@ -918,6 +1029,62 @@ impl SimdRegister<i32> for Avx2 {
     }
 
     #[inline(always)]
+    unsafe fn eq_dense(
+        l1: DenseLane<Self::Register>,
+        l2: DenseLane<Self::Register>,
+    ) -> DenseLane<Self::Register> {
+        let mask = apply_dense!(_mm256_cmpeq_epi32, l1, l2);
+        apply_dense!(_mm256_srli_epi32::<31>, mask)
+    }
+
+    #[inline(always)]
+    unsafe fn neq_dense(
+        l1: DenseLane<Self::Register>,
+        l2: DenseLane<Self::Register>,
+    ) -> DenseLane<Self::Register> {
+        let mask = apply_dense!(_mm256_cmpeq_epi32, l1, l2);
+        apply_dense!(_mm256_andnot_si256, mask, value = _mm256_set1_epi32(1))
+    }
+
+    #[inline(always)]
+    unsafe fn lt_dense(
+        l1: DenseLane<Self::Register>,
+        l2: DenseLane<Self::Register>,
+    ) -> DenseLane<Self::Register> {
+        <Self as SimdRegister<i32>>::gt_dense(l2, l1)
+    }
+
+    #[inline(always)]
+    unsafe fn lte_dense(
+        l1: DenseLane<Self::Register>,
+        l2: DenseLane<Self::Register>,
+    ) -> DenseLane<Self::Register> {
+        <Self as SimdRegister<i32>>::gte_dense(l2, l1)
+    }
+
+    #[inline(always)]
+    unsafe fn gt_dense(
+        l1: DenseLane<Self::Register>,
+        l2: DenseLane<Self::Register>,
+    ) -> DenseLane<Self::Register> {
+        let mask = apply_dense!(_mm256_cmpgt_epi32, l1, l2);
+        apply_dense!(_mm256_srli_epi32::<31>, mask)
+    }
+
+    #[inline(always)]
+    unsafe fn gte_dense(
+        l1: DenseLane<Self::Register>,
+        l2: DenseLane<Self::Register>,
+    ) -> DenseLane<Self::Register> {
+        let swapped_cmp = apply_dense!(_mm256_cmpgt_epi32, l2, l1);
+        apply_dense!(
+            _mm256_andnot_si256,
+            swapped_cmp,
+            value = _mm256_set1_epi32(1)
+        )
+    }
+
+    #[inline(always)]
     unsafe fn sum_to_value(reg: Self::Register) -> i32 {
         // There is a bit of an assumption the compile will optimize these scalar impls
         // out, but the SIMD version is a bit complicated and is difficult to get to
@@ -1074,7 +1241,7 @@ impl SimdRegister<i64> for Avx2 {
     #[inline(always)]
     unsafe fn eq(l1: Self::Register, l2: Self::Register) -> Self::Register {
         let mask = _mm256_cmpeq_epi64(l1, l2);
-        _mm256_and_si256(mask, _mm256_set1_epi64x(1))
+        _mm256_srli_epi64::<63>(mask)
     }
 
     #[inline(always)]
@@ -1139,6 +1306,62 @@ impl SimdRegister<i64> for Avx2 {
     ) -> DenseLane<Self::Register> {
         let res = <Self as SimdRegister<i64>>::mul_dense(l1, l2);
         <Self as SimdRegister<i64>>::add_dense(res, acc)
+    }
+
+    #[inline(always)]
+    unsafe fn eq_dense(
+        l1: DenseLane<Self::Register>,
+        l2: DenseLane<Self::Register>,
+    ) -> DenseLane<Self::Register> {
+        let mask = apply_dense!(_mm256_cmpeq_epi64, l1, l2);
+        apply_dense!(_mm256_srli_epi64::<63>, mask)
+    }
+
+    #[inline(always)]
+    unsafe fn neq_dense(
+        l1: DenseLane<Self::Register>,
+        l2: DenseLane<Self::Register>,
+    ) -> DenseLane<Self::Register> {
+        let mask = apply_dense!(_mm256_cmpeq_epi64, l1, l2);
+        apply_dense!(_mm256_andnot_si256, mask, value = _mm256_set1_epi64x(1))
+    }
+
+    #[inline(always)]
+    unsafe fn lt_dense(
+        l1: DenseLane<Self::Register>,
+        l2: DenseLane<Self::Register>,
+    ) -> DenseLane<Self::Register> {
+        <Self as SimdRegister<i64>>::gt_dense(l2, l1)
+    }
+
+    #[inline(always)]
+    unsafe fn lte_dense(
+        l1: DenseLane<Self::Register>,
+        l2: DenseLane<Self::Register>,
+    ) -> DenseLane<Self::Register> {
+        <Self as SimdRegister<i64>>::gte_dense(l2, l1)
+    }
+
+    #[inline(always)]
+    unsafe fn gt_dense(
+        l1: DenseLane<Self::Register>,
+        l2: DenseLane<Self::Register>,
+    ) -> DenseLane<Self::Register> {
+        let mask = apply_dense!(_mm256_cmpgt_epi64, l1, l2);
+        apply_dense!(_mm256_srli_epi64::<63>, mask)
+    }
+
+    #[inline(always)]
+    unsafe fn gte_dense(
+        l1: DenseLane<Self::Register>,
+        l2: DenseLane<Self::Register>,
+    ) -> DenseLane<Self::Register> {
+        let swapped_cmp = apply_dense!(_mm256_cmpgt_epi64, l2, l1);
+        apply_dense!(
+            _mm256_andnot_si256,
+            swapped_cmp,
+            value = _mm256_set1_epi64x(1)
+        )
     }
 
     #[inline(always)]
@@ -1316,6 +1539,105 @@ impl SimdRegister<u8> for Avx2 {
     ) -> DenseLane<Self::Register> {
         let res = <Self as SimdRegister<u8>>::mul_dense(l1, l2);
         <Self as SimdRegister<u8>>::add_dense(res, acc)
+    }
+
+    #[inline(always)]
+    unsafe fn eq_dense(
+        l1: DenseLane<Self::Register>,
+        l2: DenseLane<Self::Register>,
+    ) -> DenseLane<Self::Register> {
+        <Self as SimdRegister<i8>>::eq_dense(l1, l2)
+    }
+
+    #[inline(always)]
+    unsafe fn neq_dense(
+        l1: DenseLane<Self::Register>,
+        l2: DenseLane<Self::Register>,
+    ) -> DenseLane<Self::Register> {
+        <Self as SimdRegister<i8>>::neq_dense(l1, l2)
+    }
+
+    #[inline(always)]
+    unsafe fn lt_dense(
+        l1: DenseLane<Self::Register>,
+        l2: DenseLane<Self::Register>,
+    ) -> DenseLane<Self::Register> {
+        <Self as SimdRegister<u8>>::gt_dense(l2, l1)
+    }
+
+    #[inline(always)]
+    unsafe fn lte_dense(
+        l1: DenseLane<Self::Register>,
+        l2: DenseLane<Self::Register>,
+    ) -> DenseLane<Self::Register> {
+        <Self as SimdRegister<u8>>::gte_dense(l2, l1)
+    }
+
+    #[inline(always)]
+    unsafe fn gt_dense(
+        l1: DenseLane<Self::Register>,
+        l2: DenseLane<Self::Register>,
+    ) -> DenseLane<Self::Register> {
+        let sign = _mm256_set1_epi32(0x80_80_80_80u32 as i32);
+
+        // We have to split the dense lane operations up into specific parts
+        // because otherwise we run out of registers. Here we target no more than 16
+        // registers in use.
+        //
+        // Do the 1st quarter of the dense lane
+        let l1_a_xor = _mm256_xor_si256(l1.a, sign);
+        let l1_b_xor = _mm256_xor_si256(l1.b, sign);
+        let l2_a_xor = _mm256_xor_si256(l2.a, sign);
+        let l2_b_xor = _mm256_xor_si256(l2.b, sign);
+        let mask_a = _mm256_cmpgt_epi8(l1_a_xor, l2_a_xor);
+        let mask_b = _mm256_cmpgt_epi8(l1_b_xor, l2_b_xor);
+
+        // Do the 2nd quarter of the dense lane
+        let l2_c_xor = _mm256_xor_si256(l2.c, sign);
+        let l2_d_xor = _mm256_xor_si256(l2.d, sign);
+        let l1_c_xor = _mm256_xor_si256(l1.c, sign);
+        let l1_d_xor = _mm256_xor_si256(l1.d, sign);
+        let mask_c = _mm256_cmpgt_epi8(l1_c_xor, l2_c_xor);
+        let mask_d = _mm256_cmpgt_epi8(l1_d_xor, l2_d_xor);
+
+        // Do the 3rd quarter
+        let l1_e_xor = _mm256_xor_si256(l1.e, sign);
+        let l1_f_xor = _mm256_xor_si256(l1.f, sign);
+        let l2_e_xor = _mm256_xor_si256(l2.e, sign);
+        let l2_f_xor = _mm256_xor_si256(l2.f, sign);
+        let mask_e = _mm256_cmpgt_epi8(l1_e_xor, l2_e_xor);
+        let mask_f = _mm256_cmpgt_epi8(l1_f_xor, l2_f_xor);
+
+        // Do the 4th quarter
+        let l1_g_xor = _mm256_xor_si256(l1.g, sign);
+        let l1_h_xor = _mm256_xor_si256(l1.h, sign);
+        let l2_g_xor = _mm256_xor_si256(l2.g, sign);
+        let l2_h_xor = _mm256_xor_si256(l2.h, sign);
+        let mask_g = _mm256_cmpgt_epi8(l1_g_xor, l2_g_xor);
+        let mask_h = _mm256_cmpgt_epi8(l1_h_xor, l2_h_xor);
+
+        let mask = DenseLane {
+            a: mask_a,
+            b: mask_b,
+            c: mask_c,
+            d: mask_d,
+            e: mask_e,
+            f: mask_f,
+            g: mask_g,
+            h: mask_h,
+        };
+
+        apply_dense!(_mm256_and_si256, mask, value = _mm256_set1_epi8(1))
+    }
+
+    #[inline(always)]
+    unsafe fn gte_dense(
+        l1: DenseLane<Self::Register>,
+        l2: DenseLane<Self::Register>,
+    ) -> DenseLane<Self::Register> {
+        let maxed = apply_dense!(_mm256_max_epu8, l1, l2);
+        let mask = apply_dense!(_mm256_cmpeq_epi8, l1, maxed);
+        apply_dense!(_mm256_and_si256, mask, value = _mm256_set1_epi8(1))
     }
 
     #[inline(always)]
@@ -1512,7 +1834,7 @@ impl SimdRegister<u16> for Avx2 {
 
     #[inline(always)]
     unsafe fn gt(l1: Self::Register, l2: Self::Register) -> Self::Register {
-        let sign = _mm256_set1_epi32(0x80008000u32 as i32);
+        let sign = _mm256_set1_epi32(0x8000_8000u32 as i32);
         let l1_xor = _mm256_xor_si256(l1, sign);
         let l2_xor = _mm256_xor_si256(l2, sign);
         let mask = _mm256_cmpgt_epi16(l1_xor, l2_xor);
@@ -1545,6 +1867,105 @@ impl SimdRegister<u16> for Avx2 {
     ) -> DenseLane<Self::Register> {
         let res = <Self as SimdRegister<u16>>::mul_dense(l1, l2);
         <Self as SimdRegister<u16>>::add_dense(res, acc)
+    }
+
+    #[inline(always)]
+    unsafe fn eq_dense(
+        l1: DenseLane<Self::Register>,
+        l2: DenseLane<Self::Register>,
+    ) -> DenseLane<Self::Register> {
+        <Self as SimdRegister<i16>>::eq_dense(l1, l2)
+    }
+
+    #[inline(always)]
+    unsafe fn neq_dense(
+        l1: DenseLane<Self::Register>,
+        l2: DenseLane<Self::Register>,
+    ) -> DenseLane<Self::Register> {
+        <Self as SimdRegister<i16>>::neq_dense(l1, l2)
+    }
+
+    #[inline(always)]
+    unsafe fn lt_dense(
+        l1: DenseLane<Self::Register>,
+        l2: DenseLane<Self::Register>,
+    ) -> DenseLane<Self::Register> {
+        <Self as SimdRegister<u16>>::gt_dense(l2, l1)
+    }
+
+    #[inline(always)]
+    unsafe fn lte_dense(
+        l1: DenseLane<Self::Register>,
+        l2: DenseLane<Self::Register>,
+    ) -> DenseLane<Self::Register> {
+        <Self as SimdRegister<u16>>::gte_dense(l2, l1)
+    }
+
+    #[inline(always)]
+    unsafe fn gt_dense(
+        l1: DenseLane<Self::Register>,
+        l2: DenseLane<Self::Register>,
+    ) -> DenseLane<Self::Register> {
+        let sign = _mm256_set1_epi32(0x80008000u32 as i32);
+
+        // We have to split the dense lane operations up into specific parts
+        // because otherwise we run out of registers. Here we target no more than 16
+        // registers in use.
+        //
+        // Do the 1st quarter of the dense lane
+        let l1_a_xor = _mm256_xor_si256(l1.a, sign);
+        let l1_b_xor = _mm256_xor_si256(l1.b, sign);
+        let l2_a_xor = _mm256_xor_si256(l2.a, sign);
+        let l2_b_xor = _mm256_xor_si256(l2.b, sign);
+        let mask_a = _mm256_cmpgt_epi16(l1_a_xor, l2_a_xor);
+        let mask_b = _mm256_cmpgt_epi16(l1_b_xor, l2_b_xor);
+
+        // Do the 2nd quarter of the dense lane
+        let l2_c_xor = _mm256_xor_si256(l2.c, sign);
+        let l2_d_xor = _mm256_xor_si256(l2.d, sign);
+        let l1_c_xor = _mm256_xor_si256(l1.c, sign);
+        let l1_d_xor = _mm256_xor_si256(l1.d, sign);
+        let mask_c = _mm256_cmpgt_epi16(l1_c_xor, l2_c_xor);
+        let mask_d = _mm256_cmpgt_epi16(l1_d_xor, l2_d_xor);
+
+        // Do the 3rd quarter
+        let l1_e_xor = _mm256_xor_si256(l1.e, sign);
+        let l1_f_xor = _mm256_xor_si256(l1.f, sign);
+        let l2_e_xor = _mm256_xor_si256(l2.e, sign);
+        let l2_f_xor = _mm256_xor_si256(l2.f, sign);
+        let mask_e = _mm256_cmpgt_epi16(l1_e_xor, l2_e_xor);
+        let mask_f = _mm256_cmpgt_epi16(l1_f_xor, l2_f_xor);
+
+        // Do the 4th quarter
+        let l1_g_xor = _mm256_xor_si256(l1.g, sign);
+        let l1_h_xor = _mm256_xor_si256(l1.h, sign);
+        let l2_g_xor = _mm256_xor_si256(l2.g, sign);
+        let l2_h_xor = _mm256_xor_si256(l2.h, sign);
+        let mask_g = _mm256_cmpgt_epi16(l1_g_xor, l2_g_xor);
+        let mask_h = _mm256_cmpgt_epi16(l1_h_xor, l2_h_xor);
+
+        let mask = DenseLane {
+            a: mask_a,
+            b: mask_b,
+            c: mask_c,
+            d: mask_d,
+            e: mask_e,
+            f: mask_f,
+            g: mask_g,
+            h: mask_h,
+        };
+
+        apply_dense!(_mm256_srli_epi16::<15>, mask)
+    }
+
+    #[inline(always)]
+    unsafe fn gte_dense(
+        l1: DenseLane<Self::Register>,
+        l2: DenseLane<Self::Register>,
+    ) -> DenseLane<Self::Register> {
+        let maxed = apply_dense!(_mm256_max_epu16, l1, l2);
+        let mask = apply_dense!(_mm256_cmpeq_epi16, l1, maxed);
+        apply_dense!(_mm256_srli_epi16::<15>, mask)
     }
 
     #[inline(always)]
@@ -1777,6 +2198,105 @@ impl SimdRegister<u32> for Avx2 {
     }
 
     #[inline(always)]
+    unsafe fn eq_dense(
+        l1: DenseLane<Self::Register>,
+        l2: DenseLane<Self::Register>,
+    ) -> DenseLane<Self::Register> {
+        <Self as SimdRegister<i32>>::eq_dense(l1, l2)
+    }
+
+    #[inline(always)]
+    unsafe fn neq_dense(
+        l1: DenseLane<Self::Register>,
+        l2: DenseLane<Self::Register>,
+    ) -> DenseLane<Self::Register> {
+        <Self as SimdRegister<i32>>::neq_dense(l1, l2)
+    }
+
+    #[inline(always)]
+    unsafe fn lt_dense(
+        l1: DenseLane<Self::Register>,
+        l2: DenseLane<Self::Register>,
+    ) -> DenseLane<Self::Register> {
+        <Self as SimdRegister<u32>>::gt_dense(l2, l1)
+    }
+
+    #[inline(always)]
+    unsafe fn lte_dense(
+        l1: DenseLane<Self::Register>,
+        l2: DenseLane<Self::Register>,
+    ) -> DenseLane<Self::Register> {
+        <Self as SimdRegister<u32>>::gte_dense(l2, l1)
+    }
+
+    #[inline(always)]
+    unsafe fn gt_dense(
+        l1: DenseLane<Self::Register>,
+        l2: DenseLane<Self::Register>,
+    ) -> DenseLane<Self::Register> {
+        let sign = _mm256_set1_epi32(0x80000000u32 as i32);
+
+        // We have to split the dense lane operations up into specific parts
+        // because otherwise we run out of registers. Here we target no more than 16
+        // registers in use.
+        //
+        // Do the 1st quarter of the dense lane
+        let l1_a_xor = _mm256_xor_si256(l1.a, sign);
+        let l1_b_xor = _mm256_xor_si256(l1.b, sign);
+        let l2_a_xor = _mm256_xor_si256(l2.a, sign);
+        let l2_b_xor = _mm256_xor_si256(l2.b, sign);
+        let mask_a = _mm256_cmpgt_epi32(l1_a_xor, l2_a_xor);
+        let mask_b = _mm256_cmpgt_epi32(l1_b_xor, l2_b_xor);
+
+        // Do the 2nd quarter of the dense lane
+        let l2_c_xor = _mm256_xor_si256(l2.c, sign);
+        let l2_d_xor = _mm256_xor_si256(l2.d, sign);
+        let l1_c_xor = _mm256_xor_si256(l1.c, sign);
+        let l1_d_xor = _mm256_xor_si256(l1.d, sign);
+        let mask_c = _mm256_cmpgt_epi32(l1_c_xor, l2_c_xor);
+        let mask_d = _mm256_cmpgt_epi32(l1_d_xor, l2_d_xor);
+
+        // Do the 3rd quarter
+        let l1_e_xor = _mm256_xor_si256(l1.e, sign);
+        let l1_f_xor = _mm256_xor_si256(l1.f, sign);
+        let l2_e_xor = _mm256_xor_si256(l2.e, sign);
+        let l2_f_xor = _mm256_xor_si256(l2.f, sign);
+        let mask_e = _mm256_cmpgt_epi32(l1_e_xor, l2_e_xor);
+        let mask_f = _mm256_cmpgt_epi32(l1_f_xor, l2_f_xor);
+
+        // Do the 4th quarter
+        let l1_g_xor = _mm256_xor_si256(l1.g, sign);
+        let l1_h_xor = _mm256_xor_si256(l1.h, sign);
+        let l2_g_xor = _mm256_xor_si256(l2.g, sign);
+        let l2_h_xor = _mm256_xor_si256(l2.h, sign);
+        let mask_g = _mm256_cmpgt_epi32(l1_g_xor, l2_g_xor);
+        let mask_h = _mm256_cmpgt_epi32(l1_h_xor, l2_h_xor);
+
+        let mask = DenseLane {
+            a: mask_a,
+            b: mask_b,
+            c: mask_c,
+            d: mask_d,
+            e: mask_e,
+            f: mask_f,
+            g: mask_g,
+            h: mask_h,
+        };
+
+        apply_dense!(_mm256_srli_epi32::<31>, mask)
+    }
+
+    #[inline(always)]
+    unsafe fn gte_dense(
+        l1: DenseLane<Self::Register>,
+        l2: DenseLane<Self::Register>,
+    ) -> DenseLane<Self::Register> {
+        let maxed = apply_dense!(_mm256_max_epu32, l1, l2);
+        let mask = apply_dense!(_mm256_cmpeq_epi32, l1, maxed);
+        apply_dense!(_mm256_srli_epi32::<31>, mask)
+    }
+
+    #[inline(always)]
     unsafe fn sum_to_value(reg: Self::Register) -> u32 {
         // There is a bit of an assumption the compile will optimize these scalar impls
         // out, but the SIMD version is a bit complicated and is difficult to get to
@@ -1978,7 +2498,7 @@ impl SimdRegister<u64> for Avx2 {
             let l2_xor = _mm256_xor_si256(l2, sign);
             _mm256_cmpgt_epi64(l2_xor, l1_xor) // This is the important bit :)
         };
-        
+
         // Because we have to do a bitwise not using a broadcast value, we can
         // cheat and just use andnot as a fused operation for also converting our mask
         _mm256_andnot_si256(swapped_cmp, _mm256_set1_epi64x(1))
@@ -1992,6 +2512,161 @@ impl SimdRegister<u64> for Avx2 {
     ) -> DenseLane<Self::Register> {
         let res = <Self as SimdRegister<u64>>::mul_dense(l1, l2);
         <Self as SimdRegister<u64>>::add_dense(res, acc)
+    }
+
+    #[inline(always)]
+    unsafe fn eq_dense(
+        l1: DenseLane<Self::Register>,
+        l2: DenseLane<Self::Register>,
+    ) -> DenseLane<Self::Register> {
+        <Self as SimdRegister<i64>>::eq_dense(l1, l2)
+    }
+
+    #[inline(always)]
+    unsafe fn neq_dense(
+        l1: DenseLane<Self::Register>,
+        l2: DenseLane<Self::Register>,
+    ) -> DenseLane<Self::Register> {
+        <Self as SimdRegister<i64>>::neq_dense(l1, l2)
+    }
+
+    #[inline(always)]
+    unsafe fn lt_dense(
+        l1: DenseLane<Self::Register>,
+        l2: DenseLane<Self::Register>,
+    ) -> DenseLane<Self::Register> {
+        <Self as SimdRegister<u64>>::gt_dense(l2, l1)
+    }
+
+    #[inline(always)]
+    unsafe fn lte_dense(
+        l1: DenseLane<Self::Register>,
+        l2: DenseLane<Self::Register>,
+    ) -> DenseLane<Self::Register> {
+        <Self as SimdRegister<u64>>::gte_dense(l2, l1)
+    }
+
+    #[inline(always)]
+    unsafe fn gt_dense(
+        l1: DenseLane<Self::Register>,
+        l2: DenseLane<Self::Register>,
+    ) -> DenseLane<Self::Register> {
+        let sign = _mm256_set1_epi64x(0x8000000000000000u64 as i64);
+
+        // We have to split the dense lane operations up into specific parts
+        // because otherwise we run out of registers. Here we target no more than 16
+        // registers in use.
+        //
+        // Do the 1st quarter of the dense lane
+        let l1_a_xor = _mm256_xor_si256(l1.a, sign);
+        let l1_b_xor = _mm256_xor_si256(l1.b, sign);
+        let l2_a_xor = _mm256_xor_si256(l2.a, sign);
+        let l2_b_xor = _mm256_xor_si256(l2.b, sign);
+        let mask_a = _mm256_cmpgt_epi64(l1_a_xor, l2_a_xor);
+        let mask_b = _mm256_cmpgt_epi64(l1_b_xor, l2_b_xor);
+
+        // Do the 2nd quarter of the dense lane
+        let l2_c_xor = _mm256_xor_si256(l2.c, sign);
+        let l2_d_xor = _mm256_xor_si256(l2.d, sign);
+        let l1_c_xor = _mm256_xor_si256(l1.c, sign);
+        let l1_d_xor = _mm256_xor_si256(l1.d, sign);
+        let mask_c = _mm256_cmpgt_epi64(l1_c_xor, l2_c_xor);
+        let mask_d = _mm256_cmpgt_epi64(l1_d_xor, l2_d_xor);
+
+        // Do the 3rd quarter
+        let l1_e_xor = _mm256_xor_si256(l1.e, sign);
+        let l1_f_xor = _mm256_xor_si256(l1.f, sign);
+        let l2_e_xor = _mm256_xor_si256(l2.e, sign);
+        let l2_f_xor = _mm256_xor_si256(l2.f, sign);
+        let mask_e = _mm256_cmpgt_epi64(l1_e_xor, l2_e_xor);
+        let mask_f = _mm256_cmpgt_epi64(l1_f_xor, l2_f_xor);
+
+        // Do the 4th quarter
+        let l1_g_xor = _mm256_xor_si256(l1.g, sign);
+        let l1_h_xor = _mm256_xor_si256(l1.h, sign);
+        let l2_g_xor = _mm256_xor_si256(l2.g, sign);
+        let l2_h_xor = _mm256_xor_si256(l2.h, sign);
+        let mask_g = _mm256_cmpgt_epi64(l1_g_xor, l2_g_xor);
+        let mask_h = _mm256_cmpgt_epi64(l1_h_xor, l2_h_xor);
+
+        let mask = DenseLane {
+            a: mask_a,
+            b: mask_b,
+            c: mask_c,
+            d: mask_d,
+            e: mask_e,
+            f: mask_f,
+            g: mask_g,
+            h: mask_h,
+        };
+
+        apply_dense!(_mm256_srli_epi64::<63>, mask)
+    }
+
+    #[inline(always)]
+    unsafe fn gte_dense(
+        l1: DenseLane<Self::Register>,
+        l2: DenseLane<Self::Register>,
+    ) -> DenseLane<Self::Register> {
+        // A mirror of the `gt` impl but with l1 and l2 swapped operationally.
+        // we can't call `Self::gt_dense` here because we choose to shift the mask so it becomes
+        // `0` and `1`s instead of the full mask.
+        let swapped_cmp = {
+            let sign = _mm256_set1_epi64x(0x8000000000000000u64 as i64);
+
+            // We have to split the dense lane operations up into specific parts
+            // because otherwise we run out of registers. Here we target no more than 16
+            // registers in use.
+            //
+            // Do the 1st quarter of the dense lane
+            let l1_a_xor = _mm256_xor_si256(l1.a, sign);
+            let l1_b_xor = _mm256_xor_si256(l1.b, sign);
+            let l2_a_xor = _mm256_xor_si256(l2.a, sign);
+            let l2_b_xor = _mm256_xor_si256(l2.b, sign);
+            let mask_a = _mm256_cmpgt_epi64(l2_a_xor, l1_a_xor);
+            let mask_b = _mm256_cmpgt_epi64(l2_b_xor, l1_b_xor);
+
+            // Do the 2nd quarter of the dense lane
+            let l2_c_xor = _mm256_xor_si256(l2.c, sign);
+            let l2_d_xor = _mm256_xor_si256(l2.d, sign);
+            let l1_c_xor = _mm256_xor_si256(l1.c, sign);
+            let l1_d_xor = _mm256_xor_si256(l1.d, sign);
+            let mask_c = _mm256_cmpgt_epi64(l2_c_xor, l1_c_xor);
+            let mask_d = _mm256_cmpgt_epi64(l2_d_xor, l1_d_xor);
+
+            // Do the 3rd quarter
+            let l1_e_xor = _mm256_xor_si256(l1.e, sign);
+            let l1_f_xor = _mm256_xor_si256(l1.f, sign);
+            let l2_e_xor = _mm256_xor_si256(l2.e, sign);
+            let l2_f_xor = _mm256_xor_si256(l2.f, sign);
+            let mask_e = _mm256_cmpgt_epi64(l2_e_xor, l1_e_xor);
+            let mask_f = _mm256_cmpgt_epi64(l2_f_xor, l1_f_xor);
+
+            // Do the 4th quarter
+            let l1_g_xor = _mm256_xor_si256(l1.g, sign);
+            let l1_h_xor = _mm256_xor_si256(l1.h, sign);
+            let l2_g_xor = _mm256_xor_si256(l2.g, sign);
+            let l2_h_xor = _mm256_xor_si256(l2.h, sign);
+            let mask_g = _mm256_cmpgt_epi64(l2_g_xor, l1_g_xor);
+            let mask_h = _mm256_cmpgt_epi64(l2_h_xor, l1_h_xor);
+
+            DenseLane {
+                a: mask_a,
+                b: mask_b,
+                c: mask_c,
+                d: mask_d,
+                e: mask_e,
+                f: mask_f,
+                g: mask_g,
+                h: mask_h,
+            }
+        };
+
+        apply_dense!(
+            _mm256_andnot_si256,
+            swapped_cmp,
+            value = _mm256_set1_epi64x(1)
+        )
     }
 
     #[inline(always)]

@@ -75,7 +75,7 @@ macro_rules! test_suite {
                 let (l1, l2) = (vec![1 as $t; 1043], vec![3 as $t; 1043]);
                 test_arithmetic_vector_all::<$t, $im>(l1, l2);
             }
-            
+
             #[test]
             fn [<test_ $im:lower _ $t _cmp_value>]() {
                 let (l1, _) = (vec![1 as $t; 1043], vec![3 as $t; 1043]);

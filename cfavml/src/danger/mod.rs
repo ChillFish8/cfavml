@@ -10,6 +10,8 @@ mod impl_avx512;
 mod impl_fallback;
 #[cfg(target_arch = "aarch64")]
 mod impl_neon;
+mod op_arithmetic_value;
+mod op_arithmetic_vector;
 mod op_cosine;
 mod op_dot;
 mod op_euclidean;
@@ -17,9 +19,8 @@ mod op_max;
 mod op_min;
 mod op_norm;
 mod op_sum;
-mod op_arithmetic_value;
-mod op_arithmetic_vector;
 
+mod core_routine_boilerplate;
 pub mod export_agg_ops;
 pub mod export_arithmetic_ops;
 pub mod export_cmp_ops;
@@ -30,7 +31,6 @@ mod op_cmp_value;
 mod op_cmp_vector;
 #[cfg(test)]
 mod test_suite;
-mod core_routine_boilerplate;
 
 pub use self::core_simd_api::{DenseLane, SimdRegister};
 #[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
@@ -42,6 +42,18 @@ pub use self::impl_avx512::*;
 pub use self::impl_fallback::*;
 #[cfg(target_arch = "aarch64")]
 pub use self::impl_neon::*;
+pub use self::op_arithmetic_value::{
+    generic_add_value,
+    generic_div_value,
+    generic_mul_value,
+    generic_sub_value,
+};
+pub use self::op_arithmetic_vector::{
+    generic_add_vector,
+    generic_div_vector,
+    generic_mul_vector,
+    generic_sub_vector,
+};
 pub use self::op_cmp_value::{
     generic_cmp_eq_value,
     generic_cmp_gt_value,
@@ -67,18 +79,6 @@ pub use self::op_max::{generic_max_horizontal, generic_max_value, generic_max_ve
 pub use self::op_min::{generic_min_horizontal, generic_min_value, generic_min_vector};
 pub use self::op_norm::generic_squared_norm;
 pub use self::op_sum::generic_sum;
-pub use self::op_arithmetic_value::{
-    generic_add_value,
-    generic_div_value,
-    generic_mul_value,
-    generic_sub_value,
-};
-pub use self::op_arithmetic_vector::{
-    generic_add_vector,
-    generic_div_vector,
-    generic_mul_vector,
-    generic_sub_vector,
-};
 
 #[allow(non_snake_case)]
 pub(crate) const fn _MM_SHUFFLE(z: u32, y: u32, x: u32, w: u32) -> i32 {
