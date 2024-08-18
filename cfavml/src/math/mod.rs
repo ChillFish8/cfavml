@@ -39,13 +39,13 @@ pub trait Math<T> {
     fn cmp_lt(a: T, b: T) -> bool;
 
     /// Returns if `a` is _less than or equal to_ `b`.
-    fn cmp_le(a: T, b: T) -> bool;
+    fn cmp_lte(a: T, b: T) -> bool;
 
     /// Returns if `a` is greater than_ `b`.
     fn cmp_gt(a: T, b: T) -> bool;
 
     /// Returns if `a` is _greater than or equal to_ `b`.
-    fn cmp_ge(a: T, b: T) -> bool;
+    fn cmp_gte(a: T, b: T) -> bool;
 
     /// Returns the minimum of the two values
     fn cmp_min(a: T, b: T) -> T;
@@ -68,4 +68,14 @@ pub trait Math<T> {
     // No officer, nothing scuffed about this, no sir.
     #[cfg(test)]
     fn is_close(a: T, b: T) -> bool;
+
+    #[inline]
+    /// Casts a boolean to their `1` and `0` equivalent types
+    fn cast_bool(v: bool) -> T {
+        if v {
+            Self::one()
+        } else {
+            Self::zero()
+        }
+    }
 }

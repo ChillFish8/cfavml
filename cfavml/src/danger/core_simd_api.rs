@@ -261,6 +261,26 @@ pub trait SimdRegister<T: Copy> {
     }
 
     #[inline(always)]
+    /// Compares each element in `l1` and `l2` dense lanes and returns a mask
+    /// indicating if  they are equal.
+    unsafe fn eq_dense(
+        l1: DenseLane<Self::Register>,
+        l2: DenseLane<Self::Register>,
+    ) -> DenseLane<Self::Register> {
+        apply_dense!(Self::eq, l1, l2)
+    }
+
+    #[inline(always)]
+    /// Compares each element in `l1` and `l2` dense lanes and returns a mask
+    /// indicating if they are not equal.
+    unsafe fn neq_dense(
+        l1: DenseLane<Self::Register>,
+        l2: DenseLane<Self::Register>,
+    ) -> DenseLane<Self::Register> {
+        apply_dense!(Self::neq, l1, l2)
+    }
+
+    #[inline(always)]
     /// Performs a comparison of dense lanes `l1` and `l2` returning a mask of if elements
     /// in `l1` are _less than_ elements in `l2`.
     unsafe fn lt_dense(
@@ -273,7 +293,7 @@ pub trait SimdRegister<T: Copy> {
     #[inline(always)]
     /// Performs a comparison of dense lanes `l1` and `l2` returning a mask of if elements
     /// in `l1` are _less than or equal to_ elements in `l2`.
-    unsafe fn le_dense(
+    unsafe fn lte_dense(
         l1: DenseLane<Self::Register>,
         l2: DenseLane<Self::Register>,
     ) -> DenseLane<Self::Register> {
@@ -293,7 +313,7 @@ pub trait SimdRegister<T: Copy> {
     #[inline(always)]
     /// Performs a comparison of dense lanes `l1` and `l2` returning a mask of if elements
     /// in `l1` are _greater than or equal to_ elements in `l2`.
-    unsafe fn ge_dense(
+    unsafe fn gte_dense(
         l1: DenseLane<Self::Register>,
         l2: DenseLane<Self::Register>,
     ) -> DenseLane<Self::Register> {

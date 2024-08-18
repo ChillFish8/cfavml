@@ -107,7 +107,7 @@ where
 
     #[inline(always)]
     unsafe fn lte(l1: Self::Register, l2: Self::Register) -> Self::Register {
-        to_mask(AutoMath::cmp_le(l1, l2))
+        to_mask(AutoMath::cmp_lte(l1, l2))
     }
 
     #[inline(always)]
@@ -117,7 +117,7 @@ where
 
     #[inline(always)]
     unsafe fn gte(l1: Self::Register, l2: Self::Register) -> Self::Register {
-        to_mask(AutoMath::cmp_ge(l1, l2))
+        to_mask(AutoMath::cmp_gte(l1, l2))
     }
 
     #[inline(always)]

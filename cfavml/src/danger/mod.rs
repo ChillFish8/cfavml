@@ -17,8 +17,8 @@ mod op_max;
 mod op_min;
 mod op_norm;
 mod op_sum;
-mod op_vector_x_value;
-mod op_vector_x_vector;
+mod op_arithmetic_value;
+mod op_arithmetic_vector;
 
 pub mod export_agg_ops;
 pub mod export_arithmetic_ops;
@@ -26,8 +26,11 @@ pub mod export_cmp_ops;
 pub mod export_distance_ops;
 #[cfg(test)]
 mod impl_test;
+mod op_cmp_value;
+mod op_cmp_vector;
 #[cfg(test)]
 mod test_suite;
+mod core_routine_boilerplate;
 
 pub use self::core_simd_api::{DenseLane, SimdRegister};
 #[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
@@ -39,6 +42,22 @@ pub use self::impl_avx512::*;
 pub use self::impl_fallback::*;
 #[cfg(target_arch = "aarch64")]
 pub use self::impl_neon::*;
+pub use self::op_cmp_value::{
+    generic_cmp_eq_value,
+    generic_cmp_gt_value,
+    generic_cmp_gte_value,
+    generic_cmp_lt_value,
+    generic_cmp_lte_value,
+    generic_cmp_neq_value,
+};
+pub use self::op_cmp_vector::{
+    generic_cmp_eq_vector,
+    generic_cmp_gt_vector,
+    generic_cmp_gte_vector,
+    generic_cmp_lt_vector,
+    generic_cmp_lte_vector,
+    generic_cmp_neq_vector,
+};
 #[cfg(test)]
 pub(crate) use self::op_cosine::cosine;
 pub use self::op_cosine::generic_cosine;
@@ -48,13 +67,13 @@ pub use self::op_max::{generic_max_horizontal, generic_max_value, generic_max_ve
 pub use self::op_min::{generic_min_horizontal, generic_min_value, generic_min_vector};
 pub use self::op_norm::generic_squared_norm;
 pub use self::op_sum::generic_sum;
-pub use self::op_vector_x_value::{
+pub use self::op_arithmetic_value::{
     generic_add_value,
     generic_div_value,
     generic_mul_value,
     generic_sub_value,
 };
-pub use self::op_vector_x_vector::{
+pub use self::op_arithmetic_vector::{
     generic_add_vector,
     generic_div_vector,
     generic_mul_vector,

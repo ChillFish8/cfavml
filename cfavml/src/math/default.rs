@@ -61,7 +61,7 @@ impl Math<f32> for StdMath {
     }
 
     #[inline(always)]
-    fn cmp_le(a: f32, b: f32) -> bool {
+    fn cmp_lte(a: f32, b: f32) -> bool {
         a <= b
     }
 
@@ -71,7 +71,7 @@ impl Math<f32> for StdMath {
     }
 
     #[inline(always)]
-    fn cmp_ge(a: f32, b: f32) -> bool {
+    fn cmp_gte(a: f32, b: f32) -> bool {
         a >= b
     }
 
@@ -172,7 +172,7 @@ impl Math<f64> for StdMath {
     }
 
     #[inline(always)]
-    fn cmp_le(a: f64, b: f64) -> bool {
+    fn cmp_lte(a: f64, b: f64) -> bool {
         a <= b
     }
 
@@ -182,7 +182,7 @@ impl Math<f64> for StdMath {
     }
 
     #[inline(always)]
-    fn cmp_ge(a: f64, b: f64) -> bool {
+    fn cmp_gte(a: f64, b: f64) -> bool {
         a >= b
     }
 
@@ -269,7 +269,7 @@ macro_rules! define_int_ops {
             }
 
             #[inline(always)]
-            fn cmp_le(a: $t, b: $t) -> bool {
+            fn cmp_lte(a: $t, b: $t) -> bool {
                 a <= b
             }
 
@@ -279,7 +279,7 @@ macro_rules! define_int_ops {
             }
 
             #[inline(always)]
-            fn cmp_ge(a: $t, b: $t) -> bool {
+            fn cmp_gte(a: $t, b: $t) -> bool {
                 a >= b
             }
 
@@ -362,7 +362,7 @@ macro_rules! define_int_ops {
             }
 
             #[inline(always)]
-            fn cmp_le(a: $t, b: $t) -> bool {
+            fn cmp_lte(a: $t, b: $t) -> bool {
                 a <= b
             }
 
@@ -372,7 +372,7 @@ macro_rules! define_int_ops {
             }
 
             #[inline(always)]
-            fn cmp_ge(a: $t, b: $t) -> bool {
+            fn cmp_gte(a: $t, b: $t) -> bool {
                 a >= b
             }
 
