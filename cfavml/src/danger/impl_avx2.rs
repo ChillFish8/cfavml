@@ -1104,10 +1104,9 @@ impl SimdRegister<i64> for Avx2 {
     #[inline(always)]
     unsafe fn gte(l1: Self::Register, l2: Self::Register) -> Self::Register {
         let swapped_cmp = _mm256_cmpgt_epi64(l2, l1);
-        let mask = _mm256_xor_si256(swapped_cmp, _mm256_set1_epi64x(-1));
-        // Small optimization for 16, 32 and 64bit values which
-        // can shift instead of doing a bitwise `and` on a mask
-        _mm256_srli_epi64::<63>(mask)
+        // Because we have to do a bitwise not using a broadcast value, we can
+        // cheat and just use andnot as a fused operation for also converting our mask
+        _mm256_andnot_si256(swapped_cmp, _mm256_set1_epi64x(1))
     }
 
     #[inline(always)]
@@ -1979,11 +1978,10 @@ impl SimdRegister<u64> for Avx2 {
             let l2_xor = _mm256_xor_si256(l2, sign);
             _mm256_cmpgt_epi64(l2_xor, l1_xor) // This is the important bit :)
         };
-
-        let mask = _mm256_xor_si256(swapped_cmp, _mm256_set1_epi64x(-1));
-        // Small optimization for 16, 32 and 64bit values which
-        // can shift instead of doing a bitwise `and` on a mask
-        _mm256_srli_epi64::<63>(mask)
+        
+        // Because we have to do a bitwise not using a broadcast value, we can
+        // cheat and just use andnot as a fused operation for also converting our mask
+        _mm256_andnot_si256(swapped_cmp, _mm256_set1_epi64x(1))
     }
 
     #[inline(always)]
