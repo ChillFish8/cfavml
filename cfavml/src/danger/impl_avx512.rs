@@ -77,6 +77,36 @@ impl SimdRegister<f32> for Avx512 {
     }
 
     #[inline(always)]
+    unsafe fn eq(l1: Self::Register, l2: Self::Register) -> Self::Register {
+        todo!()
+    }
+
+    #[inline(always)]
+    unsafe fn neq(l1: Self::Register, l2: Self::Register) -> Self::Register {
+        todo!()
+    }
+
+    #[inline(always)]
+    unsafe fn lt(_l1: Self::Register, _l2: Self::Register) -> Self::Register {
+        unimplemented!("TODO: Add support for AVX512 registers are not yet supported")
+    }
+
+    #[inline(always)]
+    unsafe fn lte(_l1: Self::Register, _l2: Self::Register) -> Self::Register {
+        unimplemented!("TODO: Add support for AVX512 registers are not yet supported")
+    }
+
+    #[inline(always)]
+    unsafe fn gt(_l1: Self::Register, _l2: Self::Register) -> Self::Register {
+        unimplemented!("TODO: Add support for AVX512 registers are not yet supported")
+    }
+
+    #[inline(always)]
+    unsafe fn gte(_l1: Self::Register, _l2: Self::Register) -> Self::Register {
+        unimplemented!("TODO: Add support for AVX512 registers are not yet supported")
+    }
+
+    #[inline(always)]
     unsafe fn sum_to_value(reg: Self::Register) -> f32 {
         _mm512_reduce_add_ps(reg)
     }
@@ -152,6 +182,26 @@ impl SimdRegister<f64> for Avx512 {
     #[inline(always)]
     unsafe fn min(l1: Self::Register, l2: Self::Register) -> Self::Register {
         _mm512_min_pd(l1, l2)
+    }
+
+    #[inline(always)]
+    unsafe fn lt(_l1: Self::Register, _l2: Self::Register) -> Self::Register {
+        unimplemented!("TODO: Add support for AVX512 registers are not yet supported")
+    }
+
+    #[inline(always)]
+    unsafe fn lte(_l1: Self::Register, _l2: Self::Register) -> Self::Register {
+        unimplemented!("TODO: Add support for AVX512 registers are not yet supported")
+    }
+
+    #[inline(always)]
+    unsafe fn gt(_l1: Self::Register, _l2: Self::Register) -> Self::Register {
+        unimplemented!("TODO: Add support for AVX512 registers are not yet supported")
+    }
+
+    #[inline(always)]
+    unsafe fn gte(_l1: Self::Register, _l2: Self::Register) -> Self::Register {
+        unimplemented!("TODO: Add support for AVX512 registers are not yet supported")
     }
 
     #[inline(always)]
@@ -251,6 +301,26 @@ impl SimdRegister<i8> for Avx512 {
     #[inline(always)]
     unsafe fn min(l1: Self::Register, l2: Self::Register) -> Self::Register {
         _mm512_min_epi8(l1, l2)
+    }
+
+    #[inline(always)]
+    unsafe fn lt(_l1: Self::Register, _l2: Self::Register) -> Self::Register {
+        unimplemented!("TODO: Add support for AVX512 registers are not yet supported")
+    }
+
+    #[inline(always)]
+    unsafe fn lte(_l1: Self::Register, _l2: Self::Register) -> Self::Register {
+        unimplemented!("TODO: Add support for AVX512 registers are not yet supported")
+    }
+
+    #[inline(always)]
+    unsafe fn gt(_l1: Self::Register, _l2: Self::Register) -> Self::Register {
+        unimplemented!("TODO: Add support for AVX512 registers are not yet supported")
+    }
+
+    #[inline(always)]
+    unsafe fn gte(_l1: Self::Register, _l2: Self::Register) -> Self::Register {
+        unimplemented!("TODO: Add support for AVX512 registers are not yet supported")
     }
 
     #[inline(always)]
@@ -391,6 +461,26 @@ impl SimdRegister<i16> for Avx512 {
     }
 
     #[inline(always)]
+    unsafe fn lt(_l1: Self::Register, _l2: Self::Register) -> Self::Register {
+        unimplemented!("TODO: Add support for AVX512 registers are not yet supported")
+    }
+
+    #[inline(always)]
+    unsafe fn lte(_l1: Self::Register, _l2: Self::Register) -> Self::Register {
+        unimplemented!("TODO: Add support for AVX512 registers are not yet supported")
+    }
+
+    #[inline(always)]
+    unsafe fn gt(_l1: Self::Register, _l2: Self::Register) -> Self::Register {
+        unimplemented!("TODO: Add support for AVX512 registers are not yet supported")
+    }
+
+    #[inline(always)]
+    unsafe fn gte(_l1: Self::Register, _l2: Self::Register) -> Self::Register {
+        unimplemented!("TODO: Add support for AVX512 registers are not yet supported")
+    }
+
+    #[inline(always)]
     unsafe fn mul_dense(
         l1: DenseLane<Self::Register>,
         l2: DenseLane<Self::Register>,
@@ -518,6 +608,26 @@ impl SimdRegister<i32> for Avx512 {
     }
 
     #[inline(always)]
+    unsafe fn lt(_l1: Self::Register, _l2: Self::Register) -> Self::Register {
+        unimplemented!("TODO: Add support for AVX512 registers are not yet supported")
+    }
+
+    #[inline(always)]
+    unsafe fn lte(_l1: Self::Register, _l2: Self::Register) -> Self::Register {
+        unimplemented!("TODO: Add support for AVX512 registers are not yet supported")
+    }
+
+    #[inline(always)]
+    unsafe fn gt(_l1: Self::Register, _l2: Self::Register) -> Self::Register {
+        unimplemented!("TODO: Add support for AVX512 registers are not yet supported")
+    }
+
+    #[inline(always)]
+    unsafe fn gte(_l1: Self::Register, _l2: Self::Register) -> Self::Register {
+        unimplemented!("TODO: Add support for AVX512 registers are not yet supported")
+    }
+
+    #[inline(always)]
     unsafe fn mul_dense(
         l1: DenseLane<Self::Register>,
         l2: DenseLane<Self::Register>,
@@ -631,6 +741,26 @@ impl SimdRegister<i64> for Avx512 {
     }
 
     #[inline(always)]
+    unsafe fn lt(_l1: Self::Register, _l2: Self::Register) -> Self::Register {
+        unimplemented!("TODO: Add support for AVX512 registers are not yet supported")
+    }
+
+    #[inline(always)]
+    unsafe fn lte(_l1: Self::Register, _l2: Self::Register) -> Self::Register {
+        unimplemented!("TODO: Add support for AVX512 registers are not yet supported")
+    }
+
+    #[inline(always)]
+    unsafe fn gt(_l1: Self::Register, _l2: Self::Register) -> Self::Register {
+        unimplemented!("TODO: Add support for AVX512 registers are not yet supported")
+    }
+
+    #[inline(always)]
+    unsafe fn gte(_l1: Self::Register, _l2: Self::Register) -> Self::Register {
+        unimplemented!("TODO: Add support for AVX512 registers are not yet supported")
+    }
+
+    #[inline(always)]
     unsafe fn fmadd_dense(
         l1: DenseLane<Self::Register>,
         l2: DenseLane<Self::Register>,
@@ -731,6 +861,26 @@ impl SimdRegister<u8> for Avx512 {
     #[inline(always)]
     unsafe fn min(l1: Self::Register, l2: Self::Register) -> Self::Register {
         _mm512_min_epu8(l1, l2)
+    }
+
+    #[inline(always)]
+    unsafe fn lt(_l1: Self::Register, _l2: Self::Register) -> Self::Register {
+        unimplemented!("TODO: Add support for AVX512 registers are not yet supported")
+    }
+
+    #[inline(always)]
+    unsafe fn lte(_l1: Self::Register, _l2: Self::Register) -> Self::Register {
+        unimplemented!("TODO: Add support for AVX512 registers are not yet supported")
+    }
+
+    #[inline(always)]
+    unsafe fn gt(_l1: Self::Register, _l2: Self::Register) -> Self::Register {
+        unimplemented!("TODO: Add support for AVX512 registers are not yet supported")
+    }
+
+    #[inline(always)]
+    unsafe fn gte(_l1: Self::Register, _l2: Self::Register) -> Self::Register {
+        unimplemented!("TODO: Add support for AVX512 registers are not yet supported")
     }
 
     #[inline(always)]
@@ -855,6 +1005,26 @@ impl SimdRegister<u16> for Avx512 {
     }
 
     #[inline(always)]
+    unsafe fn lt(_l1: Self::Register, _l2: Self::Register) -> Self::Register {
+        unimplemented!("TODO: Add support for AVX512 registers are not yet supported")
+    }
+
+    #[inline(always)]
+    unsafe fn lte(_l1: Self::Register, _l2: Self::Register) -> Self::Register {
+        unimplemented!("TODO: Add support for AVX512 registers are not yet supported")
+    }
+
+    #[inline(always)]
+    unsafe fn gt(_l1: Self::Register, _l2: Self::Register) -> Self::Register {
+        unimplemented!("TODO: Add support for AVX512 registers are not yet supported")
+    }
+
+    #[inline(always)]
+    unsafe fn gte(_l1: Self::Register, _l2: Self::Register) -> Self::Register {
+        unimplemented!("TODO: Add support for AVX512 registers are not yet supported")
+    }
+
+    #[inline(always)]
     unsafe fn mul_dense(
         l1: DenseLane<Self::Register>,
         l2: DenseLane<Self::Register>,
@@ -976,6 +1146,26 @@ impl SimdRegister<u32> for Avx512 {
     }
 
     #[inline(always)]
+    unsafe fn lt(_l1: Self::Register, _l2: Self::Register) -> Self::Register {
+        unimplemented!("TODO: Add support for AVX512 registers are not yet supported")
+    }
+
+    #[inline(always)]
+    unsafe fn lte(_l1: Self::Register, _l2: Self::Register) -> Self::Register {
+        unimplemented!("TODO: Add support for AVX512 registers are not yet supported")
+    }
+
+    #[inline(always)]
+    unsafe fn gt(_l1: Self::Register, _l2: Self::Register) -> Self::Register {
+        unimplemented!("TODO: Add support for AVX512 registers are not yet supported")
+    }
+
+    #[inline(always)]
+    unsafe fn gte(_l1: Self::Register, _l2: Self::Register) -> Self::Register {
+        unimplemented!("TODO: Add support for AVX512 registers are not yet supported")
+    }
+
+    #[inline(always)]
     unsafe fn mul_dense(
         l1: DenseLane<Self::Register>,
         l2: DenseLane<Self::Register>,
@@ -1093,6 +1283,26 @@ impl SimdRegister<u64> for Avx512 {
     #[inline(always)]
     unsafe fn min(l1: Self::Register, l2: Self::Register) -> Self::Register {
         _mm512_min_epu64(l1, l2)
+    }
+
+    #[inline(always)]
+    unsafe fn lt(_l1: Self::Register, _l2: Self::Register) -> Self::Register {
+        unimplemented!("TODO: Add support for AVX512 registers are not yet supported")
+    }
+
+    #[inline(always)]
+    unsafe fn lte(_l1: Self::Register, _l2: Self::Register) -> Self::Register {
+        unimplemented!("TODO: Add support for AVX512 registers are not yet supported")
+    }
+
+    #[inline(always)]
+    unsafe fn gt(_l1: Self::Register, _l2: Self::Register) -> Self::Register {
+        unimplemented!("TODO: Add support for AVX512 registers are not yet supported")
+    }
+
+    #[inline(always)]
+    unsafe fn gte(_l1: Self::Register, _l2: Self::Register) -> Self::Register {
+        unimplemented!("TODO: Add support for AVX512 registers are not yet supported")
     }
 
     #[inline(always)]

@@ -35,6 +35,18 @@ pub trait Math<T> {
     /// Returns if the two values are equal.
     fn cmp_eq(a: T, b: T) -> bool;
 
+    /// Returns if `a` is _less than_ `b`.
+    fn cmp_lt(a: T, b: T) -> bool;
+
+    /// Returns if `a` is _less than or equal to_ `b`.
+    fn cmp_le(a: T, b: T) -> bool;
+
+    /// Returns if `a` is greater than_ `b`.
+    fn cmp_gt(a: T, b: T) -> bool;
+
+    /// Returns if `a` is _greater than or equal to_ `b`.
+    fn cmp_ge(a: T, b: T) -> bool;
+
     /// Returns the minimum of the two values
     fn cmp_min(a: T, b: T) -> T;
 

@@ -72,6 +72,42 @@ impl SimdRegister<f32> for Avx2 {
     }
 
     #[inline(always)]
+    unsafe fn eq(l1: Self::Register, l2: Self::Register) -> Self::Register {
+        let mask = _mm256_cmp_ps::<_CMP_EQ_OQ>(l1, l2);
+        _mm256_and_ps(mask, _mm256_set1_ps(1.0))
+    }
+
+    #[inline(always)]
+    unsafe fn neq(l1: Self::Register, l2: Self::Register) -> Self::Register {
+        let mask = _mm256_cmp_ps::<_CMP_NEQ_OQ>(l1, l2);
+        _mm256_and_ps(mask, _mm256_set1_ps(1.0))
+    }
+
+    #[inline(always)]
+    unsafe fn lt(l1: Self::Register, l2: Self::Register) -> Self::Register {
+        let mask = _mm256_cmp_ps::<_CMP_LT_OQ>(l1, l2);
+        _mm256_and_ps(mask, _mm256_set1_ps(1.0))
+    }
+
+    #[inline(always)]
+    unsafe fn lte(l1: Self::Register, l2: Self::Register) -> Self::Register {
+        let mask = _mm256_cmp_ps::<_CMP_LE_OQ>(l1, l2);
+        _mm256_and_ps(mask, _mm256_set1_ps(1.0))
+    }
+
+    #[inline(always)]
+    unsafe fn gt(l1: Self::Register, l2: Self::Register) -> Self::Register {
+        let mask = _mm256_cmp_ps::<_CMP_GT_OQ>(l1, l2);
+        _mm256_and_ps(mask, _mm256_set1_ps(1.0))
+    }
+
+    #[inline(always)]
+    unsafe fn gte(l1: Self::Register, l2: Self::Register) -> Self::Register {
+        let mask = _mm256_cmp_ps::<_CMP_GE_OQ>(l1, l2);
+        _mm256_and_ps(mask, _mm256_set1_ps(1.0))
+    }
+
+    #[inline(always)]
     unsafe fn fmadd_dense(
         l1: DenseLane<Self::Register>,
         l2: DenseLane<Self::Register>,
@@ -190,6 +226,42 @@ impl SimdRegister<f64> for Avx2 {
     #[inline(always)]
     unsafe fn min(l1: Self::Register, l2: Self::Register) -> Self::Register {
         _mm256_min_pd(l1, l2)
+    }
+
+    #[inline(always)]
+    unsafe fn eq(l1: Self::Register, l2: Self::Register) -> Self::Register {
+        let mask = _mm256_cmp_pd::<_CMP_EQ_OQ>(l1, l2);
+        _mm256_and_pd(mask, _mm256_set1_pd(1.0))
+    }
+
+    #[inline(always)]
+    unsafe fn neq(l1: Self::Register, l2: Self::Register) -> Self::Register {
+        let mask = _mm256_cmp_pd::<_CMP_NEQ_OQ>(l1, l2);
+        _mm256_and_pd(mask, _mm256_set1_pd(1.0))
+    }
+
+    #[inline(always)]
+    unsafe fn lt(l1: Self::Register, l2: Self::Register) -> Self::Register {
+        let mask = _mm256_cmp_pd::<_CMP_LT_OQ>(l1, l2);
+        _mm256_and_pd(mask, _mm256_set1_pd(1.0))
+    }
+
+    #[inline(always)]
+    unsafe fn lte(l1: Self::Register, l2: Self::Register) -> Self::Register {
+        let mask = _mm256_cmp_pd::<_CMP_LE_OQ>(l1, l2);
+        _mm256_and_pd(mask, _mm256_set1_pd(1.0))
+    }
+
+    #[inline(always)]
+    unsafe fn gt(l1: Self::Register, l2: Self::Register) -> Self::Register {
+        let mask = _mm256_cmp_pd::<_CMP_GT_OQ>(l1, l2);
+        _mm256_and_pd(mask, _mm256_set1_pd(1.0))
+    }
+
+    #[inline(always)]
+    unsafe fn gte(l1: Self::Register, l2: Self::Register) -> Self::Register {
+        let mask = _mm256_cmp_pd::<_CMP_GE_OQ>(l1, l2);
+        _mm256_and_pd(mask, _mm256_set1_pd(1.0))
     }
 
     #[inline(always)]
@@ -322,6 +394,41 @@ impl SimdRegister<i8> for Avx2 {
     #[inline(always)]
     unsafe fn min(l1: Self::Register, l2: Self::Register) -> Self::Register {
         _mm256_min_epi8(l1, l2)
+    }
+
+    #[inline(always)]
+    unsafe fn eq(l1: Self::Register, l2: Self::Register) -> Self::Register {
+        let mask = _mm256_cmpeq_epi8(l1, l2);
+        _mm256_and_si256(mask, _mm256_set1_epi8(1))
+    }
+
+    #[inline(always)]
+    unsafe fn neq(l1: Self::Register, l2: Self::Register) -> Self::Register {
+        let eq_mask = _mm256_cmpeq_epi8(l1, l2);
+        _mm256_andnot_si256(eq_mask, _mm256_set1_epi8(1))
+    }
+
+    #[inline(always)]
+    unsafe fn lt(l1: Self::Register, l2: Self::Register) -> Self::Register {
+        <Self as SimdRegister<i8>>::gt(l2, l1)
+    }
+
+    #[inline(always)]
+    unsafe fn lte(l1: Self::Register, l2: Self::Register) -> Self::Register {
+        <Self as SimdRegister<i8>>::gte(l2, l1)
+    }
+
+    #[inline(always)]
+    unsafe fn gt(l1: Self::Register, l2: Self::Register) -> Self::Register {
+        let mask = _mm256_cmpgt_epi8(l1, l2);
+        _mm256_and_si256(mask, _mm256_set1_epi8(1))
+    }
+
+    #[inline(always)]
+    unsafe fn gte(l1: Self::Register, l2: Self::Register) -> Self::Register {
+        let swapped_cmp = _mm256_cmpgt_epi8(l2, l1);
+        let mask = _mm256_xor_si256(swapped_cmp, _mm256_set1_epi8(-1));
+        _mm256_and_si256(mask, _mm256_set1_epi8(1))
     }
 
     #[inline(always)]
@@ -525,6 +632,45 @@ impl SimdRegister<i16> for Avx2 {
     }
 
     #[inline(always)]
+    unsafe fn eq(l1: Self::Register, l2: Self::Register) -> Self::Register {
+        let mask = _mm256_cmpeq_epi16(l1, l2);
+        _mm256_and_si256(mask, _mm256_set1_epi16(1))
+    }
+
+    #[inline(always)]
+    unsafe fn neq(l1: Self::Register, l2: Self::Register) -> Self::Register {
+        let eq_mask = _mm256_cmpeq_epi16(l1, l2);
+        _mm256_andnot_si256(eq_mask, _mm256_set1_epi16(1))
+    }
+
+    #[inline(always)]
+    unsafe fn lt(l1: Self::Register, l2: Self::Register) -> Self::Register {
+        <Self as SimdRegister<i16>>::gt(l2, l1)
+    }
+
+    #[inline(always)]
+    unsafe fn lte(l1: Self::Register, l2: Self::Register) -> Self::Register {
+        <Self as SimdRegister<i16>>::gte(l2, l1)
+    }
+
+    #[inline(always)]
+    unsafe fn gt(l1: Self::Register, l2: Self::Register) -> Self::Register {
+        let mask = _mm256_cmpgt_epi16(l1, l2);
+        // Small optimization for 16, 32 and 64bit values which
+        // can shift instead of doing a bitwise `and` on a mask
+        _mm256_srli_epi16::<15>(mask)
+    }
+
+    #[inline(always)]
+    unsafe fn gte(l1: Self::Register, l2: Self::Register) -> Self::Register {
+        let swapped_cmp = _mm256_cmpgt_epi16(l2, l1);
+        let mask = _mm256_xor_si256(swapped_cmp, _mm256_set1_epi16(-1));
+        // Small optimization for 16, 32 and 64bit values which
+        // can shift instead of doing a bitwise `and` on a mask
+        _mm256_srli_epi16::<15>(mask)
+    }
+
+    #[inline(always)]
     unsafe fn mul_dense(
         l1: DenseLane<Self::Register>,
         l2: DenseLane<Self::Register>,
@@ -715,6 +861,45 @@ impl SimdRegister<i32> for Avx2 {
     }
 
     #[inline(always)]
+    unsafe fn eq(l1: Self::Register, l2: Self::Register) -> Self::Register {
+        let mask = _mm256_cmpeq_epi32(l1, l2);
+        _mm256_and_si256(mask, _mm256_set1_epi32(1))
+    }
+
+    #[inline(always)]
+    unsafe fn neq(l1: Self::Register, l2: Self::Register) -> Self::Register {
+        let eq_mask = _mm256_cmpeq_epi32(l1, l2);
+        _mm256_andnot_si256(eq_mask, _mm256_set1_epi32(1))
+    }
+
+    #[inline(always)]
+    unsafe fn lt(l1: Self::Register, l2: Self::Register) -> Self::Register {
+        <Self as SimdRegister<i32>>::gt(l2, l1)
+    }
+
+    #[inline(always)]
+    unsafe fn lte(l1: Self::Register, l2: Self::Register) -> Self::Register {
+        <Self as SimdRegister<i32>>::gte(l2, l1)
+    }
+
+    #[inline(always)]
+    unsafe fn gt(l1: Self::Register, l2: Self::Register) -> Self::Register {
+        let mask = _mm256_cmpgt_epi32(l1, l2);
+        // Small optimization for 16, 32 and 64bit values which
+        // can shift instead of doing a bitwise `and` on a mask
+        _mm256_srli_epi32::<31>(mask)
+    }
+
+    #[inline(always)]
+    unsafe fn gte(l1: Self::Register, l2: Self::Register) -> Self::Register {
+        let swapped_cmp = _mm256_cmpgt_epi32(l2, l1);
+        let mask = _mm256_xor_si256(swapped_cmp, _mm256_set1_epi32(-1));
+        // Small optimization for 16, 32 and 64bit values which
+        // can shift instead of doing a bitwise `and` on a mask
+        _mm256_srli_epi32::<31>(mask)
+    }
+
+    #[inline(always)]
     unsafe fn mul_dense(
         l1: DenseLane<Self::Register>,
         l2: DenseLane<Self::Register>,
@@ -887,6 +1072,45 @@ impl SimdRegister<i64> for Avx2 {
     }
 
     #[inline(always)]
+    unsafe fn eq(l1: Self::Register, l2: Self::Register) -> Self::Register {
+        let mask = _mm256_cmpeq_epi64(l1, l2);
+        _mm256_and_si256(mask, _mm256_set1_epi64x(1))
+    }
+
+    #[inline(always)]
+    unsafe fn neq(l1: Self::Register, l2: Self::Register) -> Self::Register {
+        let eq_mask = _mm256_cmpeq_epi64(l1, l2);
+        _mm256_andnot_si256(eq_mask, _mm256_set1_epi64x(1))
+    }
+
+    #[inline(always)]
+    unsafe fn lt(l1: Self::Register, l2: Self::Register) -> Self::Register {
+        <Self as SimdRegister<i64>>::gt(l2, l1)
+    }
+
+    #[inline(always)]
+    unsafe fn lte(l1: Self::Register, l2: Self::Register) -> Self::Register {
+        <Self as SimdRegister<i64>>::gte(l2, l1)
+    }
+
+    #[inline(always)]
+    unsafe fn gt(l1: Self::Register, l2: Self::Register) -> Self::Register {
+        let mask = _mm256_cmpgt_epi64(l1, l2);
+        // Small optimization for 16, 32 and 64bit values which
+        // can shift instead of doing a bitwise `and` on a mask
+        _mm256_srli_epi64::<63>(mask)
+    }
+
+    #[inline(always)]
+    unsafe fn gte(l1: Self::Register, l2: Self::Register) -> Self::Register {
+        let swapped_cmp = _mm256_cmpgt_epi64(l2, l1);
+        let mask = _mm256_xor_si256(swapped_cmp, _mm256_set1_epi64x(-1));
+        // Small optimization for 16, 32 and 64bit values which
+        // can shift instead of doing a bitwise `and` on a mask
+        _mm256_srli_epi64::<63>(mask)
+    }
+
+    #[inline(always)]
     unsafe fn mul_dense(
         l1: DenseLane<Self::Register>,
         l2: DenseLane<Self::Register>,
@@ -1040,6 +1264,41 @@ impl SimdRegister<u8> for Avx2 {
     #[inline(always)]
     unsafe fn min(l1: Self::Register, l2: Self::Register) -> Self::Register {
         _mm256_min_epu8(l1, l2)
+    }
+
+    #[inline(always)]
+    unsafe fn eq(l1: Self::Register, l2: Self::Register) -> Self::Register {
+        <Self as SimdRegister<i8>>::eq(l1, l2) // Operation is identical
+    }
+
+    #[inline(always)]
+    unsafe fn neq(l1: Self::Register, l2: Self::Register) -> Self::Register {
+        <Self as SimdRegister<i8>>::neq(l1, l2) // Operation is identical
+    }
+
+    #[inline(always)]
+    unsafe fn lt(l1: Self::Register, l2: Self::Register) -> Self::Register {
+        <Self as SimdRegister<u8>>::gt(l2, l1)
+    }
+
+    #[inline(always)]
+    unsafe fn lte(l1: Self::Register, l2: Self::Register) -> Self::Register {
+        <Self as SimdRegister<u8>>::gte(l2, l1)
+    }
+
+    #[inline(always)]
+    unsafe fn gt(l1: Self::Register, l2: Self::Register) -> Self::Register {
+        let sign = _mm256_set1_epi32(0x80808080u32 as i32);
+        let l1_xor = _mm256_xor_si256(l1, sign);
+        let l2_xor = _mm256_xor_si256(l2, sign);
+        let mask = _mm256_cmpgt_epi8(l1_xor, l2_xor);
+        _mm256_and_si256(mask, _mm256_set1_epi8(1))
+    }
+
+    #[inline(always)]
+    unsafe fn gte(l1: Self::Register, l2: Self::Register) -> Self::Register {
+        let mask = _mm256_cmpeq_epi8(l1, _mm256_max_epu8(l1, l2));
+        _mm256_and_si256(mask, _mm256_set1_epi8(1))
     }
 
     #[inline(always)]
@@ -1233,6 +1492,45 @@ impl SimdRegister<u16> for Avx2 {
     }
 
     #[inline(always)]
+    unsafe fn eq(l1: Self::Register, l2: Self::Register) -> Self::Register {
+        <Self as SimdRegister<i16>>::eq(l1, l2) // Operation is identical
+    }
+
+    #[inline(always)]
+    unsafe fn neq(l1: Self::Register, l2: Self::Register) -> Self::Register {
+        <Self as SimdRegister<i16>>::neq(l1, l2) // Operation is identical
+    }
+
+    #[inline(always)]
+    unsafe fn lt(l1: Self::Register, l2: Self::Register) -> Self::Register {
+        <Self as SimdRegister<u16>>::gt(l2, l1)
+    }
+
+    #[inline(always)]
+    unsafe fn lte(l1: Self::Register, l2: Self::Register) -> Self::Register {
+        <Self as SimdRegister<u16>>::gte(l2, l1)
+    }
+
+    #[inline(always)]
+    unsafe fn gt(l1: Self::Register, l2: Self::Register) -> Self::Register {
+        let sign = _mm256_set1_epi32(0x80008000u32 as i32);
+        let l1_xor = _mm256_xor_si256(l1, sign);
+        let l2_xor = _mm256_xor_si256(l2, sign);
+        let mask = _mm256_cmpgt_epi16(l1_xor, l2_xor);
+        // Small optimization for 16, 32 and 64bit values which
+        // can shift instead of doing a bitwise `and` on a mask
+        _mm256_srli_epi16::<15>(mask)
+    }
+
+    #[inline(always)]
+    unsafe fn gte(l1: Self::Register, l2: Self::Register) -> Self::Register {
+        let mask = _mm256_cmpeq_epi16(l1, _mm256_max_epu16(l1, l2));
+        // Small optimization for 16, 32 and 64bit values which
+        // can shift instead of doing a bitwise `and` on a mask
+        _mm256_srli_epi16::<15>(mask)
+    }
+
+    #[inline(always)]
     unsafe fn mul_dense(
         l1: DenseLane<Self::Register>,
         l2: DenseLane<Self::Register>,
@@ -1423,6 +1721,45 @@ impl SimdRegister<u32> for Avx2 {
     }
 
     #[inline(always)]
+    unsafe fn eq(l1: Self::Register, l2: Self::Register) -> Self::Register {
+        <Self as SimdRegister<i32>>::eq(l1, l2) // Operation is identical
+    }
+
+    #[inline(always)]
+    unsafe fn neq(l1: Self::Register, l2: Self::Register) -> Self::Register {
+        <Self as SimdRegister<i32>>::neq(l1, l2) // Operation is identical
+    }
+
+    #[inline(always)]
+    unsafe fn lt(l1: Self::Register, l2: Self::Register) -> Self::Register {
+        <Self as SimdRegister<u32>>::gt(l2, l1)
+    }
+
+    #[inline(always)]
+    unsafe fn lte(l1: Self::Register, l2: Self::Register) -> Self::Register {
+        <Self as SimdRegister<u32>>::gte(l2, l1)
+    }
+
+    #[inline(always)]
+    unsafe fn gt(l1: Self::Register, l2: Self::Register) -> Self::Register {
+        let sign = _mm256_set1_epi32(0x80000000u32 as i32);
+        let l1_xor = _mm256_xor_si256(l1, sign);
+        let l2_xor = _mm256_xor_si256(l2, sign);
+        let mask = _mm256_cmpgt_epi32(l1_xor, l2_xor);
+        // Small optimization for 16, 32 and 64bit values which
+        // can shift instead of doing a bitwise `and` on a mask
+        _mm256_srli_epi32::<31>(mask)
+    }
+
+    #[inline(always)]
+    unsafe fn gte(l1: Self::Register, l2: Self::Register) -> Self::Register {
+        let mask = _mm256_cmpeq_epi32(l1, _mm256_max_epu32(l1, l2));
+        // Small optimization for 16, 32 and 64bit values which
+        // can shift instead of doing a bitwise `and` on a mask
+        _mm256_srli_epi32::<31>(mask)
+    }
+
+    #[inline(always)]
     unsafe fn mul_dense(
         l1: DenseLane<Self::Register>,
         l2: DenseLane<Self::Register>,
@@ -1598,6 +1935,55 @@ impl SimdRegister<u64> for Avx2 {
             _mm256_xor_si256(l2, sign_bit),
         );
         _mm256_blendv_epi8(l1, l2, mask)
+    }
+
+    #[inline(always)]
+    unsafe fn eq(l1: Self::Register, l2: Self::Register) -> Self::Register {
+        <Self as SimdRegister<i64>>::eq(l1, l2) // Operation is identical
+    }
+
+    #[inline(always)]
+    unsafe fn neq(l1: Self::Register, l2: Self::Register) -> Self::Register {
+        <Self as SimdRegister<i64>>::neq(l1, l2) // Operation is identical
+    }
+
+    #[inline(always)]
+    unsafe fn lt(l1: Self::Register, l2: Self::Register) -> Self::Register {
+        <Self as SimdRegister<u64>>::gt(l2, l1)
+    }
+
+    #[inline(always)]
+    unsafe fn lte(l1: Self::Register, l2: Self::Register) -> Self::Register {
+        <Self as SimdRegister<u64>>::gte(l2, l1)
+    }
+
+    #[inline(always)]
+    unsafe fn gt(l1: Self::Register, l2: Self::Register) -> Self::Register {
+        let sign = _mm256_set1_epi64x(0x8000000000000000u64 as i64);
+        let l1_xor = _mm256_xor_si256(l1, sign);
+        let l2_xor = _mm256_xor_si256(l2, sign);
+        let mask = _mm256_cmpgt_epi64(l1_xor, l2_xor);
+        // Small optimization for 16, 32 and 64bit values which
+        // can shift instead of doing a bitwise `and` on a mask
+        _mm256_srli_epi64::<63>(mask)
+    }
+
+    #[inline(always)]
+    unsafe fn gte(l1: Self::Register, l2: Self::Register) -> Self::Register {
+        // A mirror of the `gt` impl but with l1 and l2 swapped operationally.
+        // we can't call `Self::gt` here because we choose to shift the mask so it becomes
+        // `0` and `1`s instead of the full mask.
+        let swapped_cmp = {
+            let sign = _mm256_set1_epi64x(0x8000000000000000u64 as i64);
+            let l1_xor = _mm256_xor_si256(l1, sign);
+            let l2_xor = _mm256_xor_si256(l2, sign);
+            _mm256_cmpgt_epi64(l2_xor, l1_xor) // This is the important bit :)
+        };
+
+        let mask = _mm256_xor_si256(swapped_cmp, _mm256_set1_epi64x(-1));
+        // Small optimization for 16, 32 and 64bit values which
+        // can shift instead of doing a bitwise `and` on a mask
+        _mm256_srli_epi64::<63>(mask)
     }
 
     #[inline(always)]
