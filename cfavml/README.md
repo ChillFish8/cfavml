@@ -12,13 +12,25 @@ feature flag:
 
 ##### Default Setup
 ```toml
-cfavml = "0.2.0" 
+cfavml = "0.3.0" 
 ```
 
 ##### No-std Setup
 ```toml
-cfavml = { version = "0.2.0", default-features = false }
+cfavml = { version = "0.3.0", default-features = false }
 ```
+
+### Important Version Upgrade Notes
+
+If you are upgrading on a breaking release, i.e. `0.2.0` to `0.3.0` there may be some important
+changes that affects your system, although the public _safe_ APIs I try my best to avoid breaking.
+
+- AVX512 required CPU features changed in `0.3.0+`
+  * In versions older than `0.3.0` avx512 was used when only the `avx512f` cpu feature was available
+    since this is the base/foundation version of AVX512. However, in `0.3.0` we introduced more extensive
+    cmp operations (`eq/neq/lt/lte/gt/gte`) which changed our required CPU features to include `avx512bw`
+  * **This means on _unsafe_ APIs you must update your feature checks to include `avx512bw`.** 
+  * **Safe APIs do not require changes but may fallback to AVX2 on some of the first gen AVX512 CPUs, i.e. Skylake**
 
 ### Available SIMD Architectures
 
