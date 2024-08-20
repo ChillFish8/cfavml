@@ -16,7 +16,7 @@ fn main() {
 }
 
 #[divan::bench_group(
-    sample_count = 500,
+    sample_count = 2500,
     sample_size = 5000,
     threads = false,
     counters = [ItemsCount::new(DIMS)],
@@ -29,7 +29,7 @@ mod dot_product {
 
     use super::*;
 
-    #[divan::bench(types = [f32, f64, i8, i16, i32, i64, u8, u16, u32, u64])]
+    #[divan::bench(types = [f32, f64])]
     fn ndarray<T>(bencher: Bencher)
     where
         Standard: Distribution<T>,
@@ -48,7 +48,18 @@ mod dot_product {
         });
     }
 
-    #[divan::bench(types = [f32, f64, i8, i16, i32, i64, u8, u16, u32, u64])]
+    #[divan::bench(types = [f32, f64])]
+    fn simsimd<T>(bencher: Bencher)
+    where
+        Standard: Distribution<T>,
+        T: simsimd::SpatialSimilarity,
+    {
+        let (l1, l2) = utils::get_sample_vectors::<T>(DIMS);
+
+        bencher.bench_local(|| T::dot(black_box(&l1), black_box(&l2)));
+    }
+
+    #[divan::bench(types = [f32, f64])]
     fn cfavml<T>(bencher: Bencher)
     where
         Standard: Distribution<T>,
@@ -66,7 +77,7 @@ mod dot_product {
 }
 
 #[divan::bench_group(
-    sample_count = 500,
+    sample_count = 2500,
     sample_size = 5000,
     threads = false,
     counters = [ItemsCount::new(DIMS)],
@@ -105,6 +116,17 @@ mod cosine {
     }
 
     #[divan::bench(types = [f32, f64])]
+    fn simsimd<T>(bencher: Bencher)
+    where
+        Standard: Distribution<T>,
+        T: simsimd::SpatialSimilarity,
+    {
+        let (l1, l2) = utils::get_sample_vectors::<T>(DIMS);
+
+        bencher.bench_local(|| T::cosine(black_box(&l1), black_box(&l2)));
+    }
+
+    #[divan::bench(types = [f32, f64])]
     fn cfavml<T>(bencher: Bencher)
     where
         Standard: Distribution<T>,
@@ -122,7 +144,7 @@ mod cosine {
 }
 
 #[divan::bench_group(
-    sample_count = 500,
+    sample_count = 2500,
     sample_size = 5000,
     threads = false,
     counters = [ItemsCount::new(DIMS)],
@@ -159,6 +181,17 @@ mod euclidean {
             let diff = l1_view - l2_view;
             diff.dot(&diff)
         });
+    }
+
+    #[divan::bench(types = [f32, f64])]
+    fn simsimd<T>(bencher: Bencher)
+    where
+        Standard: Distribution<T>,
+        T: simsimd::SpatialSimilarity,
+    {
+        let (l1, l2) = utils::get_sample_vectors::<T>(DIMS);
+
+        bencher.bench_local(|| T::sqeuclidean(black_box(&l1), black_box(&l2)));
     }
 
     #[divan::bench(types = [f32, f64])]
