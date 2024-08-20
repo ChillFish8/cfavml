@@ -22,6 +22,7 @@ paste = "1.0.14"
 divan = "0.1.14"
 num-traits = "0.2.19"
 mimalloc = { version = "0.1.43", default-features = false }
+simsimd = "5.0.1"
 
 [target.'cfg(unix)'.dev-dependencies]
 ndarray = { version = "0.15.6", features = ["blas"] }
