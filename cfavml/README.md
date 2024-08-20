@@ -24,7 +24,7 @@ cfavml = { version = "0.2.0", default-features = false }
 
 - AVX2
 - AVX2 + FMA
-- AVX512
+- AVX512 (`avx512f` + `avx512bw`)
 - NEON
 - Fallback (Typically optimized to SSE automatically by LLVM on x86)
 

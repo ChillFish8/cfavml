@@ -137,7 +137,8 @@ define_max_impls!(
     value = generic_avx512_max_value,
     horizontal = generic_avx512_max_horizontal,
     Avx512,
-    target_features = "avx512f"
+    target_features = "avx512f",
+    "avx512bw"
 );
 #[cfg(target_arch = "aarch64")]
 define_max_impls!(
@@ -270,7 +271,8 @@ define_min_impls!(
     value = generic_avx512_min_value,
     horizontal = generic_avx512_min_horizontal,
     Avx512,
-    target_features = "avx512f"
+    target_features = "avx512f",
+    "avx512bw"
 );
 #[cfg(target_arch = "aarch64")]
 define_min_impls!(

@@ -8,7 +8,7 @@
 ///
 /// #### x86
 ///
-/// - AVX512
+/// - AVX512 (`avx512f` + `avx512bw`)
 /// - AVX2 + FMA
 /// - AVX2
 /// - Fallback
@@ -87,13 +87,19 @@ macro_rules! dispatch {
 ///
 /// If this is compiling for a no std target, this selection is done
 /// at compile time only.
+///
+/// NOTE:
+///
+/// Internally this checks `avx512f` and `avx512bw` only.
 pub fn is_avx512_available() -> bool {
-    if cfg!(target_feature = "avx512f") {
+    if cfg!(all(target_feature = "avx512f", target_feature = "avx512bw")) {
         return true;
     }
 
     #[cfg(feature = "std")]
-    if std::arch::is_x86_feature_detected!("avx512f") {
+    if std::arch::is_x86_feature_detected!("avx512f")
+        && std::arch::is_x86_feature_detected!("avx512bw")
+    {
         return true;
     }
 

@@ -322,7 +322,8 @@ define_arithmetic_impls!(
     div_value = generic_avx512_div_value,
     div_vector = generic_avx512_div_vector,
     Avx512,
-    target_features = "avx512f"
+    target_features = "avx512f",
+    "avx512bw"
 );
 #[cfg(target_arch = "aarch64")]
 define_arithmetic_impls!(

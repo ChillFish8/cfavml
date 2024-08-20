@@ -499,23 +499,39 @@ impl SimdRegister<i16> for Avx512 {
     }
 
     #[inline(always)]
-    unsafe fn lt(_l1: Self::Register, _l2: Self::Register) -> Self::Register {
-        unimplemented!("TODO: Add support for AVX512 registers are not yet supported")
+    unsafe fn eq(l1: Self::Register, l2: Self::Register) -> Self::Register {
+        let mask = _mm512_cmpeq_epi16_mask(l1, l2);
+        fast_cvt_mask32_to_m512i(mask)
     }
 
     #[inline(always)]
-    unsafe fn lte(_l1: Self::Register, _l2: Self::Register) -> Self::Register {
-        unimplemented!("TODO: Add support for AVX512 registers are not yet supported")
+    unsafe fn neq(l1: Self::Register, l2: Self::Register) -> Self::Register {
+        let mask = _mm512_cmpneq_epi16_mask(l1, l2);
+        fast_cvt_mask32_to_m512i(mask)
     }
 
     #[inline(always)]
-    unsafe fn gt(_l1: Self::Register, _l2: Self::Register) -> Self::Register {
-        unimplemented!("TODO: Add support for AVX512 registers are not yet supported")
+    unsafe fn lt(l1: Self::Register, l2: Self::Register) -> Self::Register {
+        let mask = _mm512_cmplt_epi16_mask(l1, l2);
+        fast_cvt_mask32_to_m512i(mask)
     }
 
     #[inline(always)]
-    unsafe fn gte(_l1: Self::Register, _l2: Self::Register) -> Self::Register {
-        unimplemented!("TODO: Add support for AVX512 registers are not yet supported")
+    unsafe fn lte(l1: Self::Register, l2: Self::Register) -> Self::Register {
+        let mask = _mm512_cmple_epi16_mask(l1, l2);
+        fast_cvt_mask32_to_m512i(mask)
+    }
+
+    #[inline(always)]
+    unsafe fn gt(l1: Self::Register, l2: Self::Register) -> Self::Register {
+        let mask = _mm512_cmpgt_epi16_mask(l1, l2);
+        fast_cvt_mask32_to_m512i(mask)
+    }
+
+    #[inline(always)]
+    unsafe fn gte(l1: Self::Register, l2: Self::Register) -> Self::Register {
+        let mask = _mm512_cmpge_epi16_mask(l1, l2);
+        fast_cvt_mask32_to_m512i(mask)
     }
 
     #[inline(always)]
@@ -646,23 +662,39 @@ impl SimdRegister<i32> for Avx512 {
     }
 
     #[inline(always)]
-    unsafe fn lt(_l1: Self::Register, _l2: Self::Register) -> Self::Register {
-        unimplemented!("TODO: Add support for AVX512 registers are not yet supported")
+    unsafe fn eq(l1: Self::Register, l2: Self::Register) -> Self::Register {
+        let mask = _mm512_cmpeq_epi32_mask(l1, l2);
+        fast_cvt_mask16_to_m512i(mask)
     }
 
     #[inline(always)]
-    unsafe fn lte(_l1: Self::Register, _l2: Self::Register) -> Self::Register {
-        unimplemented!("TODO: Add support for AVX512 registers are not yet supported")
+    unsafe fn neq(l1: Self::Register, l2: Self::Register) -> Self::Register {
+        let mask = _mm512_cmpneq_epi32_mask(l1, l2);
+        fast_cvt_mask16_to_m512i(mask)
     }
 
     #[inline(always)]
-    unsafe fn gt(_l1: Self::Register, _l2: Self::Register) -> Self::Register {
-        unimplemented!("TODO: Add support for AVX512 registers are not yet supported")
+    unsafe fn lt(l1: Self::Register, l2: Self::Register) -> Self::Register {
+        let mask = _mm512_cmplt_epi32_mask(l1, l2);
+        fast_cvt_mask16_to_m512i(mask)
     }
 
     #[inline(always)]
-    unsafe fn gte(_l1: Self::Register, _l2: Self::Register) -> Self::Register {
-        unimplemented!("TODO: Add support for AVX512 registers are not yet supported")
+    unsafe fn lte(l1: Self::Register, l2: Self::Register) -> Self::Register {
+        let mask = _mm512_cmple_epi32_mask(l1, l2);
+        fast_cvt_mask16_to_m512i(mask)
+    }
+
+    #[inline(always)]
+    unsafe fn gt(l1: Self::Register, l2: Self::Register) -> Self::Register {
+        let mask = _mm512_cmpgt_epi32_mask(l1, l2);
+        fast_cvt_mask16_to_m512i(mask)
+    }
+
+    #[inline(always)]
+    unsafe fn gte(l1: Self::Register, l2: Self::Register) -> Self::Register {
+        let mask = _mm512_cmpge_epi32_mask(l1, l2);
+        fast_cvt_mask16_to_m512i(mask)
     }
 
     #[inline(always)]
@@ -779,23 +811,39 @@ impl SimdRegister<i64> for Avx512 {
     }
 
     #[inline(always)]
-    unsafe fn lt(_l1: Self::Register, _l2: Self::Register) -> Self::Register {
-        unimplemented!("TODO: Add support for AVX512 registers are not yet supported")
+    unsafe fn eq(l1: Self::Register, l2: Self::Register) -> Self::Register {
+        let mask = _mm512_cmpeq_epi64_mask(l1, l2);
+        fast_cvt_mask8_to_m512i(mask)
     }
 
     #[inline(always)]
-    unsafe fn lte(_l1: Self::Register, _l2: Self::Register) -> Self::Register {
-        unimplemented!("TODO: Add support for AVX512 registers are not yet supported")
+    unsafe fn neq(l1: Self::Register, l2: Self::Register) -> Self::Register {
+        let mask = _mm512_cmpneq_epi64_mask(l1, l2);
+        fast_cvt_mask8_to_m512i(mask)
     }
 
     #[inline(always)]
-    unsafe fn gt(_l1: Self::Register, _l2: Self::Register) -> Self::Register {
-        unimplemented!("TODO: Add support for AVX512 registers are not yet supported")
+    unsafe fn lt(l1: Self::Register, l2: Self::Register) -> Self::Register {
+        let mask = _mm512_cmplt_epi64_mask(l1, l2);
+        fast_cvt_mask8_to_m512i(mask)
     }
 
     #[inline(always)]
-    unsafe fn gte(_l1: Self::Register, _l2: Self::Register) -> Self::Register {
-        unimplemented!("TODO: Add support for AVX512 registers are not yet supported")
+    unsafe fn lte(l1: Self::Register, l2: Self::Register) -> Self::Register {
+        let mask = _mm512_cmple_epi64_mask(l1, l2);
+        fast_cvt_mask8_to_m512i(mask)
+    }
+
+    #[inline(always)]
+    unsafe fn gt(l1: Self::Register, l2: Self::Register) -> Self::Register {
+        let mask = _mm512_cmpgt_epi64_mask(l1, l2);
+        fast_cvt_mask8_to_m512i(mask)
+    }
+
+    #[inline(always)]
+    unsafe fn gte(l1: Self::Register, l2: Self::Register) -> Self::Register {
+        let mask = _mm512_cmpge_epi64_mask(l1, l2);
+        fast_cvt_mask8_to_m512i(mask)
     }
 
     #[inline(always)]
@@ -902,23 +950,39 @@ impl SimdRegister<u8> for Avx512 {
     }
 
     #[inline(always)]
-    unsafe fn lt(_l1: Self::Register, _l2: Self::Register) -> Self::Register {
-        unimplemented!("TODO: Add support for AVX512 registers are not yet supported")
+    unsafe fn eq(l1: Self::Register, l2: Self::Register) -> Self::Register {
+        let mask = _mm512_cmpeq_epu8_mask(l1, l2);
+        fast_cvt_mask64_to_m512i(mask)
     }
 
     #[inline(always)]
-    unsafe fn lte(_l1: Self::Register, _l2: Self::Register) -> Self::Register {
-        unimplemented!("TODO: Add support for AVX512 registers are not yet supported")
+    unsafe fn neq(l1: Self::Register, l2: Self::Register) -> Self::Register {
+        let mask = _mm512_cmpneq_epu8_mask(l1, l2);
+        fast_cvt_mask64_to_m512i(mask)
     }
 
     #[inline(always)]
-    unsafe fn gt(_l1: Self::Register, _l2: Self::Register) -> Self::Register {
-        unimplemented!("TODO: Add support for AVX512 registers are not yet supported")
+    unsafe fn lt(l1: Self::Register, l2: Self::Register) -> Self::Register {
+        let mask = _mm512_cmplt_epu8_mask(l1, l2);
+        fast_cvt_mask64_to_m512i(mask)
     }
 
     #[inline(always)]
-    unsafe fn gte(_l1: Self::Register, _l2: Self::Register) -> Self::Register {
-        unimplemented!("TODO: Add support for AVX512 registers are not yet supported")
+    unsafe fn lte(l1: Self::Register, l2: Self::Register) -> Self::Register {
+        let mask = _mm512_cmple_epu8_mask(l1, l2);
+        fast_cvt_mask64_to_m512i(mask)
+    }
+
+    #[inline(always)]
+    unsafe fn gt(l1: Self::Register, l2: Self::Register) -> Self::Register {
+        let mask = _mm512_cmpgt_epu8_mask(l1, l2);
+        fast_cvt_mask64_to_m512i(mask)
+    }
+
+    #[inline(always)]
+    unsafe fn gte(l1: Self::Register, l2: Self::Register) -> Self::Register {
+        let mask = _mm512_cmpge_epu8_mask(l1, l2);
+        fast_cvt_mask64_to_m512i(mask)
     }
 
     #[inline(always)]
@@ -1043,23 +1107,39 @@ impl SimdRegister<u16> for Avx512 {
     }
 
     #[inline(always)]
-    unsafe fn lt(_l1: Self::Register, _l2: Self::Register) -> Self::Register {
-        unimplemented!("TODO: Add support for AVX512 registers are not yet supported")
+    unsafe fn eq(l1: Self::Register, l2: Self::Register) -> Self::Register {
+        let mask = _mm512_cmpeq_epu16_mask(l1, l2);
+        fast_cvt_mask32_to_m512i(mask)
     }
 
     #[inline(always)]
-    unsafe fn lte(_l1: Self::Register, _l2: Self::Register) -> Self::Register {
-        unimplemented!("TODO: Add support for AVX512 registers are not yet supported")
+    unsafe fn neq(l1: Self::Register, l2: Self::Register) -> Self::Register {
+        let mask = _mm512_cmpneq_epu16_mask(l1, l2);
+        fast_cvt_mask32_to_m512i(mask)
     }
 
     #[inline(always)]
-    unsafe fn gt(_l1: Self::Register, _l2: Self::Register) -> Self::Register {
-        unimplemented!("TODO: Add support for AVX512 registers are not yet supported")
+    unsafe fn lt(l1: Self::Register, l2: Self::Register) -> Self::Register {
+        let mask = _mm512_cmplt_epu16_mask(l1, l2);
+        fast_cvt_mask32_to_m512i(mask)
     }
 
     #[inline(always)]
-    unsafe fn gte(_l1: Self::Register, _l2: Self::Register) -> Self::Register {
-        unimplemented!("TODO: Add support for AVX512 registers are not yet supported")
+    unsafe fn lte(l1: Self::Register, l2: Self::Register) -> Self::Register {
+        let mask = _mm512_cmple_epu16_mask(l1, l2);
+        fast_cvt_mask32_to_m512i(mask)
+    }
+
+    #[inline(always)]
+    unsafe fn gt(l1: Self::Register, l2: Self::Register) -> Self::Register {
+        let mask = _mm512_cmpgt_epu16_mask(l1, l2);
+        fast_cvt_mask32_to_m512i(mask)
+    }
+
+    #[inline(always)]
+    unsafe fn gte(l1: Self::Register, l2: Self::Register) -> Self::Register {
+        let mask = _mm512_cmpge_epu16_mask(l1, l2);
+        fast_cvt_mask32_to_m512i(mask)
     }
 
     #[inline(always)]
@@ -1184,23 +1264,39 @@ impl SimdRegister<u32> for Avx512 {
     }
 
     #[inline(always)]
-    unsafe fn lt(_l1: Self::Register, _l2: Self::Register) -> Self::Register {
-        unimplemented!("TODO: Add support for AVX512 registers are not yet supported")
+    unsafe fn eq(l1: Self::Register, l2: Self::Register) -> Self::Register {
+        let mask = _mm512_cmpeq_epu32_mask(l1, l2);
+        fast_cvt_mask16_to_m512i(mask)
     }
 
     #[inline(always)]
-    unsafe fn lte(_l1: Self::Register, _l2: Self::Register) -> Self::Register {
-        unimplemented!("TODO: Add support for AVX512 registers are not yet supported")
+    unsafe fn neq(l1: Self::Register, l2: Self::Register) -> Self::Register {
+        let mask = _mm512_cmpneq_epu32_mask(l1, l2);
+        fast_cvt_mask16_to_m512i(mask)
     }
 
     #[inline(always)]
-    unsafe fn gt(_l1: Self::Register, _l2: Self::Register) -> Self::Register {
-        unimplemented!("TODO: Add support for AVX512 registers are not yet supported")
+    unsafe fn lt(l1: Self::Register, l2: Self::Register) -> Self::Register {
+        let mask = _mm512_cmplt_epu32_mask(l1, l2);
+        fast_cvt_mask16_to_m512i(mask)
     }
 
     #[inline(always)]
-    unsafe fn gte(_l1: Self::Register, _l2: Self::Register) -> Self::Register {
-        unimplemented!("TODO: Add support for AVX512 registers are not yet supported")
+    unsafe fn lte(l1: Self::Register, l2: Self::Register) -> Self::Register {
+        let mask = _mm512_cmple_epu32_mask(l1, l2);
+        fast_cvt_mask16_to_m512i(mask)
+    }
+
+    #[inline(always)]
+    unsafe fn gt(l1: Self::Register, l2: Self::Register) -> Self::Register {
+        let mask = _mm512_cmpgt_epu32_mask(l1, l2);
+        fast_cvt_mask16_to_m512i(mask)
+    }
+
+    #[inline(always)]
+    unsafe fn gte(l1: Self::Register, l2: Self::Register) -> Self::Register {
+        let mask = _mm512_cmpge_epu32_mask(l1, l2);
+        fast_cvt_mask16_to_m512i(mask)
     }
 
     #[inline(always)]
@@ -1324,23 +1420,39 @@ impl SimdRegister<u64> for Avx512 {
     }
 
     #[inline(always)]
-    unsafe fn lt(_l1: Self::Register, _l2: Self::Register) -> Self::Register {
-        unimplemented!("TODO: Add support for AVX512 registers are not yet supported")
+    unsafe fn eq(l1: Self::Register, l2: Self::Register) -> Self::Register {
+        let mask = _mm512_cmpeq_epu64_mask(l1, l2);
+        fast_cvt_mask8_to_m512i(mask)
     }
 
     #[inline(always)]
-    unsafe fn lte(_l1: Self::Register, _l2: Self::Register) -> Self::Register {
-        unimplemented!("TODO: Add support for AVX512 registers are not yet supported")
+    unsafe fn neq(l1: Self::Register, l2: Self::Register) -> Self::Register {
+        let mask = _mm512_cmpneq_epu64_mask(l1, l2);
+        fast_cvt_mask8_to_m512i(mask)
     }
 
     #[inline(always)]
-    unsafe fn gt(_l1: Self::Register, _l2: Self::Register) -> Self::Register {
-        unimplemented!("TODO: Add support for AVX512 registers are not yet supported")
+    unsafe fn lt(l1: Self::Register, l2: Self::Register) -> Self::Register {
+        let mask = _mm512_cmplt_epu64_mask(l1, l2);
+        fast_cvt_mask8_to_m512i(mask)
     }
 
     #[inline(always)]
-    unsafe fn gte(_l1: Self::Register, _l2: Self::Register) -> Self::Register {
-        unimplemented!("TODO: Add support for AVX512 registers are not yet supported")
+    unsafe fn lte(l1: Self::Register, l2: Self::Register) -> Self::Register {
+        let mask = _mm512_cmple_epu64_mask(l1, l2);
+        fast_cvt_mask8_to_m512i(mask)
+    }
+
+    #[inline(always)]
+    unsafe fn gt(l1: Self::Register, l2: Self::Register) -> Self::Register {
+        let mask = _mm512_cmpgt_epu64_mask(l1, l2);
+        fast_cvt_mask8_to_m512i(mask)
+    }
+
+    #[inline(always)]
+    unsafe fn gte(l1: Self::Register, l2: Self::Register) -> Self::Register {
+        let mask = _mm512_cmpge_epu64_mask(l1, l2);
+        fast_cvt_mask8_to_m512i(mask)
     }
 
     #[inline(always)]
@@ -1378,60 +1490,36 @@ impl SimdRegister<u64> for Avx512 {
 unsafe fn fast_cvt_mask64_to_m512i(mask: __mmask64) -> __m512i {
     let zeroes = _mm512_setzero_si512();
     let ones = _mm512_set1_epi8(1);
-    _mm512_mask_sub_epi8(
-        zeroes,
-        mask,
-        ones,
-        zeroes,
-    )
+    _mm512_mask_sub_epi8(zeroes, mask, ones, zeroes)
 }
 
 #[inline(always)]
 unsafe fn fast_cvt_mask32_to_m512i(mask: __mmask32) -> __m512i {
     let zeroes = _mm512_setzero_si512();
     let ones = _mm512_set1_epi16(1);
-    _mm512_mask_sub_epi16(
-        zeroes,
-        mask,
-        ones,
-        zeroes,
-    )
+    _mm512_mask_sub_epi16(zeroes, mask, ones, zeroes)
 }
 
 #[inline(always)]
 unsafe fn fast_cvt_mask16_to_m512i(mask: __mmask16) -> __m512i {
     let zeroes = _mm512_setzero_si512();
     let ones = _mm512_set1_epi32(1);
-    _mm512_mask_sub_epi32(
-        zeroes,
-        mask,
-        ones,
-        zeroes,
-    )
+    _mm512_mask_sub_epi32(zeroes, mask, ones, zeroes)
 }
 
 #[inline(always)]
 unsafe fn fast_cvt_mask8_to_m512i(mask: __mmask8) -> __m512i {
     let zeroes = _mm512_setzero_si512();
     let ones = _mm512_set1_epi64(1);
-    _mm512_mask_sub_epi64(
-        zeroes,
-        mask,
-        ones,
-        zeroes,
-    )
+    _mm512_mask_sub_epi64(zeroes, mask, ones, zeroes)
 }
 
 #[inline(always)]
 unsafe fn fast_cvt_mask16_to_m512(mask: __mmask16) -> __m512 {
     let zeroes = _mm512_setzero_si512();
     let ones = _mm512_set1_ps(1.0);
-    let expanded_mask = _mm512_mask_sub_epi32(
-        zeroes,
-        mask,
-        _mm512_castps_si512(ones),
-        zeroes,
-    );
+    let expanded_mask =
+        _mm512_mask_sub_epi32(zeroes, mask, _mm512_castps_si512(ones), zeroes);
     _mm512_castsi512_ps(expanded_mask)
 }
 
@@ -1439,12 +1527,7 @@ unsafe fn fast_cvt_mask16_to_m512(mask: __mmask16) -> __m512 {
 unsafe fn fast_cvt_mask8_to_m512d(mask: __mmask8) -> __m512d {
     let zeroes = _mm512_setzero_si512();
     let ones = _mm512_set1_pd(1.0);
-    let expanded_mask = _mm512_mask_sub_epi64(
-        zeroes,
-        mask,
-        _mm512_castpd_si512(ones),
-        zeroes,
-    );
+    let expanded_mask =
+        _mm512_mask_sub_epi64(zeroes, mask, _mm512_castpd_si512(ones), zeroes);
     _mm512_castsi512_pd(expanded_mask)
 }
-
