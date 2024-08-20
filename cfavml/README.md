@@ -36,7 +36,7 @@ changes that affects your system, although the public _safe_ APIs I try my best 
 
 - AVX2
 - AVX2 + FMA
-- AVX512 (`avx512f` + `avx512bw`)
+- AVX512 (`avx512f` + `avx512bw`) _nightly only_
 - NEON
 - Fallback (Typically optimized to SSE automatically by LLVM on x86)
 
