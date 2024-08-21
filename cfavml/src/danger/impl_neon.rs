@@ -1510,8 +1510,8 @@ where
     AutoMath: Math<T>,
     Op: Fn(T, T) -> T,
 {
-    let l1 = a.to_array();
-    let l2 = b.to_array();
+    let l1_unpacked = a.to_array();
+    let l2_unpacked = b.to_array();
 
     let mut result = [AutoMath::zero(); N];
     for (idx, (l1, l2)) in zip(l1_unpacked, l2_unpacked).enumerate() {
@@ -1530,7 +1530,7 @@ trait ScalarCasting<T, const N: usize> {
 }
 
 macro_rules! casting_helper {
-    ($t:ident, $bits:ident, $r:ident) => {
+    ($t:ident, $bits:expr, $r:ident) => {
         impl ScalarCasting<$t, $bits> for $r {
             #[inline]
             unsafe fn from_array(data: [$t; $bits]) -> Self {
