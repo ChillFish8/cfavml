@@ -1509,13 +1509,48 @@ where
     AutoMath: Math<T>,
     Op: Fn(T, T) -> T,
 {
-    let l1_unpacked = mem::transmute::<_, [T; N]>(a);
-    let l2_unpacked = mem::transmute::<_, [T; N]>(b);
+    let l1 = a.to_array();
+    let l2 = b.to_array();
 
     let mut result = [AutoMath::zero(); N];
     for (idx, (l1, l2)) in zip(l1_unpacked, l2_unpacked).enumerate() {
         result[idx] = op(l1, l2);
     }
 
-    mem::transmute::<[T; N], R>(result)
+    R::from_array(result)
 }
+
+/// A helper trait to work around transmute limitations.
+///
+/// TODO: We should use this for all of the transmute ops in this file
+trait ScalarCasting<T, const N: usize> {
+    unsafe fn to_array(self) -> [T; N];
+    unsafe fn from_array(data: [T; N]) -> Self;
+}
+
+macro_rules! casting_helper {
+    ($t:ident, $bits:ident, $r:ident) => {
+        impl ScalarCasting<$t, $bits> for $r {
+            #[inline]
+            unsafe fn from_array(data: [$t; $bits]) -> Self {
+                mem::transmute(data)
+            }
+
+            #[inline]
+            unsafe fn to_array(self) -> [$t; $bits] {
+                mem::transmute(self)
+            }
+        }
+    };
+}
+
+casting_helper!(f32, BITS_32_CAPACITY, float32x4_t);
+casting_helper!(f64, BITS_64_CAPACITY, float64x2_t);
+casting_helper!(i8, BITS_8_CAPACITY, int8x16_t);
+casting_helper!(i16, BITS_16_CAPACITY, int16x8_t);
+casting_helper!(i32, BITS_32_CAPACITY, int32x4_t);
+casting_helper!(i64, BITS_64_CAPACITY, int64x2_t);
+casting_helper!(u8, BITS_8_CAPACITY, uint8x16_t);
+casting_helper!(u16, BITS_16_CAPACITY, uin16x8_t);
+casting_helper!(u32, BITS_32_CAPACITY, uint32x4_t);
+casting_helper!(u64, BITS_64_CAPACITY, uint64x2_t);
