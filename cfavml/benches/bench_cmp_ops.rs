@@ -103,7 +103,7 @@ mod max {
 
         bencher.bench_local(|| {
             let l1_view = black_box(l1.as_ref());
-            cfavml::max_horizontal(l1_view)
+            cfavml::max(l1_view)
         });
     }
 
@@ -234,7 +234,7 @@ mod min {
 
         bencher.bench_local(|| {
             let l1_view = black_box(l1.as_ref());
-            cfavml::min_horizontal(l1_view)
+            cfavml::min(l1_view)
         });
     }
 
