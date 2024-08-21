@@ -5,6 +5,8 @@ use crate::buffer::WriteOnlyBuffer;
 use crate::danger::SimdRegister;
 use crate::math::{AutoMath, Math};
 
+const DATA_SIZE: usize = if cfg!(miri) { 133 } else { 1043 };
+
 // Some types like `i8` and `i16` do not behave well with the rng generated vectors _and_
 // cosine logic, so we skip them since it is unlikely anyone will actually do cosine distance
 // on i8 or i16 values.
@@ -13,7 +15,7 @@ macro_rules! test_cosine_extra {
         paste::paste! {
             #[test]
             fn [<test_ $im:lower _ $t _cosine>]() {
-                let (l1, l2) = crate::test_utils::get_sample_vectors::<$t>(1043);
+                let (l1, l2) = crate::test_utils::get_sample_vectors::<$t>(DATA_SIZE);
                 unsafe { crate::danger::op_cosine::test_cosine::<$t, $im>(l1, l2) };
             }
         }
@@ -47,31 +49,31 @@ macro_rules! test_suite {
 
             #[test]
             fn [<test_ $im:lower _ $t _dot>]() {
-                let (l1, l2) = crate::test_utils::get_sample_vectors::<$t>(1043);
+                let (l1, l2) = crate::test_utils::get_sample_vectors::<$t>(DATA_SIZE);
                 unsafe { crate::danger::op_dot::test_dot::<$t, $im>(l1, l2) };
             }
 
             #[test]
             fn [<test_ $im:lower _ $t _norm>]() {
-                let (l1, _) = crate::test_utils::get_sample_vectors::<$t>(1043);
+                let (l1, _) = crate::test_utils::get_sample_vectors::<$t>(DATA_SIZE);
                 unsafe { crate::danger::op_norm::test_squared_norm::<$t, $im>(l1) };
             }
 
             #[test]
             fn [<test_ $im:lower _ $t _euclidean>]() {
-                let (l1, l2) = crate::test_utils::get_sample_vectors::<$t>(1043);
+                let (l1, l2) = crate::test_utils::get_sample_vectors::<$t>(DATA_SIZE);
                 unsafe { crate::danger::op_euclidean::test_euclidean::<$t, $im>(l1, l2) };
             }
 
             #[test]
             fn [<test_ $im:lower _ $t _max>]() {
-                let (l1, l2) = crate::test_utils::get_sample_vectors::<$t>(1043);
+                let (l1, l2) = crate::test_utils::get_sample_vectors::<$t>(DATA_SIZE);
                 unsafe { crate::danger::op_cmp_max::test_max::<$t, $im>(l1, l2) };
             }
 
             #[test]
             fn [<test_ $im:lower _ $t _min>]() {
-                let (l1, l2) = crate::test_utils::get_sample_vectors::<$t>(1043);
+                let (l1, l2) = crate::test_utils::get_sample_vectors::<$t>(DATA_SIZE);
                 unsafe { crate::danger::op_cmp_min::test_min::<$t, $im>(l1, l2) };
             }
 
@@ -83,25 +85,25 @@ macro_rules! test_suite {
 
             #[test]
             fn [<test_ $im:lower _ $t _arithmetic_value>]() {
-                let (l1, _) = (vec![1 as $t; 1043], vec![3 as $t; 1043]);
+                let (l1, _) = (vec![1 as $t; DATA_SIZE], vec![3 as $t; DATA_SIZE]);
                 test_arithmetic_value_all::<$t, $im>(l1, 2 as $t);
             }
 
             #[test]
             fn [<test_ $im:lower _ $t _arithmetic_vector>]() {
-                let (l1, l2) = (vec![1 as $t; 1043], vec![3 as $t; 1043]);
+                let (l1, l2) = (vec![1 as $t; DATA_SIZE], vec![3 as $t; DATA_SIZE]);
                 test_arithmetic_vector_all::<$t, $im>(l1, l2);
             }
 
             #[test]
             fn [<test_ $im:lower _ $t _cmp_value>]() {
-                let (l1, _) = (vec![1 as $t; 1043], vec![3 as $t; 1043]);
+                let (l1, _) = (vec![1 as $t; DATA_SIZE], vec![3 as $t; DATA_SIZE]);
                 test_cmp_value_all::<$t, $im>(l1, 2 as $t);
             }
 
             #[test]
             fn [<test_ $im:lower _ $t _cmp_vector>]() {
-                let (l1, l2) = (vec![1 as $t; 1043], vec![3 as $t; 1043]);
+                let (l1, l2) = (vec![1 as $t; DATA_SIZE], vec![3 as $t; DATA_SIZE]);
                 test_cmp_vector_all::<$t, $im>(l1, l2);
             }
         }
