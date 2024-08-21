@@ -49,13 +49,13 @@ macro_rules! test_suite {
             #[test]
             fn [<test_ $im:lower _ $t _max>]() {
                 let (l1, l2) = crate::test_utils::get_sample_vectors::<$t>(1043);
-                unsafe { crate::danger::op_max::test_max::<$t, $im>(l1, l2) };
+                unsafe { crate::danger::op_cmp_max::test_max::<$t, $im>(l1, l2) };
             }
 
             #[test]
             fn [<test_ $im:lower _ $t _min>]() {
                 let (l1, l2) = crate::test_utils::get_sample_vectors::<$t>(1043);
-                unsafe { crate::danger::op_min::test_min::<$t, $im>(l1, l2) };
+                unsafe { crate::danger::op_cmp_min::test_min::<$t, $im>(l1, l2) };
             }
 
             #[test]

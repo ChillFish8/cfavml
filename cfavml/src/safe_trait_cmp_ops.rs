@@ -24,7 +24,7 @@ pub trait CmpOps: Sized {
     /// ### Panics
     ///
     /// Panics if the size of vector `a` does not match `dims`.
-    fn max_horizontal(dims: usize, a: &[Self]) -> Self;
+    fn max(dims: usize, a: &[Self]) -> Self;
 
     /// Performs an element wise max on each element of vector `a` and the provided broadcast
     /// value, writing the result to `result`.
@@ -94,7 +94,7 @@ pub trait CmpOps: Sized {
     ///
     /// return result
     /// ```
-    fn min_horizontal(dims: usize, a: &[Self]) -> Self;
+    fn min(dims: usize, a: &[Self]) -> Self;
 
     /// Performs an element wise min on each element of vector `a` and the provided broadcast
     /// value, writing the result to `result`.
@@ -156,15 +156,15 @@ pub trait CmpOps: Sized {
 macro_rules! cmp_ops {
     ($t:ty) => {
         impl CmpOps for $t {
-            fn max_horizontal(dims: usize, a: &[Self]) -> Self {
+            fn max(dims: usize, a: &[Self]) -> Self {
                 assert_eq!(a.len(), dims, "Input vector `a` does not match size `dims`");
 
                 unsafe {
                     crate::dispatch!(
-                        avx512 = export_cmp_ops::generic_avx512_max_horizontal,
-                        avx2 = export_cmp_ops::generic_avx2_max_horizontal,
-                        neon = export_cmp_ops::generic_neon_max_horizontal,
-                        fallback = export_cmp_ops::generic_fallback_max_horizontal,
+                        avx512 = export_cmp_ops::generic_avx512_cmp_max,
+                        avx2 = export_cmp_ops::generic_avx2_cmp_max,
+                        neon = export_cmp_ops::generic_neon_cmp_max,
+                        fallback = export_cmp_ops::generic_fallback_cmp_max,
                         args = (dims, a)
                     )
                 }
@@ -183,10 +183,10 @@ macro_rules! cmp_ops {
 
                 unsafe {
                     crate::dispatch!(
-                        avx512 = export_cmp_ops::generic_avx512_max_value,
-                        avx2 = export_cmp_ops::generic_avx2_max_value,
-                        neon = export_cmp_ops::generic_neon_max_value,
-                        fallback = export_cmp_ops::generic_fallback_max_value,
+                        avx512 = export_cmp_ops::generic_avx512_cmp_max_value,
+                        avx2 = export_cmp_ops::generic_avx2_cmp_max_value,
+                        neon = export_cmp_ops::generic_neon_cmp_max_value,
+                        fallback = export_cmp_ops::generic_fallback_cmp_max_value,
                         args = (dims, value, a, result)
                     )
                 }
@@ -206,24 +206,24 @@ macro_rules! cmp_ops {
 
                 unsafe {
                     crate::dispatch!(
-                        avx512 = export_cmp_ops::generic_avx512_max_vector,
-                        avx2 = export_cmp_ops::generic_avx2_max_vector,
-                        neon = export_cmp_ops::generic_neon_max_vector,
-                        fallback = export_cmp_ops::generic_fallback_max_vector,
+                        avx512 = export_cmp_ops::generic_avx512_cmp_max_vector,
+                        avx2 = export_cmp_ops::generic_avx2_cmp_max_vector,
+                        neon = export_cmp_ops::generic_neon_cmp_max_vector,
+                        fallback = export_cmp_ops::generic_fallback_cmp_max_vector,
                         args = (dims, a, b, result)
                     )
                 }
             }
 
-            fn min_horizontal(dims: usize, a: &[Self]) -> Self {
+            fn min(dims: usize, a: &[Self]) -> Self {
                 assert_eq!(a.len(), dims, "Input vector `a` does not match size `dims`");
 
                 unsafe {
                     crate::dispatch!(
-                        avx512 = export_cmp_ops::generic_avx512_min_horizontal,
-                        avx2 = export_cmp_ops::generic_avx2_min_horizontal,
-                        neon = export_cmp_ops::generic_neon_min_horizontal,
-                        fallback = export_cmp_ops::generic_fallback_min_horizontal,
+                        avx512 = export_cmp_ops::generic_avx512_cmp_min,
+                        avx2 = export_cmp_ops::generic_avx2_cmp_min,
+                        neon = export_cmp_ops::generic_neon_cmp_min,
+                        fallback = export_cmp_ops::generic_fallback_cmp_min,
                         args = (dims, a)
                     )
                 }
@@ -242,10 +242,10 @@ macro_rules! cmp_ops {
 
                 unsafe {
                     crate::dispatch!(
-                        avx512 = export_cmp_ops::generic_avx512_min_value,
-                        avx2 = export_cmp_ops::generic_avx2_min_value,
-                        neon = export_cmp_ops::generic_neon_min_value,
-                        fallback = export_cmp_ops::generic_fallback_min_value,
+                        avx512 = export_cmp_ops::generic_avx512_cmp_min_value,
+                        avx2 = export_cmp_ops::generic_avx2_cmp_min_value,
+                        neon = export_cmp_ops::generic_neon_cmp_min_value,
+                        fallback = export_cmp_ops::generic_fallback_cmp_min_value,
                         args = (dims, value, a, result)
                     )
                 }
@@ -265,10 +265,10 @@ macro_rules! cmp_ops {
 
                 unsafe {
                     crate::dispatch!(
-                        avx512 = export_cmp_ops::generic_avx512_min_vector,
-                        avx2 = export_cmp_ops::generic_avx2_min_vector,
-                        neon = export_cmp_ops::generic_neon_min_vector,
-                        fallback = export_cmp_ops::generic_fallback_min_vector,
+                        avx512 = export_cmp_ops::generic_avx512_cmp_min_vector,
+                        avx2 = export_cmp_ops::generic_avx2_cmp_min_vector,
+                        neon = export_cmp_ops::generic_neon_cmp_min_vector,
+                        fallback = export_cmp_ops::generic_fallback_cmp_min_vector,
                         args = (dims, a, b, result)
                     )
                 }

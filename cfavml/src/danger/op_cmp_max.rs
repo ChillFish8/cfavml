@@ -3,14 +3,14 @@ use crate::danger::core_simd_api::SimdRegister;
 use crate::math::Math;
 
 #[inline(always)]
-/// A generic horizontal min implementation over one vectors of a given set of dimensions.
+/// A generic horizontal max implementation over one vectors of a given set of dimensions.
 ///
 /// # Safety
 ///
 /// The sizes of `a` must be equal to `dims`, the safety requirements of
 /// `M` definition the basic math operations and the requirements of `R` SIMD register
 /// must also be followed.
-pub unsafe fn generic_min_horizontal<T, R, M>(dims: usize, a: &[T]) -> T
+pub unsafe fn generic_cmp_max<T, R, M>(dims: usize, a: &[T]) -> T
 where
     T: Copy,
     R: SimdRegister<T>,
@@ -21,57 +21,57 @@ where
     let offset_from = dims % R::elements_per_dense();
     let a_ptr = a.as_ptr();
 
-    let mut min = R::filled_dense(M::max());
+    let mut max = R::filled_dense(M::min());
 
     // Operate over dense lanes first.
     let mut i = 0;
     while i < (dims - offset_from) {
         let l1 = R::load_dense(a_ptr.add(i));
-        min = R::min_dense(min, l1);
+        max = R::max_dense(max, l1);
 
         i += R::elements_per_dense();
     }
 
-    let mut min = R::min_to_register(min);
+    let mut max = R::max_to_register(max);
 
     // Operate over single registers next.
     let offset_from = offset_from % R::elements_per_lane();
     while i < (dims - offset_from) {
         let l1 = R::load(a_ptr.add(i));
-        min = R::min(min, l1);
+        max = R::max(max, l1);
 
         i += R::elements_per_lane();
     }
 
     // Handle the remainder.
-    let mut min = R::min_to_value(min);
+    let mut max = R::max_to_value(max);
 
     while i < dims {
         let a = *a.get_unchecked(i);
-        min = M::cmp_min(min, a);
+        max = M::cmp_max(max, a);
 
         i += 1;
     }
 
-    min
+    max
 }
 
 // TODO: Are we really sure this is the most optimal way of doing vertical max/min/etc...
 //       or should we be stepping through the entire matrix each time? Probably this since
 //       I imagine it is more friendly on the cache. But we should test 0-0
 #[inline(always)]
-/// A generic vertical min implementation over two vectors of a given set of dimensions.
+/// A generic vertical max implementation over two vectors of a given set of dimensions.
 ///
 /// NOTE:
-/// This implementation with compared the values of `a` and `b` and store the min
+/// This implementation with compared the values of `a` and `b` and store the max
 /// of the two elements in `result`.
 ///
 /// # Safety
 ///
-/// The sizes of `a`, `b` and `result` must be equal to `dims`, the safety requirements of
+/// The sizes of `a`, `b` and `result`  must be equal to `dims`, the safety requirements of
 /// `M` definition the basic math operations and the requirements of `R` SIMD register
 /// must also be followed.
-pub unsafe fn generic_min_vector<T, R, M, B>(
+pub unsafe fn generic_cmp_max_vector<T, R, M, B>(
     dims: usize,
     a: &[T],
     b: &[T],
@@ -95,8 +95,8 @@ pub unsafe fn generic_min_vector<T, R, M, B>(
     while i < (dims - offset_from) {
         let l1 = R::load_dense(a_ptr.add(i));
         let l2 = R::load_dense(b_ptr.add(i));
-        let min = R::min_dense(l1, l2);
-        R::write_dense(result_ptr.add(i), min);
+        let max = R::max_dense(l1, l2);
+        R::write_dense(result_ptr.add(i), max);
 
         i += R::elements_per_dense();
     }
@@ -106,8 +106,8 @@ pub unsafe fn generic_min_vector<T, R, M, B>(
     while i < (dims - offset_from) {
         let l1 = R::load(a_ptr.add(i));
         let l2 = R::load(b_ptr.add(i));
-        let min = R::min(l1, l2);
-        R::write(result_ptr.add(i), min);
+        let max = R::max(l1, l2);
+        R::write(result_ptr.add(i), max);
 
         i += R::elements_per_lane();
     }
@@ -115,22 +115,25 @@ pub unsafe fn generic_min_vector<T, R, M, B>(
     while i < dims {
         let v1 = *a.get_unchecked(i);
         let v2 = *b.get_unchecked(i);
-        result.write_at(i, M::cmp_min(v1, v2));
+        result.write_at(i, M::cmp_max(v1, v2));
 
         i += 1;
     }
 }
 
 #[inline(always)]
-/// A generic min implementation over one vector of a given set of dimensions
+/// A generic max implementation over one vector of a given set of dimensions
 /// and a single value target.
+///
+/// This routine is primarily aimed for workloads like Relu activation where
+/// you want to cap the value at zero or above.
 ///
 /// # Safety
 ///
 /// The sizes of `a` and `result` must be equal to `dims`, the safety requirements of
 /// `M` definition the basic math operations and the requirements of `R` SIMD register
 /// must also be followed.
-pub unsafe fn generic_min_value<T, R, M, B>(
+pub unsafe fn generic_cmp_max_value<T, R, M, B>(
     dims: usize,
     value: T,
     a: &[T],
@@ -153,8 +156,8 @@ pub unsafe fn generic_min_value<T, R, M, B>(
     let mut i = 0;
     while i < (dims - offset_from) {
         let l1 = R::load_dense(a_ptr.add(i));
-        let min = R::min_dense(l1, broadcast_dense);
-        R::write_dense(result_ptr.add(i), min);
+        let max = R::max_dense(l1, broadcast_dense);
+        R::write_dense(result_ptr.add(i), max);
 
         i += R::elements_per_dense();
     }
@@ -165,22 +168,22 @@ pub unsafe fn generic_min_value<T, R, M, B>(
     let offset_from = offset_from % R::elements_per_lane();
     while i < (dims - offset_from) {
         let l1 = R::load(a_ptr.add(i));
-        let min = R::min(l1, broadcast_reg);
-        R::write(result_ptr.add(i), min);
+        let max = R::max(l1, broadcast_reg);
+        R::write(result_ptr.add(i), max);
 
         i += R::elements_per_lane();
     }
 
     while i < dims {
         let v1 = *a.get_unchecked(i);
-        result.write_at(i, M::cmp_min(v1, value));
+        result.write_at(i, M::cmp_max(v1, value));
 
         i += 1;
     }
 }
 
 #[cfg(test)]
-pub(crate) unsafe fn test_min<T, R>(l1: Vec<T>, l2: Vec<T>)
+pub(crate) unsafe fn test_max<T, R>(l1: Vec<T>, l2: Vec<T>)
 where
     T: Copy + PartialEq + std::fmt::Debug,
     R: SimdRegister<T>,
@@ -190,27 +193,26 @@ where
     use crate::math::AutoMath;
 
     let dims = l1.len();
-    let mut result = vec![AutoMath::max(); dims];
-    generic_min_vector::<T, R, AutoMath, _>(dims, &l1, &l2, &mut result);
-
+    let mut result = vec![AutoMath::min(); dims];
+    generic_cmp_max_vector::<T, R, AutoMath, _>(dims, &l1, &l2, &mut result);
     let mut expected_result = Vec::new();
     for (a, b) in l1.iter().copied().zip(l2) {
-        expected_result.push(AutoMath::cmp_min(a, b));
+        expected_result.push(AutoMath::cmp_max(a, b));
     }
     assert_eq!(result, expected_result, "value mismatch");
 
     let dims = l1.len();
-    let mut result = vec![AutoMath::max(); dims];
-    generic_min_value::<T, R, AutoMath, _>(dims, AutoMath::zero(), &l1, &mut result);
+    let mut result = vec![AutoMath::min(); dims];
+    generic_cmp_max_value::<T, R, AutoMath, _>(dims, AutoMath::zero(), &l1, &mut result);
     let mut expected_result = Vec::new();
     for a in l1.iter().copied() {
-        expected_result.push(AutoMath::cmp_min(a, AutoMath::zero()));
+        expected_result.push(AutoMath::cmp_max(a, AutoMath::zero()));
     }
     assert_eq!(result, expected_result, "value mismatch");
 
-    let min = generic_min_horizontal::<T, R, AutoMath>(dims, &l1);
-    let expected_min = l1
+    let max = generic_cmp_max::<T, R, AutoMath>(dims, &l1);
+    let expected_max = l1
         .iter()
-        .fold(AutoMath::max(), |a, b| AutoMath::cmp_min(a, *b));
-    assert_eq!(min, expected_min, "value mismatch on horizontal");
+        .fold(AutoMath::min(), |a, b| AutoMath::cmp_max(a, *b));
+    assert_eq!(max, expected_max, "value mismatch on horizontal");
 }

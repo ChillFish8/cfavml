@@ -132,8 +132,8 @@ pub fn sum<T: AggOps>(a: &[T]) -> T {
 ///
 /// return result
 /// ```
-pub fn max_horizontal<T: CmpOps>(a: &[T]) -> T {
-    T::max_horizontal(a.len(), a)
+pub fn max<T: CmpOps>(a: &[T]) -> T {
+    T::max(a.len(), a)
 }
 
 #[inline]
@@ -215,8 +215,8 @@ where
 ///
 /// return result
 /// ```
-pub fn min_horizontal<T: CmpOps>(a: &[T]) -> T {
-    T::min_horizontal(a.len(), a)
+pub fn min<T: CmpOps>(a: &[T]) -> T {
+    T::min(a.len(), a)
 }
 
 #[inline]

@@ -12,11 +12,11 @@ mod impl_fallback;
 mod impl_neon;
 mod op_arithmetic_value;
 mod op_arithmetic_vector;
+mod op_cmp_max;
+mod op_cmp_min;
 mod op_cosine;
 mod op_dot;
 mod op_euclidean;
-mod op_max;
-mod op_min;
 mod op_norm;
 mod op_sum;
 
@@ -54,6 +54,16 @@ pub use self::op_arithmetic_vector::{
     generic_mul_vector,
     generic_sub_vector,
 };
+pub use self::op_cmp_max::{
+    generic_cmp_max,
+    generic_cmp_max_value,
+    generic_cmp_max_vector,
+};
+pub use self::op_cmp_min::{
+    generic_cmp_min,
+    generic_cmp_min_value,
+    generic_cmp_min_vector,
+};
 pub use self::op_cmp_value::{
     generic_cmp_eq_value,
     generic_cmp_gt_value,
@@ -75,8 +85,6 @@ pub(crate) use self::op_cosine::cosine;
 pub use self::op_cosine::generic_cosine;
 pub use self::op_dot::generic_dot;
 pub use self::op_euclidean::generic_squared_euclidean;
-pub use self::op_max::{generic_max_horizontal, generic_max_value, generic_max_vector};
-pub use self::op_min::{generic_min_horizontal, generic_min_value, generic_min_vector};
 pub use self::op_norm::generic_squared_norm;
 pub use self::op_sum::generic_sum;
 
