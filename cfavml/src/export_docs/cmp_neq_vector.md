@@ -1,5 +1,5 @@
-Checks each element within vector `a` of size `dims` against a provided broadcast value 
-comparing if they are **_not equal_** returning a mask vector of the same type.
+Checks each element pair from vectors `a` and `b` of size `dims`
+comparing if element `a` is **_not equal to_** element `b` returning a mask vector of the same type.
 
 ### Pseudocode
 
@@ -7,7 +7,7 @@ comparing if they are **_not equal_** returning a mask vector of the same type.
 mask = [0; dims]
 
 for i in range(dims):
-    mask[i] = a[i] != value ? 1 : 0
+    mask[i] = a[i] != b[i] ? 1 : 0
 
 return mask
 ```
