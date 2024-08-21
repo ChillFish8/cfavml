@@ -1506,6 +1506,7 @@ impl SimdRegister<u64> for Neon {
 unsafe fn apply_fallback_math<T, R, Op, const N: usize>(a: R, b: R, op: Op) -> R
 where
     T: Copy,
+    R: ScalarCasting<T, N>,
     AutoMath: Math<T>,
     Op: Fn(T, T) -> T,
 {
