@@ -216,7 +216,7 @@ define_extra_horizontal_op!(
     horizontal_op = generic_cmp_max,
     horizontal_doc = "../export_docs/cmp_max_horizontal.md",
     Neon,
-    target_features = "Neon"
+    target_features = "neon"
 );
 
 // OP-min
@@ -294,7 +294,7 @@ define_extra_horizontal_op!(
     horizontal_op = generic_cmp_min,
     horizontal_doc = "../export_docs/cmp_min_horizontal.md",
     Neon,
-    target_features = "Neon"
+    target_features = "neon"
 );
 
 // OP-eq
