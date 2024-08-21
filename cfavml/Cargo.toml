@@ -1,6 +1,6 @@
 [package]
 name = "cfavml"
-version = "0.2.0"
+version = "0.3.0"
 edition = "2021"
 rust-version = "1.75"
 authors = ["Harrison Burt <harrison.burt@cf8.gg>"]
@@ -21,7 +21,6 @@ rand_chacha = "0.3.1"
 paste = "1.0.14"
 divan = "0.1.14"
 num-traits = "0.2.19"
-mimalloc = { version = "0.1.43", default-features = false }
 simsimd = "5.0.1"
 
 [target.'cfg(unix)'.dev-dependencies]

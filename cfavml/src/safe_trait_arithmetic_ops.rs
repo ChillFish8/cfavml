@@ -24,8 +24,8 @@ pub trait ArithmeticOps: Sized {
     ///
     /// ### Result buffer
     ///
-    /// The result buffer can be either an initialized slice i.e. [`&mut [Self]`]
-    /// or it can be a slice holding potentially uninitialized data i.e. [`&mut [MaybeUninit<Self>]`].
+    /// The result buffer can be either an initialized slice i.e. `&mut [Self]`
+    /// or it can be a slice holding potentially uninitialized data i.e. `&mut [MaybeUninit<Self>]`.
     ///
     /// Once the operation is complete, it is safe to assume the data written is fully initialized.
     ///
@@ -52,8 +52,8 @@ pub trait ArithmeticOps: Sized {
     ///
     /// ### Result buffer
     ///
-    /// The result buffer can be either an initialized slice i.e. [`&mut [Self]`]
-    /// or it can be a slice holding potentially uninitialized data i.e. [`&mut [MaybeUninit<Self>]`].
+    /// The result buffer can be either an initialized slice i.e. `&mut [Self]`
+    /// or it can be a slice holding potentially uninitialized data i.e. `&mut [MaybeUninit<Self>]`.
     ///
     /// Once the operation is complete, it is safe to assume the data written is fully initialized.
     ///
@@ -80,8 +80,8 @@ pub trait ArithmeticOps: Sized {
     ///
     /// ### Result buffer
     ///
-    /// The result buffer can be either an initialized slice i.e. [`&mut [Self]`]
-    /// or it can be a slice holding potentially uninitialized data i.e. [`&mut [MaybeUninit<Self>]`].
+    /// The result buffer can be either an initialized slice i.e. `&mut [Self]`
+    /// or it can be a slice holding potentially uninitialized data i.e. `&mut [MaybeUninit<Self>]`.
     ///
     /// Once the operation is complete, it is safe to assume the data written is fully initialized.
     ///
@@ -108,8 +108,8 @@ pub trait ArithmeticOps: Sized {
     ///
     /// ### Result buffer
     ///
-    /// The result buffer can be either an initialized slice i.e. [`&mut [Self]`]
-    /// or it can be a slice holding potentially uninitialized data i.e. [`&mut [MaybeUninit<Self>]`].
+    /// The result buffer can be either an initialized slice i.e. `&mut [Self]`
+    /// or it can be a slice holding potentially uninitialized data i.e. `&mut [MaybeUninit<Self>]`.
     ///
     /// Once the operation is complete, it is safe to assume the data written is fully initialized.
     ///
@@ -136,8 +136,8 @@ pub trait ArithmeticOps: Sized {
     ///
     /// ### Result buffer
     ///
-    /// The result buffer can be either an initialized slice i.e. [`&mut [Self]`]
-    /// or it can be a slice holding potentially uninitialized data i.e. [`&mut [MaybeUninit<Self>]`].
+    /// The result buffer can be either an initialized slice i.e. `&mut [Self]`
+    /// or it can be a slice holding potentially uninitialized data i.e. `&mut [MaybeUninit<Self>]`.
     ///
     /// Once the operation is complete, it is safe to assume the data written is fully initialized.
     ///
@@ -164,8 +164,8 @@ pub trait ArithmeticOps: Sized {
     ///
     /// ### Result buffer
     ///
-    /// The result buffer can be either an initialized slice i.e. [`&mut [Self]`]
-    /// or it can be a slice holding potentially uninitialized data i.e. [`&mut [MaybeUninit<Self>]`].
+    /// The result buffer can be either an initialized slice i.e. `&mut [Self]`
+    /// or it can be a slice holding potentially uninitialized data i.e. `&mut [MaybeUninit<Self>]`.
     ///
     /// Once the operation is complete, it is safe to assume the data written is fully initialized.
     ///
@@ -192,8 +192,8 @@ pub trait ArithmeticOps: Sized {
     ///
     /// ### Result buffer
     ///
-    /// The result buffer can be either an initialized slice i.e. [`&mut [Self]`]
-    /// or it can be a slice holding potentially uninitialized data i.e. [`&mut [MaybeUninit<Self>]`].
+    /// The result buffer can be either an initialized slice i.e. `&mut [Self]`
+    /// or it can be a slice holding potentially uninitialized data i.e. `&mut [MaybeUninit<Self>]`.
     ///
     /// Once the operation is complete, it is safe to assume the data written is fully initialized.
     ///
@@ -220,8 +220,8 @@ pub trait ArithmeticOps: Sized {
     ///
     /// ### Result buffer
     ///
-    /// The result buffer can be either an initialized slice i.e. [`&mut [Self]`]
-    /// or it can be a slice holding potentially uninitialized data i.e. [`&mut [MaybeUninit<Self>]`].
+    /// The result buffer can be either an initialized slice i.e. `&mut [Self]`
+    /// or it can be a slice holding potentially uninitialized data i.e. `&mut [MaybeUninit<Self>]`.
     ///
     /// Once the operation is complete, it is safe to assume the data written is fully initialized.
     ///

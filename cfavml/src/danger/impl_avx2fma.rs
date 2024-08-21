@@ -69,6 +69,36 @@ impl SimdRegister<f32> for Avx2Fma {
     }
 
     #[inline(always)]
+    unsafe fn eq(l1: Self::Register, l2: Self::Register) -> Self::Register {
+        <Avx2 as SimdRegister<f32>>::eq(l1, l2)
+    }
+
+    #[inline(always)]
+    unsafe fn neq(l1: Self::Register, l2: Self::Register) -> Self::Register {
+        <Avx2 as SimdRegister<f32>>::neq(l1, l2)
+    }
+
+    #[inline(always)]
+    unsafe fn lt(l1: Self::Register, l2: Self::Register) -> Self::Register {
+        <Avx2 as SimdRegister<f32>>::lt(l1, l2)
+    }
+
+    #[inline(always)]
+    unsafe fn lte(l1: Self::Register, l2: Self::Register) -> Self::Register {
+        <Avx2 as SimdRegister<f32>>::lte(l1, l2)
+    }
+
+    #[inline(always)]
+    unsafe fn gt(l1: Self::Register, l2: Self::Register) -> Self::Register {
+        <Avx2 as SimdRegister<f32>>::gt(l1, l2)
+    }
+
+    #[inline(always)]
+    unsafe fn gte(l1: Self::Register, l2: Self::Register) -> Self::Register {
+        <Avx2 as SimdRegister<f32>>::gte(l1, l2)
+    }
+
+    #[inline(always)]
     unsafe fn sum_to_value(reg: Self::Register) -> f32 {
         Avx2::sum_to_value(reg)
     }
@@ -146,6 +176,35 @@ impl SimdRegister<f64> for Avx2Fma {
         <Avx2 as SimdRegister<f64>>::min(l1, l2)
     }
 
+    #[inline(always)]
+    unsafe fn eq(l1: Self::Register, l2: Self::Register) -> Self::Register {
+        <Avx2 as SimdRegister<f64>>::eq(l1, l2)
+    }
+
+    #[inline(always)]
+    unsafe fn neq(l1: Self::Register, l2: Self::Register) -> Self::Register {
+        <Avx2 as SimdRegister<f64>>::neq(l1, l2)
+    }
+
+    #[inline(always)]
+    unsafe fn lt(l1: Self::Register, l2: Self::Register) -> Self::Register {
+        <Avx2 as SimdRegister<f64>>::lt(l1, l2)
+    }
+
+    #[inline(always)]
+    unsafe fn lte(l1: Self::Register, l2: Self::Register) -> Self::Register {
+        <Avx2 as SimdRegister<f64>>::lte(l1, l2)
+    }
+
+    #[inline(always)]
+    unsafe fn gt(l1: Self::Register, l2: Self::Register) -> Self::Register {
+        <Avx2 as SimdRegister<f64>>::gt(l1, l2)
+    }
+
+    #[inline(always)]
+    unsafe fn gte(l1: Self::Register, l2: Self::Register) -> Self::Register {
+        <Avx2 as SimdRegister<f64>>::gte(l1, l2)
+    }
     #[inline(always)]
     unsafe fn sum_to_value(reg: Self::Register) -> f64 {
         Avx2::sum_to_value(reg)

@@ -5,6 +5,11 @@ use core::mem;
 use crate::danger::{DenseLane, SimdRegister};
 use crate::math::{AutoMath, Math};
 
+const BITS_8_CAPACITY: usize = 16;
+const BITS_16_CAPACITY: usize = 8;
+const BITS_32_CAPACITY: usize = 4;
+const BITS_64_CAPACITY: usize = 2;
+
 /// NEON enabled SIMD operations.
 ///
 /// This requires the `neon` CPU features be enabled.
@@ -65,6 +70,60 @@ impl SimdRegister<f32> for Neon {
     #[inline(always)]
     unsafe fn min(l1: Self::Register, l2: Self::Register) -> Self::Register {
         vminq_f32(l1, l2)
+    }
+
+    #[inline(always)]
+    unsafe fn eq(l1: Self::Register, l2: Self::Register) -> Self::Register {
+        apply_fallback_math::<f32, Self::Register, _, BITS_32_CAPACITY>(
+            l1,
+            l2,
+            |a, b| AutoMath::cast_bool(AutoMath::cmp_eq(a, b)),
+        )
+    }
+
+    #[inline(always)]
+    unsafe fn neq(l1: Self::Register, l2: Self::Register) -> Self::Register {
+        apply_fallback_math::<f32, Self::Register, _, BITS_32_CAPACITY>(
+            l1,
+            l2,
+            |a, b| AutoMath::cast_bool(!AutoMath::cmp_eq(a, b)),
+        )
+    }
+
+    #[inline(always)]
+    unsafe fn lt(l1: Self::Register, l2: Self::Register) -> Self::Register {
+        apply_fallback_math::<f32, Self::Register, _, BITS_32_CAPACITY>(
+            l1,
+            l2,
+            |a, b| AutoMath::cast_bool(AutoMath::cmp_lt(a, b)),
+        )
+    }
+
+    #[inline(always)]
+    unsafe fn lte(l1: Self::Register, l2: Self::Register) -> Self::Register {
+        apply_fallback_math::<f32, Self::Register, _, BITS_32_CAPACITY>(
+            l1,
+            l2,
+            |a, b| AutoMath::cast_bool(AutoMath::cmp_lte(a, b)),
+        )
+    }
+
+    #[inline(always)]
+    unsafe fn gt(l1: Self::Register, l2: Self::Register) -> Self::Register {
+        apply_fallback_math::<f32, Self::Register, _, BITS_32_CAPACITY>(
+            l1,
+            l2,
+            |a, b| AutoMath::cast_bool(AutoMath::cmp_gt(a, b)),
+        )
+    }
+
+    #[inline(always)]
+    unsafe fn gte(l1: Self::Register, l2: Self::Register) -> Self::Register {
+        apply_fallback_math::<f32, Self::Register, _, BITS_32_CAPACITY>(
+            l1,
+            l2,
+            |a, b| AutoMath::cast_bool(AutoMath::cmp_gte(a, b)),
+        )
     }
 
     #[inline(always)]
@@ -146,6 +205,60 @@ impl SimdRegister<f64> for Neon {
     }
 
     #[inline(always)]
+    unsafe fn eq(l1: Self::Register, l2: Self::Register) -> Self::Register {
+        apply_fallback_math::<f64, Self::Register, _, BITS_64_CAPACITY>(
+            l1,
+            l2,
+            |a, b| AutoMath::cast_bool(AutoMath::cmp_eq(a, b)),
+        )
+    }
+
+    #[inline(always)]
+    unsafe fn neq(l1: Self::Register, l2: Self::Register) -> Self::Register {
+        apply_fallback_math::<f64, Self::Register, _, BITS_64_CAPACITY>(
+            l1,
+            l2,
+            |a, b| AutoMath::cast_bool(!AutoMath::cmp_eq(a, b)),
+        )
+    }
+
+    #[inline(always)]
+    unsafe fn lt(l1: Self::Register, l2: Self::Register) -> Self::Register {
+        apply_fallback_math::<f64, Self::Register, _, BITS_64_CAPACITY>(
+            l1,
+            l2,
+            |a, b| AutoMath::cast_bool(AutoMath::cmp_lt(a, b)),
+        )
+    }
+
+    #[inline(always)]
+    unsafe fn lte(l1: Self::Register, l2: Self::Register) -> Self::Register {
+        apply_fallback_math::<f64, Self::Register, _, BITS_64_CAPACITY>(
+            l1,
+            l2,
+            |a, b| AutoMath::cast_bool(AutoMath::cmp_lte(a, b)),
+        )
+    }
+
+    #[inline(always)]
+    unsafe fn gt(l1: Self::Register, l2: Self::Register) -> Self::Register {
+        apply_fallback_math::<f64, Self::Register, _, BITS_64_CAPACITY>(
+            l1,
+            l2,
+            |a, b| AutoMath::cast_bool(AutoMath::cmp_gt(a, b)),
+        )
+    }
+
+    #[inline(always)]
+    unsafe fn gte(l1: Self::Register, l2: Self::Register) -> Self::Register {
+        apply_fallback_math::<f64, Self::Register, _, BITS_64_CAPACITY>(
+            l1,
+            l2,
+            |a, b| AutoMath::cast_bool(AutoMath::cmp_gte(a, b)),
+        )
+    }
+
+    #[inline(always)]
     unsafe fn sum_to_value(reg: Self::Register) -> f64 {
         vaddvq_f64(reg)
     }
@@ -201,15 +314,9 @@ impl SimdRegister<i8> for Neon {
 
     #[inline(always)]
     unsafe fn div(l1: Self::Register, l2: Self::Register) -> Self::Register {
-        let l1_unpacked = mem::transmute::<_, [i8; 16]>(l1);
-        let l2_unpacked = mem::transmute::<_, [i8; 16]>(l2);
-
-        let mut result = [0i8; 16];
-        for (idx, (l1, l2)) in zip(l1_unpacked, l2_unpacked).enumerate() {
-            result[idx] = AutoMath::div(l1, l2);
-        }
-
-        mem::transmute::<_, Self::Register>(result)
+        apply_fallback_math::<i8, Self::Register, _, BITS_8_CAPACITY>(l1, l2, |a, b| {
+            AutoMath::div(a, b)
+        })
     }
 
     #[inline(always)]
@@ -240,6 +347,48 @@ impl SimdRegister<i8> for Neon {
     ) -> DenseLane<Self::Register> {
         let res = <Self as SimdRegister<i8>>::mul_dense(l1, l2);
         <Self as SimdRegister<i8>>::add_dense(res, acc)
+    }
+
+    #[inline(always)]
+    unsafe fn eq(l1: Self::Register, l2: Self::Register) -> Self::Register {
+        apply_fallback_math::<i8, Self::Register, _, BITS_8_CAPACITY>(l1, l2, |a, b| {
+            AutoMath::cast_bool(AutoMath::cmp_eq(a, b))
+        })
+    }
+
+    #[inline(always)]
+    unsafe fn neq(l1: Self::Register, l2: Self::Register) -> Self::Register {
+        apply_fallback_math::<i8, Self::Register, _, BITS_8_CAPACITY>(l1, l2, |a, b| {
+            AutoMath::cast_bool(!AutoMath::cmp_eq(a, b))
+        })
+    }
+
+    #[inline(always)]
+    unsafe fn lt(l1: Self::Register, l2: Self::Register) -> Self::Register {
+        apply_fallback_math::<i8, Self::Register, _, BITS_8_CAPACITY>(l1, l2, |a, b| {
+            AutoMath::cast_bool(AutoMath::cmp_lt(a, b))
+        })
+    }
+
+    #[inline(always)]
+    unsafe fn lte(l1: Self::Register, l2: Self::Register) -> Self::Register {
+        apply_fallback_math::<i8, Self::Register, _, BITS_8_CAPACITY>(l1, l2, |a, b| {
+            AutoMath::cast_bool(AutoMath::cmp_lte(a, b))
+        })
+    }
+
+    #[inline(always)]
+    unsafe fn gt(l1: Self::Register, l2: Self::Register) -> Self::Register {
+        apply_fallback_math::<i8, Self::Register, _, BITS_8_CAPACITY>(l1, l2, |a, b| {
+            AutoMath::cast_bool(AutoMath::cmp_gt(a, b))
+        })
+    }
+
+    #[inline(always)]
+    unsafe fn gte(l1: Self::Register, l2: Self::Register) -> Self::Register {
+        apply_fallback_math::<i8, Self::Register, _, BITS_8_CAPACITY>(l1, l2, |a, b| {
+            AutoMath::cast_bool(AutoMath::cmp_gte(a, b))
+        })
     }
 
     #[inline(always)]
@@ -298,15 +447,11 @@ impl SimdRegister<i16> for Neon {
 
     #[inline(always)]
     unsafe fn div(l1: Self::Register, l2: Self::Register) -> Self::Register {
-        let l1_unpacked = mem::transmute::<_, [i16; 8]>(l1);
-        let l2_unpacked = mem::transmute::<_, [i16; 8]>(l2);
-
-        let mut result = [0i16; 8];
-        for (idx, (l1, l2)) in zip(l1_unpacked, l2_unpacked).enumerate() {
-            result[idx] = AutoMath::div(l1, l2);
-        }
-
-        mem::transmute::<_, Self::Register>(result)
+        apply_fallback_math::<i16, Self::Register, _, BITS_16_CAPACITY>(
+            l1,
+            l2,
+            |a, b| AutoMath::div(a, b),
+        )
     }
 
     #[inline(always)]
@@ -327,6 +472,60 @@ impl SimdRegister<i16> for Neon {
     #[inline(always)]
     unsafe fn min(l1: Self::Register, l2: Self::Register) -> Self::Register {
         vminq_s16(l1, l2)
+    }
+
+    #[inline(always)]
+    unsafe fn eq(l1: Self::Register, l2: Self::Register) -> Self::Register {
+        apply_fallback_math::<i16, Self::Register, _, BITS_16_CAPACITY>(
+            l1,
+            l2,
+            |a, b| AutoMath::cast_bool(AutoMath::cmp_eq(a, b)),
+        )
+    }
+
+    #[inline(always)]
+    unsafe fn neq(l1: Self::Register, l2: Self::Register) -> Self::Register {
+        apply_fallback_math::<i16, Self::Register, _, BITS_16_CAPACITY>(
+            l1,
+            l2,
+            |a, b| AutoMath::cast_bool(!AutoMath::cmp_eq(a, b)),
+        )
+    }
+
+    #[inline(always)]
+    unsafe fn lt(l1: Self::Register, l2: Self::Register) -> Self::Register {
+        apply_fallback_math::<i16, Self::Register, _, BITS_16_CAPACITY>(
+            l1,
+            l2,
+            |a, b| AutoMath::cast_bool(AutoMath::cmp_lt(a, b)),
+        )
+    }
+
+    #[inline(always)]
+    unsafe fn lte(l1: Self::Register, l2: Self::Register) -> Self::Register {
+        apply_fallback_math::<i16, Self::Register, _, BITS_16_CAPACITY>(
+            l1,
+            l2,
+            |a, b| AutoMath::cast_bool(AutoMath::cmp_lte(a, b)),
+        )
+    }
+
+    #[inline(always)]
+    unsafe fn gt(l1: Self::Register, l2: Self::Register) -> Self::Register {
+        apply_fallback_math::<i16, Self::Register, _, BITS_16_CAPACITY>(
+            l1,
+            l2,
+            |a, b| AutoMath::cast_bool(AutoMath::cmp_gt(a, b)),
+        )
+    }
+
+    #[inline(always)]
+    unsafe fn gte(l1: Self::Register, l2: Self::Register) -> Self::Register {
+        apply_fallback_math::<i16, Self::Register, _, BITS_16_CAPACITY>(
+            l1,
+            l2,
+            |a, b| AutoMath::cast_bool(AutoMath::cmp_gte(a, b)),
+        )
     }
 
     #[inline(always)]
@@ -395,15 +594,11 @@ impl SimdRegister<i32> for Neon {
 
     #[inline(always)]
     unsafe fn div(l1: Self::Register, l2: Self::Register) -> Self::Register {
-        let l1_unpacked = mem::transmute::<_, [i32; 4]>(l1);
-        let l2_unpacked = mem::transmute::<_, [i32; 4]>(l2);
-
-        let mut result = [0i32; 4];
-        for (idx, (l1, l2)) in zip(l1_unpacked, l2_unpacked).enumerate() {
-            result[idx] = AutoMath::div(l1, l2);
-        }
-
-        mem::transmute::<_, Self::Register>(result)
+        apply_fallback_math::<i32, Self::Register, _, BITS_32_CAPACITY>(
+            l1,
+            l2,
+            |a, b| AutoMath::div(a, b),
+        )
     }
 
     #[inline(always)]
@@ -424,6 +619,60 @@ impl SimdRegister<i32> for Neon {
     #[inline(always)]
     unsafe fn min(l1: Self::Register, l2: Self::Register) -> Self::Register {
         vminq_s32(l1, l2)
+    }
+
+    #[inline(always)]
+    unsafe fn eq(l1: Self::Register, l2: Self::Register) -> Self::Register {
+        apply_fallback_math::<i32, Self::Register, _, BITS_32_CAPACITY>(
+            l1,
+            l2,
+            |a, b| AutoMath::cast_bool(AutoMath::cmp_eq(a, b)),
+        )
+    }
+
+    #[inline(always)]
+    unsafe fn neq(l1: Self::Register, l2: Self::Register) -> Self::Register {
+        apply_fallback_math::<i32, Self::Register, _, BITS_32_CAPACITY>(
+            l1,
+            l2,
+            |a, b| AutoMath::cast_bool(!AutoMath::cmp_eq(a, b)),
+        )
+    }
+
+    #[inline(always)]
+    unsafe fn lt(l1: Self::Register, l2: Self::Register) -> Self::Register {
+        apply_fallback_math::<i32, Self::Register, _, BITS_32_CAPACITY>(
+            l1,
+            l2,
+            |a, b| AutoMath::cast_bool(AutoMath::cmp_lt(a, b)),
+        )
+    }
+
+    #[inline(always)]
+    unsafe fn lte(l1: Self::Register, l2: Self::Register) -> Self::Register {
+        apply_fallback_math::<i32, Self::Register, _, BITS_32_CAPACITY>(
+            l1,
+            l2,
+            |a, b| AutoMath::cast_bool(AutoMath::cmp_lte(a, b)),
+        )
+    }
+
+    #[inline(always)]
+    unsafe fn gt(l1: Self::Register, l2: Self::Register) -> Self::Register {
+        apply_fallback_math::<i32, Self::Register, _, BITS_32_CAPACITY>(
+            l1,
+            l2,
+            |a, b| AutoMath::cast_bool(AutoMath::cmp_gt(a, b)),
+        )
+    }
+
+    #[inline(always)]
+    unsafe fn gte(l1: Self::Register, l2: Self::Register) -> Self::Register {
+        apply_fallback_math::<i32, Self::Register, _, BITS_32_CAPACITY>(
+            l1,
+            l2,
+            |a, b| AutoMath::cast_bool(AutoMath::cmp_gte(a, b)),
+        )
     }
 
     #[inline(always)]
@@ -487,28 +736,20 @@ impl SimdRegister<i64> for Neon {
 
     #[inline(always)]
     unsafe fn mul(l1: Self::Register, l2: Self::Register) -> Self::Register {
-        let l1_unpacked = mem::transmute::<_, [i64; 2]>(l1);
-        let l2_unpacked = mem::transmute::<_, [i64; 2]>(l2);
-
-        let mut result = [0i64; 2];
-        for (idx, (l1, l2)) in zip(l1_unpacked, l2_unpacked).enumerate() {
-            result[idx] = AutoMath::mul(l1, l2);
-        }
-
-        mem::transmute::<_, Self::Register>(result)
+        apply_fallback_math::<i64, Self::Register, _, BITS_64_CAPACITY>(
+            l1,
+            l2,
+            |a, b| AutoMath::mul(a, b),
+        )
     }
 
     #[inline(always)]
     unsafe fn div(l1: Self::Register, l2: Self::Register) -> Self::Register {
-        let l1_unpacked = mem::transmute::<_, [i64; 2]>(l1);
-        let l2_unpacked = mem::transmute::<_, [i64; 2]>(l2);
-
-        let mut result = [0i64; 2];
-        for (idx, (l1, l2)) in zip(l1_unpacked, l2_unpacked).enumerate() {
-            result[idx] = AutoMath::div(l1, l2);
-        }
-
-        mem::transmute::<_, Self::Register>(result)
+        apply_fallback_math::<i64, Self::Register, _, BITS_64_CAPACITY>(
+            l1,
+            l2,
+            |a, b| AutoMath::div(a, b),
+        )
     }
 
     #[inline(always)]
@@ -523,28 +764,74 @@ impl SimdRegister<i64> for Neon {
 
     #[inline(always)]
     unsafe fn max(l1: Self::Register, l2: Self::Register) -> Self::Register {
-        let l1_unpacked = mem::transmute::<_, [i64; 2]>(l1);
-        let l2_unpacked = mem::transmute::<_, [i64; 2]>(l2);
-
-        let mut result = [0i64; 2];
-        for (idx, (l1, l2)) in zip(l1_unpacked, l2_unpacked).enumerate() {
-            result[idx] = core::cmp::max(l1, l2);
-        }
-
-        mem::transmute::<_, Self::Register>(result)
+        apply_fallback_math::<i64, Self::Register, _, BITS_64_CAPACITY>(
+            l1,
+            l2,
+            |a, b| AutoMath::cmp_max(a, b),
+        )
     }
 
     #[inline(always)]
     unsafe fn min(l1: Self::Register, l2: Self::Register) -> Self::Register {
-        let l1_unpacked = mem::transmute::<_, [i64; 2]>(l1);
-        let l2_unpacked = mem::transmute::<_, [i64; 2]>(l2);
+        apply_fallback_math::<i64, Self::Register, _, BITS_64_CAPACITY>(
+            l1,
+            l2,
+            |a, b| AutoMath::cmp_min(a, b),
+        )
+    }
 
-        let mut result = [0i64; 2];
-        for (idx, (l1, l2)) in zip(l1_unpacked, l2_unpacked).enumerate() {
-            result[idx] = core::cmp::min(l1, l2);
-        }
+    #[inline(always)]
+    unsafe fn eq(l1: Self::Register, l2: Self::Register) -> Self::Register {
+        apply_fallback_math::<i64, Self::Register, _, BITS_64_CAPACITY>(
+            l1,
+            l2,
+            |a, b| AutoMath::cast_bool(AutoMath::cmp_eq(a, b)),
+        )
+    }
 
-        mem::transmute::<_, Self::Register>(result)
+    #[inline(always)]
+    unsafe fn neq(l1: Self::Register, l2: Self::Register) -> Self::Register {
+        apply_fallback_math::<i64, Self::Register, _, BITS_64_CAPACITY>(
+            l1,
+            l2,
+            |a, b| AutoMath::cast_bool(!AutoMath::cmp_eq(a, b)),
+        )
+    }
+
+    #[inline(always)]
+    unsafe fn lt(l1: Self::Register, l2: Self::Register) -> Self::Register {
+        apply_fallback_math::<i64, Self::Register, _, BITS_64_CAPACITY>(
+            l1,
+            l2,
+            |a, b| AutoMath::cast_bool(AutoMath::cmp_lt(a, b)),
+        )
+    }
+
+    #[inline(always)]
+    unsafe fn lte(l1: Self::Register, l2: Self::Register) -> Self::Register {
+        apply_fallback_math::<i64, Self::Register, _, BITS_64_CAPACITY>(
+            l1,
+            l2,
+            |a, b| AutoMath::cast_bool(AutoMath::cmp_lte(a, b)),
+        )
+    }
+
+    #[inline(always)]
+    unsafe fn gt(l1: Self::Register, l2: Self::Register) -> Self::Register {
+        apply_fallback_math::<i64, Self::Register, _, BITS_64_CAPACITY>(
+            l1,
+            l2,
+            |a, b| AutoMath::cast_bool(AutoMath::cmp_gt(a, b)),
+        )
+    }
+
+    #[inline(always)]
+    unsafe fn gte(l1: Self::Register, l2: Self::Register) -> Self::Register {
+        apply_fallback_math::<i64, Self::Register, _, BITS_64_CAPACITY>(
+            l1,
+            l2,
+            |a, b| AutoMath::cast_bool(AutoMath::cmp_gte(a, b)),
+        )
     }
 
     #[inline(always)]
@@ -615,15 +902,9 @@ impl SimdRegister<u8> for Neon {
 
     #[inline(always)]
     unsafe fn div(l1: Self::Register, l2: Self::Register) -> Self::Register {
-        let l1_unpacked = mem::transmute::<_, [u8; 16]>(l1);
-        let l2_unpacked = mem::transmute::<_, [u8; 16]>(l2);
-
-        let mut result = [0u8; 16];
-        for (idx, (l1, l2)) in zip(l1_unpacked, l2_unpacked).enumerate() {
-            result[idx] = AutoMath::div(l1, l2);
-        }
-
-        mem::transmute::<_, Self::Register>(result)
+        apply_fallback_math::<u8, Self::Register, _, BITS_8_CAPACITY>(l1, l2, |a, b| {
+            AutoMath::div(a, b)
+        })
     }
 
     #[inline(always)]
@@ -644,6 +925,48 @@ impl SimdRegister<u8> for Neon {
     #[inline(always)]
     unsafe fn min(l1: Self::Register, l2: Self::Register) -> Self::Register {
         vminq_u8(l1, l2)
+    }
+
+    #[inline(always)]
+    unsafe fn eq(l1: Self::Register, l2: Self::Register) -> Self::Register {
+        apply_fallback_math::<u8, Self::Register, _, BITS_8_CAPACITY>(l1, l2, |a, b| {
+            AutoMath::cast_bool(AutoMath::cmp_eq(a, b))
+        })
+    }
+
+    #[inline(always)]
+    unsafe fn neq(l1: Self::Register, l2: Self::Register) -> Self::Register {
+        apply_fallback_math::<u8, Self::Register, _, BITS_8_CAPACITY>(l1, l2, |a, b| {
+            AutoMath::cast_bool(!AutoMath::cmp_eq(a, b))
+        })
+    }
+
+    #[inline(always)]
+    unsafe fn lt(l1: Self::Register, l2: Self::Register) -> Self::Register {
+        apply_fallback_math::<u8, Self::Register, _, BITS_8_CAPACITY>(l1, l2, |a, b| {
+            AutoMath::cast_bool(AutoMath::cmp_lt(a, b))
+        })
+    }
+
+    #[inline(always)]
+    unsafe fn lte(l1: Self::Register, l2: Self::Register) -> Self::Register {
+        apply_fallback_math::<u8, Self::Register, _, BITS_8_CAPACITY>(l1, l2, |a, b| {
+            AutoMath::cast_bool(AutoMath::cmp_lte(a, b))
+        })
+    }
+
+    #[inline(always)]
+    unsafe fn gt(l1: Self::Register, l2: Self::Register) -> Self::Register {
+        apply_fallback_math::<u8, Self::Register, _, BITS_8_CAPACITY>(l1, l2, |a, b| {
+            AutoMath::cast_bool(AutoMath::cmp_gt(a, b))
+        })
+    }
+
+    #[inline(always)]
+    unsafe fn gte(l1: Self::Register, l2: Self::Register) -> Self::Register {
+        apply_fallback_math::<u8, Self::Register, _, BITS_8_CAPACITY>(l1, l2, |a, b| {
+            AutoMath::cast_bool(AutoMath::cmp_gte(a, b))
+        })
     }
 
     #[inline(always)]
@@ -712,15 +1035,11 @@ impl SimdRegister<u16> for Neon {
 
     #[inline(always)]
     unsafe fn div(l1: Self::Register, l2: Self::Register) -> Self::Register {
-        let l1_unpacked = mem::transmute::<_, [u16; 8]>(l1);
-        let l2_unpacked = mem::transmute::<_, [u16; 8]>(l2);
-
-        let mut result = [0u16; 8];
-        for (idx, (l1, l2)) in zip(l1_unpacked, l2_unpacked).enumerate() {
-            result[idx] = AutoMath::div(l1, l2);
-        }
-
-        mem::transmute::<_, Self::Register>(result)
+        apply_fallback_math::<u16, Self::Register, _, BITS_16_CAPACITY>(
+            l1,
+            l2,
+            |a, b| AutoMath::div(a, b),
+        )
     }
 
     #[inline(always)]
@@ -741,6 +1060,60 @@ impl SimdRegister<u16> for Neon {
     #[inline(always)]
     unsafe fn min(l1: Self::Register, l2: Self::Register) -> Self::Register {
         vminq_u16(l1, l2)
+    }
+
+    #[inline(always)]
+    unsafe fn eq(l1: Self::Register, l2: Self::Register) -> Self::Register {
+        apply_fallback_math::<u16, Self::Register, _, BITS_16_CAPACITY>(
+            l1,
+            l2,
+            |a, b| AutoMath::cast_bool(AutoMath::cmp_eq(a, b)),
+        )
+    }
+
+    #[inline(always)]
+    unsafe fn neq(l1: Self::Register, l2: Self::Register) -> Self::Register {
+        apply_fallback_math::<u16, Self::Register, _, BITS_16_CAPACITY>(
+            l1,
+            l2,
+            |a, b| AutoMath::cast_bool(!AutoMath::cmp_eq(a, b)),
+        )
+    }
+
+    #[inline(always)]
+    unsafe fn lt(l1: Self::Register, l2: Self::Register) -> Self::Register {
+        apply_fallback_math::<u16, Self::Register, _, BITS_16_CAPACITY>(
+            l1,
+            l2,
+            |a, b| AutoMath::cast_bool(AutoMath::cmp_lt(a, b)),
+        )
+    }
+
+    #[inline(always)]
+    unsafe fn lte(l1: Self::Register, l2: Self::Register) -> Self::Register {
+        apply_fallback_math::<u16, Self::Register, _, BITS_16_CAPACITY>(
+            l1,
+            l2,
+            |a, b| AutoMath::cast_bool(AutoMath::cmp_lte(a, b)),
+        )
+    }
+
+    #[inline(always)]
+    unsafe fn gt(l1: Self::Register, l2: Self::Register) -> Self::Register {
+        apply_fallback_math::<u16, Self::Register, _, BITS_16_CAPACITY>(
+            l1,
+            l2,
+            |a, b| AutoMath::cast_bool(AutoMath::cmp_gt(a, b)),
+        )
+    }
+
+    #[inline(always)]
+    unsafe fn gte(l1: Self::Register, l2: Self::Register) -> Self::Register {
+        apply_fallback_math::<u16, Self::Register, _, BITS_16_CAPACITY>(
+            l1,
+            l2,
+            |a, b| AutoMath::cast_bool(AutoMath::cmp_gte(a, b)),
+        )
     }
 
     #[inline(always)]
@@ -809,15 +1182,11 @@ impl SimdRegister<u32> for Neon {
 
     #[inline(always)]
     unsafe fn div(l1: Self::Register, l2: Self::Register) -> Self::Register {
-        let l1_unpacked = mem::transmute::<_, [u32; 4]>(l1);
-        let l2_unpacked = mem::transmute::<_, [u32; 4]>(l2);
-
-        let mut result = [0u32; 4];
-        for (idx, (l1, l2)) in zip(l1_unpacked, l2_unpacked).enumerate() {
-            result[idx] = AutoMath::div(l1, l2);
-        }
-
-        mem::transmute::<_, Self::Register>(result)
+        apply_fallback_math::<u32, Self::Register, _, BITS_32_CAPACITY>(
+            l1,
+            l2,
+            |a, b| AutoMath::div(a, b),
+        )
     }
 
     #[inline(always)]
@@ -838,6 +1207,60 @@ impl SimdRegister<u32> for Neon {
     #[inline(always)]
     unsafe fn min(l1: Self::Register, l2: Self::Register) -> Self::Register {
         vminq_u32(l1, l2)
+    }
+
+    #[inline(always)]
+    unsafe fn eq(l1: Self::Register, l2: Self::Register) -> Self::Register {
+        apply_fallback_math::<u32, Self::Register, _, BITS_32_CAPACITY>(
+            l1,
+            l2,
+            |a, b| AutoMath::cast_bool(AutoMath::cmp_eq(a, b)),
+        )
+    }
+
+    #[inline(always)]
+    unsafe fn neq(l1: Self::Register, l2: Self::Register) -> Self::Register {
+        apply_fallback_math::<u32, Self::Register, _, BITS_32_CAPACITY>(
+            l1,
+            l2,
+            |a, b| AutoMath::cast_bool(!AutoMath::cmp_eq(a, b)),
+        )
+    }
+
+    #[inline(always)]
+    unsafe fn lt(l1: Self::Register, l2: Self::Register) -> Self::Register {
+        apply_fallback_math::<u32, Self::Register, _, BITS_32_CAPACITY>(
+            l1,
+            l2,
+            |a, b| AutoMath::cast_bool(AutoMath::cmp_lt(a, b)),
+        )
+    }
+
+    #[inline(always)]
+    unsafe fn lte(l1: Self::Register, l2: Self::Register) -> Self::Register {
+        apply_fallback_math::<u32, Self::Register, _, BITS_32_CAPACITY>(
+            l1,
+            l2,
+            |a, b| AutoMath::cast_bool(AutoMath::cmp_lte(a, b)),
+        )
+    }
+
+    #[inline(always)]
+    unsafe fn gt(l1: Self::Register, l2: Self::Register) -> Self::Register {
+        apply_fallback_math::<u32, Self::Register, _, BITS_32_CAPACITY>(
+            l1,
+            l2,
+            |a, b| AutoMath::cast_bool(AutoMath::cmp_gt(a, b)),
+        )
+    }
+
+    #[inline(always)]
+    unsafe fn gte(l1: Self::Register, l2: Self::Register) -> Self::Register {
+        apply_fallback_math::<u32, Self::Register, _, BITS_32_CAPACITY>(
+            l1,
+            l2,
+            |a, b| AutoMath::cast_bool(AutoMath::cmp_gte(a, b)),
+        )
     }
 
     #[inline(always)]
@@ -901,28 +1324,20 @@ impl SimdRegister<u64> for Neon {
 
     #[inline(always)]
     unsafe fn mul(l1: Self::Register, l2: Self::Register) -> Self::Register {
-        let l1_unpacked = mem::transmute::<_, [u64; 2]>(l1);
-        let l2_unpacked = mem::transmute::<_, [u64; 2]>(l2);
-
-        let mut result = [0u64; 2];
-        for (idx, (l1, l2)) in zip(l1_unpacked, l2_unpacked).enumerate() {
-            result[idx] = AutoMath::mul(l1, l2);
-        }
-
-        mem::transmute::<_, Self::Register>(result)
+        apply_fallback_math::<u64, Self::Register, _, BITS_64_CAPACITY>(
+            l1,
+            l2,
+            |a, b| AutoMath::mul(a, b),
+        )
     }
 
     #[inline(always)]
     unsafe fn div(l1: Self::Register, l2: Self::Register) -> Self::Register {
-        let l1_unpacked = mem::transmute::<_, [u64; 2]>(l1);
-        let l2_unpacked = mem::transmute::<_, [u64; 2]>(l2);
-
-        let mut result = [0u64; 2];
-        for (idx, (l1, l2)) in zip(l1_unpacked, l2_unpacked).enumerate() {
-            result[idx] = AutoMath::div(l1, l2);
-        }
-
-        mem::transmute::<_, Self::Register>(result)
+        apply_fallback_math::<u64, Self::Register, _, BITS_64_CAPACITY>(
+            l1,
+            l2,
+            |a, b| AutoMath::div(a, b),
+        )
     }
 
     #[inline(always)]
@@ -937,28 +1352,74 @@ impl SimdRegister<u64> for Neon {
 
     #[inline(always)]
     unsafe fn max(l1: Self::Register, l2: Self::Register) -> Self::Register {
-        let l1_unpacked = mem::transmute::<_, [u64; 2]>(l1);
-        let l2_unpacked = mem::transmute::<_, [u64; 2]>(l2);
-
-        let mut result = [0u64; 2];
-        for (idx, (l1, l2)) in zip(l1_unpacked, l2_unpacked).enumerate() {
-            result[idx] = core::cmp::max(l1, l2);
-        }
-
-        mem::transmute::<_, Self::Register>(result)
+        apply_fallback_math::<u64, Self::Register, _, BITS_64_CAPACITY>(
+            l1,
+            l2,
+            |a, b| AutoMath::cmp_max(a, b),
+        )
     }
 
     #[inline(always)]
     unsafe fn min(l1: Self::Register, l2: Self::Register) -> Self::Register {
-        let l1_unpacked = mem::transmute::<_, [u64; 2]>(l1);
-        let l2_unpacked = mem::transmute::<_, [u64; 2]>(l2);
+        apply_fallback_math::<u64, Self::Register, _, BITS_64_CAPACITY>(
+            l1,
+            l2,
+            |a, b| AutoMath::cmp_min(a, b),
+        )
+    }
 
-        let mut result = [0u64; 2];
-        for (idx, (l1, l2)) in zip(l1_unpacked, l2_unpacked).enumerate() {
-            result[idx] = core::cmp::min(l1, l2);
-        }
+    #[inline(always)]
+    unsafe fn eq(l1: Self::Register, l2: Self::Register) -> Self::Register {
+        apply_fallback_math::<u64, Self::Register, _, BITS_64_CAPACITY>(
+            l1,
+            l2,
+            |a, b| AutoMath::cast_bool(AutoMath::cmp_eq(a, b)),
+        )
+    }
 
-        mem::transmute::<_, Self::Register>(result)
+    #[inline(always)]
+    unsafe fn neq(l1: Self::Register, l2: Self::Register) -> Self::Register {
+        apply_fallback_math::<u64, Self::Register, _, BITS_64_CAPACITY>(
+            l1,
+            l2,
+            |a, b| AutoMath::cast_bool(!AutoMath::cmp_eq(a, b)),
+        )
+    }
+
+    #[inline(always)]
+    unsafe fn lt(l1: Self::Register, l2: Self::Register) -> Self::Register {
+        apply_fallback_math::<u64, Self::Register, _, BITS_64_CAPACITY>(
+            l1,
+            l2,
+            |a, b| AutoMath::cast_bool(AutoMath::cmp_lt(a, b)),
+        )
+    }
+
+    #[inline(always)]
+    unsafe fn lte(l1: Self::Register, l2: Self::Register) -> Self::Register {
+        apply_fallback_math::<u64, Self::Register, _, BITS_64_CAPACITY>(
+            l1,
+            l2,
+            |a, b| AutoMath::cast_bool(AutoMath::cmp_lte(a, b)),
+        )
+    }
+
+    #[inline(always)]
+    unsafe fn gt(l1: Self::Register, l2: Self::Register) -> Self::Register {
+        apply_fallback_math::<u64, Self::Register, _, BITS_64_CAPACITY>(
+            l1,
+            l2,
+            |a, b| AutoMath::cast_bool(AutoMath::cmp_gt(a, b)),
+        )
+    }
+
+    #[inline(always)]
+    unsafe fn gte(l1: Self::Register, l2: Self::Register) -> Self::Register {
+        apply_fallback_math::<u64, Self::Register, _, BITS_64_CAPACITY>(
+            l1,
+            l2,
+            |a, b| AutoMath::cast_bool(AutoMath::cmp_gte(a, b)),
+        )
     }
 
     #[inline(always)]
@@ -993,3 +1454,60 @@ impl SimdRegister<u64> for Neon {
         vst1q_u64(mem, reg)
     }
 }
+
+#[inline]
+/// A helper function for apply fallback math operations to a register.
+///
+/// Note this is _horrifically_ unsafe and a glorified set of transmutes.
+unsafe fn apply_fallback_math<T, R, Op, const N: usize>(a: R, b: R, op: Op) -> R
+where
+    T: Copy,
+    R: ScalarCasting<T, N>,
+    AutoMath: Math<T>,
+    Op: Fn(T, T) -> T,
+{
+    let l1_unpacked = a.to_array();
+    let l2_unpacked = b.to_array();
+
+    let mut result = [AutoMath::zero(); N];
+    for (idx, (l1, l2)) in zip(l1_unpacked, l2_unpacked).enumerate() {
+        result[idx] = op(l1, l2);
+    }
+
+    R::from_array(result)
+}
+
+/// A helper trait to work around transmute limitations.
+///
+/// TODO: We should use this for all of the transmute ops in this file
+trait ScalarCasting<T, const N: usize> {
+    unsafe fn to_array(self) -> [T; N];
+    unsafe fn from_array(data: [T; N]) -> Self;
+}
+
+macro_rules! casting_helper {
+    ($t:ident, $bits:expr, $r:ident) => {
+        impl ScalarCasting<$t, $bits> for $r {
+            #[inline]
+            unsafe fn from_array(data: [$t; $bits]) -> Self {
+                mem::transmute(data)
+            }
+
+            #[inline]
+            unsafe fn to_array(self) -> [$t; $bits] {
+                mem::transmute(self)
+            }
+        }
+    };
+}
+
+casting_helper!(f32, 4, float32x4_t);
+casting_helper!(f64, 2, float64x2_t);
+casting_helper!(i8, 16, int8x16_t);
+casting_helper!(i16, 8, int16x8_t);
+casting_helper!(i32, 4, int32x4_t);
+casting_helper!(i64, 2, int64x2_t);
+casting_helper!(u8, 16, uint8x16_t);
+casting_helper!(u16, 8, uint16x8_t);
+casting_helper!(u32, 4, uint32x4_t);
+casting_helper!(u64, 2, uint64x2_t);

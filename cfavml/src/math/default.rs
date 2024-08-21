@@ -56,6 +56,26 @@ impl Math<f32> for StdMath {
     }
 
     #[inline(always)]
+    fn cmp_lt(a: f32, b: f32) -> bool {
+        a < b
+    }
+
+    #[inline(always)]
+    fn cmp_lte(a: f32, b: f32) -> bool {
+        a <= b
+    }
+
+    #[inline(always)]
+    fn cmp_gt(a: f32, b: f32) -> bool {
+        a > b
+    }
+
+    #[inline(always)]
+    fn cmp_gte(a: f32, b: f32) -> bool {
+        a >= b
+    }
+
+    #[inline(always)]
     fn cmp_min(a: f32, b: f32) -> f32 {
         a.min(b)
     }
@@ -147,6 +167,26 @@ impl Math<f64> for StdMath {
     }
 
     #[inline(always)]
+    fn cmp_lt(a: f64, b: f64) -> bool {
+        a < b
+    }
+
+    #[inline(always)]
+    fn cmp_lte(a: f64, b: f64) -> bool {
+        a <= b
+    }
+
+    #[inline(always)]
+    fn cmp_gt(a: f64, b: f64) -> bool {
+        a > b
+    }
+
+    #[inline(always)]
+    fn cmp_gte(a: f64, b: f64) -> bool {
+        a >= b
+    }
+
+    #[inline(always)]
     fn cmp_min(a: f64, b: f64) -> f64 {
         a.min(b)
     }
@@ -224,6 +264,26 @@ macro_rules! define_int_ops {
             }
 
             #[inline(always)]
+            fn cmp_lt(a: $t, b: $t) -> bool {
+                a < b
+            }
+
+            #[inline(always)]
+            fn cmp_lte(a: $t, b: $t) -> bool {
+                a <= b
+            }
+
+            #[inline(always)]
+            fn cmp_gt(a: $t, b: $t) -> bool {
+                a > b
+            }
+
+            #[inline(always)]
+            fn cmp_gte(a: $t, b: $t) -> bool {
+                a >= b
+            }
+
+            #[inline(always)]
             fn cmp_min(a: $t, b: $t) -> $t {
                 a.min(b)
             }
@@ -294,6 +354,26 @@ macro_rules! define_int_ops {
             #[inline(always)]
             fn cmp_eq(a: $t, b: $t) -> bool {
                 a == b
+            }
+
+            #[inline(always)]
+            fn cmp_lt(a: $t, b: $t) -> bool {
+                a < b
+            }
+
+            #[inline(always)]
+            fn cmp_lte(a: $t, b: $t) -> bool {
+                a <= b
+            }
+
+            #[inline(always)]
+            fn cmp_gt(a: $t, b: $t) -> bool {
+                a > b
+            }
+
+            #[inline(always)]
+            fn cmp_gte(a: $t, b: $t) -> bool {
+                a >= b
             }
 
             #[inline(always)]

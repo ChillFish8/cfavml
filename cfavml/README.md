@@ -12,19 +12,31 @@ feature flag:
 
 ##### Default Setup
 ```toml
-cfavml = "0.2.0" 
+cfavml = "0.3.0" 
 ```
 
 ##### No-std Setup
 ```toml
-cfavml = { version = "0.2.0", default-features = false }
+cfavml = { version = "0.3.0", default-features = false }
 ```
+
+### Important Version Upgrade Notes
+
+If you are upgrading on a breaking release, i.e. `0.2.0` to `0.3.0` there may be some important
+changes that affects your system, although the public _safe_ APIs I try my best to avoid breaking.
+
+- AVX512 required CPU features changed in `0.3.0+`
+  * In versions older than `0.3.0` avx512 was used when only the `avx512f` cpu feature was available
+    since this is the base/foundation version of AVX512. However, in `0.3.0` we introduced more extensive
+    cmp operations (`eq/neq/lt/lte/gt/gte`) which changed our required CPU features to include `avx512bw`
+  * **This means on _unsafe_ APIs you must update your feature checks to include `avx512bw`.** 
+  * **Safe APIs do not require changes but may fallback to AVX2 on some of the first gen AVX512 CPUs, i.e. Skylake**
 
 ### Available SIMD Architectures
 
 - AVX2
 - AVX2 + FMA
-- AVX512
+- AVX512 (`avx512f` + `avx512bw`) _nightly only_
 - NEON
 - Fallback (Typically optimized to SSE automatically by LLVM on x86)
 
@@ -50,8 +62,8 @@ with SIMD and adds a significant amount of cognitive overhead when reading the c
 Although to be honest I have some serious questions about your application if you're doing 
 heavy integer division...
 
-### Supported Operations & Distances
 
+## Supported Operations
 
 ### Spacial distances
 
@@ -80,6 +92,8 @@ These are routines that can be used for things like KNN classification or index 
 - Vertical min element of two vectors
 - Vertical max element of a vector and broadcast value
 - Vertical min element of a vector and broadcast value
+- EQ/NEQ/LT/LTE/GT/GTE cmp of a vector and broadcast value
+- EQ/NEQ/LT/LTE/GT/GTE cmp of two vectors
 
 ### Aggregation
 
@@ -102,10 +116,24 @@ provided as generic functions (with no target features):
 - `generic_squared_euclidean`
 - `generic_cosine`
 - `generic_squared_norm`
-- `generic_max_horizontal`
-- `generic_max_vector`
-- `generic_min_horizontal`
-- `generic_min_vector`
+- `generic_cmp_max`
+- `generic_cmp_max_vector`
+- `generic_cmp_max_value`
+- `generic_cmp_min`
+- `generic_cmp_min_vector`
+- `generic_cmp_min_value`
+- `generic_cmp_eq_vector`
+- `generic_cmp_eq_value`
+- `generic_cmp_neq_vector`
+- `generic_cmp_neq_value`
+- `generic_cmp_lt_vector`
+- `generic_cmp_lt_value`
+- `generic_cmp_lte_vector`
+- `generic_cmp_lte_value`
+- `generic_cmp_gt_vector`
+- `generic_cmp_gt_value`
+- `generic_cmp_gte_vector`
+- `generic_cmp_gte_value`
 - `generic_sum`
 - `generic_add_value`
 - `generic_sub_value`

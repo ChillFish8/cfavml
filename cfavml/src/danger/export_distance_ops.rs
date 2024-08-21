@@ -52,7 +52,12 @@ define_cosine_impl!(
     "fma"
 );
 #[cfg(all(any(target_arch = "x86", target_arch = "x86_64"), feature = "nightly"))]
-define_cosine_impl!(generic_avx512_cosine, Avx512, target_features = "avx512f");
+define_cosine_impl!(
+    generic_avx512_cosine,
+    Avx512,
+    target_features = "avx512f",
+    "avx512bw"
+);
 #[cfg(target_arch = "aarch64")]
 define_cosine_impl!(generic_neon_cosine, Neon, target_features = "neon");
 
@@ -96,7 +101,12 @@ define_dot_impl!(
     "fma"
 );
 #[cfg(all(any(target_arch = "x86", target_arch = "x86_64"), feature = "nightly"))]
-define_dot_impl!(generic_avx512_dot, Avx512, target_features = "avx512f");
+define_dot_impl!(
+    generic_avx512_dot,
+    Avx512,
+    target_features = "avx512f",
+    "avx512bw"
+);
 #[cfg(target_arch = "aarch64")]
 define_dot_impl!(generic_neon_dot, Neon, target_features = "neon");
 
@@ -147,7 +157,8 @@ define_euclidean_impl!(
 define_euclidean_impl!(
     generic_avx512_squared_euclidean,
     Avx512,
-    target_features = "avx512f"
+    target_features = "avx512f",
+    "avx512bw"
 );
 #[cfg(target_arch = "aarch64")]
 define_euclidean_impl!(
@@ -198,7 +209,8 @@ define_norm_impl!(
 define_norm_impl!(
     generic_avx512_squared_norm,
     Avx512,
-    target_features = "avx512f"
+    target_features = "avx512f",
+    "avx512bw"
 );
 #[cfg(target_arch = "aarch64")]
 define_norm_impl!(generic_neon_squared_norm, Neon, target_features = "neon");

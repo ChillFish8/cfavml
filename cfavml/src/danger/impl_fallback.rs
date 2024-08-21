@@ -99,4 +99,34 @@ where
     unsafe fn write(mem: *mut T, reg: Self::Register) {
         mem.write(reg)
     }
+
+    #[inline(always)]
+    unsafe fn lt(l1: Self::Register, l2: Self::Register) -> Self::Register {
+        AutoMath::cast_bool(AutoMath::cmp_lt(l1, l2))
+    }
+
+    #[inline(always)]
+    unsafe fn lte(l1: Self::Register, l2: Self::Register) -> Self::Register {
+        AutoMath::cast_bool(AutoMath::cmp_lte(l1, l2))
+    }
+
+    #[inline(always)]
+    unsafe fn gt(l1: Self::Register, l2: Self::Register) -> Self::Register {
+        AutoMath::cast_bool(AutoMath::cmp_gt(l1, l2))
+    }
+
+    #[inline(always)]
+    unsafe fn gte(l1: Self::Register, l2: Self::Register) -> Self::Register {
+        AutoMath::cast_bool(AutoMath::cmp_gte(l1, l2))
+    }
+
+    #[inline(always)]
+    unsafe fn eq(l1: Self::Register, l2: Self::Register) -> Self::Register {
+        AutoMath::cast_bool(AutoMath::cmp_eq(l1, l2))
+    }
+
+    #[inline(always)]
+    unsafe fn neq(l1: Self::Register, l2: Self::Register) -> Self::Register {
+        AutoMath::cast_bool(!AutoMath::cmp_eq(l1, l2))
+    }
 }
