@@ -1545,13 +1545,13 @@ macro_rules! casting_helper {
     };
 }
 
-casting_helper!(f32, BITS_32_CAPACITY, float32x4_t);
-casting_helper!(f64, BITS_64_CAPACITY, float64x2_t);
-casting_helper!(i8, BITS_8_CAPACITY, int8x16_t);
-casting_helper!(i16, BITS_16_CAPACITY, int16x8_t);
-casting_helper!(i32, BITS_32_CAPACITY, int32x4_t);
-casting_helper!(i64, BITS_64_CAPACITY, int64x2_t);
-casting_helper!(u8, BITS_8_CAPACITY, uint8x16_t);
-casting_helper!(u16, BITS_16_CAPACITY, uin16x8_t);
-casting_helper!(u32, BITS_32_CAPACITY, uint32x4_t);
-casting_helper!(u64, BITS_64_CAPACITY, uint64x2_t);
+casting_helper!(f32, 4, float32x4_t);
+casting_helper!(f64, 2, float64x2_t);
+casting_helper!(i8, 16, int8x16_t);
+casting_helper!(i16, 8, int16x8_t);
+casting_helper!(i32, 4, int32x4_t);
+casting_helper!(i64, 2, int64x2_t);
+casting_helper!(u8, 16, uint8x16_t);
+casting_helper!(u16, 8, uin16x8_t);
+casting_helper!(u32, 4, uint32x4_t);
+casting_helper!(u64, 2, uint64x2_t);
