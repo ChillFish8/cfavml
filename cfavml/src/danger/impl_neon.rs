@@ -314,15 +314,9 @@ impl SimdRegister<i8> for Neon {
 
     #[inline(always)]
     unsafe fn div(l1: Self::Register, l2: Self::Register) -> Self::Register {
-        let l1_unpacked = mem::transmute::<_, [i8; 16]>(l1);
-        let l2_unpacked = mem::transmute::<_, [i8; 16]>(l2);
-
-        let mut result = [0i8; 16];
-        for (idx, (l1, l2)) in zip(l1_unpacked, l2_unpacked).enumerate() {
-            result[idx] = AutoMath::div(l1, l2);
-        }
-
-        mem::transmute::<_, Self::Register>(result)
+        apply_fallback_math::<i8, Self::Register, _, BITS_8_CAPACITY>(l1, l2, |a, b| {
+            AutoMath::div(a, b)
+        })
     }
 
     #[inline(always)]
@@ -453,15 +447,11 @@ impl SimdRegister<i16> for Neon {
 
     #[inline(always)]
     unsafe fn div(l1: Self::Register, l2: Self::Register) -> Self::Register {
-        let l1_unpacked = mem::transmute::<_, [i16; 8]>(l1);
-        let l2_unpacked = mem::transmute::<_, [i16; 8]>(l2);
-
-        let mut result = [0i16; 8];
-        for (idx, (l1, l2)) in zip(l1_unpacked, l2_unpacked).enumerate() {
-            result[idx] = AutoMath::div(l1, l2);
-        }
-
-        mem::transmute::<_, Self::Register>(result)
+        apply_fallback_math::<i16, Self::Register, _, BITS_16_CAPACITY>(
+            l1,
+            l2,
+            |a, b| AutoMath::div(a, b),
+        )
     }
 
     #[inline(always)]
@@ -604,15 +594,11 @@ impl SimdRegister<i32> for Neon {
 
     #[inline(always)]
     unsafe fn div(l1: Self::Register, l2: Self::Register) -> Self::Register {
-        let l1_unpacked = mem::transmute::<_, [i32; 4]>(l1);
-        let l2_unpacked = mem::transmute::<_, [i32; 4]>(l2);
-
-        let mut result = [0i32; 4];
-        for (idx, (l1, l2)) in zip(l1_unpacked, l2_unpacked).enumerate() {
-            result[idx] = AutoMath::div(l1, l2);
-        }
-
-        mem::transmute::<_, Self::Register>(result)
+        apply_fallback_math::<i32, Self::Register, _, BITS_32_CAPACITY>(
+            l1,
+            l2,
+            |a, b| AutoMath::div(a, b),
+        )
     }
 
     #[inline(always)]
@@ -750,28 +736,20 @@ impl SimdRegister<i64> for Neon {
 
     #[inline(always)]
     unsafe fn mul(l1: Self::Register, l2: Self::Register) -> Self::Register {
-        let l1_unpacked = mem::transmute::<_, [i64; 2]>(l1);
-        let l2_unpacked = mem::transmute::<_, [i64; 2]>(l2);
-
-        let mut result = [0i64; 2];
-        for (idx, (l1, l2)) in zip(l1_unpacked, l2_unpacked).enumerate() {
-            result[idx] = AutoMath::mul(l1, l2);
-        }
-
-        mem::transmute::<_, Self::Register>(result)
+        apply_fallback_math::<i64, Self::Register, _, BITS_64_CAPACITY>(
+            l1,
+            l2,
+            |a, b| AutoMath::mul(a, b),
+        )
     }
 
     #[inline(always)]
     unsafe fn div(l1: Self::Register, l2: Self::Register) -> Self::Register {
-        let l1_unpacked = mem::transmute::<_, [i64; 2]>(l1);
-        let l2_unpacked = mem::transmute::<_, [i64; 2]>(l2);
-
-        let mut result = [0i64; 2];
-        for (idx, (l1, l2)) in zip(l1_unpacked, l2_unpacked).enumerate() {
-            result[idx] = AutoMath::div(l1, l2);
-        }
-
-        mem::transmute::<_, Self::Register>(result)
+        apply_fallback_math::<i64, Self::Register, _, BITS_64_CAPACITY>(
+            l1,
+            l2,
+            |a, b| AutoMath::div(a, b),
+        )
     }
 
     #[inline(always)]
@@ -786,28 +764,20 @@ impl SimdRegister<i64> for Neon {
 
     #[inline(always)]
     unsafe fn max(l1: Self::Register, l2: Self::Register) -> Self::Register {
-        let l1_unpacked = mem::transmute::<_, [i64; 2]>(l1);
-        let l2_unpacked = mem::transmute::<_, [i64; 2]>(l2);
-
-        let mut result = [0i64; 2];
-        for (idx, (l1, l2)) in zip(l1_unpacked, l2_unpacked).enumerate() {
-            result[idx] = core::cmp::max(l1, l2);
-        }
-
-        mem::transmute::<_, Self::Register>(result)
+        apply_fallback_math::<i64, Self::Register, _, BITS_64_CAPACITY>(
+            l1,
+            l2,
+            |a, b| AutoMath::cmp_max(a, b),
+        )
     }
 
     #[inline(always)]
     unsafe fn min(l1: Self::Register, l2: Self::Register) -> Self::Register {
-        let l1_unpacked = mem::transmute::<_, [i64; 2]>(l1);
-        let l2_unpacked = mem::transmute::<_, [i64; 2]>(l2);
-
-        let mut result = [0i64; 2];
-        for (idx, (l1, l2)) in zip(l1_unpacked, l2_unpacked).enumerate() {
-            result[idx] = core::cmp::min(l1, l2);
-        }
-
-        mem::transmute::<_, Self::Register>(result)
+        apply_fallback_math::<i64, Self::Register, _, BITS_64_CAPACITY>(
+            l1,
+            l2,
+            |a, b| AutoMath::cmp_min(a, b),
+        )
     }
 
     #[inline(always)]
@@ -932,15 +902,9 @@ impl SimdRegister<u8> for Neon {
 
     #[inline(always)]
     unsafe fn div(l1: Self::Register, l2: Self::Register) -> Self::Register {
-        let l1_unpacked = mem::transmute::<_, [u8; 16]>(l1);
-        let l2_unpacked = mem::transmute::<_, [u8; 16]>(l2);
-
-        let mut result = [0u8; 16];
-        for (idx, (l1, l2)) in zip(l1_unpacked, l2_unpacked).enumerate() {
-            result[idx] = AutoMath::div(l1, l2);
-        }
-
-        mem::transmute::<_, Self::Register>(result)
+        apply_fallback_math::<u8, Self::Register, _, BITS_8_CAPACITY>(l1, l2, |a, b| {
+            AutoMath::div(a, b)
+        })
     }
 
     #[inline(always)]
@@ -1071,15 +1035,11 @@ impl SimdRegister<u16> for Neon {
 
     #[inline(always)]
     unsafe fn div(l1: Self::Register, l2: Self::Register) -> Self::Register {
-        let l1_unpacked = mem::transmute::<_, [u16; 8]>(l1);
-        let l2_unpacked = mem::transmute::<_, [u16; 8]>(l2);
-
-        let mut result = [0u16; 8];
-        for (idx, (l1, l2)) in zip(l1_unpacked, l2_unpacked).enumerate() {
-            result[idx] = AutoMath::div(l1, l2);
-        }
-
-        mem::transmute::<_, Self::Register>(result)
+        apply_fallback_math::<u16, Self::Register, _, BITS_16_CAPACITY>(
+            l1,
+            l2,
+            |a, b| AutoMath::div(a, b),
+        )
     }
 
     #[inline(always)]
@@ -1222,15 +1182,11 @@ impl SimdRegister<u32> for Neon {
 
     #[inline(always)]
     unsafe fn div(l1: Self::Register, l2: Self::Register) -> Self::Register {
-        let l1_unpacked = mem::transmute::<_, [u32; 4]>(l1);
-        let l2_unpacked = mem::transmute::<_, [u32; 4]>(l2);
-
-        let mut result = [0u32; 4];
-        for (idx, (l1, l2)) in zip(l1_unpacked, l2_unpacked).enumerate() {
-            result[idx] = AutoMath::div(l1, l2);
-        }
-
-        mem::transmute::<_, Self::Register>(result)
+        apply_fallback_math::<u32, Self::Register, _, BITS_32_CAPACITY>(
+            l1,
+            l2,
+            |a, b| AutoMath::div(a, b),
+        )
     }
 
     #[inline(always)]
@@ -1552,6 +1508,6 @@ casting_helper!(i16, 8, int16x8_t);
 casting_helper!(i32, 4, int32x4_t);
 casting_helper!(i64, 2, int64x2_t);
 casting_helper!(u8, 16, uint8x16_t);
-casting_helper!(u16, 8, uin16x8_t);
+casting_helper!(u16, 8, uint16x8_t);
 casting_helper!(u32, 4, uint32x4_t);
 casting_helper!(u64, 2, uint64x2_t);
