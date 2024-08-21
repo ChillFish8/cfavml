@@ -18,8 +18,8 @@ For `f32` and `f64` types, `NaN` values are handled as always being `false` in *
 Even when compared against each other.
 
 - `0.0 != 1.0 -> true`
-- `0.0 != NaN -> false`
-- `NaN != NaN -> false`
+- `0.0 != NaN -> true`
+- `NaN != NaN -> true`
 
 # Safety
 

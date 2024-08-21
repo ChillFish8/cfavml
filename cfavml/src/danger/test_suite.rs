@@ -20,6 +20,23 @@ macro_rules! test_cosine_extra {
     };
 }
 
+// In cases like f32 and f64 where have have comparison we need to ensure that
+// all implementations behave equivalently and consistently.
+macro_rules! test_nan_sanity {
+    ($t:ident, $im:ident) => {
+        paste::paste! {
+            #[test]
+            fn [<test_ $im:lower _ $t _float_sanity>]() {
+                let l1 = vec![1.0, 0.0, $t::NAN, $t::INFINITY, $t::NEG_INFINITY];
+                let l2 = vec![1.0, 1.0, 1.0, 1.0, 1.0];
+
+                test_cmp_value_all::<$t, $im>(l1.clone(), 0.0);
+                test_cmp_vector_all::<$t, $im>(l1, l2);
+            }
+        }
+    };
+}
+
 macro_rules! test_suite {
     ($t:ident, $im:ident) => {
         paste::paste! {
@@ -118,6 +135,7 @@ where
         op_arithmetic_vector::tests::test_mul::<_, R>(l1, l2);
     };
 }
+
 fn test_cmp_vector_all<T: Copy + PartialEq + Debug, R>(l1: Vec<T>, l2: Vec<T>)
 where
     R: SimdRegister<T>,
@@ -134,7 +152,6 @@ where
     };
 }
 
-// TODO: CFAVML-2: Add special case for NaN handling sanity checks...
 fn test_cmp_value_all<T: Copy + PartialEq + Debug, R>(l1: Vec<T>, value: T)
 where
     R: SimdRegister<T>,
@@ -171,6 +188,9 @@ test_cosine_extra!(u16, Fallback);
 test_cosine_extra!(u32, Fallback);
 test_cosine_extra!(u64, Fallback);
 
+test_nan_sanity!(f32, Fallback);
+test_nan_sanity!(f64, Fallback);
+
 #[cfg(all(target_feature = "avx2", test))]
 mod avx2_tests {
     use super::*;
@@ -194,6 +214,9 @@ mod avx2_tests {
     test_cosine_extra!(u16, Avx2);
     test_cosine_extra!(u32, Avx2);
     test_cosine_extra!(u64, Avx2);
+
+    test_nan_sanity!(f32, Avx2);
+    test_nan_sanity!(f64, Avx2);
 }
 
 #[cfg(all(target_feature = "avx512f", feature = "nightly", test))]
@@ -219,6 +242,9 @@ mod avx512_tests {
     test_cosine_extra!(u16, Avx512);
     test_cosine_extra!(u32, Avx512);
     test_cosine_extra!(u64, Avx512);
+
+    test_nan_sanity!(f32, Avx512);
+    test_nan_sanity!(f64, Avx512);
 }
 
 #[cfg(all(target_feature = "avx2", target_feature = "fma", test))]
@@ -257,4 +283,7 @@ mod neon_tests {
     test_cosine_extra!(u16, Neon);
     test_cosine_extra!(u32, Neon);
     test_cosine_extra!(u64, Neon);
+
+    test_nan_sanity!(f32, Neon);
+    test_nan_sanity!(f64, Neon);
 }

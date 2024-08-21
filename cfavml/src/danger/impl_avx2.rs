@@ -79,7 +79,7 @@ impl SimdRegister<f32> for Avx2 {
 
     #[inline(always)]
     unsafe fn neq(l1: Self::Register, l2: Self::Register) -> Self::Register {
-        let mask = _mm256_cmp_ps::<_CMP_NEQ_OQ>(l1, l2);
+        let mask = _mm256_cmp_ps::<_CMP_NEQ_UQ>(l1, l2);
         _mm256_and_ps(mask, _mm256_set1_ps(1.0))
     }
 
@@ -236,7 +236,7 @@ impl SimdRegister<f64> for Avx2 {
 
     #[inline(always)]
     unsafe fn neq(l1: Self::Register, l2: Self::Register) -> Self::Register {
-        let mask = _mm256_cmp_pd::<_CMP_NEQ_OQ>(l1, l2);
+        let mask = _mm256_cmp_pd::<_CMP_NEQ_UQ>(l1, l2);
         _mm256_and_pd(mask, _mm256_set1_pd(1.0))
     }
 
