@@ -153,8 +153,8 @@ pub fn max<T: CmpOps>(a: &[T]) -> T {
 ///
 /// ### Result buffer
 ///
-/// The result buffer can be either an initialized slice i.e. [`&mut [Self]`]
-/// or it can be a slice holding potentially uninitialized data i.e. [`&mut [MaybeUninit<Self>]`].
+/// The result buffer can be either an initialized slice i.e. `&mut [T]`
+/// or it can be a slice holding potentially uninitialized data i.e. `&mut [MaybeUninit<T>]`.
 ///
 /// Once the operation is complete, it is safe to assume the data written is fully initialized.
 ///
@@ -186,8 +186,8 @@ where
 ///
 /// ### Result buffer
 ///
-/// The result buffer can be either an initialized slice i.e. [`&mut [Self]`]
-/// or it can be a slice holding potentially uninitialized data i.e. [`&mut [MaybeUninit<Self>]`].
+/// The result buffer can be either an initialized slice i.e. `&mut [T]`
+/// or it can be a slice holding potentially uninitialized data i.e. `&mut [MaybeUninit<T>]`.
 ///
 /// Once the operation is complete, it is safe to assume the data written is fully initialized.
 ///
@@ -236,8 +236,8 @@ pub fn min<T: CmpOps>(a: &[T]) -> T {
 ///
 /// ### Result buffer
 ///
-/// The result buffer can be either an initialized slice i.e. [`&mut [Self]`]
-/// or it can be a slice holding potentially uninitialized data i.e. [`&mut [MaybeUninit<Self>]`].
+/// The result buffer can be either an initialized slice i.e. `&mut [T]`
+/// or it can be a slice holding potentially uninitialized data i.e. `&mut [MaybeUninit<T>]`.
 ///
 /// Once the operation is complete, it is safe to assume the data written is fully initialized.
 ///
@@ -269,8 +269,8 @@ where
 ///
 /// ### Result buffer
 ///
-/// The result buffer can be either an initialized slice i.e. [`&mut [Self]`]
-/// or it can be a slice holding potentially uninitialized data i.e. [`&mut [MaybeUninit<Self>]`].
+/// The result buffer can be either an initialized slice i.e. `&mut [T]`
+/// or it can be a slice holding potentially uninitialized data i.e. `&mut [MaybeUninit<T>]`.
 ///
 /// Once the operation is complete, it is safe to assume the data written is fully initialized.
 ///
@@ -283,6 +283,510 @@ where
     for<'a> &'a mut [B]: WriteOnlyBuffer<Item = T>,
 {
     T::min_vector(a.len(), a, b, result)
+}
+
+#[inline]
+/// Checks each element within vector `a` of size `dims` against a provided broadcast value
+/// comparing if they are **_equal_** returning a mask vector of the same type.
+///
+/// ### Pseudocode
+///
+/// ```ignore
+/// mask = [0; dims]
+///
+/// for i in range(dims):
+/// mask[i] = a[i] == value ? 1 : 0
+///
+/// return mask
+/// ```
+///
+/// ### Note on `NaN` handling on `f32/f64` types
+///
+/// For `f32` and `f64` types, `NaN` values are handled as always being `false` in **ANY** comparison.
+/// Even when compared against each other.
+///
+/// - `0.0 == 0.0 -> true`
+/// - `0.0 == NaN -> false`
+/// - `NaN == NaN -> false`
+///
+/// ### Result buffer
+///
+/// The result buffer can be either an initialized slice i.e. `&mut [T]`
+/// or it can be a slice holding potentially uninitialized data i.e. `&mut [MaybeUninit<T>]`.
+///
+/// Once the operation is complete, it is safe to assume the data written is fully initialized.
+///
+/// ### Panics
+///
+/// Panics if the size of vectors `a` and `result` do not match.
+pub fn eq_value<T, B>(value: T, a: &[T], result: &mut [B])
+where
+    T: CmpOps,
+    for<'a> &'a mut [B]: WriteOnlyBuffer<Item = T>,
+{
+    T::eq_value(a.len(), value, a, result)
+}
+
+#[inline]
+/// Checks each element pair from vectors `a` and `b` of size `dims`  comparing
+/// if element `a` is **_equal to_** element `b` returning a mask vector of the same type.
+///
+/// ### Pseudocode
+///
+/// ```ignore
+/// mask = [0; dims]
+///
+/// for i in range(dims):
+///     mask[i] = a[i] == b[i] ? 1 : 0
+///
+/// return mask
+/// ```
+///
+/// ### Note on `NaN` handling on `f32/f64` types
+///
+/// For `f32` and `f64` types, `NaN` values are handled as always being `false` in **ANY** comparison.
+/// Even when compared against each other.
+///
+/// - `0.0 == 0.0 -> true`
+/// - `0.0 == NaN -> false`
+/// - `NaN == NaN -> false`
+///
+/// ### Result buffer
+///
+/// The result buffer can be either an initialized slice i.e. `&mut [T]`
+/// or it can be a slice holding potentially uninitialized data i.e. `&mut [MaybeUninit<T>]`.
+///
+/// Once the operation is complete, it is safe to assume the data written is fully initialized.
+///
+/// ### Panics
+///
+/// Panics if the size of vectors `a`, `b` and `result` do not match.
+pub fn eq_vector<T, B>(a: &[T], b: &[T], result: &mut [B])
+where
+    T: CmpOps,
+    for<'a> &'a mut [B]: WriteOnlyBuffer<Item = T>,
+{
+    T::eq_vector(a.len(), a, b, result)
+}
+
+#[inline]
+/// Checks each element within vector `a` of size `dims` against a provided broadcast value
+/// comparing if they are **_not equal_** returning a mask vector of the same type.
+///
+/// ### Pseudocode
+///
+/// ```ignore
+/// mask = [0; dims]
+///
+/// for i in range(dims):
+/// mask[i] = a[i] != value ? 1 : 0
+///
+/// return mask
+/// ```
+///
+/// ### Note on `NaN` handling on `f32/f64` types
+///
+/// For `f32` and `f64` types, `NaN` values are handled as always being `false` in **ANY** comparison.
+/// Even when compared against each other.
+///
+/// - `0.0 != 1.0 -> true`
+/// - `0.0 != NaN -> false`
+/// - `NaN != NaN -> false`
+///
+/// ### Result buffer
+///
+/// The result buffer can be either an initialized slice i.e. `&mut [T]`
+/// or it can be a slice holding potentially uninitialized data i.e. `&mut [MaybeUninit<T>]`.
+///
+/// Once the operation is complete, it is safe to assume the data written is fully initialized.
+///
+/// ### Panics
+///
+/// Panics if the size of vectors `a` and `result` do not match.
+pub fn neq_value<T, B>(value: T, a: &[T], result: &mut [B])
+where
+    T: CmpOps,
+    for<'a> &'a mut [B]: WriteOnlyBuffer<Item = T>,
+{
+    T::neq_value(a.len(), value, a, result)
+}
+
+#[inline]
+/// Checks each element pair from vectors `a` and `b` of size `dims`  comparing
+/// if element `a` is **_not equal to_** element `b` returning a mask vector of the same type.
+///
+/// ### Pseudocode
+///
+/// ```ignore
+/// mask = [0; dims]
+///
+/// for i in range(dims):
+///     mask[i] = a[i] != b[i] ? 1 : 0
+///
+/// return mask
+/// ```
+///
+/// ### Note on `NaN` handling on `f32/f64` types
+///
+/// For `f32` and `f64` types, `NaN` values are handled as always being `false` in **ANY** comparison.
+/// Even when compared against each other.
+///
+/// - `0.0 != 1.0 -> true`
+/// - `0.0 != NaN -> false`
+/// - `NaN != NaN -> false`
+///
+/// ### Result buffer
+///
+/// The result buffer can be either an initialized slice i.e. `&mut [T]`
+/// or it can be a slice holding potentially uninitialized data i.e. `&mut [MaybeUninit<T>]`.
+///
+/// Once the operation is complete, it is safe to assume the data written is fully initialized.
+///
+/// ### Panics
+///
+/// Panics if the size of vectors `a`, `b` and `result` do not match.
+pub fn neq_vector<T, B>(a: &[T], b: &[T], result: &mut [B])
+where
+    T: CmpOps,
+    for<'a> &'a mut [B]: WriteOnlyBuffer<Item = T>,
+{
+    T::neq_vector(a.len(), a, b, result)
+}
+
+#[inline]
+/// Checks each element within vector `a` of size `dims` against a provided broadcast value
+/// comparing if they are **_less than_** returning a mask vector of the same type.
+///
+/// ### Pseudocode
+///
+/// ```ignore
+/// mask = [0; dims]
+///
+/// for i in range(dims):
+/// mask[i] = a[i] < value ? 1 : 0
+///
+/// return mask
+/// ```
+///
+/// ### Note on `NaN` handling on `f32/f64` types
+///
+/// For `f32` and `f64` types, `NaN` values are handled as always being `false` in **ANY** comparison.
+/// Even when compared against each other.
+///
+/// - `0.0 < 1.0 -> true`
+/// - `0.0 < NaN -> false`
+/// - `NaN < NaN -> false`
+///
+/// ### Result buffer
+///
+/// The result buffer can be either an initialized slice i.e. `&mut [T]`
+/// or it can be a slice holding potentially uninitialized data i.e. `&mut [MaybeUninit<T>]`.
+///
+/// Once the operation is complete, it is safe to assume the data written is fully initialized.
+///
+/// ### Panics
+///
+/// Panics if the size of vectors `a` and `result` do not match.
+pub fn lt_value<T, B>(value: T, a: &[T], result: &mut [B])
+where
+    T: CmpOps,
+    for<'a> &'a mut [B]: WriteOnlyBuffer<Item = T>,
+{
+    T::lt_value(a.len(), value, a, result)
+}
+
+#[inline]
+/// Checks each element pair from vectors `a` and `b` of size `dims`  comparing
+/// if element `a` is **_less than_** element `b` returning a mask vector of the same type.
+///
+/// ### Pseudocode
+///
+/// ```ignore
+/// mask = [0; dims]
+///
+/// for i in range(dims):
+///     mask[i] = a[i] < b[i] ? 1 : 0
+///
+/// return mask
+/// ```
+///
+/// ### Note on `NaN` handling on `f32/f64` types
+///
+/// For `f32` and `f64` types, `NaN` values are handled as always being `false` in **ANY** comparison.
+/// Even when compared against each other.
+///
+/// - `0.0 < 1.0 -> true`
+/// - `0.0 < NaN -> false`
+/// - `NaN < NaN -> false`
+///
+/// ### Result buffer
+///
+/// The result buffer can be either an initialized slice i.e. `&mut [T]`
+/// or it can be a slice holding potentially uninitialized data i.e. `&mut [MaybeUninit<T>]`.
+///
+/// Once the operation is complete, it is safe to assume the data written is fully initialized.
+///
+/// ### Panics
+///
+/// Panics if the size of vectors `a`, `b` and `result` do not match.
+pub fn lt_vector<T, B>(a: &[T], b: &[T], result: &mut [B])
+where
+    T: CmpOps,
+    for<'a> &'a mut [B]: WriteOnlyBuffer<Item = T>,
+{
+    T::lt_vector(a.len(), a, b, result)
+}
+
+#[inline]
+/// Checks each element within vector `a` of size `dims` against a provided broadcast value
+/// comparing if they are **_less than or equal_** returning a mask vector of the same type.
+///
+/// ### Pseudocode
+///
+/// ```ignore
+/// mask = [0; dims]
+///
+/// for i in range(dims):
+/// mask[i] = a[i] <= value ? 1 : 0
+///
+/// return mask
+/// ```
+///
+/// ### Note on `NaN` handling on `f32/f64` types
+///
+/// For `f32` and `f64` types, `NaN` values are handled as always being `false` in **ANY** comparison.
+/// Even when compared against each other.
+///
+/// - `0.0 <= 1.0 -> true`
+/// - `0.0 <= NaN -> false`
+/// - `NaN <= NaN -> false`
+///
+/// ### Result buffer
+///
+/// The result buffer can be either an initialized slice i.e. `&mut [T]`
+/// or it can be a slice holding potentially uninitialized data i.e. `&mut [MaybeUninit<T>]`.
+///
+/// Once the operation is complete, it is safe to assume the data written is fully initialized.
+///
+/// ### Panics
+///
+/// Panics if the size of vectors `a` and `result` do not match.
+pub fn lte_value<T, B>(value: T, a: &[T], result: &mut [B])
+where
+    T: CmpOps,
+    for<'a> &'a mut [B]: WriteOnlyBuffer<Item = T>,
+{
+    T::lte_value(a.len(), value, a, result)
+}
+
+#[inline]
+/// Checks each element pair from vectors `a` and `b` of size `dims`  comparing
+/// if element `a` is **_less than or equal to_** element `b` returning a mask vector of the same type.
+///
+/// ### Pseudocode
+///
+/// ```ignore
+/// mask = [0; dims]
+///
+/// for i in range(dims):
+///     mask[i] = a[i] <= b[i] ? 1 : 0
+///
+/// return mask
+/// ```
+///
+/// ### Note on `NaN` handling on `f32/f64` types
+///
+/// For `f32` and `f64` types, `NaN` values are handled as always being `false` in **ANY** comparison.
+/// Even when compared against each other.
+///
+/// - `0.0 <= 1.0 -> true`
+/// - `0.0 <= NaN -> false`
+/// - `NaN <= NaN -> false`
+///
+/// ### Result buffer
+///
+/// The result buffer can be either an initialized slice i.e. `&mut [T]`
+/// or it can be a slice holding potentially uninitialized data i.e. `&mut [MaybeUninit<T>]`.
+///
+/// Once the operation is complete, it is safe to assume the data written is fully initialized.
+///
+/// ### Panics
+///
+/// Panics if the size of vectors `a`, `b` and `result` do not match.
+pub fn lte_vector<T, B>(a: &[T], b: &[T], result: &mut [B])
+where
+    T: CmpOps,
+    for<'a> &'a mut [B]: WriteOnlyBuffer<Item = T>,
+{
+    T::lte_vector(a.len(), a, b, result)
+}
+
+#[inline]
+/// Checks each element within vector `a` of size `dims` against a provided broadcast value
+/// comparing if they are **_less than or equal_** returning a mask vector of the same type.
+///
+/// ### Pseudocode
+///
+/// ```ignore
+/// mask = [0; dims]
+///
+/// for i in range(dims):
+/// mask[i] = a[i] > value ? 1 : 0
+///
+/// return mask
+/// ```
+///
+/// ### Note on `NaN` handling on `f32/f64` types
+///
+/// For `f32` and `f64` types, `NaN` values are handled as always being `false` in **ANY** comparison.
+/// Even when compared against each other.
+///
+/// - `1.0 > 0.0 -> true`
+/// - `1.0 > NaN -> false`
+/// - `NaN > NaN -> false`
+///
+/// ### Result buffer
+///
+/// The result buffer can be either an initialized slice i.e. `&mut [T]`
+/// or it can be a slice holding potentially uninitialized data i.e. `&mut [MaybeUninit<T>]`.
+///
+/// Once the operation is complete, it is safe to assume the data written is fully initialized.
+///
+/// ### Panics
+///
+/// Panics if the size of vectors `a` and `result` do not match.
+pub fn gt_value<T, B>(value: T, a: &[T], result: &mut [B])
+where
+    T: CmpOps,
+    for<'a> &'a mut [B]: WriteOnlyBuffer<Item = T>,
+{
+    T::gt_value(a.len(), value, a, result)
+}
+
+#[inline]
+/// Checks each element pair from vectors `a` and `b` of size `dims`  comparing
+/// if element `a` is **_greater than_** element `b` returning a mask vector of the same type.
+///
+/// ### Pseudocode
+///
+/// ```ignore
+/// mask = [0; dims]
+///
+/// for i in range(dims):
+///     mask[i] = a[i] > b[i] ? 1 : 0
+///
+/// return mask
+/// ```
+///
+/// ### Note on `NaN` handling on `f32/f64` types
+///
+/// For `f32` and `f64` types, `NaN` values are handled as always being `false` in **ANY** comparison.
+/// Even when compared against each other.
+///
+/// - `1.0 > 0.0 -> true`
+/// - `1.0 > NaN -> false`
+/// - `NaN > NaN -> false`
+///
+/// ### Result buffer
+///
+/// The result buffer can be either an initialized slice i.e. `&mut [T]`
+/// or it can be a slice holding potentially uninitialized data i.e. `&mut [MaybeUninit<T>]`.
+///
+/// Once the operation is complete, it is safe to assume the data written is fully initialized.
+///
+/// ### Panics
+///
+/// Panics if the size of vectors `a`, `b` and `result` do not match.
+pub fn gt_vector<T, B>(a: &[T], b: &[T], result: &mut [B])
+where
+    T: CmpOps,
+    for<'a> &'a mut [B]: WriteOnlyBuffer<Item = T>,
+{
+    T::gt_vector(a.len(), a, b, result)
+}
+
+#[inline]
+/// Checks each element within vector `a` of size `dims` against a provided broadcast value
+/// comparing if they are **_less than or equal_** returning a mask vector of the same type.
+///
+/// ### Pseudocode
+///
+/// ```ignore
+/// mask = [0; dims]
+///
+/// for i in range(dims):
+/// mask[i] = a[i] >= value ? 1 : 0
+///
+/// return mask
+/// ```
+///
+/// ### Note on `NaN` handling on `f32/f64` types
+///
+/// For `f32` and `f64` types, `NaN` values are handled as always being `false` in **ANY** comparison.
+/// Even when compared against each other.
+///
+/// - `1.0 >= 0.0 -> true`
+/// - `1.0 >= NaN -> false`
+/// - `NaN >= NaN -> false`
+///
+/// ### Result buffer
+///
+/// The result buffer can be either an initialized slice i.e. `&mut [T]`
+/// or it can be a slice holding potentially uninitialized data i.e. `&mut [MaybeUninit<T>]`.
+///
+/// Once the operation is complete, it is safe to assume the data written is fully initialized.
+///
+/// ### Panics
+///
+/// Panics if the size of vectors `a` and `result` do not match.
+pub fn gte_value<T, B>(value: T, a: &[T], result: &mut [B])
+where
+    T: CmpOps,
+    for<'a> &'a mut [B]: WriteOnlyBuffer<Item = T>,
+{
+    T::gte_value(a.len(), value, a, result)
+}
+
+#[inline]
+/// Checks each element pair from vectors `a` and `b` of size `dims`  comparing
+/// if element `a` is **_greater than_** element `b` returning a mask vector of the same type.
+///
+/// ### Pseudocode
+///
+/// ```ignore
+/// mask = [0; dims]
+///
+/// for i in range(dims):
+///     mask[i] = a[i] >= b[i] ? 1 : 0
+///
+/// return mask
+/// ```
+///
+/// ### Note on `NaN` handling on `f32/f64` types
+///
+/// For `f32` and `f64` types, `NaN` values are handled as always being `false` in **ANY** comparison.
+/// Even when compared against each other.
+///
+/// - `1.0 >= 0.0 -> true`
+/// - `1.0 >= NaN -> false`
+/// - `NaN >= NaN -> false`
+///
+/// ### Result buffer
+///
+/// The result buffer can be either an initialized slice i.e. `&mut [T]`
+/// or it can be a slice holding potentially uninitialized data i.e. `&mut [MaybeUninit<T>]`.
+///
+/// Once the operation is complete, it is safe to assume the data written is fully initialized.
+///
+/// ### Panics
+///
+/// Panics if the size of vectors `a`, `b` and `result` do not match.
+pub fn gte_vector<T, B>(a: &[T], b: &[T], result: &mut [B])
+where
+    T: CmpOps,
+    for<'a> &'a mut [B]: WriteOnlyBuffer<Item = T>,
+{
+    T::gte_vector(a.len(), a, b, result)
 }
 
 /// Performs an element wise addition of each element of vector `a` and the provided broadcast
@@ -301,8 +805,8 @@ where
 ///
 /// ### Result buffer
 ///
-/// The result buffer can be either an initialized slice i.e. [`&mut [Self]`]
-/// or it can be a slice holding potentially uninitialized data i.e. [`&mut [MaybeUninit<Self>]`].
+/// The result buffer can be either an initialized slice i.e. `&mut [T]`
+/// or it can be a slice holding potentially uninitialized data i.e. `&mut [MaybeUninit<T>]`.
 ///
 /// Once the operation is complete, it is safe to assume the data written is fully initialized.
 ///
@@ -333,8 +837,8 @@ where
 ///
 /// ### Result buffer
 ///
-/// The result buffer can be either an initialized slice i.e. [`&mut [Self]`]
-/// or it can be a slice holding potentially uninitialized data i.e. [`&mut [MaybeUninit<Self>]`].
+/// The result buffer can be either an initialized slice i.e. `&mut [T]`
+/// or it can be a slice holding potentially uninitialized data i.e. `&mut [MaybeUninit<T>]`.
 ///
 /// Once the operation is complete, it is safe to assume the data written is fully initialized.
 ///
@@ -365,8 +869,8 @@ where
 ///
 /// ### Result buffer
 ///
-/// The result buffer can be either an initialized slice i.e. [`&mut [Self]`]
-/// or it can be a slice holding potentially uninitialized data i.e. [`&mut [MaybeUninit<Self>]`].
+/// The result buffer can be either an initialized slice i.e. `&mut [T]`
+/// or it can be a slice holding potentially uninitialized data i.e. `&mut [MaybeUninit<T>]`.
 ///
 /// Once the operation is complete, it is safe to assume the data written is fully initialized.
 ///
@@ -397,8 +901,8 @@ where
 ///
 /// ### Result buffer
 ///
-/// The result buffer can be either an initialized slice i.e. [`&mut [Self]`]
-/// or it can be a slice holding potentially uninitialized data i.e. [`&mut [MaybeUninit<Self>]`].
+/// The result buffer can be either an initialized slice i.e. `&mut [T]`
+/// or it can be a slice holding potentially uninitialized data i.e. `&mut [MaybeUninit<T>]`.
 ///
 /// Once the operation is complete, it is safe to assume the data written is fully initialized.
 ///
@@ -429,8 +933,8 @@ where
 ///
 /// ### Result buffer
 ///
-/// The result buffer can be either an initialized slice i.e. [`&mut [Self]`]
-/// or it can be a slice holding potentially uninitialized data i.e. [`&mut [MaybeUninit<Self>]`].
+/// The result buffer can be either an initialized slice i.e. `&mut [T]`
+/// or it can be a slice holding potentially uninitialized data i.e. `&mut [MaybeUninit<T>]`.
 ///
 /// Once the operation is complete, it is safe to assume the data written is fully initialized.
 ///
@@ -461,8 +965,8 @@ where
 ///
 /// ### Result buffer
 ///
-/// The result buffer can be either an initialized slice i.e. [`&mut [Self]`]
-/// or it can be a slice holding potentially uninitialized data i.e. [`&mut [MaybeUninit<Self>]`].
+/// The result buffer can be either an initialized slice i.e. `&mut [T]`
+/// or it can be a slice holding potentially uninitialized data i.e. `&mut [MaybeUninit<T>]`.
 ///
 /// Once the operation is complete, it is safe to assume the data written is fully initialized.
 ///
@@ -493,8 +997,8 @@ where
 ///
 /// ### Result buffer
 ///
-/// The result buffer can be either an initialized slice i.e. [`&mut [Self]`]
-/// or it can be a slice holding potentially uninitialized data i.e. [`&mut [MaybeUninit<Self>]`].
+/// The result buffer can be either an initialized slice i.e. `&mut [T]`
+/// or it can be a slice holding potentially uninitialized data i.e. `&mut [MaybeUninit<T>]`.
 ///
 /// Once the operation is complete, it is safe to assume the data written is fully initialized.
 ///
@@ -525,8 +1029,8 @@ where
 ///
 /// ### Result buffer
 ///
-/// The result buffer can be either an initialized slice i.e. [`&mut [Self]`]
-/// or it can be a slice holding potentially uninitialized data i.e. [`&mut [MaybeUninit<Self>]`].
+/// The result buffer can be either an initialized slice i.e. `&mut [T]`
+/// or it can be a slice holding potentially uninitialized data i.e. `&mut [MaybeUninit<T>]`.
 ///
 /// Once the operation is complete, it is safe to assume the data written is fully initialized.
 ///

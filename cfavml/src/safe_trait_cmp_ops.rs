@@ -42,8 +42,8 @@ pub trait CmpOps: Sized {
     ///
     /// ### Result buffer
     ///
-    /// The result buffer can be either an initialized slice i.e. [`&mut [Self]`]
-    /// or it can be a slice holding potentially uninitialized data i.e. [`&mut [MaybeUninit<Self>]`].
+    /// The result buffer can be either an initialized slice i.e. `&mut [Self]`
+    /// or it can be a slice holding potentially uninitialized data i.e. `&mut [MaybeUninit<Self>]`.
     ///
     /// Once the operation is complete, it is safe to assume the data written is fully initialized.
     ///
@@ -70,8 +70,8 @@ pub trait CmpOps: Sized {
     ///
     /// ### Result buffer
     ///
-    /// The result buffer can be either an initialized slice i.e. [`&mut [Self]`]
-    /// or it can be a slice holding potentially uninitialized data i.e. [`&mut [MaybeUninit<Self>]`].
+    /// The result buffer can be either an initialized slice i.e. `&mut [Self]`
+    /// or it can be a slice holding potentially uninitialized data i.e. `&mut [MaybeUninit<Self>]`.
     ///
     /// Once the operation is complete, it is safe to assume the data written is fully initialized.
     ///
@@ -112,8 +112,8 @@ pub trait CmpOps: Sized {
     ///
     /// ### Result buffer
     ///
-    /// The result buffer can be either an initialized slice i.e. [`&mut [Self]`]
-    /// or it can be a slice holding potentially uninitialized data i.e. [`&mut [MaybeUninit<Self>]`].
+    /// The result buffer can be either an initialized slice i.e. `&mut [Self]`
+    /// or it can be a slice holding potentially uninitialized data i.e. `&mut [MaybeUninit<Self>]`.
     ///
     /// Once the operation is complete, it is safe to assume the data written is fully initialized.
     ///
@@ -140,8 +140,8 @@ pub trait CmpOps: Sized {
     ///
     /// ### Result buffer
     ///
-    /// The result buffer can be either an initialized slice i.e. [`&mut [Self]`]
-    /// or it can be a slice holding potentially uninitialized data i.e. [`&mut [MaybeUninit<Self>]`].
+    /// The result buffer can be either an initialized slice i.e. `&mut [Self]`
+    /// or it can be a slice holding potentially uninitialized data i.e. `&mut [MaybeUninit<Self>]`.
     ///
     /// Once the operation is complete, it is safe to assume the data written is fully initialized.
     ///
@@ -166,7 +166,7 @@ pub trait CmpOps: Sized {
     /// return mask
     /// ```
     ///
-    /// ### Note on `Nan` handling on `f32/f64` types
+    /// ### Note on `NaN` handling on `f32/f64` types
     ///
     /// For `f32` and `f64` types, `NaN` values are handled as always being `false` in **ANY** comparison.
     /// Even when compared against each other.
@@ -177,8 +177,8 @@ pub trait CmpOps: Sized {
     ///
     /// ### Result buffer
     ///
-    /// The result buffer can be either an initialized slice i.e. [`&mut [Self]`]
-    /// or it can be a slice holding potentially uninitialized data i.e. [`&mut [MaybeUninit<Self>]`].
+    /// The result buffer can be either an initialized slice i.e. `&mut [Self]`
+    /// or it can be a slice holding potentially uninitialized data i.e. `&mut [MaybeUninit<Self>]`.
     ///
     /// Once the operation is complete, it is safe to assume the data written is fully initialized.
     ///
@@ -203,7 +203,7 @@ pub trait CmpOps: Sized {
     /// return mask
     /// ```
     ///
-    /// ### Note on `Nan` handling on `f32/f64` types
+    /// ### Note on `NaN` handling on `f32/f64` types
     ///
     /// For `f32` and `f64` types, `NaN` values are handled as always being `false` in **ANY** comparison.
     /// Even when compared against each other.
@@ -214,8 +214,8 @@ pub trait CmpOps: Sized {
     ///
     /// ### Result buffer
     ///
-    /// The result buffer can be either an initialized slice i.e. [`&mut [Self]`]
-    /// or it can be a slice holding potentially uninitialized data i.e. [`&mut [MaybeUninit<Self>]`].
+    /// The result buffer can be either an initialized slice i.e. `&mut [Self]`
+    /// or it can be a slice holding potentially uninitialized data i.e. `&mut [MaybeUninit<Self>]`.
     ///
     /// Once the operation is complete, it is safe to assume the data written is fully initialized.
     ///
@@ -240,7 +240,7 @@ pub trait CmpOps: Sized {
     /// return mask
     /// ```
     ///
-    /// ### Note on `Nan` handling on `f32/f64` types
+    /// ### Note on `NaN` handling on `f32/f64` types
     ///
     /// For `f32` and `f64` types, `NaN` values are handled as always being `false` in **ANY** comparison.
     /// Even when compared against each other.
@@ -251,8 +251,8 @@ pub trait CmpOps: Sized {
     ///
     /// ### Result buffer
     ///
-    /// The result buffer can be either an initialized slice i.e. [`&mut [Self]`]
-    /// or it can be a slice holding potentially uninitialized data i.e. [`&mut [MaybeUninit<Self>]`].
+    /// The result buffer can be either an initialized slice i.e. `&mut [Self]`
+    /// or it can be a slice holding potentially uninitialized data i.e. `&mut [MaybeUninit<Self>]`.
     ///
     /// Once the operation is complete, it is safe to assume the data written is fully initialized.
     ///
@@ -277,7 +277,7 @@ pub trait CmpOps: Sized {
     /// return mask
     /// ```
     ///
-    /// ### Note on `Nan` handling on `f32/f64` types
+    /// ### Note on `NaN` handling on `f32/f64` types
     ///
     /// For `f32` and `f64` types, `NaN` values are handled as always being `false` in **ANY** comparison.
     /// Even when compared against each other.
@@ -288,8 +288,8 @@ pub trait CmpOps: Sized {
     ///
     /// ### Result buffer
     ///
-    /// The result buffer can be either an initialized slice i.e. [`&mut [Self]`]
-    /// or it can be a slice holding potentially uninitialized data i.e. [`&mut [MaybeUninit<Self>]`].
+    /// The result buffer can be either an initialized slice i.e. `&mut [Self]`
+    /// or it can be a slice holding potentially uninitialized data i.e. `&mut [MaybeUninit<Self>]`.
     ///
     /// Once the operation is complete, it is safe to assume the data written is fully initialized.
     ///
@@ -314,7 +314,7 @@ pub trait CmpOps: Sized {
     /// return mask
     /// ```
     ///
-    /// ### Note on `Nan` handling on `f32/f64` types
+    /// ### Note on `NaN` handling on `f32/f64` types
     ///
     /// For `f32` and `f64` types, `NaN` values are handled as always being `false` in **ANY** comparison.
     /// Even when compared against each other.
@@ -325,8 +325,8 @@ pub trait CmpOps: Sized {
     ///
     /// ### Result buffer
     ///
-    /// The result buffer can be either an initialized slice i.e. [`&mut [Self]`]
-    /// or it can be a slice holding potentially uninitialized data i.e. [`&mut [MaybeUninit<Self>]`].
+    /// The result buffer can be either an initialized slice i.e. `&mut [Self]`
+    /// or it can be a slice holding potentially uninitialized data i.e. `&mut [MaybeUninit<Self>]`.
     ///
     /// Once the operation is complete, it is safe to assume the data written is fully initialized.
     ///
@@ -351,7 +351,7 @@ pub trait CmpOps: Sized {
     /// return mask
     /// ```
     ///
-    /// ### Note on `Nan` handling on `f32/f64` types
+    /// ### Note on `NaN` handling on `f32/f64` types
     ///
     /// For `f32` and `f64` types, `NaN` values are handled as always being `false` in **ANY** comparison.
     /// Even when compared against each other.
@@ -362,8 +362,8 @@ pub trait CmpOps: Sized {
     ///
     /// ### Result buffer
     ///
-    /// The result buffer can be either an initialized slice i.e. [`&mut [Self]`]
-    /// or it can be a slice holding potentially uninitialized data i.e. [`&mut [MaybeUninit<Self>]`].
+    /// The result buffer can be either an initialized slice i.e. `&mut [Self]`
+    /// or it can be a slice holding potentially uninitialized data i.e. `&mut [MaybeUninit<Self>]`.
     ///
     /// Once the operation is complete, it is safe to assume the data written is fully initialized.
     ///
@@ -388,7 +388,7 @@ pub trait CmpOps: Sized {
     /// return mask
     /// ```
     ///
-    /// ### Note on `Nan` handling on `f32/f64` types
+    /// ### Note on `NaN` handling on `f32/f64` types
     ///
     /// For `f32` and `f64` types, `NaN` values are handled as always being `false` in **ANY** comparison.
     /// Even when compared against each other.
@@ -399,8 +399,8 @@ pub trait CmpOps: Sized {
     ///
     /// ### Result buffer
     ///
-    /// The result buffer can be either an initialized slice i.e. [`&mut [Self]`]
-    /// or it can be a slice holding potentially uninitialized data i.e. [`&mut [MaybeUninit<Self>]`].
+    /// The result buffer can be either an initialized slice i.e. `&mut [Self]`
+    /// or it can be a slice holding potentially uninitialized data i.e. `&mut [MaybeUninit<Self>]`.
     ///
     /// Once the operation is complete, it is safe to assume the data written is fully initialized.
     ///
@@ -425,7 +425,7 @@ pub trait CmpOps: Sized {
     /// return mask
     /// ```
     ///
-    /// ### Note on `Nan` handling on `f32/f64` types
+    /// ### Note on `NaN` handling on `f32/f64` types
     ///
     /// For `f32` and `f64` types, `NaN` values are handled as always being `false` in **ANY** comparison.
     /// Even when compared against each other.
@@ -436,8 +436,8 @@ pub trait CmpOps: Sized {
     ///
     /// ### Result buffer
     ///
-    /// The result buffer can be either an initialized slice i.e. [`&mut [Self]`]
-    /// or it can be a slice holding potentially uninitialized data i.e. [`&mut [MaybeUninit<Self>]`].
+    /// The result buffer can be either an initialized slice i.e. `&mut [Self]`
+    /// or it can be a slice holding potentially uninitialized data i.e. `&mut [MaybeUninit<Self>]`.
     ///
     /// Once the operation is complete, it is safe to assume the data written is fully initialized.
     ///
@@ -462,7 +462,7 @@ pub trait CmpOps: Sized {
     /// return mask
     /// ```
     ///
-    /// ### Note on `Nan` handling on `f32/f64` types
+    /// ### Note on `NaN` handling on `f32/f64` types
     ///
     /// For `f32` and `f64` types, `NaN` values are handled as always being `false` in **ANY** comparison.
     /// Even when compared against each other.
@@ -473,8 +473,8 @@ pub trait CmpOps: Sized {
     ///
     /// ### Result buffer
     ///
-    /// The result buffer can be either an initialized slice i.e. [`&mut [Self]`]
-    /// or it can be a slice holding potentially uninitialized data i.e. [`&mut [MaybeUninit<Self>]`].
+    /// The result buffer can be either an initialized slice i.e. `&mut [Self]`
+    /// or it can be a slice holding potentially uninitialized data i.e. `&mut [MaybeUninit<Self>]`.
     ///
     /// Once the operation is complete, it is safe to assume the data written is fully initialized.
     ///
@@ -499,7 +499,7 @@ pub trait CmpOps: Sized {
     /// return mask
     /// ```
     ///
-    /// ### Note on `Nan` handling on `f32/f64` types
+    /// ### Note on `NaN` handling on `f32/f64` types
     ///
     /// For `f32` and `f64` types, `NaN` values are handled as always being `false` in **ANY** comparison.
     /// Even when compared against each other.
@@ -510,8 +510,8 @@ pub trait CmpOps: Sized {
     ///
     /// ### Result buffer
     ///
-    /// The result buffer can be either an initialized slice i.e. [`&mut [Self]`]
-    /// or it can be a slice holding potentially uninitialized data i.e. [`&mut [MaybeUninit<Self>]`].
+    /// The result buffer can be either an initialized slice i.e. `&mut [Self]`
+    /// or it can be a slice holding potentially uninitialized data i.e. `&mut [MaybeUninit<Self>]`.
     ///
     /// Once the operation is complete, it is safe to assume the data written is fully initialized.
     ///
@@ -536,7 +536,7 @@ pub trait CmpOps: Sized {
     /// return mask
     /// ```
     ///
-    /// ### Note on `Nan` handling on `f32/f64` types
+    /// ### Note on `NaN` handling on `f32/f64` types
     ///
     /// For `f32` and `f64` types, `NaN` values are handled as always being `false` in **ANY** comparison.
     /// Even when compared against each other.
@@ -547,8 +547,8 @@ pub trait CmpOps: Sized {
     ///
     /// ### Result buffer
     ///
-    /// The result buffer can be either an initialized slice i.e. [`&mut [Self]`]
-    /// or it can be a slice holding potentially uninitialized data i.e. [`&mut [MaybeUninit<Self>]`].
+    /// The result buffer can be either an initialized slice i.e. `&mut [Self]`
+    /// or it can be a slice holding potentially uninitialized data i.e. `&mut [MaybeUninit<Self>]`.
     ///
     /// Once the operation is complete, it is safe to assume the data written is fully initialized.
     ///
@@ -573,7 +573,7 @@ pub trait CmpOps: Sized {
     /// return mask
     /// ```
     ///
-    /// ### Note on `Nan` handling on `f32/f64` types
+    /// ### Note on `NaN` handling on `f32/f64` types
     ///
     /// For `f32` and `f64` types, `NaN` values are handled as always being `false` in **ANY** comparison.
     /// Even when compared against each other.
@@ -584,8 +584,8 @@ pub trait CmpOps: Sized {
     ///
     /// ### Result buffer
     ///
-    /// The result buffer can be either an initialized slice i.e. [`&mut [Self]`]
-    /// or it can be a slice holding potentially uninitialized data i.e. [`&mut [MaybeUninit<Self>]`].
+    /// The result buffer can be either an initialized slice i.e. `&mut [Self]`
+    /// or it can be a slice holding potentially uninitialized data i.e. `&mut [MaybeUninit<Self>]`.
     ///
     /// Once the operation is complete, it is safe to assume the data written is fully initialized.
     ///
@@ -713,6 +713,276 @@ macro_rules! cmp_ops {
                         avx2 = export_cmp_ops::generic_avx2_cmp_min_vector,
                         neon = export_cmp_ops::generic_neon_cmp_min_vector,
                         fallback = export_cmp_ops::generic_fallback_cmp_min_vector,
+                        args = (dims, a, b, result)
+                    )
+                }
+            }
+
+            fn eq_value<B>(dims: usize, value: Self, a: &[Self], result: &mut [B])
+            where
+                for<'a> &'a mut [B]: WriteOnlyBuffer<Item = Self>,
+            {
+                assert_eq!(a.len(), dims, "Input vector `a` does not match size `dims`");
+                assert_eq!(
+                    result.len(),
+                    dims,
+                    "Input vector `result` does not match size `dims`"
+                );
+
+                unsafe {
+                    crate::dispatch!(
+                        avx512 = export_cmp_ops::generic_avx512_cmp_eq_value,
+                        avx2 = export_cmp_ops::generic_avx2_cmp_eq_value,
+                        neon = export_cmp_ops::generic_neon_cmp_eq_value,
+                        fallback = export_cmp_ops::generic_fallback_cmp_eq_value,
+                        args = (dims, value, a, result)
+                    )
+                }
+            }
+
+            fn eq_vector<B>(dims: usize, a: &[Self], b: &[Self], result: &mut [B])
+            where
+                for<'a> &'a mut [B]: WriteOnlyBuffer<Item = Self>,
+            {
+                assert_eq!(a.len(), dims, "Input vector `a` does not match size `dims`");
+                assert_eq!(b.len(), dims, "Input vector `b` does not match size `dims`");
+                assert_eq!(
+                    result.len(),
+                    dims,
+                    "Input vector `result` does not match size `dims`"
+                );
+
+                unsafe {
+                    crate::dispatch!(
+                        avx512 = export_cmp_ops::generic_avx512_cmp_eq_vector,
+                        avx2 = export_cmp_ops::generic_avx2_cmp_eq_vector,
+                        neon = export_cmp_ops::generic_neon_cmp_eq_vector,
+                        fallback = export_cmp_ops::generic_fallback_cmp_eq_vector,
+                        args = (dims, a, b, result)
+                    )
+                }
+            }
+
+            fn neq_value<B>(dims: usize, value: Self, a: &[Self], result: &mut [B])
+            where
+                for<'a> &'a mut [B]: WriteOnlyBuffer<Item = Self>,
+            {
+                assert_eq!(a.len(), dims, "Input vector `a` does not match size `dims`");
+                assert_eq!(
+                    result.len(),
+                    dims,
+                    "Input vector `result` does not match size `dims`"
+                );
+
+                unsafe {
+                    crate::dispatch!(
+                        avx512 = export_cmp_ops::generic_avx512_cmp_neq_value,
+                        avx2 = export_cmp_ops::generic_avx2_cmp_neq_value,
+                        neon = export_cmp_ops::generic_neon_cmp_neq_value,
+                        fallback = export_cmp_ops::generic_fallback_cmp_neq_value,
+                        args = (dims, value, a, result)
+                    )
+                }
+            }
+
+            fn neq_vector<B>(dims: usize, a: &[Self], b: &[Self], result: &mut [B])
+            where
+                for<'a> &'a mut [B]: WriteOnlyBuffer<Item = Self>,
+            {
+                assert_eq!(a.len(), dims, "Input vector `a` does not match size `dims`");
+                assert_eq!(b.len(), dims, "Input vector `b` does not match size `dims`");
+                assert_eq!(
+                    result.len(),
+                    dims,
+                    "Input vector `result` does not match size `dims`"
+                );
+
+                unsafe {
+                    crate::dispatch!(
+                        avx512 = export_cmp_ops::generic_avx512_cmp_neq_vector,
+                        avx2 = export_cmp_ops::generic_avx2_cmp_neq_vector,
+                        neon = export_cmp_ops::generic_neon_cmp_neq_vector,
+                        fallback = export_cmp_ops::generic_fallback_cmp_neq_vector,
+                        args = (dims, a, b, result)
+                    )
+                }
+            }
+
+            fn lt_value<B>(dims: usize, value: Self, a: &[Self], result: &mut [B])
+            where
+                for<'a> &'a mut [B]: WriteOnlyBuffer<Item = Self>,
+            {
+                assert_eq!(a.len(), dims, "Input vector `a` does not match size `dims`");
+                assert_eq!(
+                    result.len(),
+                    dims,
+                    "Input vector `result` does not match size `dims`"
+                );
+
+                unsafe {
+                    crate::dispatch!(
+                        avx512 = export_cmp_ops::generic_avx512_cmp_lt_value,
+                        avx2 = export_cmp_ops::generic_avx2_cmp_lt_value,
+                        neon = export_cmp_ops::generic_neon_cmp_lt_value,
+                        fallback = export_cmp_ops::generic_fallback_cmp_lt_value,
+                        args = (dims, value, a, result)
+                    )
+                }
+            }
+
+            fn lt_vector<B>(dims: usize, a: &[Self], b: &[Self], result: &mut [B])
+            where
+                for<'a> &'a mut [B]: WriteOnlyBuffer<Item = Self>,
+            {
+                assert_eq!(a.len(), dims, "Input vector `a` does not match size `dims`");
+                assert_eq!(b.len(), dims, "Input vector `b` does not match size `dims`");
+                assert_eq!(
+                    result.len(),
+                    dims,
+                    "Input vector `result` does not match size `dims`"
+                );
+
+                unsafe {
+                    crate::dispatch!(
+                        avx512 = export_cmp_ops::generic_avx512_cmp_lt_vector,
+                        avx2 = export_cmp_ops::generic_avx2_cmp_lt_vector,
+                        neon = export_cmp_ops::generic_neon_cmp_lt_vector,
+                        fallback = export_cmp_ops::generic_fallback_cmp_lt_vector,
+                        args = (dims, a, b, result)
+                    )
+                }
+            }
+
+            fn lte_value<B>(dims: usize, value: Self, a: &[Self], result: &mut [B])
+            where
+                for<'a> &'a mut [B]: WriteOnlyBuffer<Item = Self>,
+            {
+                assert_eq!(a.len(), dims, "Input vector `a` does not match size `dims`");
+                assert_eq!(
+                    result.len(),
+                    dims,
+                    "Input vector `result` does not match size `dims`"
+                );
+
+                unsafe {
+                    crate::dispatch!(
+                        avx512 = export_cmp_ops::generic_avx512_cmp_lte_value,
+                        avx2 = export_cmp_ops::generic_avx2_cmp_lte_value,
+                        neon = export_cmp_ops::generic_neon_cmp_lte_value,
+                        fallback = export_cmp_ops::generic_fallback_cmp_lte_value,
+                        args = (dims, value, a, result)
+                    )
+                }
+            }
+
+            fn lte_vector<B>(dims: usize, a: &[Self], b: &[Self], result: &mut [B])
+            where
+                for<'a> &'a mut [B]: WriteOnlyBuffer<Item = Self>,
+            {
+                assert_eq!(a.len(), dims, "Input vector `a` does not match size `dims`");
+                assert_eq!(b.len(), dims, "Input vector `b` does not match size `dims`");
+                assert_eq!(
+                    result.len(),
+                    dims,
+                    "Input vector `result` does not match size `dims`"
+                );
+
+                unsafe {
+                    crate::dispatch!(
+                        avx512 = export_cmp_ops::generic_avx512_cmp_lte_vector,
+                        avx2 = export_cmp_ops::generic_avx2_cmp_lte_vector,
+                        neon = export_cmp_ops::generic_neon_cmp_lte_vector,
+                        fallback = export_cmp_ops::generic_fallback_cmp_lte_vector,
+                        args = (dims, a, b, result)
+                    )
+                }
+            }
+
+            fn gt_value<B>(dims: usize, value: Self, a: &[Self], result: &mut [B])
+            where
+                for<'a> &'a mut [B]: WriteOnlyBuffer<Item = Self>,
+            {
+                assert_eq!(a.len(), dims, "Input vector `a` does not match size `dims`");
+                assert_eq!(
+                    result.len(),
+                    dims,
+                    "Input vector `result` does not match size `dims`"
+                );
+
+                unsafe {
+                    crate::dispatch!(
+                        avx512 = export_cmp_ops::generic_avx512_cmp_gt_value,
+                        avx2 = export_cmp_ops::generic_avx2_cmp_gt_value,
+                        neon = export_cmp_ops::generic_neon_cmp_gt_value,
+                        fallback = export_cmp_ops::generic_fallback_cmp_gt_value,
+                        args = (dims, value, a, result)
+                    )
+                }
+            }
+
+            fn gt_vector<B>(dims: usize, a: &[Self], b: &[Self], result: &mut [B])
+            where
+                for<'a> &'a mut [B]: WriteOnlyBuffer<Item = Self>,
+            {
+                assert_eq!(a.len(), dims, "Input vector `a` does not match size `dims`");
+                assert_eq!(b.len(), dims, "Input vector `b` does not match size `dims`");
+                assert_eq!(
+                    result.len(),
+                    dims,
+                    "Input vector `result` does not match size `dims`"
+                );
+
+                unsafe {
+                    crate::dispatch!(
+                        avx512 = export_cmp_ops::generic_avx512_cmp_gt_vector,
+                        avx2 = export_cmp_ops::generic_avx2_cmp_gt_vector,
+                        neon = export_cmp_ops::generic_neon_cmp_gt_vector,
+                        fallback = export_cmp_ops::generic_fallback_cmp_gt_vector,
+                        args = (dims, a, b, result)
+                    )
+                }
+            }
+
+            fn gte_value<B>(dims: usize, value: Self, a: &[Self], result: &mut [B])
+            where
+                for<'a> &'a mut [B]: WriteOnlyBuffer<Item = Self>,
+            {
+                assert_eq!(a.len(), dims, "Input vector `a` does not match size `dims`");
+                assert_eq!(
+                    result.len(),
+                    dims,
+                    "Input vector `result` does not match size `dims`"
+                );
+
+                unsafe {
+                    crate::dispatch!(
+                        avx512 = export_cmp_ops::generic_avx512_cmp_gte_value,
+                        avx2 = export_cmp_ops::generic_avx2_cmp_gte_value,
+                        neon = export_cmp_ops::generic_neon_cmp_gte_value,
+                        fallback = export_cmp_ops::generic_fallback_cmp_gte_value,
+                        args = (dims, value, a, result)
+                    )
+                }
+            }
+
+            fn gte_vector<B>(dims: usize, a: &[Self], b: &[Self], result: &mut [B])
+            where
+                for<'a> &'a mut [B]: WriteOnlyBuffer<Item = Self>,
+            {
+                assert_eq!(a.len(), dims, "Input vector `a` does not match size `dims`");
+                assert_eq!(b.len(), dims, "Input vector `b` does not match size `dims`");
+                assert_eq!(
+                    result.len(),
+                    dims,
+                    "Input vector `result` does not match size `dims`"
+                );
+
+                unsafe {
+                    crate::dispatch!(
+                        avx512 = export_cmp_ops::generic_avx512_cmp_gte_vector,
+                        avx2 = export_cmp_ops::generic_avx2_cmp_gte_vector,
+                        neon = export_cmp_ops::generic_neon_cmp_gte_vector,
+                        fallback = export_cmp_ops::generic_fallback_cmp_gte_vector,
                         args = (dims, a, b, result)
                     )
                 }

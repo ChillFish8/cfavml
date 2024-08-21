@@ -134,7 +134,7 @@ where
     };
 }
 
-// TODO: CFAVML-2: Add special case for Nan handling sanity checks...
+// TODO: CFAVML-2: Add special case for NaN handling sanity checks...
 fn test_cmp_value_all<T: Copy + PartialEq + Debug, R>(l1: Vec<T>, value: T)
 where
     R: SimdRegister<T>,
