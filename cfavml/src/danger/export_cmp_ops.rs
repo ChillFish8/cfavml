@@ -7,22 +7,22 @@ use crate::buffer::WriteOnlyBuffer;
 use crate::danger::{
     generic_cmp_eq_value,
     generic_cmp_eq_vector,
-    generic_cmp_neq_value,
-    generic_cmp_neq_vector,
-    generic_cmp_lt_value,
-    generic_cmp_lt_vector,
-    generic_cmp_lte_value,
-    generic_cmp_lte_vector,
     generic_cmp_gt_value,
     generic_cmp_gt_vector,
     generic_cmp_gte_value,
     generic_cmp_gte_vector,
+    generic_cmp_lt_value,
+    generic_cmp_lt_vector,
+    generic_cmp_lte_value,
+    generic_cmp_lte_vector,
     generic_cmp_max,
     generic_cmp_max_value,
     generic_cmp_max_vector,
     generic_cmp_min,
     generic_cmp_min_value,
     generic_cmp_min_vector,
+    generic_cmp_neq_value,
+    generic_cmp_neq_vector,
     SimdRegister,
 };
 use crate::math::{AutoMath, Math};
@@ -207,7 +207,8 @@ define_extra_horizontal_op!(
     horizontal_op = generic_cmp_max,
     horizontal_doc = "../export_docs/cmp_max_horizontal.md",
     Avx512,
-    target_features = "avx512f", "avx512bw"
+    target_features = "avx512f",
+    "avx512bw"
 );
 #[cfg(target_arch = "aarch64")]
 define_extra_horizontal_op!(
@@ -284,7 +285,8 @@ define_extra_horizontal_op!(
     horizontal_op = generic_cmp_min,
     horizontal_doc = "../export_docs/cmp_min_horizontal.md",
     Avx512,
-    target_features = "avx512f", "avx512bw"
+    target_features = "avx512f",
+    "avx512bw"
 );
 #[cfg(target_arch = "aarch64")]
 define_extra_horizontal_op!(

@@ -151,6 +151,450 @@ pub trait CmpOps: Sized {
     fn min_vector<B>(dims: usize, a: &[Self], b: &[Self], result: &mut [B])
     where
         for<'a> &'a mut [B]: WriteOnlyBuffer<Item = Self>;
+
+    /// Checks each element within vector `a` of size `dims` against a provided broadcast value
+    /// comparing if they are **_equal_** returning a mask vector of the same type.
+    ///
+    /// ### Pseudocode
+    ///
+    /// ```ignore
+    /// mask = [0; dims]
+    ///
+    /// for i in range(dims):
+    /// mask[i] = a[i] == value ? 1 : 0
+    ///
+    /// return mask
+    /// ```
+    ///
+    /// ### Note on `Nan` handling on `f32/f64` types
+    ///
+    /// For `f32` and `f64` types, `NaN` values are handled as always being `false` in **ANY** comparison.
+    /// Even when compared against each other.
+    ///
+    /// - `0.0 == 0.0 -> true`
+    /// - `0.0 == NaN -> false`
+    /// - `NaN == NaN -> false`
+    ///
+    /// ### Result buffer
+    ///
+    /// The result buffer can be either an initialized slice i.e. [`&mut [Self]`]
+    /// or it can be a slice holding potentially uninitialized data i.e. [`&mut [MaybeUninit<Self>]`].
+    ///
+    /// Once the operation is complete, it is safe to assume the data written is fully initialized.
+    ///
+    /// ### Panics
+    ///
+    /// Panics if the size of vector `a` or `result` does not match `dims`.
+    fn eq_value<B>(dims: usize, value: Self, a: &[Self], result: &mut [B])
+    where
+        for<'a> &'a mut [B]: WriteOnlyBuffer<Item = Self>;
+
+    /// Checks each element pair from vectors `a` and `b` of size `dims`  comparing
+    /// if element `a` is **_equal to_** element `b` returning a mask vector of the same type.
+    ///
+    /// ### Pseudocode
+    ///
+    /// ```ignore
+    /// mask = [0; dims]
+    ///
+    /// for i in range(dims):
+    ///     mask[i] = a[i] == b[i] ? 1 : 0
+    ///
+    /// return mask
+    /// ```
+    ///
+    /// ### Note on `Nan` handling on `f32/f64` types
+    ///
+    /// For `f32` and `f64` types, `NaN` values are handled as always being `false` in **ANY** comparison.
+    /// Even when compared against each other.
+    ///
+    /// - `0.0 == 0.0 -> true`
+    /// - `0.0 == NaN -> false`
+    /// - `NaN == NaN -> false`
+    ///
+    /// ### Result buffer
+    ///
+    /// The result buffer can be either an initialized slice i.e. [`&mut [Self]`]
+    /// or it can be a slice holding potentially uninitialized data i.e. [`&mut [MaybeUninit<Self>]`].
+    ///
+    /// Once the operation is complete, it is safe to assume the data written is fully initialized.
+    ///
+    /// ### Panics
+    ///
+    /// Panics if the size of vector `a`, `b` or `result` does not match `dims`.
+    fn eq_vector<B>(dims: usize, a: &[Self], b: &[Self], result: &mut [B])
+    where
+        for<'a> &'a mut [B]: WriteOnlyBuffer<Item = Self>;
+
+    /// Checks each element within vector `a` of size `dims` against a provided broadcast value
+    /// comparing if they are **_not equal_** returning a mask vector of the same type.
+    ///
+    /// ### Pseudocode
+    ///
+    /// ```ignore
+    /// mask = [0; dims]
+    ///
+    /// for i in range(dims):
+    /// mask[i] = a[i] != value ? 1 : 0
+    ///
+    /// return mask
+    /// ```
+    ///
+    /// ### Note on `Nan` handling on `f32/f64` types
+    ///
+    /// For `f32` and `f64` types, `NaN` values are handled as always being `false` in **ANY** comparison.
+    /// Even when compared against each other.
+    ///
+    /// - `0.0 != 1.0 -> true`
+    /// - `0.0 != NaN -> false`
+    /// - `NaN != NaN -> false`
+    ///
+    /// ### Result buffer
+    ///
+    /// The result buffer can be either an initialized slice i.e. [`&mut [Self]`]
+    /// or it can be a slice holding potentially uninitialized data i.e. [`&mut [MaybeUninit<Self>]`].
+    ///
+    /// Once the operation is complete, it is safe to assume the data written is fully initialized.
+    ///
+    /// ### Panics
+    ///
+    /// Panics if the size of vector `a` or `result` does not match `dims`.
+    fn neq_value<B>(dims: usize, value: Self, a: &[Self], result: &mut [B])
+    where
+        for<'a> &'a mut [B]: WriteOnlyBuffer<Item = Self>;
+
+    /// Checks each element pair from vectors `a` and `b` of size `dims`  comparing
+    /// if element `a` is **_not equal to_** element `b` returning a mask vector of the same type.
+    ///
+    /// ### Pseudocode
+    ///
+    /// ```ignore
+    /// mask = [0; dims]
+    ///
+    /// for i in range(dims):
+    ///     mask[i] = a[i] != b[i] ? 1 : 0
+    ///
+    /// return mask
+    /// ```
+    ///
+    /// ### Note on `Nan` handling on `f32/f64` types
+    ///
+    /// For `f32` and `f64` types, `NaN` values are handled as always being `false` in **ANY** comparison.
+    /// Even when compared against each other.
+    ///
+    /// - `0.0 != 1.0 -> true`
+    /// - `0.0 != NaN -> false`
+    /// - `NaN != NaN -> false`
+    ///
+    /// ### Result buffer
+    ///
+    /// The result buffer can be either an initialized slice i.e. [`&mut [Self]`]
+    /// or it can be a slice holding potentially uninitialized data i.e. [`&mut [MaybeUninit<Self>]`].
+    ///
+    /// Once the operation is complete, it is safe to assume the data written is fully initialized.
+    ///
+    /// ### Panics
+    ///
+    /// Panics if the size of vector `a`, `b` or `result` does not match `dims`.
+    fn neq_vector<B>(dims: usize, a: &[Self], b: &[Self], result: &mut [B])
+    where
+        for<'a> &'a mut [B]: WriteOnlyBuffer<Item = Self>;
+
+    /// Checks each element within vector `a` of size `dims` against a provided broadcast value
+    /// comparing if they are **_less than_** returning a mask vector of the same type.
+    ///
+    /// ### Pseudocode
+    ///
+    /// ```ignore
+    /// mask = [0; dims]
+    ///
+    /// for i in range(dims):
+    /// mask[i] = a[i] < value ? 1 : 0
+    ///
+    /// return mask
+    /// ```
+    ///
+    /// ### Note on `Nan` handling on `f32/f64` types
+    ///
+    /// For `f32` and `f64` types, `NaN` values are handled as always being `false` in **ANY** comparison.
+    /// Even when compared against each other.
+    ///
+    /// - `0.0 < 1.0 -> true`
+    /// - `0.0 < NaN -> false`
+    /// - `NaN < NaN -> false`
+    ///
+    /// ### Result buffer
+    ///
+    /// The result buffer can be either an initialized slice i.e. [`&mut [Self]`]
+    /// or it can be a slice holding potentially uninitialized data i.e. [`&mut [MaybeUninit<Self>]`].
+    ///
+    /// Once the operation is complete, it is safe to assume the data written is fully initialized.
+    ///
+    /// ### Panics
+    ///
+    /// Panics if the size of vector `a` or `result` does not match `dims`.
+    fn lt_value<B>(dims: usize, value: Self, a: &[Self], result: &mut [B])
+    where
+        for<'a> &'a mut [B]: WriteOnlyBuffer<Item = Self>;
+
+    /// Checks each element pair from vectors `a` and `b` of size `dims`  comparing
+    /// if element `a` is **_less than_** element `b` returning a mask vector of the same type.
+    ///
+    /// ### Pseudocode
+    ///
+    /// ```ignore
+    /// mask = [0; dims]
+    ///
+    /// for i in range(dims):
+    ///     mask[i] = a[i] < b[i] ? 1 : 0
+    ///
+    /// return mask
+    /// ```
+    ///
+    /// ### Note on `Nan` handling on `f32/f64` types
+    ///
+    /// For `f32` and `f64` types, `NaN` values are handled as always being `false` in **ANY** comparison.
+    /// Even when compared against each other.
+    ///
+    /// - `0.0 < 1.0 -> true`
+    /// - `0.0 < NaN -> false`
+    /// - `NaN < NaN -> false`
+    ///
+    /// ### Result buffer
+    ///
+    /// The result buffer can be either an initialized slice i.e. [`&mut [Self]`]
+    /// or it can be a slice holding potentially uninitialized data i.e. [`&mut [MaybeUninit<Self>]`].
+    ///
+    /// Once the operation is complete, it is safe to assume the data written is fully initialized.
+    ///
+    /// ### Panics
+    ///
+    /// Panics if the size of vector `a`, `b` or `result` does not match `dims`.
+    fn lt_vector<B>(dims: usize, a: &[Self], b: &[Self], result: &mut [B])
+    where
+        for<'a> &'a mut [B]: WriteOnlyBuffer<Item = Self>;
+
+    /// Checks each element within vector `a` of size `dims` against a provided broadcast value
+    /// comparing if they are **_less than or equal_** returning a mask vector of the same type.
+    ///
+    /// ### Pseudocode
+    ///
+    /// ```ignore
+    /// mask = [0; dims]
+    ///
+    /// for i in range(dims):
+    /// mask[i] = a[i] <= value ? 1 : 0
+    ///
+    /// return mask
+    /// ```
+    ///
+    /// ### Note on `Nan` handling on `f32/f64` types
+    ///
+    /// For `f32` and `f64` types, `NaN` values are handled as always being `false` in **ANY** comparison.
+    /// Even when compared against each other.
+    ///
+    /// - `0.0 <= 1.0 -> true`
+    /// - `0.0 <= NaN -> false`
+    /// - `NaN <= NaN -> false`
+    ///
+    /// ### Result buffer
+    ///
+    /// The result buffer can be either an initialized slice i.e. [`&mut [Self]`]
+    /// or it can be a slice holding potentially uninitialized data i.e. [`&mut [MaybeUninit<Self>]`].
+    ///
+    /// Once the operation is complete, it is safe to assume the data written is fully initialized.
+    ///
+    /// ### Panics
+    ///
+    /// Panics if the size of vector `a` or `result` does not match `dims`.
+    fn lte_value<B>(dims: usize, value: Self, a: &[Self], result: &mut [B])
+    where
+        for<'a> &'a mut [B]: WriteOnlyBuffer<Item = Self>;
+
+    /// Checks each element pair from vectors `a` and `b` of size `dims`  comparing
+    /// if element `a` is **_less than or equal to_** element `b` returning a mask vector of the same type.
+    ///
+    /// ### Pseudocode
+    ///
+    /// ```ignore
+    /// mask = [0; dims]
+    ///
+    /// for i in range(dims):
+    ///     mask[i] = a[i] <= b[i] ? 1 : 0
+    ///
+    /// return mask
+    /// ```
+    ///
+    /// ### Note on `Nan` handling on `f32/f64` types
+    ///
+    /// For `f32` and `f64` types, `NaN` values are handled as always being `false` in **ANY** comparison.
+    /// Even when compared against each other.
+    ///
+    /// - `0.0 <= 1.0 -> true`
+    /// - `0.0 <= NaN -> false`
+    /// - `NaN <= NaN -> false`
+    ///
+    /// ### Result buffer
+    ///
+    /// The result buffer can be either an initialized slice i.e. [`&mut [Self]`]
+    /// or it can be a slice holding potentially uninitialized data i.e. [`&mut [MaybeUninit<Self>]`].
+    ///
+    /// Once the operation is complete, it is safe to assume the data written is fully initialized.
+    ///
+    /// ### Panics
+    ///
+    /// Panics if the size of vector `a`, `b` or `result` does not match `dims`.
+    fn lte_vector<B>(dims: usize, a: &[Self], b: &[Self], result: &mut [B])
+    where
+        for<'a> &'a mut [B]: WriteOnlyBuffer<Item = Self>;
+
+    /// Checks each element within vector `a` of size `dims` against a provided broadcast value
+    /// comparing if they are **_less than or equal_** returning a mask vector of the same type.
+    ///
+    /// ### Pseudocode
+    ///
+    /// ```ignore
+    /// mask = [0; dims]
+    ///
+    /// for i in range(dims):
+    /// mask[i] = a[i] > value ? 1 : 0
+    ///
+    /// return mask
+    /// ```
+    ///
+    /// ### Note on `Nan` handling on `f32/f64` types
+    ///
+    /// For `f32` and `f64` types, `NaN` values are handled as always being `false` in **ANY** comparison.
+    /// Even when compared against each other.
+    ///
+    /// - `1.0 > 0.0 -> true`
+    /// - `1.0 > NaN -> false`
+    /// - `NaN > NaN -> false`
+    ///
+    /// ### Result buffer
+    ///
+    /// The result buffer can be either an initialized slice i.e. [`&mut [Self]`]
+    /// or it can be a slice holding potentially uninitialized data i.e. [`&mut [MaybeUninit<Self>]`].
+    ///
+    /// Once the operation is complete, it is safe to assume the data written is fully initialized.
+    ///
+    /// ### Panics
+    ///
+    /// Panics if the size of vector `a` or `result` does not match `dims`.
+    fn gt_value<B>(dims: usize, value: Self, a: &[Self], result: &mut [B])
+    where
+        for<'a> &'a mut [B]: WriteOnlyBuffer<Item = Self>;
+
+    /// Checks each element pair from vectors `a` and `b` of size `dims`  comparing
+    /// if element `a` is **_greater than_** element `b` returning a mask vector of the same type.
+    ///
+    /// ### Pseudocode
+    ///
+    /// ```ignore
+    /// mask = [0; dims]
+    ///
+    /// for i in range(dims):
+    ///     mask[i] = a[i] > b[i] ? 1 : 0
+    ///
+    /// return mask
+    /// ```
+    ///
+    /// ### Note on `Nan` handling on `f32/f64` types
+    ///
+    /// For `f32` and `f64` types, `NaN` values are handled as always being `false` in **ANY** comparison.
+    /// Even when compared against each other.
+    ///
+    /// - `1.0 > 0.0 -> true`
+    /// - `1.0 > NaN -> false`
+    /// - `NaN > NaN -> false`
+    ///
+    /// ### Result buffer
+    ///
+    /// The result buffer can be either an initialized slice i.e. [`&mut [Self]`]
+    /// or it can be a slice holding potentially uninitialized data i.e. [`&mut [MaybeUninit<Self>]`].
+    ///
+    /// Once the operation is complete, it is safe to assume the data written is fully initialized.
+    ///
+    /// ### Panics
+    ///
+    /// Panics if the size of vector `a`, `b` or `result` does not match `dims`.
+    fn gt_vector<B>(dims: usize, a: &[Self], b: &[Self], result: &mut [B])
+    where
+        for<'a> &'a mut [B]: WriteOnlyBuffer<Item = Self>;
+
+    /// Checks each element within vector `a` of size `dims` against a provided broadcast value
+    /// comparing if they are **_less than or equal_** returning a mask vector of the same type.
+    ///
+    /// ### Pseudocode
+    ///
+    /// ```ignore
+    /// mask = [0; dims]
+    ///
+    /// for i in range(dims):
+    /// mask[i] = a[i] >= value ? 1 : 0
+    ///
+    /// return mask
+    /// ```
+    ///
+    /// ### Note on `Nan` handling on `f32/f64` types
+    ///
+    /// For `f32` and `f64` types, `NaN` values are handled as always being `false` in **ANY** comparison.
+    /// Even when compared against each other.
+    ///
+    /// - `1.0 >= 0.0 -> true`
+    /// - `1.0 >= NaN -> false`
+    /// - `NaN >= NaN -> false`
+    ///
+    /// ### Result buffer
+    ///
+    /// The result buffer can be either an initialized slice i.e. [`&mut [Self]`]
+    /// or it can be a slice holding potentially uninitialized data i.e. [`&mut [MaybeUninit<Self>]`].
+    ///
+    /// Once the operation is complete, it is safe to assume the data written is fully initialized.
+    ///
+    /// ### Panics
+    ///
+    /// Panics if the size of vector `a` or `result` does not match `dims`.
+    fn gte_value<B>(dims: usize, value: Self, a: &[Self], result: &mut [B])
+    where
+        for<'a> &'a mut [B]: WriteOnlyBuffer<Item = Self>;
+
+    /// Checks each element pair from vectors `a` and `b` of size `dims`  comparing
+    /// if element `a` is **_greater than_** element `b` returning a mask vector of the same type.
+    ///
+    /// ### Pseudocode
+    ///
+    /// ```ignore
+    /// mask = [0; dims]
+    ///
+    /// for i in range(dims):
+    ///     mask[i] = a[i] >= b[i] ? 1 : 0
+    ///
+    /// return mask
+    /// ```
+    ///
+    /// ### Note on `Nan` handling on `f32/f64` types
+    ///
+    /// For `f32` and `f64` types, `NaN` values are handled as always being `false` in **ANY** comparison.
+    /// Even when compared against each other.
+    ///
+    /// - `1.0 >= 0.0 -> true`
+    /// - `1.0 >= NaN -> false`
+    /// - `NaN >= NaN -> false`
+    ///
+    /// ### Result buffer
+    ///
+    /// The result buffer can be either an initialized slice i.e. [`&mut [Self]`]
+    /// or it can be a slice holding potentially uninitialized data i.e. [`&mut [MaybeUninit<Self>]`].
+    ///
+    /// Once the operation is complete, it is safe to assume the data written is fully initialized.
+    ///
+    /// ### Panics
+    ///
+    /// Panics if the size of vector `a`, `b` or `result` does not match `dims`.
+    fn gte_vector<B>(dims: usize, a: &[Self], b: &[Self], result: &mut [B])
+    where
+        for<'a> &'a mut [B]: WriteOnlyBuffer<Item = Self>;
 }
 
 macro_rules! cmp_ops {
