@@ -295,7 +295,7 @@ where
 /// mask = [0; dims]
 ///
 /// for i in range(dims):
-/// mask[i] = a[i] == value ? 1 : 0
+///     mask[i] = a[i] == value ? 1 : 0
 ///
 /// return mask
 /// ```
@@ -379,7 +379,7 @@ where
 /// mask = [0; dims]
 ///
 /// for i in range(dims):
-/// mask[i] = a[i] != value ? 1 : 0
+///     mask[i] = a[i] != value ? 1 : 0
 ///
 /// return mask
 /// ```
@@ -463,7 +463,7 @@ where
 /// mask = [0; dims]
 ///
 /// for i in range(dims):
-/// mask[i] = a[i] < value ? 1 : 0
+///     mask[i] = a[i] < value ? 1 : 0
 ///
 /// return mask
 /// ```
@@ -547,7 +547,7 @@ where
 /// mask = [0; dims]
 ///
 /// for i in range(dims):
-/// mask[i] = a[i] <= value ? 1 : 0
+///     mask[i] = a[i] <= value ? 1 : 0
 ///
 /// return mask
 /// ```
@@ -631,7 +631,7 @@ where
 /// mask = [0; dims]
 ///
 /// for i in range(dims):
-/// mask[i] = a[i] > value ? 1 : 0
+///     mask[i] = a[i] > value ? 1 : 0
 ///
 /// return mask
 /// ```
@@ -715,7 +715,7 @@ where
 /// mask = [0; dims]
 ///
 /// for i in range(dims):
-/// mask[i] = a[i] >= value ? 1 : 0
+///     mask[i] = a[i] >= value ? 1 : 0
 ///
 /// return mask
 /// ```
