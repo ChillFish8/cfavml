@@ -40,12 +40,12 @@ use crate::safe_trait_distance_ops::DistanceOps;
 ///
 /// This function will panic if vectors `a` and `b` do not match in size.
 pub fn cosine<T, B1, B2>(a: B1, b: B2) -> T
-where 
+where
     T: DistanceOps,
     B1: IntoMemLoader<T>,
-    B1::Loader: MemLoader<Value=T>,
+    B1::Loader: MemLoader<Value = T>,
     B2: IntoMemLoader<T>,
-    B2::Loader: MemLoader<Value=T>,
+    B2::Loader: MemLoader<Value = T>,
 {
     T::cosine(a, b)
 }
@@ -71,9 +71,9 @@ pub fn dot<T, B1, B2>(a: B1, b: B2) -> T
 where
     T: DistanceOps,
     B1: IntoMemLoader<T>,
-    B1::Loader: MemLoader<Value=T>,
+    B1::Loader: MemLoader<Value = T>,
     B2: IntoMemLoader<T>,
-    B2::Loader: MemLoader<Value=T>,
+    B2::Loader: MemLoader<Value = T>,
 {
     T::dot(a, b)
 }
@@ -100,9 +100,9 @@ pub fn squared_euclidean<T, B1, B2>(a: B1, b: B2) -> T
 where
     T: DistanceOps,
     B1: IntoMemLoader<T>,
-    B1::Loader: MemLoader<Value=T>,
+    B1::Loader: MemLoader<Value = T>,
     B2: IntoMemLoader<T>,
-    B2::Loader: MemLoader<Value=T>,
+    B2::Loader: MemLoader<Value = T>,
 {
     T::squared_euclidean(a, b)
 }
@@ -124,7 +124,7 @@ pub fn squared_norm<T, B1>(a: B1) -> T
 where
     T: DistanceOps,
     B1: IntoMemLoader<T>,
-    B1::Loader: MemLoader<Value=T>,
+    B1::Loader: MemLoader<Value = T>,
 {
     T::squared_norm(a)
 }
@@ -146,7 +146,7 @@ pub fn sum<T, B1>(a: B1) -> T
 where
     T: AggOps,
     B1: IntoMemLoader<T>,
-    B1::Loader: MemLoader<Value=T>,
+    B1::Loader: MemLoader<Value = T>,
 {
     T::sum(a)
 }
@@ -168,7 +168,7 @@ pub fn max<T, B1>(a: B1) -> T
 where
     T: CmpOps,
     B1: IntoMemLoader<T>,
-    B1::Loader: MemLoader<Value=T>,
+    B1::Loader: MemLoader<Value = T>,
 {
     T::max(a)
 }
@@ -227,7 +227,7 @@ pub fn min<T, B1>(a: B1) -> T
 where
     T: CmpOps,
     B1: IntoMemLoader<T>,
-    B1::Loader: MemLoader<Value=T>,
+    B1::Loader: MemLoader<Value = T>,
 {
     T::min(a)
 }
@@ -314,7 +314,6 @@ where
 {
     T::eq_vertical(lhs, rhs, result)
 }
-
 
 #[inline]
 /// Checks each element pair from vectors `a` and `b` of size `dims`  comparing

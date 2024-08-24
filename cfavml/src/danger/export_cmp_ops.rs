@@ -5,20 +5,20 @@
 
 use crate::buffer::WriteOnlyBuffer;
 use crate::danger::{
-    generic_cmp_max,
-    generic_cmp_min,
-    generic_cmp_max_vertical,
-    generic_cmp_min_vertical,
     generic_cmp_eq_vertical,
-    generic_cmp_neq_vertical,
-    generic_cmp_lt_vertical,
-    generic_cmp_lte_vertical,
     generic_cmp_gt_vertical,
     generic_cmp_gte_vertical,
+    generic_cmp_lt_vertical,
+    generic_cmp_lte_vertical,
+    generic_cmp_max,
+    generic_cmp_max_vertical,
+    generic_cmp_min,
+    generic_cmp_min_vertical,
+    generic_cmp_neq_vertical,
     SimdRegister,
 };
 use crate::math::{AutoMath, Math};
-use crate::mem_loader::{MemLoader, IntoMemLoader};
+use crate::mem_loader::{IntoMemLoader, MemLoader};
 
 macro_rules! define_op {
     (

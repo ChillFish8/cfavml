@@ -119,9 +119,18 @@ where
     for<'a> &'a mut [T]: WriteOnlyBuffer<Item = T>,
 {
     unsafe {
-        op_arithmetic_vertical::tests::test_broadcast_value_add::<_, R>(l1.clone(), value);
-        op_arithmetic_vertical::tests::test_broadcast_value_sub::<_, R>(l1.clone(), value);
-        op_arithmetic_vertical::tests::test_broadcast_value_div::<_, R>(l1.clone(), value);
+        op_arithmetic_vertical::tests::test_broadcast_value_add::<_, R>(
+            l1.clone(),
+            value,
+        );
+        op_arithmetic_vertical::tests::test_broadcast_value_sub::<_, R>(
+            l1.clone(),
+            value,
+        );
+        op_arithmetic_vertical::tests::test_broadcast_value_div::<_, R>(
+            l1.clone(),
+            value,
+        );
         op_arithmetic_vertical::tests::test_broadcast_value_mul::<_, R>(l1, value)
     };
 }
@@ -134,9 +143,18 @@ where
     for<'a> &'a mut [T]: WriteOnlyBuffer<Item = T>,
 {
     unsafe {
-        op_arithmetic_vertical::tests::test_simple_vector_add::<_, R>(l1.clone(), l2.clone());
-        op_arithmetic_vertical::tests::test_simple_vector_sub::<_, R>(l1.clone(), l2.clone());
-        op_arithmetic_vertical::tests::test_simple_vector_div::<_, R>(l1.clone(), l2.clone());
+        op_arithmetic_vertical::tests::test_simple_vector_add::<_, R>(
+            l1.clone(),
+            l2.clone(),
+        );
+        op_arithmetic_vertical::tests::test_simple_vector_sub::<_, R>(
+            l1.clone(),
+            l2.clone(),
+        );
+        op_arithmetic_vertical::tests::test_simple_vector_div::<_, R>(
+            l1.clone(),
+            l2.clone(),
+        );
         op_arithmetic_vertical::tests::test_simple_vector_mul::<_, R>(l1, l2);
     };
 }

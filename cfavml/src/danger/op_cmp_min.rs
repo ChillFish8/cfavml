@@ -25,7 +25,7 @@ where
 
     let offset_from = len % R::elements_per_dense();
 
-    let mut min = R::filled_dense(M::min());
+    let mut min = R::filled_dense(M::max());
 
     // Operate over dense lanes first.
     let mut i = 0;

@@ -341,7 +341,7 @@ pub(crate) mod tests {
         }
         assert_eq!(result, expected_result, "value mismatch");
     }
-    
+
     // Broadcast value tests
     pub(crate) unsafe fn test_broadcast_value_eq<T, R>(l1: Vec<T>, value: T)
     where

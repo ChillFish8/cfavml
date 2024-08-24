@@ -268,7 +268,13 @@ pub mod avx2fma_ops {
         features = "avx2",
         "fma"
     );
-    export_vector_x_value_op!(f32, Avx2Fma, generic_div_vertical, features = "avx2", "fma");
+    export_vector_x_value_op!(
+        f32,
+        Avx2Fma,
+        generic_div_vertical,
+        features = "avx2",
+        "fma"
+    );
 
     export_distance_op!(f64, Avx2Fma, generic_cosine, features = "avx2", "fma");
     export_distance_op!(f64, Avx2Fma, generic_dot, features = "avx2", "fma");

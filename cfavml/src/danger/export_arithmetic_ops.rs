@@ -5,13 +5,13 @@
 use crate::buffer::WriteOnlyBuffer;
 use crate::danger::{
     generic_add_vertical,
-    generic_sub_vertical,
-    generic_mul_vertical,
     generic_div_vertical,
+    generic_mul_vertical,
+    generic_sub_vertical,
     SimdRegister,
 };
 use crate::math::{AutoMath, Math};
-use crate::mem_loader::{MemLoader, IntoMemLoader};
+use crate::mem_loader::{IntoMemLoader, MemLoader};
 
 macro_rules! define_arithmetic_impls {
     (
@@ -192,7 +192,7 @@ mod tests {
                     let (l1, _) = crate::test_utils::get_sample_vectors::<$t>(533);
 
                     let mut result = vec![$t::default(); 533];
-                    unsafe { [< $variant _ $op _vertical >](2 as $t, &l1, &mut result) };
+                    unsafe { [< $variant _ $op _vertical >](&l1, 2 as $t, &mut result) };
 
                     let expected = l1.iter()
                         .copied()

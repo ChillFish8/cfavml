@@ -26,7 +26,7 @@ pub trait CmpOps: Sized {
     ///
     /// Panics if the size of vector `a` does not match `dims`.
     fn max<B1>(a: B1) -> Self
-    where 
+    where
         B1: IntoMemLoader<Self>,
         B1::Loader: MemLoader<Value = Self>;
 
@@ -57,9 +57,9 @@ pub trait CmpOps: Sized {
     fn max_vertical<B1, B2, B3>(lhs: B1, rhs: B2, result: &mut [B3])
     where
         B1: IntoMemLoader<Self>,
-        B1::Loader: MemLoader<Value= Self>,
+        B1::Loader: MemLoader<Value = Self>,
         B2: IntoMemLoader<Self>,
-        B2::Loader: MemLoader<Value= Self>,
+        B2::Loader: MemLoader<Value = Self>,
         for<'a> &'a mut [B3]: WriteOnlyBuffer<Item = Self>;
 
     /// Finds the horizontal min element of a given vector.
@@ -364,7 +364,7 @@ macro_rules! cmp_ops {
             fn max<B1>(a: B1) -> Self
             where
                 B1: IntoMemLoader<Self>,
-                B1::Loader: MemLoader<Value = Self>
+                B1::Loader: MemLoader<Value = Self>,
             {
                 unsafe {
                     crate::dispatch!(
@@ -383,7 +383,7 @@ macro_rules! cmp_ops {
                 B1::Loader: MemLoader<Value = Self>,
                 B2: IntoMemLoader<Self>,
                 B2::Loader: MemLoader<Value = Self>,
-                for<'a> &'a mut [B3]: WriteOnlyBuffer<Item = Self>
+                for<'a> &'a mut [B3]: WriteOnlyBuffer<Item = Self>,
             {
                 unsafe {
                     crate::dispatch!(
@@ -399,7 +399,7 @@ macro_rules! cmp_ops {
             fn min<B1>(a: B1) -> Self
             where
                 B1: IntoMemLoader<Self>,
-                B1::Loader: MemLoader<Value = Self>
+                B1::Loader: MemLoader<Value = Self>,
             {
                 unsafe {
                     crate::dispatch!(
@@ -418,7 +418,7 @@ macro_rules! cmp_ops {
                 B1::Loader: MemLoader<Value = Self>,
                 B2: IntoMemLoader<Self>,
                 B2::Loader: MemLoader<Value = Self>,
-                for<'a> &'a mut [B3]: WriteOnlyBuffer<Item = Self>
+                for<'a> &'a mut [B3]: WriteOnlyBuffer<Item = Self>,
             {
                 unsafe {
                     crate::dispatch!(
@@ -437,7 +437,7 @@ macro_rules! cmp_ops {
                 B1::Loader: MemLoader<Value = Self>,
                 B2: IntoMemLoader<Self>,
                 B2::Loader: MemLoader<Value = Self>,
-                for<'a> &'a mut [B3]: WriteOnlyBuffer<Item = Self>
+                for<'a> &'a mut [B3]: WriteOnlyBuffer<Item = Self>,
             {
                 unsafe {
                     crate::dispatch!(
@@ -456,7 +456,7 @@ macro_rules! cmp_ops {
                 B1::Loader: MemLoader<Value = Self>,
                 B2: IntoMemLoader<Self>,
                 B2::Loader: MemLoader<Value = Self>,
-                for<'a> &'a mut [B3]: WriteOnlyBuffer<Item = Self>
+                for<'a> &'a mut [B3]: WriteOnlyBuffer<Item = Self>,
             {
                 unsafe {
                     crate::dispatch!(
@@ -475,7 +475,7 @@ macro_rules! cmp_ops {
                 B1::Loader: MemLoader<Value = Self>,
                 B2: IntoMemLoader<Self>,
                 B2::Loader: MemLoader<Value = Self>,
-                for<'a> &'a mut [B3]: WriteOnlyBuffer<Item = Self>
+                for<'a> &'a mut [B3]: WriteOnlyBuffer<Item = Self>,
             {
                 unsafe {
                     crate::dispatch!(
@@ -494,7 +494,7 @@ macro_rules! cmp_ops {
                 B1::Loader: MemLoader<Value = Self>,
                 B2: IntoMemLoader<Self>,
                 B2::Loader: MemLoader<Value = Self>,
-                for<'a> &'a mut [B3]: WriteOnlyBuffer<Item = Self>
+                for<'a> &'a mut [B3]: WriteOnlyBuffer<Item = Self>,
             {
                 unsafe {
                     crate::dispatch!(
@@ -513,7 +513,7 @@ macro_rules! cmp_ops {
                 B1::Loader: MemLoader<Value = Self>,
                 B2: IntoMemLoader<Self>,
                 B2::Loader: MemLoader<Value = Self>,
-                for<'a> &'a mut [B3]: WriteOnlyBuffer<Item = Self>
+                for<'a> &'a mut [B3]: WriteOnlyBuffer<Item = Self>,
             {
                 unsafe {
                     crate::dispatch!(
@@ -525,14 +525,14 @@ macro_rules! cmp_ops {
                     )
                 }
             }
-            
+
             fn gte_vertical<B1, B2, B3>(lhs: B1, rhs: B2, result: &mut [B3])
             where
                 B1: IntoMemLoader<Self>,
                 B1::Loader: MemLoader<Value = Self>,
                 B2: IntoMemLoader<Self>,
                 B2::Loader: MemLoader<Value = Self>,
-                for<'a> &'a mut [B3]: WriteOnlyBuffer<Item = Self>
+                for<'a> &'a mut [B3]: WriteOnlyBuffer<Item = Self>,
             {
                 unsafe {
                     crate::dispatch!(

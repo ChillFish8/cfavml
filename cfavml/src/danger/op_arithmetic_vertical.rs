@@ -205,7 +205,7 @@ pub(crate) mod tests {
         }
         assert_eq!(result, expected_result, "value mismatch");
     }
-    
+
     pub(crate) unsafe fn test_broadcast_value_add<T, R>(l1: Vec<T>, value: T)
     where
         T: Copy + PartialEq + std::fmt::Debug + IntoMemLoader<T>,

@@ -32,7 +32,7 @@ macro_rules! agg_ops {
             fn sum<B1>(a: B1) -> Self
             where
                 B1: IntoMemLoader<Self>,
-                B1::Loader: MemLoader<Value = Self>
+                B1::Loader: MemLoader<Value = Self>,
             {
                 unsafe {
                     crate::dispatch!(

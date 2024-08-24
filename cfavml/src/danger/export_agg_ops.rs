@@ -5,7 +5,7 @@
 
 use crate::danger::{generic_sum, SimdRegister};
 use crate::math::{AutoMath, Math};
-use crate::mem_loader::{MemLoader, IntoMemLoader};
+use crate::mem_loader::{IntoMemLoader, MemLoader};
 
 macro_rules! define_sum_impl {
     (

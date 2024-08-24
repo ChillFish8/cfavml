@@ -11,6 +11,10 @@ pub trait IntoMemLoader<T> {
     fn into_mem_loader(self) -> Self::Loader;
 
     /// Consumes the value returning the configured [MemLoader]
+    ///
+    /// # Panics
+    ///
+    /// Panics if the vector cannot be projected into the input size.
     fn into_projected_mem_loader(self, projected_len: usize) -> Self::Loader;
 }
 

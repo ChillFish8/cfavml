@@ -11,14 +11,14 @@ use crate::danger::{
     SimdRegister,
 };
 use crate::math::{AutoMath, Math};
-use crate::mem_loader::{MemLoader, IntoMemLoader};
+use crate::mem_loader::{IntoMemLoader, MemLoader};
 
 macro_rules! define_dist_impl {
     (
         name = $name:ident,
         op = $op:ident,
         doc = $doc:expr,
-        $imp:ident $(,)? 
+        $imp:ident $(,)?
         $(target_features = $($feat:expr $(,)?)+)?
     ) => {
         #[inline]
@@ -48,22 +48,22 @@ macro_rules! define_dist_impl {
 }
 
 define_dist_impl!(
-    name = generic_fallback_cosine, 
+    name = generic_fallback_cosine,
     op = generic_cosine,
     doc = "../export_docs/dist_cosine.md",
     Fallback,
 );
 #[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
 define_dist_impl!(
-    name = generic_avx2_cosine, 
+    name = generic_avx2_cosine,
     op = generic_cosine,
     doc = "../export_docs/dist_cosine.md",
-    Avx2, 
+    Avx2,
     target_features = "avx2",
 );
 #[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
 define_dist_impl!(
-    name = generic_avx2fma_cosine, 
+    name = generic_avx2fma_cosine,
     op = generic_cosine,
     doc = "../export_docs/dist_cosine.md",
     Avx2Fma,
@@ -72,7 +72,7 @@ define_dist_impl!(
 );
 #[cfg(all(any(target_arch = "x86", target_arch = "x86_64"), feature = "nightly"))]
 define_dist_impl!(
-    name = generic_avx512_cosine, 
+    name = generic_avx512_cosine,
     op = generic_cosine,
     doc = "../export_docs/dist_cosine.md",
     Avx512,
@@ -81,88 +81,91 @@ define_dist_impl!(
 );
 #[cfg(target_arch = "aarch64")]
 define_dist_impl!(
-    name = generic_neon_cosine, 
+    name = generic_neon_cosine,
     op = generic_cosine,
     doc = "../export_docs/dist_cosine.md",
-    Neon, 
+    Neon,
     target_features = "neon",
 );
 
 define_dist_impl!(
-    name = generic_fallback_dot, 
+    name = generic_fallback_dot,
     op = generic_dot,
-    doc = "../export_docs/dist_dot.md", 
+    doc = "../export_docs/dist_dot.md",
     Fallback,
 );
 #[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
 define_dist_impl!(
-    name = generic_avx2_dot, 
+    name = generic_avx2_dot,
     op = generic_dot,
-    doc = "../export_docs/dist_dot.md", Avx2, target_features = "avx2");
+    doc = "../export_docs/dist_dot.md",
+    Avx2,
+    target_features = "avx2"
+);
 #[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
 define_dist_impl!(
-    name = generic_avx2fma_dot, 
+    name = generic_avx2fma_dot,
     op = generic_dot,
-    doc = "../export_docs/dist_dot.md", 
+    doc = "../export_docs/dist_dot.md",
     Avx2Fma,
     target_features = "avx2",
     "fma"
 );
 #[cfg(all(any(target_arch = "x86", target_arch = "x86_64"), feature = "nightly"))]
 define_dist_impl!(
-    name = generic_avx512_dot, 
+    name = generic_avx512_dot,
     op = generic_dot,
-    doc = "../export_docs/dist_dot.md", 
+    doc = "../export_docs/dist_dot.md",
     Avx512,
     target_features = "avx512f",
     "avx512bw"
 );
 #[cfg(target_arch = "aarch64")]
 define_dot_impl!(
-    name = generic_neon_dot, 
+    name = generic_neon_dot,
     op = generic_dot,
-    doc = "../export_docs/dist_dot.md", 
-    Neon, 
+    doc = "../export_docs/dist_dot.md",
+    Neon,
     target_features = "neon"
 );
 
 define_dist_impl!(
-    name = generic_fallback_squared_euclidean, 
+    name = generic_fallback_squared_euclidean,
     op = generic_squared_euclidean,
-    doc = "../export_docs/dist_euclidean.md", 
+    doc = "../export_docs/dist_euclidean.md",
     Fallback,
 );
 #[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
 define_dist_impl!(
-    name = generic_avx2_squared_euclidean, 
+    name = generic_avx2_squared_euclidean,
     op = generic_squared_euclidean,
-    doc = "../export_docs/dist_euclidean.md", 
+    doc = "../export_docs/dist_euclidean.md",
     Avx2,
     target_features = "avx2"
 );
 #[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
 define_dist_impl!(
-    name = generic_avx2fma_squared_euclidean, 
+    name = generic_avx2fma_squared_euclidean,
     op = generic_squared_euclidean,
-    doc = "../export_docs/dist_euclidean.md", 
+    doc = "../export_docs/dist_euclidean.md",
     Avx2Fma,
     target_features = "avx2",
     "fma"
 );
 #[cfg(all(any(target_arch = "x86", target_arch = "x86_64"), feature = "nightly"))]
 define_dist_impl!(
-    name = generic_avx512_squared_euclidean, 
+    name = generic_avx512_squared_euclidean,
     op = generic_squared_euclidean,
-    doc = "../export_docs/dist_euclidean.md", 
+    doc = "../export_docs/dist_euclidean.md",
     Avx512,
     target_features = "avx512f",
     "avx512bw"
 );
 #[cfg(target_arch = "aarch64")]
 define_dist_impl!(
-    name = generic_neon_squared_euclidean, 
+    name = generic_neon_squared_euclidean,
     op = generic_squared_euclidean,
-    doc = "../export_docs/dist_euclidean.md", 
+    doc = "../export_docs/dist_euclidean.md",
     Neon,
     target_features = "neon"
 );

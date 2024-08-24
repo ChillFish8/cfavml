@@ -9,19 +9,19 @@ use crate::mem_loader::{IntoMemLoader, MemLoader};
 /// Various spacial distance operations between vectors.
 pub trait DistanceOps: Sized {
     /// Calculates the cosine similarity distance between vectors `a` and `b`.
-    /// 
+    ///
     /// ### Pseudocode
-    /// 
+    ///
     /// ```ignore
     /// result = 0
     /// norm_a = 0
     /// norm_b = 0
-    /// 
+    ///
     /// for i in range(dims):
     ///     result += a[i] * b[i]
     ///     norm_a += a[i] ** 2
     ///     norm_b += b[i] ** 2
-    /// 
+    ///
     /// if norm_a == 0.0 and norm_b == 0.0:
     ///     return 0.0
     /// elif norm_a == 0.0 or norm_b == 0.0:
@@ -29,32 +29,32 @@ pub trait DistanceOps: Sized {
     /// else:
     ///     return 1.0 - (result / sqrt(norm_a * norm_b))
     /// ```
-    /// 
+    ///
     /// # Panics
-    /// 
+    ///
     /// If vectors `a` and `b` are not equal in the length.
     fn cosine<B1, B2>(a: B1, b: B2) -> Self
-    where 
+    where
         B1: IntoMemLoader<Self>,
         B1::Loader: MemLoader<Value = Self>,
         B2: IntoMemLoader<Self>,
         B2::Loader: MemLoader<Value = Self>;
 
     /// Calculates the dot product between vectors `a` and `b`.
-    /// 
+    ///
     /// ### Pseudocode
-    /// 
+    ///
     /// ```ignore
     /// result = 0;
-    /// 
+    ///
     /// for i in range(dims):
     ///     result += a[i] * b[i]
-    /// 
+    ///
     /// return result
     /// ```
-    /// 
+    ///
     /// # Panics
-    /// 
+    ///
     /// If vectors `a` and `b` are not equal in the length.
     fn dot<B1, B2>(a: B1, b: B2) -> Self
     where
@@ -64,21 +64,21 @@ pub trait DistanceOps: Sized {
         B2::Loader: MemLoader<Value = Self>;
 
     /// Calculates the squared Euclidean distance between vectors `a` and `b`.
-    /// 
+    ///
     /// ### Pseudocode
-    /// 
+    ///
     /// ```ignore
     /// result = 0;
-    /// 
+    ///
     /// for i in range(dims):
     ///     diff = a[i] - b[i]
     ///     result += diff ** 2
-    /// 
+    ///
     /// return result
     /// ```
-    /// 
+    ///
     /// # Panics
-    /// 
+    ///
     /// If vectors `a` and `b` are not equal in the length.
     fn squared_euclidean<B1, B2>(a: B1, b: B2) -> Self
     where
@@ -88,15 +88,15 @@ pub trait DistanceOps: Sized {
         B2::Loader: MemLoader<Value = Self>;
 
     /// Calculates the squared L2 norm of vector `a`.
-    /// 
+    ///
     /// ### Pseudocode
-    /// 
+    ///
     /// ```ignore
     /// result = 0;
-    /// 
+    ///
     /// for i in range(dims):
     ///     result += a[i] ** 2
-    /// 
+    ///
     /// return result
     /// ```
     fn squared_norm<B1>(a: B1) -> Self
@@ -109,11 +109,11 @@ macro_rules! float_distance_ops {
     ($t:ty) => {
         impl DistanceOps for $t {
             fn cosine<B1, B2>(a: B1, b: B2) -> Self
-            where 
+            where
                 B1: IntoMemLoader<Self>,
                 B1::Loader: MemLoader<Value = Self>,
                 B2: IntoMemLoader<Self>,
-                B2::Loader: MemLoader<Value = Self>
+                B2::Loader: MemLoader<Value = Self>,
             {
                 unsafe {
                     crate::dispatch!(
@@ -128,11 +128,11 @@ macro_rules! float_distance_ops {
             }
 
             fn dot<B1, B2>(a: B1, b: B2) -> Self
-            where 
+            where
                 B1: IntoMemLoader<Self>,
                 B1::Loader: MemLoader<Value = Self>,
                 B2: IntoMemLoader<Self>,
-                B2::Loader: MemLoader<Value = Self>
+                B2::Loader: MemLoader<Value = Self>,
             {
                 unsafe {
                     crate::dispatch!(
@@ -147,11 +147,11 @@ macro_rules! float_distance_ops {
             }
 
             fn squared_euclidean<B1, B2>(a: B1, b: B2) -> Self
-            where 
+            where
                 B1: IntoMemLoader<Self>,
                 B1::Loader: MemLoader<Value = Self>,
                 B2: IntoMemLoader<Self>,
-                B2::Loader: MemLoader<Value = Self>
+                B2::Loader: MemLoader<Value = Self>,
             {
                 unsafe {
                     crate::dispatch!(
@@ -169,7 +169,7 @@ macro_rules! float_distance_ops {
             fn squared_norm<B1>(a: B1) -> Self
             where
                 B1: IntoMemLoader<Self>,
-                B1::Loader: MemLoader<Value = Self>
+                B1::Loader: MemLoader<Value = Self>,
             {
                 unsafe {
                     crate::dispatch!(
@@ -190,11 +190,11 @@ macro_rules! scalar_distance_ops {
     ($t:ty) => {
         impl DistanceOps for $t {
             fn cosine<B1, B2>(a: B1, b: B2) -> Self
-            where 
+            where
                 B1: IntoMemLoader<Self>,
                 B1::Loader: MemLoader<Value = Self>,
                 B2: IntoMemLoader<Self>,
-                B2::Loader: MemLoader<Value = Self>
+                B2::Loader: MemLoader<Value = Self>,
             {
                 unsafe {
                     crate::dispatch!(
@@ -208,11 +208,11 @@ macro_rules! scalar_distance_ops {
             }
 
             fn dot<B1, B2>(a: B1, b: B2) -> Self
-            where 
+            where
                 B1: IntoMemLoader<Self>,
                 B1::Loader: MemLoader<Value = Self>,
                 B2: IntoMemLoader<Self>,
-                B2::Loader: MemLoader<Value = Self>
+                B2::Loader: MemLoader<Value = Self>,
             {
                 unsafe {
                     crate::dispatch!(
@@ -226,11 +226,11 @@ macro_rules! scalar_distance_ops {
             }
 
             fn squared_euclidean<B1, B2>(a: B1, b: B2) -> Self
-            where 
+            where
                 B1: IntoMemLoader<Self>,
                 B1::Loader: MemLoader<Value = Self>,
                 B2: IntoMemLoader<Self>,
-                B2::Loader: MemLoader<Value = Self>
+                B2::Loader: MemLoader<Value = Self>,
             {
                 unsafe {
                     crate::dispatch!(
@@ -247,7 +247,7 @@ macro_rules! scalar_distance_ops {
             fn squared_norm<B1>(a: B1) -> Self
             where
                 B1: IntoMemLoader<Self>,
-                B1::Loader: MemLoader<Value = Self>
+                B1::Loader: MemLoader<Value = Self>,
             {
                 unsafe {
                     crate::dispatch!(
