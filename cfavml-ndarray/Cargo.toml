@@ -20,3 +20,5 @@ cfavml = { version = "0.3.0", path = "../cfavml" }
 # Enables cfavml's nightly only optimizations, which includes AVX512 support.
 nightly = ["cfavml/nightly"]
 
+[dev-dependencies]
+ndarray-rand = "0.15.0"
