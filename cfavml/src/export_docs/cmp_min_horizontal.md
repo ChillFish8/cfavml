@@ -1,4 +1,4 @@
-Finds the minimum element contained within vector `a` of size `dims` returning the result.
+Finds the minimum element contained within vector `a` returning the result.
 
 ### Pseudocode
 

@@ -1,4 +1,4 @@
-Calculates the squared L2 norm of vector `a` of size `dims`.
+Calculates the squared L2 norm of vector `a`.
 
 ### Pseudocode
 

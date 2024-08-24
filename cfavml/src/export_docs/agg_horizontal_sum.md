@@ -1,4 +1,4 @@
-Performs a horizontal sum of all elements in vector `a` of size `dims` returning the total.
+Performs a horizontal sum of all elements in vector `a` returning the total.
 
 ### Pseudocode
 

@@ -1,4 +1,4 @@
-Calculates the cosine similarity distance between vectors `a` and `b` of size `dims`.
+Calculates the cosine similarity distance between vectors `a` and `b`.
 
 ### Pseudocode
 
@@ -19,6 +19,10 @@ elif norm_a == 0.0 or norm_b == 0.0:
 else:
     return 1.0 - (result / sqrt(norm_a * norm_b))
 ```
+
+# Panics
+
+If vectors `a` and `b` are not equal in the length.
 
 # Safety
 

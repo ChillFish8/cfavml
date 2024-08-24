@@ -1,5 +1,8 @@
-Takes the element wise min of vectors `a` and `b` of size `dims` and stores the result
-in `result` of size `dims`.
+Checks each element pair of elements from vectors `a` and `b` comparing if 
+element `a` is **_equal to_** element `b`, storing the output as `1` (true) or `0` (false) 
+in `result`. 
+
+Vectors `a` and `b` can be projected to the new size of `result` if the mem loader allows.
 
 ### Projecting Vectors
 
@@ -16,13 +19,22 @@ of `128` elements in length must take a result buffer of `128` elements in lengt
 ### Pseudocode
 
 ```ignore
-result = [0; dims]
+mask = [0; dims]
 
 for i in range(dims):
-    result[i] = min(a[i], b[i])
+    mask[i] = a[i] == b[i] ? 1 : 0
 
-return result
+return mask
 ```
+
+### Note on `NaN` handling on `f32/f64` types
+
+For `f32` and `f64` types, `NaN` values are handled as always being `false` in **ANY** comparison.
+Even when compared against each other.
+
+- `0.0 == 0.0 -> true`
+- `0.0 == NaN -> false`
+- `NaN == NaN -> false`
 
 # Panics
 

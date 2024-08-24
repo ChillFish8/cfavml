@@ -1,5 +1,5 @@
-Takes the element wise min of vectors `a` and `b` of size `dims` and stores the result
-in `result` of size `dims`.
+Performs an element wise division of two input buffers `a` and `b` that can
+be projected to the desired output size of `result`.
 
 ### Projecting Vectors
 
@@ -19,7 +19,7 @@ of `128` elements in length must take a result buffer of `128` elements in lengt
 result = [0; dims]
 
 for i in range(dims):
-    result[i] = min(a[i], b[i])
+    result[i] = a[i] / b[i]
 
 return result
 ```
