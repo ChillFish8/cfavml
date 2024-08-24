@@ -34,7 +34,7 @@ macro_rules! export_distance_op {
             #[inline(never)]
             #[target_feature($(enable = $feat ,)*)]
             pub unsafe fn [<impl_ $im:lower _ $t _ $op>](a: &[$t], b: &[$t]) {
-                let res = $op::<_, $im, cfavml::math::AutoMath>(a.len(), a, b)  ;
+                let res = $op::<_, $im, cfavml::math::AutoMath, _, _>(a, b)  ;
                 std::hint::black_box(res);
             }
         }
@@ -43,7 +43,7 @@ macro_rules! export_distance_op {
         paste::paste!{
             #[inline(never)]
             pub unsafe fn [<impl_ $im:lower _ $t _ $op>](a: &[$t], b: &[$t]) {
-                let res = $op::<_, $im, cfavml::math::AutoMath>(a.len(), a, b)  ;
+                let res = $op::<_, $im, cfavml::math::AutoMath, _, _>(a, b)  ;
                 std::hint::black_box(res);
             }
         }
@@ -56,7 +56,7 @@ macro_rules! export_vector_x_vector_op {
             #[inline(never)]
             #[target_feature($(enable = $feat ,)*)]
             pub unsafe fn [<impl_ $im:lower _ $t _ $op>](a: &[$t], b: &[$t], res: &mut [$t]) {
-                let res = $op::<_, $im, cfavml::math::AutoMath, _>(a.len(), a, b, res)  ;
+                let res = $op::<_, $im, cfavml::math::AutoMath, _, _, _>(a, b, res)  ;
                 std::hint::black_box(res);
             }
         }
@@ -65,7 +65,7 @@ macro_rules! export_vector_x_vector_op {
         paste::paste!{
             #[inline(never)]
             pub unsafe fn [<impl_ $im:lower _ $t _ $op>](a: &[$t], b: &[$t], res: &mut [$t]) {
-                let res = $op::<_, $im, cfavml::math::AutoMath, _>(a.len(), a, b, res)  ;
+                let res = $op::<_, $im, cfavml::math::AutoMath, _, _, _>(a, b, res)  ;
                 std::hint::black_box(res);
             }
         }
@@ -77,8 +77,8 @@ macro_rules! export_vector_x_value_op {
         paste::paste!{
             #[inline(never)]
             #[target_feature($(enable = $feat ,)*)]
-            pub unsafe fn [<impl_ $im:lower _ $t _ $op>](value: $t, a: &[$t], res: &mut [$t]) {
-                let res = $op::<_, $im, cfavml::math::AutoMath, _>(a.len(), value, a, res)  ;
+            pub unsafe fn [<impl_ $im:lower _ $t _ $op _with_broadcast_value>](value: $t, a: &[$t], res: &mut [$t]) {
+                let res = $op::<_, $im, cfavml::math::AutoMath, _, _, _>(value, a, res)  ;
                 std::hint::black_box(res);
             }
         }
@@ -86,8 +86,8 @@ macro_rules! export_vector_x_value_op {
     ($t:ident, $im:ident, $op:ident) => {
         paste::paste!{
             #[inline(never)]
-            pub unsafe fn [<impl_ $im:lower _ $t _ $op>](value: $t, a: &[$t], res: &mut [$t]) {
-                let res = $op::<_, $im, cfavml::math::AutoMath, _>(a.len(), value, a, res)  ;
+            pub unsafe fn [<impl_ $im:lower _ $t _ $op _with_broadcast_value>](value: $t, a: &[$t], res: &mut [$t]) {
+                let res = $op::<_, $im, cfavml::math::AutoMath, _, _, _>(value, a, res)  ;
                 std::hint::black_box(res);
             }
         }
@@ -139,38 +139,38 @@ export_dense_op!(f64, Fallback, min_dense);
 export_distance_op!(i8, Fallback, generic_cosine);
 export_distance_op!(i8, Fallback, generic_dot);
 export_distance_op!(i8, Fallback, generic_squared_euclidean);
-export_vector_x_vector_op!(i8, Fallback, generic_add_vector);
-export_vector_x_vector_op!(i8, Fallback, generic_sub_vector);
-export_vector_x_vector_op!(i8, Fallback, generic_mul_vector);
-export_vector_x_vector_op!(i8, Fallback, generic_div_vector);
-export_vector_x_value_op!(i8, Fallback, generic_add_value);
-export_vector_x_value_op!(i8, Fallback, generic_sub_value);
-export_vector_x_value_op!(i8, Fallback, generic_mul_value);
-export_vector_x_value_op!(i8, Fallback, generic_div_value);
+export_vector_x_vector_op!(i8, Fallback, generic_add_vertical);
+export_vector_x_vector_op!(i8, Fallback, generic_sub_vertical);
+export_vector_x_vector_op!(i8, Fallback, generic_mul_vertical);
+export_vector_x_vector_op!(i8, Fallback, generic_div_vertical);
+export_vector_x_value_op!(i8, Fallback, generic_add_vertical);
+export_vector_x_value_op!(i8, Fallback, generic_sub_vertical);
+export_vector_x_value_op!(i8, Fallback, generic_mul_vertical);
+export_vector_x_value_op!(i8, Fallback, generic_div_vertical);
 
 export_distance_op!(f32, Fallback, generic_cosine);
 export_distance_op!(f32, Fallback, generic_dot);
 export_distance_op!(f32, Fallback, generic_squared_euclidean);
-export_vector_x_vector_op!(f32, Fallback, generic_add_vector);
-export_vector_x_vector_op!(f32, Fallback, generic_sub_vector);
-export_vector_x_vector_op!(f32, Fallback, generic_mul_vector);
-export_vector_x_vector_op!(f32, Fallback, generic_div_vector);
-export_vector_x_value_op!(f32, Fallback, generic_add_value);
-export_vector_x_value_op!(f32, Fallback, generic_sub_value);
-export_vector_x_value_op!(f32, Fallback, generic_mul_value);
-export_vector_x_value_op!(f32, Fallback, generic_div_value);
+export_vector_x_vector_op!(f32, Fallback, generic_add_vertical);
+export_vector_x_vector_op!(f32, Fallback, generic_sub_vertical);
+export_vector_x_vector_op!(f32, Fallback, generic_mul_vertical);
+export_vector_x_vector_op!(f32, Fallback, generic_div_vertical);
+export_vector_x_value_op!(f32, Fallback, generic_add_vertical);
+export_vector_x_value_op!(f32, Fallback, generic_sub_vertical);
+export_vector_x_value_op!(f32, Fallback, generic_mul_vertical);
+export_vector_x_value_op!(f32, Fallback, generic_div_vertical);
 
 export_distance_op!(f64, Fallback, generic_cosine);
 export_distance_op!(f64, Fallback, generic_dot);
 export_distance_op!(f64, Fallback, generic_squared_euclidean);
-export_vector_x_vector_op!(f64, Fallback, generic_add_vector);
-export_vector_x_vector_op!(f64, Fallback, generic_sub_vector);
-export_vector_x_vector_op!(f64, Fallback, generic_mul_vector);
-export_vector_x_vector_op!(f64, Fallback, generic_div_vector);
-export_vector_x_value_op!(f64, Fallback, generic_add_value);
-export_vector_x_value_op!(f64, Fallback, generic_sub_value);
-export_vector_x_value_op!(f64, Fallback, generic_mul_value);
-export_vector_x_value_op!(f64, Fallback, generic_div_value);
+export_vector_x_vector_op!(f64, Fallback, generic_add_vertical);
+export_vector_x_vector_op!(f64, Fallback, generic_sub_vertical);
+export_vector_x_vector_op!(f64, Fallback, generic_mul_vertical);
+export_vector_x_vector_op!(f64, Fallback, generic_div_vertical);
+export_vector_x_value_op!(f64, Fallback, generic_add_vertical);
+export_vector_x_value_op!(f64, Fallback, generic_sub_vertical);
+export_vector_x_value_op!(f64, Fallback, generic_mul_vertical);
+export_vector_x_value_op!(f64, Fallback, generic_div_vertical);
 
 #[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
 pub mod avx2_ops {
@@ -221,38 +221,38 @@ pub mod avx2_ops {
     export_distance_op!(i8, Avx2, generic_cosine, features = "avx2");
     export_distance_op!(i8, Avx2, generic_dot, features = "avx2");
     export_distance_op!(i8, Avx2, generic_squared_euclidean, features = "avx2");
-    export_vector_x_vector_op!(i8, Avx2, generic_add_vector, features = "avx2");
-    export_vector_x_vector_op!(i8, Avx2, generic_sub_vector, features = "avx2");
-    export_vector_x_vector_op!(i8, Avx2, generic_mul_vector, features = "avx2");
-    export_vector_x_vector_op!(i8, Avx2, generic_div_vector, features = "avx2");
-    export_vector_x_value_op!(i8, Avx2, generic_add_value, features = "avx2");
-    export_vector_x_value_op!(i8, Avx2, generic_sub_value, features = "avx2");
-    export_vector_x_value_op!(i8, Avx2, generic_mul_value, features = "avx2");
-    export_vector_x_value_op!(i8, Avx2, generic_div_value, features = "avx2");
+    export_vector_x_vector_op!(i8, Avx2, generic_add_vertical, features = "avx2");
+    export_vector_x_vector_op!(i8, Avx2, generic_sub_vertical, features = "avx2");
+    export_vector_x_vector_op!(i8, Avx2, generic_mul_vertical, features = "avx2");
+    export_vector_x_vector_op!(i8, Avx2, generic_div_vertical, features = "avx2");
+    export_vector_x_value_op!(i8, Avx2, generic_add_vertical, features = "avx2");
+    export_vector_x_value_op!(i8, Avx2, generic_sub_vertical, features = "avx2");
+    export_vector_x_value_op!(i8, Avx2, generic_mul_vertical, features = "avx2");
+    export_vector_x_value_op!(i8, Avx2, generic_div_vertical, features = "avx2");
 
     export_distance_op!(f32, Avx2, generic_cosine, features = "avx2");
     export_distance_op!(f32, Avx2, generic_dot, features = "avx2");
     export_distance_op!(f32, Avx2, generic_squared_euclidean, features = "avx2");
-    export_vector_x_vector_op!(f32, Avx2, generic_add_vector, features = "avx2");
-    export_vector_x_vector_op!(f32, Avx2, generic_sub_vector, features = "avx2");
-    export_vector_x_vector_op!(f32, Avx2, generic_mul_vector, features = "avx2");
-    export_vector_x_vector_op!(f32, Avx2, generic_div_vector, features = "avx2");
-    export_vector_x_value_op!(f32, Avx2, generic_add_value, features = "avx2");
-    export_vector_x_value_op!(f32, Avx2, generic_sub_value, features = "avx2");
-    export_vector_x_value_op!(f32, Avx2, generic_mul_value, features = "avx2");
-    export_vector_x_value_op!(f32, Avx2, generic_div_value, features = "avx2");
+    export_vector_x_vector_op!(f32, Avx2, generic_add_vertical, features = "avx2");
+    export_vector_x_vector_op!(f32, Avx2, generic_sub_vertical, features = "avx2");
+    export_vector_x_vector_op!(f32, Avx2, generic_mul_vertical, features = "avx2");
+    export_vector_x_vector_op!(f32, Avx2, generic_div_vertical, features = "avx2");
+    export_vector_x_value_op!(f32, Avx2, generic_add_vertical, features = "avx2");
+    export_vector_x_value_op!(f32, Avx2, generic_sub_vertical, features = "avx2");
+    export_vector_x_value_op!(f32, Avx2, generic_mul_vertical, features = "avx2");
+    export_vector_x_value_op!(f32, Avx2, generic_div_vertical, features = "avx2");
 
     export_distance_op!(f64, Avx2, generic_cosine, features = "avx2");
     export_distance_op!(f64, Avx2, generic_dot, features = "avx2");
     export_distance_op!(f64, Avx2, generic_squared_euclidean, features = "avx2");
-    export_vector_x_vector_op!(f64, Avx2, generic_add_vector, features = "avx2");
-    export_vector_x_vector_op!(f64, Avx2, generic_sub_vector, features = "avx2");
-    export_vector_x_vector_op!(f64, Avx2, generic_mul_vector, features = "avx2");
-    export_vector_x_vector_op!(f64, Avx2, generic_div_vector, features = "avx2");
-    export_vector_x_value_op!(f64, Avx2, generic_add_value, features = "avx2");
-    export_vector_x_value_op!(f64, Avx2, generic_sub_value, features = "avx2");
-    export_vector_x_value_op!(f64, Avx2, generic_mul_value, features = "avx2");
-    export_vector_x_value_op!(f64, Avx2, generic_div_value, features = "avx2");
+    export_vector_x_vector_op!(f64, Avx2, generic_add_vertical, features = "avx2");
+    export_vector_x_vector_op!(f64, Avx2, generic_sub_vertical, features = "avx2");
+    export_vector_x_vector_op!(f64, Avx2, generic_mul_vertical, features = "avx2");
+    export_vector_x_vector_op!(f64, Avx2, generic_div_vertical, features = "avx2");
+    export_vector_x_value_op!(f64, Avx2, generic_add_vertical, features = "avx2");
+    export_vector_x_value_op!(f64, Avx2, generic_sub_vertical, features = "avx2");
+    export_vector_x_value_op!(f64, Avx2, generic_mul_vertical, features = "avx2");
+    export_vector_x_value_op!(f64, Avx2, generic_div_vertical, features = "avx2");
 }
 
 #[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
@@ -268,7 +268,7 @@ pub mod avx2fma_ops {
         features = "avx2",
         "fma"
     );
-    export_vector_x_value_op!(f32, Avx2Fma, generic_div_value, features = "avx2", "fma");
+    export_vector_x_value_op!(f32, Avx2Fma, generic_div_vertical, features = "avx2", "fma");
 
     export_distance_op!(f64, Avx2Fma, generic_cosine, features = "avx2", "fma");
     export_distance_op!(f64, Avx2Fma, generic_dot, features = "avx2", "fma");
@@ -302,26 +302,26 @@ pub mod neon_ops {
     export_distance_op!(f32, Neon, generic_cosine, features = "neon");
     export_distance_op!(f32, Neon, generic_dot, features = "neon");
     export_distance_op!(f32, Neon, generic_squared_euclidean, features = "neon");
-    export_vector_x_vector_op!(f32, Neon, generic_add_vector, features = "neon");
-    export_vector_x_vector_op!(f32, Neon, generic_sub_vector, features = "neon");
-    export_vector_x_vector_op!(f32, Neon, generic_mul_vector, features = "neon");
-    export_vector_x_vector_op!(f32, Neon, generic_div_vector, features = "neon");
-    export_vector_x_value_op!(f32, Neon, generic_add_value, features = "neon");
-    export_vector_x_value_op!(f32, Neon, generic_sub_value, features = "neon");
-    export_vector_x_value_op!(f32, Neon, generic_mul_value, features = "neon");
-    export_vector_x_value_op!(f32, Neon, generic_div_value, features = "neon");
+    export_vector_x_vector_op!(f32, Neon, generic_add_vertical, features = "neon");
+    export_vector_x_vector_op!(f32, Neon, generic_sub_vertical, features = "neon");
+    export_vector_x_vector_op!(f32, Neon, generic_mul_vertical, features = "neon");
+    export_vector_x_vector_op!(f32, Neon, generic_div_vertical, features = "neon");
+    export_vector_x_value_op!(f32, Neon, generic_add_vertical, features = "neon");
+    export_vector_x_value_op!(f32, Neon, generic_sub_vertical, features = "neon");
+    export_vector_x_value_op!(f32, Neon, generic_mul_vertical, features = "neon");
+    export_vector_x_value_op!(f32, Neon, generic_div_vertical, features = "neon");
 
     export_distance_op!(f64, Neon, generic_cosine, features = "neon");
     export_distance_op!(f64, Neon, generic_dot, features = "neon");
     export_distance_op!(f64, Neon, generic_squared_euclidean, features = "neon");
-    export_vector_x_vector_op!(f64, Neon, generic_add_vector, features = "neon");
-    export_vector_x_vector_op!(f64, Neon, generic_sub_vector, features = "neon");
-    export_vector_x_vector_op!(f64, Neon, generic_mul_vector, features = "neon");
-    export_vector_x_vector_op!(f64, Neon, generic_div_vector, features = "neon");
-    export_vector_x_value_op!(f64, Neon, generic_add_value, features = "neon");
-    export_vector_x_value_op!(f64, Neon, generic_sub_value, features = "neon");
-    export_vector_x_value_op!(f64, Neon, generic_mul_value, features = "neon");
-    export_vector_x_value_op!(f64, Neon, generic_div_value, features = "neon");
+    export_vector_x_vector_op!(f64, Neon, generic_add_vertical, features = "neon");
+    export_vector_x_vector_op!(f64, Neon, generic_sub_vertical, features = "neon");
+    export_vector_x_vector_op!(f64, Neon, generic_mul_vertical, features = "neon");
+    export_vector_x_vector_op!(f64, Neon, generic_div_vertical, features = "neon");
+    export_vector_x_value_op!(f64, Neon, generic_add_vertical, features = "neon");
+    export_vector_x_value_op!(f64, Neon, generic_sub_vertical, features = "neon");
+    export_vector_x_value_op!(f64, Neon, generic_mul_vertical, features = "neon");
+    export_vector_x_value_op!(f64, Neon, generic_div_vertical, features = "neon");
 }
 
 #[inline(never)]
@@ -347,12 +347,12 @@ pub unsafe fn cmp_max_broadcast_test(a: f32, b: &[f32], buf: &mut [f32]) {
 #[inline(never)]
 #[target_feature(enable = "avx2")]
 pub unsafe fn cmp_min_test(a: &[f32], b: &[f32], buf: &mut [f32]) {
-    generic_cmp_min_vector::<f32, Avx2, cfavml::math::AutoMath, _>(a.len(), a, b, buf);
+    generic_cmp_min_vertical::<f32, Avx2, cfavml::math::AutoMath, _, _, _>(a, b, buf);
 }
 
 #[no_mangle]
 #[inline(never)]
 #[target_feature(enable = "avx2")]
 pub unsafe fn cmp_min_broadcast_test(a: f32, b: &[f32], buf: &mut [f32]) {
-    generic_cmp_min_value::<f32, Avx2, cfavml::math::AutoMath, _>(b.len(), a, b, buf);
+    generic_cmp_min_vertical::<f32, Avx2, cfavml::math::AutoMath, _, _, _>(a, b, buf);
 }

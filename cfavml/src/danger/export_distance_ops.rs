@@ -11,29 +11,35 @@ use crate::danger::{
     SimdRegister,
 };
 use crate::math::{AutoMath, Math};
+use crate::mem_loader::{MemLoader, IntoMemLoader};
 
-macro_rules! define_cosine_impl {
-    ($name:ident, $imp:ident $(,)? $(target_features = $($feat:expr $(,)?)+)?) => {
+macro_rules! define_dist_impl {
+    (
+        name = $name:ident,
+        op = $op:ident,
+        doc = $doc:expr,
+        $imp:ident $(,)? 
+        $(target_features = $($feat:expr $(,)?)+)?
+    ) => {
         #[inline]
         $(#[target_feature($(enable = $feat, )*)])*
-        #[doc = include_str!("../export_docs/dist_cosine.md")]
+        #[doc = include_str!($doc)]
         $(
 
             #[doc = concat!("- ", $("**`+", $feat, "`** ", )*)]
             #[doc = "CPU features are available at runtime. Running on hardware _without_ this feature available will cause immediate UB."]
         )*
-        #[doc = r#"
-            - The sizes of `a` and `b` must also be equal to size `dims` otherwise out of
-              bounds access can occur.
-        "#]
-        pub unsafe fn $name<T>(dims: usize, a: &[T], b: &[T]) -> T
+        pub unsafe fn $name<T, B1, B2>(a: B1, b: B2) -> T
         where
             T: Copy,
+            B1: IntoMemLoader<T>,
+            B1::Loader: MemLoader<Value = T>,
+            B2: IntoMemLoader<T>,
+            B2::Loader: MemLoader<Value = T>,
             crate::danger::$imp: SimdRegister<T>,
             AutoMath: Math<T>,
         {
-            generic_cosine::<T, crate::danger::$imp, AutoMath>(
-                dims,
+            $op::<T, crate::danger::$imp, AutoMath, _, _>(
                 a,
                 b,
             )
@@ -41,128 +47,122 @@ macro_rules! define_cosine_impl {
     };
 }
 
-define_cosine_impl!(generic_fallback_cosine, Fallback);
+define_dist_impl!(
+    name = generic_fallback_cosine, 
+    op = generic_cosine,
+    doc = "../export_docs/dist_cosine.md",
+    Fallback,
+);
 #[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
-define_cosine_impl!(generic_avx2_cosine, Avx2, target_features = "avx2");
+define_dist_impl!(
+    name = generic_avx2_cosine, 
+    op = generic_cosine,
+    doc = "../export_docs/dist_cosine.md",
+    Avx2, 
+    target_features = "avx2",
+);
 #[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
-define_cosine_impl!(
-    generic_avx2fma_cosine,
+define_dist_impl!(
+    name = generic_avx2fma_cosine, 
+    op = generic_cosine,
+    doc = "../export_docs/dist_cosine.md",
     Avx2Fma,
     target_features = "avx2",
     "fma"
 );
 #[cfg(all(any(target_arch = "x86", target_arch = "x86_64"), feature = "nightly"))]
-define_cosine_impl!(
-    generic_avx512_cosine,
+define_dist_impl!(
+    name = generic_avx512_cosine, 
+    op = generic_cosine,
+    doc = "../export_docs/dist_cosine.md",
     Avx512,
     target_features = "avx512f",
     "avx512bw"
 );
 #[cfg(target_arch = "aarch64")]
-define_cosine_impl!(generic_neon_cosine, Neon, target_features = "neon");
+define_dist_impl!(
+    name = generic_neon_cosine, 
+    op = generic_cosine,
+    doc = "../export_docs/dist_cosine.md",
+    Neon, 
+    target_features = "neon",
+);
 
-macro_rules! define_dot_impl {
-    ($name:ident, $imp:ident $(,)? $(target_features = $($feat:expr $(,)?)+)?) => {
-        #[inline]
-        $(#[target_feature($(enable = $feat, )*)])*
-        #[doc = include_str!("../export_docs/dist_dot.md")]
-        $(
-
-            #[doc = concat!("- ", $("**`+", $feat, "`** ", )*)]
-            #[doc = "CPU features are available at runtime. Running on hardware _without_ this feature available will cause immediate UB."]
-        )*
-        #[doc = r#"
-            - The sizes of `a` and `b` must also be equal to size `dims` otherwise out of
-              bounds access can occur.
-        "#]
-        pub unsafe fn $name<T>(dims: usize, a: &[T], b: &[T]) -> T
-        where
-            T: Copy,
-            crate::danger::$imp: SimdRegister<T>,
-            AutoMath: Math<T>,
-        {
-            generic_dot::<T, crate::danger::$imp, AutoMath>(
-                dims,
-                a,
-                b,
-            )
-        }
-    };
-}
-
-define_dot_impl!(generic_fallback_dot, Fallback);
+define_dist_impl!(
+    name = generic_fallback_dot, 
+    op = generic_dot,
+    doc = "../export_docs/dist_dot.md", 
+    Fallback,
+);
 #[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
-define_dot_impl!(generic_avx2_dot, Avx2, target_features = "avx2");
+define_dist_impl!(
+    name = generic_avx2_dot, 
+    op = generic_dot,
+    doc = "../export_docs/dist_dot.md", Avx2, target_features = "avx2");
 #[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
-define_dot_impl!(
-    generic_avx2fma_dot,
+define_dist_impl!(
+    name = generic_avx2fma_dot, 
+    op = generic_dot,
+    doc = "../export_docs/dist_dot.md", 
     Avx2Fma,
     target_features = "avx2",
     "fma"
 );
 #[cfg(all(any(target_arch = "x86", target_arch = "x86_64"), feature = "nightly"))]
-define_dot_impl!(
-    generic_avx512_dot,
+define_dist_impl!(
+    name = generic_avx512_dot, 
+    op = generic_dot,
+    doc = "../export_docs/dist_dot.md", 
     Avx512,
     target_features = "avx512f",
     "avx512bw"
 );
 #[cfg(target_arch = "aarch64")]
-define_dot_impl!(generic_neon_dot, Neon, target_features = "neon");
+define_dot_impl!(
+    name = generic_neon_dot, 
+    op = generic_dot,
+    doc = "../export_docs/dist_dot.md", 
+    Neon, 
+    target_features = "neon"
+);
 
-macro_rules! define_euclidean_impl {
-    ($name:ident, $imp:ident $(,)? $(target_features = $($feat:expr $(,)?)+)?) => {
-        #[inline]
-        $(#[target_feature($(enable = $feat, )*)])*
-        #[doc = include_str!("../export_docs/dist_euclidean.md")]
-        $(
-
-            #[doc = concat!("- ", $("**`+", $feat, "`** ", )*)]
-            #[doc = "CPU features are available at runtime. Running on hardware _without_ this feature available will cause immediate UB."]
-        )*
-        #[doc = r#"
-            - The sizes of `a` and `b` must also be equal to size `dims` otherwise out of
-              bounds access can occur.
-        "#]
-        pub unsafe fn $name<T>(dims: usize, a: &[T], b: &[T]) -> T
-        where
-            T: Copy,
-            crate::danger::$imp: SimdRegister<T>,
-            AutoMath: Math<T>,
-        {
-            generic_squared_euclidean::<T, crate::danger::$imp, AutoMath>(
-                dims,
-                a,
-                b,
-            )
-        }
-    };
-}
-
-define_euclidean_impl!(generic_fallback_squared_euclidean, Fallback);
+define_dist_impl!(
+    name = generic_fallback_squared_euclidean, 
+    op = generic_squared_euclidean,
+    doc = "../export_docs/dist_euclidean.md", 
+    Fallback,
+);
 #[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
-define_euclidean_impl!(
-    generic_avx2_squared_euclidean,
+define_dist_impl!(
+    name = generic_avx2_squared_euclidean, 
+    op = generic_squared_euclidean,
+    doc = "../export_docs/dist_euclidean.md", 
     Avx2,
     target_features = "avx2"
 );
 #[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
-define_euclidean_impl!(
-    generic_avx2fma_squared_euclidean,
+define_dist_impl!(
+    name = generic_avx2fma_squared_euclidean, 
+    op = generic_squared_euclidean,
+    doc = "../export_docs/dist_euclidean.md", 
     Avx2Fma,
     target_features = "avx2",
     "fma"
 );
 #[cfg(all(any(target_arch = "x86", target_arch = "x86_64"), feature = "nightly"))]
-define_euclidean_impl!(
-    generic_avx512_squared_euclidean,
+define_dist_impl!(
+    name = generic_avx512_squared_euclidean, 
+    op = generic_squared_euclidean,
+    doc = "../export_docs/dist_euclidean.md", 
     Avx512,
     target_features = "avx512f",
     "avx512bw"
 );
 #[cfg(target_arch = "aarch64")]
-define_euclidean_impl!(
-    generic_neon_squared_euclidean,
+define_dist_impl!(
+    name = generic_neon_squared_euclidean, 
+    op = generic_squared_euclidean,
+    doc = "../export_docs/dist_euclidean.md", 
     Neon,
     target_features = "neon"
 );
@@ -177,20 +177,15 @@ macro_rules! define_norm_impl {
             #[doc = concat!("- ", $("**`+", $feat, "`** ", )*)]
             #[doc = "CPU features are available at runtime. Running on hardware _without_ this feature available will cause immediate UB."]
         )*
-        #[doc = r#"
-            - The sizes of `a` and `b` must also be equal to size `dims` otherwise out of
-              bounds access can occur.
-        "#]
-        pub unsafe fn $name<T>(dims: usize, a: &[T]) -> T
+        pub unsafe fn $name<T, B1>(a: B1) -> T
         where
             T: Copy,
+            B1: IntoMemLoader<T>,
+            B1::Loader: MemLoader<Value = T>,
             crate::danger::$imp: SimdRegister<T>,
             AutoMath: Math<T>,
         {
-            generic_squared_norm::<T, crate::danger::$imp, AutoMath>(
-                dims,
-                a,
-            )
+            generic_squared_norm::<T, crate::danger::$imp, AutoMath, _>(a)
         }
     };
 }
@@ -227,7 +222,7 @@ mod tests {
                     fn [< $variant _cosine_ $t >]() {
                         let (l1, l2) = crate::test_utils::get_sample_vectors::<$t>(533);
 
-                        let actual = unsafe { [< $variant _cosine >](l1.len(), &l1, &l2) };
+                        let actual = unsafe { [< $variant _cosine >](&l1, &l2) };
                         let expected: $t = crate::test_utils::simple_cosine(&l1, &l2);
                         assert!(
                             AutoMath::is_close(actual, expected),
@@ -248,7 +243,7 @@ mod tests {
                     fn [< $variant _dot_ $t >]() {
                         let (l1, l2) = crate::test_utils::get_sample_vectors::<$t>(533);
 
-                        let actual = unsafe { [< $variant _dot >](l1.len(), &l1, &l2) };
+                        let actual = unsafe { [< $variant _dot >](&l1, &l2) };
                         let expected: $t = crate::test_utils::simple_dot(&l1, &l2);
                         assert!(
                             AutoMath::is_close(actual, expected),
@@ -260,7 +255,7 @@ mod tests {
                     fn [< $variant _euclidean_ $t >]() {
                         let (l1, l2) = crate::test_utils::get_sample_vectors::<$t>(533);
 
-                        let actual = unsafe { [< $variant _squared_euclidean >](l1.len(), &l1, &l2) };
+                        let actual = unsafe { [< $variant _squared_euclidean >](&l1, &l2) };
                         let expected: $t = crate::test_utils::simple_euclidean(&l1, &l2);
                         assert!(
                             AutoMath::is_close(actual, expected),
@@ -272,7 +267,7 @@ mod tests {
                     fn [< $variant _norm_ $t >]() {
                         let (l1, _) = crate::test_utils::get_sample_vectors::<$t>(533);
 
-                        let actual = unsafe { [< $variant _squared_norm >](l1.len(), &l1) };
+                        let actual = unsafe { [< $variant _squared_norm >](&l1) };
                         let expected: $t = crate::test_utils::simple_dot(&l1, &l1);
                         assert!(
                             AutoMath::is_close(actual, expected),

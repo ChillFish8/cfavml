@@ -5,6 +5,7 @@
 
 use crate::danger::{generic_sum, SimdRegister};
 use crate::math::{AutoMath, Math};
+use crate::mem_loader::{MemLoader, IntoMemLoader};
 
 macro_rules! define_sum_impl {
     (
@@ -20,23 +21,15 @@ macro_rules! define_sum_impl {
             #[doc = concat!("- ", $("**`+", $feat, "`** ", )*)]
             #[doc = "CPU features are available at runtime. Running on hardware _without_ this feature available will cause immediate UB."]
         )*
-        #[doc = r#"
-            - The sizes of `a` must also be equal to size `dims` otherwise out of
-              bounds access can occur.
-        "#]
-        pub unsafe fn $name<T>(
-            dims: usize,
-            a: &[T],
-        ) -> T
+        pub unsafe fn $name<T, B1>(a: B1) -> T
         where
             T: Copy,
-            crate::danger::$imp: SimdRegister<T>,
+            B1: IntoMemLoader<T>,
+            B1::Loader: MemLoader<Value = T>,
             AutoMath: Math<T>,
+            crate::danger::$imp: SimdRegister<T>,
         {
-            generic_sum::<T, crate::danger::$imp, AutoMath>(
-                dims,
-                a,
-            )
+            generic_sum::<T, crate::danger::$imp, AutoMath, _>(a)
         }
     };
 }
@@ -66,7 +59,7 @@ mod tests {
                     fn [< $variant _sum_ $t >]() {
                         let (l1, _) = crate::test_utils::get_sample_vectors::<$t>(533);
 
-                        let actual_sum = unsafe { [< $variant _sum >](l1.len(), &l1) };
+                        let actual_sum = unsafe { [< $variant _sum >](&l1) };
                         let expected_sum: $t = l1.iter().fold($t::default(), |a, b| AutoMath::add(a, *b));
                         assert!(
                             AutoMath::is_close(actual_sum, expected_sum),

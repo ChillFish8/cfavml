@@ -7,6 +7,7 @@
 //! or `target-feature` Rust flags set otherwise this will always use the `Fallback` implementations.
 
 use crate::buffer::WriteOnlyBuffer;
+use crate::mem_loader::{IntoMemLoader, MemLoader};
 use crate::safe_trait_agg_ops::AggOps;
 use crate::safe_trait_arithmetic_ops::ArithmeticOps;
 use crate::safe_trait_cmp_ops::CmpOps;
@@ -38,8 +39,15 @@ use crate::safe_trait_distance_ops::DistanceOps;
 /// ### Panics
 ///
 /// This function will panic if vectors `a` and `b` do not match in size.
-pub fn cosine<T: DistanceOps>(a: &[T], b: &[T]) -> T {
-    T::cosine(a.len(), a, b)
+pub fn cosine<T, B1, B2>(a: B1, b: B2) -> T
+where 
+    T: DistanceOps,
+    B1: IntoMemLoader<T>,
+    B1::Loader: MemLoader<Value=T>,
+    B2: IntoMemLoader<T>,
+    B2::Loader: MemLoader<Value=T>,
+{
+    T::cosine(a, b)
 }
 
 #[inline]
@@ -59,8 +67,15 @@ pub fn cosine<T: DistanceOps>(a: &[T], b: &[T]) -> T {
 /// ### Panics
 ///
 /// This function will panic if vectors `a` and `b` do not match in size.
-pub fn dot<T: DistanceOps>(a: &[T], b: &[T]) -> T {
-    T::dot(a.len(), a, b)
+pub fn dot<T, B1, B2>(a: B1, b: B2) -> T
+where
+    T: DistanceOps,
+    B1: IntoMemLoader<T>,
+    B1::Loader: MemLoader<Value=T>,
+    B2: IntoMemLoader<T>,
+    B2::Loader: MemLoader<Value=T>,
+{
+    T::dot(a, b)
 }
 
 #[inline]
@@ -81,8 +96,15 @@ pub fn dot<T: DistanceOps>(a: &[T], b: &[T]) -> T {
 /// ### Panics
 ///
 /// This function will panic if vectors `a` and `b` do not match in size.
-pub fn squared_euclidean<T: DistanceOps>(a: &[T], b: &[T]) -> T {
-    T::squared_euclidean(a.len(), a, b)
+pub fn squared_euclidean<T, B1, B2>(a: B1, b: B2) -> T
+where
+    T: DistanceOps,
+    B1: IntoMemLoader<T>,
+    B1::Loader: MemLoader<Value=T>,
+    B2: IntoMemLoader<T>,
+    B2::Loader: MemLoader<Value=T>,
+{
+    T::squared_euclidean(a, b)
 }
 
 #[inline]
@@ -98,8 +120,13 @@ pub fn squared_euclidean<T: DistanceOps>(a: &[T], b: &[T]) -> T {
 ///
 /// return result
 /// ```
-pub fn squared_norm<T: DistanceOps>(a: &[T]) -> T {
-    T::squared_norm(a.len(), a)
+pub fn squared_norm<T, B1>(a: B1) -> T
+where
+    T: DistanceOps,
+    B1: IntoMemLoader<T>,
+    B1::Loader: MemLoader<Value=T>,
+{
+    T::squared_norm(a)
 }
 
 #[inline]
@@ -115,8 +142,13 @@ pub fn squared_norm<T: DistanceOps>(a: &[T]) -> T {
 ///
 /// return result
 /// ```
-pub fn sum<T: AggOps>(a: &[T]) -> T {
-    T::sum(a.len(), a)
+pub fn sum<T, B1>(a: B1) -> T
+where
+    T: AggOps,
+    B1: IntoMemLoader<T>,
+    B1::Loader: MemLoader<Value=T>,
+{
+    T::sum(a)
 }
 
 #[inline]
@@ -132,41 +164,13 @@ pub fn sum<T: AggOps>(a: &[T]) -> T {
 ///
 /// return result
 /// ```
-pub fn max<T: CmpOps>(a: &[T]) -> T {
-    T::max(a.len(), a)
-}
-
-#[inline]
-/// Performs an element wise max on each element of vector `a` and the provided broadcast
-/// value, writing the result to `result`.
-///
-/// ### Pseudocode
-///
-/// ```ignore
-/// result = [0; dims]
-///
-/// for i in range(dims):
-///     result[i] = max(value, a[i])
-///
-/// return result
-/// ```
-///
-/// ### Result buffer
-///
-/// The result buffer can be either an initialized slice i.e. `&mut [T]`
-/// or it can be a slice holding potentially uninitialized data i.e. `&mut [MaybeUninit<T>]`.
-///
-/// Once the operation is complete, it is safe to assume the data written is fully initialized.
-///
-/// ### Panics
-///
-/// Panics if the size of vector `a` and `result` do not match.
-pub fn max_value<T, B>(value: T, a: &[T], result: &mut [B])
+pub fn max<T, B1>(a: B1) -> T
 where
     T: CmpOps,
-    for<'a> &'a mut [B]: WriteOnlyBuffer<Item = T>,
+    B1: IntoMemLoader<T>,
+    B1::Loader: MemLoader<Value=T>,
 {
-    T::max_value(a.len(), value, a, result)
+    T::max(a)
 }
 
 #[inline]
@@ -194,12 +198,16 @@ where
 /// ### Panics
 ///
 /// Panics if the size of vectors `a`, `b` and `result` do not match.
-pub fn max_vector<T, B>(a: &[T], b: &[T], result: &mut [B])
+pub fn max_vertical<T, B1, B2, B3>(lhs: B1, rhs: B2, result: &mut [B3])
 where
     T: CmpOps,
-    for<'a> &'a mut [B]: WriteOnlyBuffer<Item = T>,
+    B1: IntoMemLoader<T>,
+    B1::Loader: MemLoader<Value = T>,
+    B2: IntoMemLoader<T>,
+    B2::Loader: MemLoader<Value = T>,
+    for<'a> &'a mut [B3]: WriteOnlyBuffer<Item = T>,
 {
-    T::max_vector(a.len(), a, b, result)
+    T::max_vertical(lhs, rhs, result)
 }
 
 #[inline]
@@ -215,41 +223,13 @@ where
 ///
 /// return result
 /// ```
-pub fn min<T: CmpOps>(a: &[T]) -> T {
-    T::min(a.len(), a)
-}
-
-#[inline]
-/// Performs an element wise min on each element of vector `a` and the provided broadcast
-/// value, writing the result to `result`.
-///
-/// ### Pseudocode
-///
-/// ```ignore
-/// result = [0; dims]
-///
-/// for i in range(dims):
-///     result[i] = min(value, a[i])
-///
-/// return result
-/// ```
-///
-/// ### Result buffer
-///
-/// The result buffer can be either an initialized slice i.e. `&mut [T]`
-/// or it can be a slice holding potentially uninitialized data i.e. `&mut [MaybeUninit<T>]`.
-///
-/// Once the operation is complete, it is safe to assume the data written is fully initialized.
-///
-/// ### Panics
-///
-/// Panics if the size of vectors `a` and `result` do not match.
-pub fn min_value<T, B>(value: T, a: &[T], result: &mut [B])
+pub fn min<T, B1>(a: B1) -> T
 where
     T: CmpOps,
-    for<'a> &'a mut [B]: WriteOnlyBuffer<Item = T>,
+    B1: IntoMemLoader<T>,
+    B1::Loader: MemLoader<Value=T>,
 {
-    T::min_value(a.len(), value, a, result)
+    T::min(a)
 }
 
 #[inline]
@@ -277,54 +257,16 @@ where
 /// ### Panics
 ///
 /// Panics if the size of vectors `a`, `b` and `result` do not match.
-pub fn min_vector<T, B>(a: &[T], b: &[T], result: &mut [B])
+pub fn min_vertical<T, B1, B2, B3>(lhs: B1, rhs: B2, result: &mut [B3])
 where
     T: CmpOps,
-    for<'a> &'a mut [B]: WriteOnlyBuffer<Item = T>,
+    B1: IntoMemLoader<T>,
+    B1::Loader: MemLoader<Value = T>,
+    B2: IntoMemLoader<T>,
+    B2::Loader: MemLoader<Value = T>,
+    for<'a> &'a mut [B3]: WriteOnlyBuffer<Item = T>,
 {
-    T::min_vector(a.len(), a, b, result)
-}
-
-#[inline]
-/// Checks each element within vector `a` of size `dims` against a provided broadcast value
-/// comparing if they are **_equal_** returning a mask vector of the same type.
-///
-/// ### Pseudocode
-///
-/// ```ignore
-/// mask = [0; dims]
-///
-/// for i in range(dims):
-///     mask[i] = a[i] == value ? 1 : 0
-///
-/// return mask
-/// ```
-///
-/// ### Note on `NaN` handling on `f32/f64` types
-///
-/// For `f32` and `f64` types, `NaN` values are handled as always being `false` in **ANY** comparison.
-/// Even when compared against each other.
-///
-/// - `0.0 == 0.0 -> true`
-/// - `0.0 == NaN -> false`
-/// - `NaN == NaN -> false`
-///
-/// ### Result buffer
-///
-/// The result buffer can be either an initialized slice i.e. `&mut [T]`
-/// or it can be a slice holding potentially uninitialized data i.e. `&mut [MaybeUninit<T>]`.
-///
-/// Once the operation is complete, it is safe to assume the data written is fully initialized.
-///
-/// ### Panics
-///
-/// Panics if the size of vectors `a` and `result` do not match.
-pub fn eq_value<T, B>(value: T, a: &[T], result: &mut [B])
-where
-    T: CmpOps,
-    for<'a> &'a mut [B]: WriteOnlyBuffer<Item = T>,
-{
-    T::eq_value(a.len(), value, a, result)
+    T::min_vertical(lhs, rhs, result)
 }
 
 #[inline]
@@ -361,55 +303,18 @@ where
 /// ### Panics
 ///
 /// Panics if the size of vectors `a`, `b` and `result` do not match.
-pub fn eq_vector<T, B>(a: &[T], b: &[T], result: &mut [B])
+pub fn eq_vertical<T, B1, B2, B3>(lhs: B1, rhs: B2, result: &mut [B3])
 where
     T: CmpOps,
-    for<'a> &'a mut [B]: WriteOnlyBuffer<Item = T>,
+    B1: IntoMemLoader<T>,
+    B1::Loader: MemLoader<Value = T>,
+    B2: IntoMemLoader<T>,
+    B2::Loader: MemLoader<Value = T>,
+    for<'a> &'a mut [B3]: WriteOnlyBuffer<Item = T>,
 {
-    T::eq_vector(a.len(), a, b, result)
+    T::eq_vertical(lhs, rhs, result)
 }
 
-#[inline]
-/// Checks each element within vector `a` of size `dims` against a provided broadcast value
-/// comparing if they are **_not equal_** returning a mask vector of the same type.
-///
-/// ### Pseudocode
-///
-/// ```ignore
-/// mask = [0; dims]
-///
-/// for i in range(dims):
-///     mask[i] = a[i] != value ? 1 : 0
-///
-/// return mask
-/// ```
-///
-/// ### Note on `NaN` handling on `f32/f64` types
-///
-/// For `f32` and `f64` types, `NaN` values are handled as always being `false` in **ANY** comparison.
-/// Even when compared against each other, meaning in the case of NOT equal, they become `true`.
-///
-/// - `0.0 != 1.0 -> true`
-/// - `0.0 != NaN -> true`
-/// - `NaN != NaN -> true`
-///
-/// ### Result buffer
-///
-/// The result buffer can be either an initialized slice i.e. `&mut [T]`
-/// or it can be a slice holding potentially uninitialized data i.e. `&mut [MaybeUninit<T>]`.
-///
-/// Once the operation is complete, it is safe to assume the data written is fully initialized.
-///
-/// ### Panics
-///
-/// Panics if the size of vectors `a` and `result` do not match.
-pub fn neq_value<T, B>(value: T, a: &[T], result: &mut [B])
-where
-    T: CmpOps,
-    for<'a> &'a mut [B]: WriteOnlyBuffer<Item = T>,
-{
-    T::neq_value(a.len(), value, a, result)
-}
 
 #[inline]
 /// Checks each element pair from vectors `a` and `b` of size `dims`  comparing
@@ -445,54 +350,16 @@ where
 /// ### Panics
 ///
 /// Panics if the size of vectors `a`, `b` and `result` do not match.
-pub fn neq_vector<T, B>(a: &[T], b: &[T], result: &mut [B])
+pub fn neq_vertical<T, B1, B2, B3>(lhs: B1, rhs: B2, result: &mut [B3])
 where
     T: CmpOps,
-    for<'a> &'a mut [B]: WriteOnlyBuffer<Item = T>,
+    B1: IntoMemLoader<T>,
+    B1::Loader: MemLoader<Value = T>,
+    B2: IntoMemLoader<T>,
+    B2::Loader: MemLoader<Value = T>,
+    for<'a> &'a mut [B3]: WriteOnlyBuffer<Item = T>,
 {
-    T::neq_vector(a.len(), a, b, result)
-}
-
-#[inline]
-/// Checks each element within vector `a` of size `dims` against a provided broadcast value
-/// comparing if they are **_less than_** returning a mask vector of the same type.
-///
-/// ### Pseudocode
-///
-/// ```ignore
-/// mask = [0; dims]
-///
-/// for i in range(dims):
-///     mask[i] = a[i] < value ? 1 : 0
-///
-/// return mask
-/// ```
-///
-/// ### Note on `NaN` handling on `f32/f64` types
-///
-/// For `f32` and `f64` types, `NaN` values are handled as always being `false` in **ANY** comparison.
-/// Even when compared against each other.
-///
-/// - `0.0 < 1.0 -> true`
-/// - `0.0 < NaN -> false`
-/// - `NaN < NaN -> false`
-///
-/// ### Result buffer
-///
-/// The result buffer can be either an initialized slice i.e. `&mut [T]`
-/// or it can be a slice holding potentially uninitialized data i.e. `&mut [MaybeUninit<T>]`.
-///
-/// Once the operation is complete, it is safe to assume the data written is fully initialized.
-///
-/// ### Panics
-///
-/// Panics if the size of vectors `a` and `result` do not match.
-pub fn lt_value<T, B>(value: T, a: &[T], result: &mut [B])
-where
-    T: CmpOps,
-    for<'a> &'a mut [B]: WriteOnlyBuffer<Item = T>,
-{
-    T::lt_value(a.len(), value, a, result)
+    T::neq_vertical(lhs, rhs, result)
 }
 
 #[inline]
@@ -529,54 +396,16 @@ where
 /// ### Panics
 ///
 /// Panics if the size of vectors `a`, `b` and `result` do not match.
-pub fn lt_vector<T, B>(a: &[T], b: &[T], result: &mut [B])
+pub fn lt_vertical<T, B1, B2, B3>(lhs: B1, rhs: B2, result: &mut [B3])
 where
     T: CmpOps,
-    for<'a> &'a mut [B]: WriteOnlyBuffer<Item = T>,
+    B1: IntoMemLoader<T>,
+    B1::Loader: MemLoader<Value = T>,
+    B2: IntoMemLoader<T>,
+    B2::Loader: MemLoader<Value = T>,
+    for<'a> &'a mut [B3]: WriteOnlyBuffer<Item = T>,
 {
-    T::lt_vector(a.len(), a, b, result)
-}
-
-#[inline]
-/// Checks each element within vector `a` of size `dims` against a provided broadcast value
-/// comparing if they are **_less than or equal_** returning a mask vector of the same type.
-///
-/// ### Pseudocode
-///
-/// ```ignore
-/// mask = [0; dims]
-///
-/// for i in range(dims):
-///     mask[i] = a[i] <= value ? 1 : 0
-///
-/// return mask
-/// ```
-///
-/// ### Note on `NaN` handling on `f32/f64` types
-///
-/// For `f32` and `f64` types, `NaN` values are handled as always being `false` in **ANY** comparison.
-/// Even when compared against each other.
-///
-/// - `0.0 <= 1.0 -> true`
-/// - `0.0 <= NaN -> false`
-/// - `NaN <= NaN -> false`
-///
-/// ### Result buffer
-///
-/// The result buffer can be either an initialized slice i.e. `&mut [T]`
-/// or it can be a slice holding potentially uninitialized data i.e. `&mut [MaybeUninit<T>]`.
-///
-/// Once the operation is complete, it is safe to assume the data written is fully initialized.
-///
-/// ### Panics
-///
-/// Panics if the size of vectors `a` and `result` do not match.
-pub fn lte_value<T, B>(value: T, a: &[T], result: &mut [B])
-where
-    T: CmpOps,
-    for<'a> &'a mut [B]: WriteOnlyBuffer<Item = T>,
-{
-    T::lte_value(a.len(), value, a, result)
+    T::lt_vertical(lhs, rhs, result)
 }
 
 #[inline]
@@ -613,54 +442,16 @@ where
 /// ### Panics
 ///
 /// Panics if the size of vectors `a`, `b` and `result` do not match.
-pub fn lte_vector<T, B>(a: &[T], b: &[T], result: &mut [B])
+pub fn lte_vertical<T, B1, B2, B3>(lhs: B1, rhs: B2, result: &mut [B3])
 where
     T: CmpOps,
-    for<'a> &'a mut [B]: WriteOnlyBuffer<Item = T>,
+    B1: IntoMemLoader<T>,
+    B1::Loader: MemLoader<Value = T>,
+    B2: IntoMemLoader<T>,
+    B2::Loader: MemLoader<Value = T>,
+    for<'a> &'a mut [B3]: WriteOnlyBuffer<Item = T>,
 {
-    T::lte_vector(a.len(), a, b, result)
-}
-
-#[inline]
-/// Checks each element within vector `a` of size `dims` against a provided broadcast value
-/// comparing if they are **_less than or equal_** returning a mask vector of the same type.
-///
-/// ### Pseudocode
-///
-/// ```ignore
-/// mask = [0; dims]
-///
-/// for i in range(dims):
-///     mask[i] = a[i] > value ? 1 : 0
-///
-/// return mask
-/// ```
-///
-/// ### Note on `NaN` handling on `f32/f64` types
-///
-/// For `f32` and `f64` types, `NaN` values are handled as always being `false` in **ANY** comparison.
-/// Even when compared against each other.
-///
-/// - `1.0 > 0.0 -> true`
-/// - `1.0 > NaN -> false`
-/// - `NaN > NaN -> false`
-///
-/// ### Result buffer
-///
-/// The result buffer can be either an initialized slice i.e. `&mut [T]`
-/// or it can be a slice holding potentially uninitialized data i.e. `&mut [MaybeUninit<T>]`.
-///
-/// Once the operation is complete, it is safe to assume the data written is fully initialized.
-///
-/// ### Panics
-///
-/// Panics if the size of vectors `a` and `result` do not match.
-pub fn gt_value<T, B>(value: T, a: &[T], result: &mut [B])
-where
-    T: CmpOps,
-    for<'a> &'a mut [B]: WriteOnlyBuffer<Item = T>,
-{
-    T::gt_value(a.len(), value, a, result)
+    T::lte_vertical(lhs, rhs, result)
 }
 
 #[inline]
@@ -697,54 +488,16 @@ where
 /// ### Panics
 ///
 /// Panics if the size of vectors `a`, `b` and `result` do not match.
-pub fn gt_vector<T, B>(a: &[T], b: &[T], result: &mut [B])
+pub fn gt_vertical<T, B1, B2, B3>(lhs: B1, rhs: B2, result: &mut [B3])
 where
     T: CmpOps,
-    for<'a> &'a mut [B]: WriteOnlyBuffer<Item = T>,
+    B1: IntoMemLoader<T>,
+    B1::Loader: MemLoader<Value = T>,
+    B2: IntoMemLoader<T>,
+    B2::Loader: MemLoader<Value = T>,
+    for<'a> &'a mut [B3]: WriteOnlyBuffer<Item = T>,
 {
-    T::gt_vector(a.len(), a, b, result)
-}
-
-#[inline]
-/// Checks each element within vector `a` of size `dims` against a provided broadcast value
-/// comparing if they are **_less than or equal_** returning a mask vector of the same type.
-///
-/// ### Pseudocode
-///
-/// ```ignore
-/// mask = [0; dims]
-///
-/// for i in range(dims):
-///     mask[i] = a[i] >= value ? 1 : 0
-///
-/// return mask
-/// ```
-///
-/// ### Note on `NaN` handling on `f32/f64` types
-///
-/// For `f32` and `f64` types, `NaN` values are handled as always being `false` in **ANY** comparison.
-/// Even when compared against each other.
-///
-/// - `1.0 >= 0.0 -> true`
-/// - `1.0 >= NaN -> false`
-/// - `NaN >= NaN -> false`
-///
-/// ### Result buffer
-///
-/// The result buffer can be either an initialized slice i.e. `&mut [T]`
-/// or it can be a slice holding potentially uninitialized data i.e. `&mut [MaybeUninit<T>]`.
-///
-/// Once the operation is complete, it is safe to assume the data written is fully initialized.
-///
-/// ### Panics
-///
-/// Panics if the size of vectors `a` and `result` do not match.
-pub fn gte_value<T, B>(value: T, a: &[T], result: &mut [B])
-where
-    T: CmpOps,
-    for<'a> &'a mut [B]: WriteOnlyBuffer<Item = T>,
-{
-    T::gte_value(a.len(), value, a, result)
+    T::gt_vertical(lhs, rhs, result)
 }
 
 #[inline]
@@ -781,44 +534,16 @@ where
 /// ### Panics
 ///
 /// Panics if the size of vectors `a`, `b` and `result` do not match.
-pub fn gte_vector<T, B>(a: &[T], b: &[T], result: &mut [B])
+pub fn gte_vertical<T, B1, B2, B3>(lhs: B1, rhs: B2, result: &mut [B3])
 where
     T: CmpOps,
-    for<'a> &'a mut [B]: WriteOnlyBuffer<Item = T>,
+    B1: IntoMemLoader<T>,
+    B1::Loader: MemLoader<Value = T>,
+    B2: IntoMemLoader<T>,
+    B2::Loader: MemLoader<Value = T>,
+    for<'a> &'a mut [B3]: WriteOnlyBuffer<Item = T>,
 {
-    T::gte_vector(a.len(), a, b, result)
-}
-
-/// Performs an element wise addition of each element of vector `a` and the provided broadcast
-/// value, writing the result to `result`.
-///
-/// ### Pseudocode
-///
-/// ```ignore
-/// result = [0; dims]
-///
-/// for i in range(dims):
-///     result[i] = a[i] + value
-///
-/// return result
-/// ```
-///
-/// ### Result buffer
-///
-/// The result buffer can be either an initialized slice i.e. `&mut [T]`
-/// or it can be a slice holding potentially uninitialized data i.e. `&mut [MaybeUninit<T>]`.
-///
-/// Once the operation is complete, it is safe to assume the data written is fully initialized.
-///
-/// ### Panics
-///
-/// Panics if the size of vectors `a` and `result` do not match.
-pub fn add_value<T, B>(value: T, a: &[T], result: &mut [B])
-where
-    T: ArithmeticOps,
-    for<'a> &'a mut [B]: WriteOnlyBuffer<Item = T>,
-{
-    T::add_value(a.len(), value, a, result)
+    T::gte_vertical(lhs, rhs, result)
 }
 
 /// Performs an element wise addition of each element pair of vector `a` and `b`,
@@ -845,44 +570,16 @@ where
 /// ### Panics
 ///
 /// Panics if the size of vectors `a`, `b` and `result` do not match.
-pub fn add_vector<T, B>(a: &[T], b: &[T], result: &mut [B])
+pub fn add_vertical<T, B1, B2, B3>(lhs: B1, rhs: B2, result: &mut [B3])
 where
     T: ArithmeticOps,
-    for<'a> &'a mut [B]: WriteOnlyBuffer<Item = T>,
+    B1: IntoMemLoader<T>,
+    B1::Loader: MemLoader<Value = T>,
+    B2: IntoMemLoader<T>,
+    B2::Loader: MemLoader<Value = T>,
+    for<'a> &'a mut [B3]: WriteOnlyBuffer<Item = T>,
 {
-    T::add_vector(a.len(), a, b, result)
-}
-
-/// Performs an element wise subtraction of each element of vector `a` and the provided broadcast
-/// value, writing the result to `result`.
-///
-/// ### Pseudocode
-///
-/// ```ignore
-/// result = [0; dims]
-///
-/// for i in range(dims):
-///     result[i] = a[i] - value
-///
-/// return result
-/// ```
-///
-/// ### Result buffer
-///
-/// The result buffer can be either an initialized slice i.e. `&mut [T]`
-/// or it can be a slice holding potentially uninitialized data i.e. `&mut [MaybeUninit<T>]`.
-///
-/// Once the operation is complete, it is safe to assume the data written is fully initialized.
-///
-/// ### Panics
-///
-/// Panics if the size of vectors `a` and `result` do not match.
-pub fn sub_value<T, B>(value: T, a: &[T], result: &mut [B])
-where
-    T: ArithmeticOps,
-    for<'a> &'a mut [B]: WriteOnlyBuffer<Item = T>,
-{
-    T::sub_value(a.len(), value, a, result)
+    T::add_vertical(lhs, rhs, result)
 }
 
 /// Performs an element wise subtraction of each element pair from vectors `a` and `b`,
@@ -909,44 +606,16 @@ where
 /// ### Panics
 ///
 /// Panics if the size of vectors `a`, `b` and `result` do not match.
-pub fn sub_vector<T, B>(a: &[T], b: &[T], result: &mut [B])
+pub fn sub_vertical<T, B1, B2, B3>(lhs: B1, rhs: B2, result: &mut [B3])
 where
     T: ArithmeticOps,
-    for<'a> &'a mut [B]: WriteOnlyBuffer<Item = T>,
+    B1: IntoMemLoader<T>,
+    B1::Loader: MemLoader<Value = T>,
+    B2: IntoMemLoader<T>,
+    B2::Loader: MemLoader<Value = T>,
+    for<'a> &'a mut [B3]: WriteOnlyBuffer<Item = T>,
 {
-    T::sub_vector(a.len(), a, b, result)
-}
-
-/// Performs an element wise multiplication of each element of vector `a` and the provided broadcast
-/// value, writing the result to `result`.
-///
-/// ### Pseudocode
-///
-/// ```ignore
-/// result = [0; dims]
-///
-/// for i in range(dims):
-///     result[i] = a[i] * value
-///
-/// return result
-/// ```
-///
-/// ### Result buffer
-///
-/// The result buffer can be either an initialized slice i.e. `&mut [T]`
-/// or it can be a slice holding potentially uninitialized data i.e. `&mut [MaybeUninit<T>]`.
-///
-/// Once the operation is complete, it is safe to assume the data written is fully initialized.
-///
-/// ### Panics
-///
-/// Panics if the size of vectors `a` and `result` do not match.
-pub fn mul_value<T, B>(value: T, a: &[T], result: &mut [B])
-where
-    T: ArithmeticOps,
-    for<'a> &'a mut [B]: WriteOnlyBuffer<Item = T>,
-{
-    T::mul_value(a.len(), value, a, result)
+    T::sub_vertical(lhs, rhs, result)
 }
 
 /// Performs an element wise multiplication of each element pair from vectors `a` and `b`,
@@ -973,44 +642,16 @@ where
 /// ### Panics
 ///
 /// Panics if the size of vectors `a`, `b` and `result` do not match.
-pub fn mul_vector<T, B>(a: &[T], b: &[T], result: &mut [B])
+pub fn mul_vertical<T, B1, B2, B3>(lhs: B1, rhs: B2, result: &mut [B3])
 where
     T: ArithmeticOps,
-    for<'a> &'a mut [B]: WriteOnlyBuffer<Item = T>,
+    B1: IntoMemLoader<T>,
+    B1::Loader: MemLoader<Value = T>,
+    B2: IntoMemLoader<T>,
+    B2::Loader: MemLoader<Value = T>,
+    for<'a> &'a mut [B3]: WriteOnlyBuffer<Item = T>,
 {
-    T::mul_vector(a.len(), a, b, result)
-}
-
-/// Performs an element wise division of each element of vector `a` and the provided broadcast
-/// value, writing the result to `result`.
-///
-/// ### Pseudocode
-///
-/// ```ignore
-/// result = [0; dims]
-///
-/// for i in range(dims):
-///     result[i] = a[i] / value
-///
-/// return result
-/// ```
-///
-/// ### Result buffer
-///
-/// The result buffer can be either an initialized slice i.e. `&mut [T]`
-/// or it can be a slice holding potentially uninitialized data i.e. `&mut [MaybeUninit<T>]`.
-///
-/// Once the operation is complete, it is safe to assume the data written is fully initialized.
-///
-/// ### Panics
-///
-/// Panics if the size of vectors `a` and `result` do not match.
-pub fn div_value<T, B>(value: T, a: &[T], result: &mut [B])
-where
-    T: ArithmeticOps,
-    for<'a> &'a mut [B]: WriteOnlyBuffer<Item = T>,
-{
-    T::div_value(a.len(), value, a, result)
+    T::mul_vertical(lhs, rhs, result)
 }
 
 /// Performs an element wise division on each element pair from vectors `a` and `b`,
@@ -1037,10 +678,14 @@ where
 /// ### Panics
 ///
 /// Panics if the size of vectors `a`, `b` and `result` do not match.
-pub fn div_vector<T, B>(a: &[T], b: &[T], result: &mut [B])
+pub fn div_vertical<T, B1, B2, B3>(lhs: B1, rhs: B2, result: &mut [B3])
 where
     T: ArithmeticOps,
-    for<'a> &'a mut [B]: WriteOnlyBuffer<Item = T>,
+    B1: IntoMemLoader<T>,
+    B1::Loader: MemLoader<Value = T>,
+    B2: IntoMemLoader<T>,
+    B2::Loader: MemLoader<Value = T>,
+    for<'a> &'a mut [B3]: WriteOnlyBuffer<Item = T>,
 {
-    T::div_vector(a.len(), a, b, result)
+    T::div_vertical(lhs, rhs, result)
 }

@@ -1,102 +1,59 @@
 //! Comparison related operations
 //!
-//! Although some of these operations i.e. (maxtarget_features = "avx512f", "avx512bw", mintarget_features = "avx512f", "avx512bw") are technically aggregate
+//! Although some of these operations i.e. (max, min) are technically aggregate
 //! routines, they are grouped with the rest of their cmp operations for simplicity.
 
 use crate::buffer::WriteOnlyBuffer;
 use crate::danger::{
-    generic_cmp_eq_value,
-    generic_cmp_eq_vector,
-    generic_cmp_gt_value,
-    generic_cmp_gt_vector,
-    generic_cmp_gte_value,
-    generic_cmp_gte_vector,
-    generic_cmp_lt_value,
-    generic_cmp_lt_vector,
-    generic_cmp_lte_value,
-    generic_cmp_lte_vector,
     generic_cmp_max,
-    generic_cmp_max_vertical,
     generic_cmp_min,
-    generic_cmp_min_value,
-    generic_cmp_min_vector,
-    generic_cmp_neq_value,
-    generic_cmp_neq_vector,
+    generic_cmp_max_vertical,
+    generic_cmp_min_vertical,
+    generic_cmp_eq_vertical,
+    generic_cmp_neq_vertical,
+    generic_cmp_lt_vertical,
+    generic_cmp_lte_vertical,
+    generic_cmp_gt_vertical,
+    generic_cmp_gte_vertical,
     SimdRegister,
 };
 use crate::math::{AutoMath, Math};
+use crate::mem_loader::{MemLoader, IntoMemLoader};
 
 macro_rules! define_op {
     (
-        vector_name = $vector_name:ident,
-        vector_op = $vector_op:ident,
-        vector_doc = $vector_doc:expr,
-        value_name = $value_name:ident,
-        value_op = $value_op:ident,
-        value_doc = $value_doc:expr,
+        name = $name:ident,
+        op = $op:ident,
+        doc = $doc:expr,
         $imp:ident $(,)?
         $(target_features = $($feat:expr $(,)?)+)?
     ) => {
         #[inline]
         $(#[target_feature($(enable = $feat, )*)])*
-        #[doc = include_str!($vector_doc)]
+        #[doc = include_str!($doc)]
         $(
 
             #[doc = concat!("- ", $("**`+", $feat, "`** ", )*)]
             #[doc = "CPU features are available at runtime. Running on hardware _without_ this feature available will cause immediate UB."]
         )*
-        #[doc = r#"
-            - The sizes of `a`, `b` and `result` must also be equal to size `dims` otherwise out of
-              bounds access can occur.
-        "#]
-        pub unsafe fn $vector_name<T, B>(
-            dims: usize,
-            a: &[T],
-            b: &[T],
-            result: &mut [B],
+        pub unsafe fn $name<T, B1, B2, B3>(
+            a: B1,
+            b: B2,
+            result: &mut [B3],
         )
         where
             T: Copy,
+            B1: IntoMemLoader<T>,
+            B1::Loader: MemLoader<Value = T>,
+            B2: IntoMemLoader<T>,
+            B2::Loader: MemLoader<Value = T>,
             crate::danger::$imp: SimdRegister<T>,
             AutoMath: Math<T>,
-            for<'a> &'a mut [B]: WriteOnlyBuffer<Item = T>,
+            for<'a> &'a mut [B3]: WriteOnlyBuffer<Item = T>,
         {
-            $vector_op::<T, crate::danger::$imp, AutoMath, B>(
-                dims,
+            $op::<T, crate::danger::$imp, AutoMath, B1, B2, B3>(
                 a,
                 b,
-                result,
-            )
-        }
-
-        #[inline]
-        $(#[target_feature($(enable = $feat, )*)])*
-        #[doc = include_str!($value_doc)]
-        $(
-
-            #[doc = concat!("- ", $("**`+", $feat, "`** ", )*)]
-            #[doc = "CPU features are available at runtime. Running on hardware _without_ this feature available will cause immediate UB."]
-        )*
-        #[doc = r#"
-            - The sizes of `a` and `result` must also be equal to size `dims` otherwise out of
-              bounds access can occur.
-        "#]
-        pub unsafe fn $value_name<T, B>(
-            dims: usize,
-            value: T,
-            a: &[T],
-            result: &mut [B],
-        )
-        where
-            T: Copy,
-            crate::danger::$imp: SimdRegister<T>,
-            AutoMath: Math<T>,
-            for<'a> &'a mut [B]: WriteOnlyBuffer<Item = T>,
-        {
-            $value_op::<T, crate::danger::$imp, AutoMath, B>(
-                dims,
-                value,
-                a,
                 result,
             )
         }
@@ -119,146 +76,116 @@ macro_rules! define_extra_horizontal_op {
             #[doc = concat!("- ", $("**`+", $feat, "`** ", )*)]
             #[doc = "CPU features are available at runtime. Running on hardware _without_ this feature available will cause immediate UB."]
         )*
-        #[doc = r#"
-            - The sizes of `a` must also be equal to size `dims` otherwise out of
-              bounds access can occur.
-        "#]
-        pub unsafe fn $horizontal_name<T>(
-            dims: usize,
-            a: &[T],
+        pub unsafe fn $horizontal_name<T, B1>(
+            a: B1,
         ) -> T
         where
             T: Copy,
+            B1: IntoMemLoader<T>,
+            B1::Loader: MemLoader<Value = T>,
             crate::danger::$imp: SimdRegister<T>,
             AutoMath: Math<T>,
         {
-            $horizontal_op::<T, crate::danger::$imp, AutoMath>(
-                dims,
-                a,
-            )
+            $horizontal_op::<T, crate::danger::$imp, AutoMath, B1>(a)
         }
     };
 }
 
-// // OP-max
-// define_op!(
-//     vector_name = generic_fallback_cmp_max_vector,
-//     vector_op = generic_cmp_max_vector,
-//     vector_doc = "../export_docs/cmp_max_vector.md",
-//     value_name = generic_fallback_cmp_max_value,
-//     value_op = generic_cmp_max_value,
-//     value_doc = "../export_docs/cmp_max_value.md",
-//     Fallback,
-// );
-// #[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
-// define_op!(
-//     vector_name = generic_avx2_cmp_max_vector,
-//     vector_op = generic_cmp_max_vector,
-//     vector_doc = "../export_docs/cmp_max_vector.md",
-//     value_name = generic_avx2_cmp_max_value,
-//     value_op = generic_cmp_max_value,
-//     value_doc = "../export_docs/cmp_max_value.md",
-//     Avx2,
-//     target_features = "avx2"
-// );
-// #[cfg(all(any(target_arch = "x86", target_arch = "x86_64"), feature = "nightly"))]
-// define_op!(
-//     vector_name = generic_avx512_cmp_max_vector,
-//     vector_op = generic_cmp_max_vector,
-//     vector_doc = "../export_docs/cmp_max_vector.md",
-//     value_name = generic_avx512_cmp_max_value,
-//     value_op = generic_cmp_max_value,
-//     value_doc = "../export_docs/cmp_max_value.md",
-//     Avx512,
-//     target_features = "avx512f",
-//     "avx512bw"
-// );
-// #[cfg(target_arch = "aarch64")]
-// define_op!(
-//     vector_name = generic_neon_cmp_max_vector,
-//     vector_op = generic_cmp_max_vector,
-//     vector_doc = "../export_docs/cmp_max_vector.md",
-//     value_name = generic_neon_cmp_max_value,
-//     value_op = generic_cmp_max_value,
-//     value_doc = "../export_docs/cmp_max_value.md",
-//     Neon,
-//     target_features = "neon"
-// );
-//
-// // OP-max-horizontal
-// define_extra_horizontal_op!(
-//     horizontal_name = generic_fallback_cmp_max,
-//     horizontal_op = generic_cmp_max,
-//     horizontal_doc = "../export_docs/cmp_max_horizontal.md",
-//     Fallback,
-// );
-// #[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
-// define_extra_horizontal_op!(
-//     horizontal_name = generic_avx2_cmp_max,
-//     horizontal_op = generic_cmp_max,
-//     horizontal_doc = "../export_docs/cmp_max_horizontal.md",
-//     Avx2,
-//     target_features = "avx2"
-// );
-// #[cfg(all(any(target_arch = "x86", target_arch = "x86_64"), feature = "nightly"))]
-// define_extra_horizontal_op!(
-//     horizontal_name = generic_avx512_cmp_max,
-//     horizontal_op = generic_cmp_max,
-//     horizontal_doc = "../export_docs/cmp_max_horizontal.md",
-//     Avx512,
-//     target_features = "avx512f",
-//     "avx512bw"
-// );
-// #[cfg(target_arch = "aarch64")]
-// define_extra_horizontal_op!(
-//     horizontal_name = generic_neon_cmp_max,
-//     horizontal_op = generic_cmp_max,
-//     horizontal_doc = "../export_docs/cmp_max_horizontal.md",
-//     Neon,
-//     target_features = "neon"
-// );
-
-// OP-min
+// OP-max
 define_op!(
-    vector_name = generic_fallback_cmp_min_vector,
-    vector_op = generic_cmp_min_vector,
-    vector_doc = "../export_docs/cmp_min_vector.md",
-    value_name = generic_fallback_cmp_min_value,
-    value_op = generic_cmp_min_value,
-    value_doc = "../export_docs/cmp_min_value.md",
+    name = generic_fallback_cmp_max_vertical,
+    op = generic_cmp_max_vertical,
+    doc = "../export_docs/cmp_max_vertical.md",
     Fallback,
 );
 #[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
 define_op!(
-    vector_name = generic_avx2_cmp_min_vector,
-    vector_op = generic_cmp_min_vector,
-    vector_doc = "../export_docs/cmp_min_vector.md",
-    value_name = generic_avx2_cmp_min_value,
-    value_op = generic_cmp_min_value,
-    value_doc = "../export_docs/cmp_min_value.md",
+    name = generic_avx2_cmp_max_vertical,
+    op = generic_cmp_max_vertical,
+    doc = "../export_docs/cmp_max_vertical.md",
     Avx2,
     target_features = "avx2"
 );
 #[cfg(all(any(target_arch = "x86", target_arch = "x86_64"), feature = "nightly"))]
 define_op!(
-    vector_name = generic_avx512_cmp_min_vector,
-    vector_op = generic_cmp_min_vector,
-    vector_doc = "../export_docs/cmp_min_vector.md",
-    value_name = generic_avx512_cmp_min_value,
-    value_op = generic_cmp_min_value,
-    value_doc = "../export_docs/cmp_min_value.md",
+    name = generic_avx512_cmp_max_vertical,
+    op = generic_cmp_max_vertical,
+    doc = "../export_docs/cmp_max_vertical.md",
     Avx512,
     target_features = "avx512f",
     "avx512bw"
 );
 #[cfg(target_arch = "aarch64")]
 define_op!(
-    vector_name = generic_neon_cmp_min_vector,
-    vector_op = generic_cmp_min_vector,
-    vector_doc = "../export_docs/cmp_min_vector.md",
-    value_name = generic_neon_cmp_min_value,
-    value_op = generic_cmp_min_value,
-    value_doc = "../export_docs/cmp_min_value.md",
+    name = generic_neon_cmp_max_vertical,
+    op = generic_cmp_max_vertical,
+    doc = "../export_docs/cmp_max_vertical.md",
+    Neon,
+    target_features = "neon"
+);
+
+// OP-max-horizontal
+define_extra_horizontal_op!(
+    horizontal_name = generic_fallback_cmp_max,
+    horizontal_op = generic_cmp_max,
+    horizontal_doc = "../export_docs/cmp_max_horizontal.md",
+    Fallback,
+);
+#[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
+define_extra_horizontal_op!(
+    horizontal_name = generic_avx2_cmp_max,
+    horizontal_op = generic_cmp_max,
+    horizontal_doc = "../export_docs/cmp_max_horizontal.md",
+    Avx2,
+    target_features = "avx2"
+);
+#[cfg(all(any(target_arch = "x86", target_arch = "x86_64"), feature = "nightly"))]
+define_extra_horizontal_op!(
+    horizontal_name = generic_avx512_cmp_max,
+    horizontal_op = generic_cmp_max,
+    horizontal_doc = "../export_docs/cmp_max_horizontal.md",
+    Avx512,
+    target_features = "avx512f",
+    "avx512bw"
+);
+#[cfg(target_arch = "aarch64")]
+define_extra_horizontal_op!(
+    horizontal_name = generic_neon_cmp_max,
+    horizontal_op = generic_cmp_max,
+    horizontal_doc = "../export_docs/cmp_max_horizontal.md",
+    Neon,
+    target_features = "neon"
+);
+
+// OP-min
+define_op!(
+    name = generic_fallback_cmp_min_vertical,
+    op = generic_cmp_min_vertical,
+    doc = "../export_docs/cmp_min_vertical.md",
+    Fallback,
+);
+#[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
+define_op!(
+    name = generic_avx2_cmp_min_vertical,
+    op = generic_cmp_min_vertical,
+    doc = "../export_docs/cmp_min_vertical.md",
+    Avx2,
+    target_features = "avx2"
+);
+#[cfg(all(any(target_arch = "x86", target_arch = "x86_64"), feature = "nightly"))]
+define_op!(
+    name = generic_avx512_cmp_min_vertical,
+    op = generic_cmp_min_vertical,
+    doc = "../export_docs/cmp_min_vertical.md",
+    Avx512,
+    target_features = "avx512f",
+    "avx512bw"
+);
+#[cfg(target_arch = "aarch64")]
+define_op!(
+    name = generic_neon_cmp_min_vertical,
+    op = generic_cmp_min_vertical,
+    doc = "../export_docs/cmp_min_vertical.md",
     Neon,
     target_features = "neon"
 );
@@ -298,270 +225,198 @@ define_extra_horizontal_op!(
 
 // OP-eq
 define_op!(
-    vector_name = generic_fallback_cmp_eq_vector,
-    vector_op = generic_cmp_eq_vector,
-    vector_doc = "../export_docs/cmp_eq_vector.md",
-    value_name = generic_fallback_cmp_eq_value,
-    value_op = generic_cmp_eq_value,
-    value_doc = "../export_docs/cmp_eq_value.md",
+    name = generic_fallback_cmp_eq_vertical,
+    op = generic_cmp_eq_vertical,
+    doc = "../export_docs/cmp_eq_vertical.md",
     Fallback,
 );
 #[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
 define_op!(
-    vector_name = generic_avx2_cmp_eq_vector,
-    vector_op = generic_cmp_eq_vector,
-    vector_doc = "../export_docs/cmp_eq_vector.md",
-    value_name = generic_avx2_cmp_eq_value,
-    value_op = generic_cmp_eq_value,
-    value_doc = "../export_docs/cmp_eq_value.md",
+    name = generic_avx2_cmp_eq_vertical,
+    op = generic_cmp_eq_vertical,
+    doc = "../export_docs/cmp_eq_vertical.md",
     Avx2,
     target_features = "avx2"
 );
 #[cfg(all(any(target_arch = "x86", target_arch = "x86_64"), feature = "nightly"))]
 define_op!(
-    vector_name = generic_avx512_cmp_eq_vector,
-    vector_op = generic_cmp_eq_vector,
-    vector_doc = "../export_docs/cmp_eq_vector.md",
-    value_name = generic_avx512_cmp_eq_value,
-    value_op = generic_cmp_eq_value,
-    value_doc = "../export_docs/cmp_eq_value.md",
+    name = generic_avx512_cmp_eq_vertical,
+    op = generic_cmp_eq_vertical,
+    doc = "../export_docs/cmp_eq_vertical.md",
     Avx512,
     target_features = "avx512f",
     "avx512bw"
 );
 #[cfg(target_arch = "aarch64")]
 define_op!(
-    vector_name = generic_neon_cmp_eq_vector,
-    vector_op = generic_cmp_eq_vector,
-    vector_doc = "../export_docs/cmp_eq_vector.md",
-    value_name = generic_neon_cmp_eq_value,
-    value_op = generic_cmp_eq_value,
-    value_doc = "../export_docs/cmp_eq_value.md",
+    name = generic_neon_cmp_eq_vertical,
+    op = generic_cmp_eq_vertical,
+    doc = "../export_docs/cmp_eq_vertical.md",
     Neon,
     target_features = "neon"
 );
 
 // OP-neq
 define_op!(
-    vector_name = generic_fallback_cmp_neq_vector,
-    vector_op = generic_cmp_neq_vector,
-    vector_doc = "../export_docs/cmp_neq_vector.md",
-    value_name = generic_fallback_cmp_neq_value,
-    value_op = generic_cmp_neq_value,
-    value_doc = "../export_docs/cmp_neq_value.md",
+    name = generic_fallback_cmp_neq_vertical,
+    op = generic_cmp_neq_vertical,
+    doc = "../export_docs/cmp_neq_vertical.md",
     Fallback,
 );
 #[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
 define_op!(
-    vector_name = generic_avx2_cmp_neq_vector,
-    vector_op = generic_cmp_neq_vector,
-    vector_doc = "../export_docs/cmp_neq_vector.md",
-    value_name = generic_avx2_cmp_neq_value,
-    value_op = generic_cmp_neq_value,
-    value_doc = "../export_docs/cmp_neq_value.md",
+    name = generic_avx2_cmp_neq_vertical,
+    op = generic_cmp_neq_vertical,
+    doc = "../export_docs/cmp_neq_vertical.md",
     Avx2,
     target_features = "avx2"
 );
 #[cfg(all(any(target_arch = "x86", target_arch = "x86_64"), feature = "nightly"))]
 define_op!(
-    vector_name = generic_avx512_cmp_neq_vector,
-    vector_op = generic_cmp_neq_vector,
-    vector_doc = "../export_docs/cmp_neq_vector.md",
-    value_name = generic_avx512_cmp_neq_value,
-    value_op = generic_cmp_neq_value,
-    value_doc = "../export_docs/cmp_neq_value.md",
+    name = generic_avx512_cmp_neq_vertical,
+    op = generic_cmp_neq_vertical,
+    doc = "../export_docs/cmp_neq_vertical.md",
     Avx512,
     target_features = "avx512f",
     "avx512bw"
 );
 #[cfg(target_arch = "aarch64")]
 define_op!(
-    vector_name = generic_neon_cmp_neq_vector,
-    vector_op = generic_cmp_neq_vector,
-    vector_doc = "../export_docs/cmp_neq_vector.md",
-    value_name = generic_neon_cmp_neq_value,
-    value_op = generic_cmp_neq_value,
-    value_doc = "../export_docs/cmp_neq_value.md",
+    name = generic_neon_cmp_neq_vertical,
+    op = generic_cmp_neq_vertical,
+    doc = "../export_docs/cmp_neq_vertical.md",
     Neon,
     target_features = "neon"
 );
 
 // OP-lt
 define_op!(
-    vector_name = generic_fallback_cmp_lt_vector,
-    vector_op = generic_cmp_lt_vector,
-    vector_doc = "../export_docs/cmp_lt_vector.md",
-    value_name = generic_fallback_cmp_lt_value,
-    value_op = generic_cmp_lt_value,
-    value_doc = "../export_docs/cmp_lt_value.md",
+    name = generic_fallback_cmp_lt_vertical,
+    op = generic_cmp_lt_vertical,
+    doc = "../export_docs/cmp_lt_vertical.md",
     Fallback,
 );
 #[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
 define_op!(
-    vector_name = generic_avx2_cmp_lt_vector,
-    vector_op = generic_cmp_lt_vector,
-    vector_doc = "../export_docs/cmp_lt_vector.md",
-    value_name = generic_avx2_cmp_lt_value,
-    value_op = generic_cmp_lt_value,
-    value_doc = "../export_docs/cmp_lt_value.md",
+    name = generic_avx2_cmp_lt_vertical,
+    op = generic_cmp_lt_vertical,
+    doc = "../export_docs/cmp_lt_vertical.md",
     Avx2,
     target_features = "avx2"
 );
 #[cfg(all(any(target_arch = "x86", target_arch = "x86_64"), feature = "nightly"))]
 define_op!(
-    vector_name = generic_avx512_cmp_lt_vector,
-    vector_op = generic_cmp_lt_vector,
-    vector_doc = "../export_docs/cmp_lt_vector.md",
-    value_name = generic_avx512_cmp_lt_value,
-    value_op = generic_cmp_lt_value,
-    value_doc = "../export_docs/cmp_lt_value.md",
+    name = generic_avx512_cmp_lt_vertical,
+    op = generic_cmp_lt_vertical,
+    doc = "../export_docs/cmp_lt_vertical.md",
     Avx512,
     target_features = "avx512f",
     "avx512bw"
 );
 #[cfg(target_arch = "aarch64")]
 define_op!(
-    vector_name = generic_neon_cmp_lt_vector,
-    vector_op = generic_cmp_lt_vector,
-    vector_doc = "../export_docs/cmp_lt_vector.md",
-    value_name = generic_neon_cmp_lt_value,
-    value_op = generic_cmp_lt_value,
-    value_doc = "../export_docs/cmp_lt_value.md",
+    name = generic_neon_cmp_lt_vertical,
+    op = generic_cmp_lt_vertical,
+    doc = "../export_docs/cmp_lt_vertical.md",
     Neon,
     target_features = "neon"
 );
 
 // OP-lte
 define_op!(
-    vector_name = generic_fallback_cmp_lte_vector,
-    vector_op = generic_cmp_lte_vector,
-    vector_doc = "../export_docs/cmp_lte_vector.md",
-    value_name = generic_fallback_cmp_lte_value,
-    value_op = generic_cmp_lte_value,
-    value_doc = "../export_docs/cmp_lte_value.md",
+    name = generic_fallback_cmp_lte_vertical,
+    op = generic_cmp_lte_vertical,
+    doc = "../export_docs/cmp_lte_vertical.md",
     Fallback,
 );
 #[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
 define_op!(
-    vector_name = generic_avx2_cmp_lte_vector,
-    vector_op = generic_cmp_lte_vector,
-    vector_doc = "../export_docs/cmp_lte_vector.md",
-    value_name = generic_avx2_cmp_lte_value,
-    value_op = generic_cmp_lte_value,
-    value_doc = "../export_docs/cmp_lte_value.md",
+    name = generic_avx2_cmp_lte_vertical,
+    op = generic_cmp_lte_vertical,
+    doc = "../export_docs/cmp_lte_vertical.md",
     Avx2,
     target_features = "avx2"
 );
 #[cfg(all(any(target_arch = "x86", target_arch = "x86_64"), feature = "nightly"))]
 define_op!(
-    vector_name = generic_avx512_cmp_lte_vector,
-    vector_op = generic_cmp_lte_vector,
-    vector_doc = "../export_docs/cmp_lte_vector.md",
-    value_name = generic_avx512_cmp_lte_value,
-    value_op = generic_cmp_lte_value,
-    value_doc = "../export_docs/cmp_lte_value.md",
+    name = generic_avx512_cmp_lte_vertical,
+    op = generic_cmp_lte_vertical,
+    doc = "../export_docs/cmp_lte_vertical.md",
     Avx512,
     target_features = "avx512f",
     "avx512bw"
 );
 #[cfg(target_arch = "aarch64")]
 define_op!(
-    vector_name = generic_neon_cmp_lte_vector,
-    vector_op = generic_cmp_lte_vector,
-    vector_doc = "../export_docs/cmp_lte_vector.md",
-    value_name = generic_neon_cmp_lte_value,
-    value_op = generic_cmp_lte_value,
-    value_doc = "../export_docs/cmp_lte_value.md",
+    name = generic_neon_cmp_lte_vertical,
+    op = generic_cmp_lte_vertical,
+    doc = "../export_docs/cmp_lte_vertical.md",
     Neon,
     target_features = "neon"
 );
 
 // OP-gt
 define_op!(
-    vector_name = generic_fallback_cmp_gt_vector,
-    vector_op = generic_cmp_gt_vector,
-    vector_doc = "../export_docs/cmp_gt_vector.md",
-    value_name = generic_fallback_cmp_gt_value,
-    value_op = generic_cmp_gt_value,
-    value_doc = "../export_docs/cmp_gt_value.md",
+    name = generic_fallback_cmp_gt_vertical,
+    op = generic_cmp_gt_vertical,
+    doc = "../export_docs/cmp_gt_vertical.md",
     Fallback,
 );
 #[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
 define_op!(
-    vector_name = generic_avx2_cmp_gt_vector,
-    vector_op = generic_cmp_gt_vector,
-    vector_doc = "../export_docs/cmp_gt_vector.md",
-    value_name = generic_avx2_cmp_gt_value,
-    value_op = generic_cmp_gt_value,
-    value_doc = "../export_docs/cmp_gt_value.md",
+    name = generic_avx2_cmp_gt_vertical,
+    op = generic_cmp_gt_vertical,
+    doc = "../export_docs/cmp_gt_vertical.md",
     Avx2,
     target_features = "avx2"
 );
 #[cfg(all(any(target_arch = "x86", target_arch = "x86_64"), feature = "nightly"))]
 define_op!(
-    vector_name = generic_avx512_cmp_gt_vector,
-    vector_op = generic_cmp_gt_vector,
-    vector_doc = "../export_docs/cmp_gt_vector.md",
-    value_name = generic_avx512_cmp_gt_value,
-    value_op = generic_cmp_gt_value,
-    value_doc = "../export_docs/cmp_gt_value.md",
+    name = generic_avx512_cmp_gt_vertical,
+    op = generic_cmp_gt_vertical,
+    doc = "../export_docs/cmp_gt_vertical.md",
     Avx512,
     target_features = "avx512f",
     "avx512bw"
 );
 #[cfg(target_arch = "aarch64")]
 define_op!(
-    vector_name = generic_neon_cmp_gt_vector,
-    vector_op = generic_cmp_gt_vector,
-    vector_doc = "../export_docs/cmp_gt_vector.md",
-    value_name = generic_neon_cmp_gt_value,
-    value_op = generic_cmp_gt_value,
-    value_doc = "../export_docs/cmp_gt_value.md",
+    name = generic_neon_cmp_gt_vertical,
+    op = generic_cmp_gt_vertical,
+    doc = "../export_docs/cmp_gt_vertical.md",
     Neon,
     target_features = "neon"
 );
 
 // OP-gte
 define_op!(
-    vector_name = generic_fallback_cmp_gte_vector,
-    vector_op = generic_cmp_gte_vector,
-    vector_doc = "../export_docs/cmp_gte_vector.md",
-    value_name = generic_fallback_cmp_gte_value,
-    value_op = generic_cmp_gte_value,
-    value_doc = "../export_docs/cmp_gte_value.md",
+    name = generic_fallback_cmp_gte_vertical,
+    op = generic_cmp_gte_vertical,
+    doc = "../export_docs/cmp_gte_vertical.md",
     Fallback,
 );
 #[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
 define_op!(
-    vector_name = generic_avx2_cmp_gte_vector,
-    vector_op = generic_cmp_gte_vector,
-    vector_doc = "../export_docs/cmp_gte_vector.md",
-    value_name = generic_avx2_cmp_gte_value,
-    value_op = generic_cmp_gte_value,
-    value_doc = "../export_docs/cmp_gte_value.md",
+    name = generic_avx2_cmp_gte_vertical,
+    op = generic_cmp_gte_vertical,
+    doc = "../export_docs/cmp_gte_vertical.md",
     Avx2,
     target_features = "avx2"
 );
 #[cfg(all(any(target_arch = "x86", target_arch = "x86_64"), feature = "nightly"))]
 define_op!(
-    vector_name = generic_avx512_cmp_gte_vector,
-    vector_op = generic_cmp_gte_vector,
-    vector_doc = "../export_docs/cmp_gte_vector.md",
-    value_name = generic_avx512_cmp_gte_value,
-    value_op = generic_cmp_gte_value,
-    value_doc = "../export_docs/cmp_gte_value.md",
+    name = generic_avx512_cmp_gte_vertical,
+    op = generic_cmp_gte_vertical,
+    doc = "../export_docs/cmp_gte_vertical.md",
     Avx512,
     target_features = "avx512f",
     "avx512bw"
 );
 #[cfg(target_arch = "aarch64")]
 define_op!(
-    vector_name = generic_neon_cmp_gte_vector,
-    vector_op = generic_cmp_gte_vector,
-    vector_doc = "../export_docs/cmp_gte_vector.md",
-    value_name = generic_neon_cmp_gte_value,
-    value_op = generic_cmp_gte_value,
-    value_doc = "../export_docs/cmp_gte_value.md",
+    name = generic_neon_cmp_gte_vertical,
+    op = generic_cmp_gte_vertical,
+    doc = "../export_docs/cmp_gte_vertical.md",
     Neon,
     target_features = "neon"
 );
@@ -577,7 +432,7 @@ mod tests {
                 fn [< $variant _ $op _horizontal_ $t >]() {
                     let (l1, _) = crate::test_utils::get_sample_vectors::<$t>(533);
 
-                    let result = unsafe { [< $variant _cmp_ $op >](l1.len(), &l1) };
+                    let result = unsafe { [< $variant _cmp_ $op >](&l1) };
 
                     let expected = l1.iter()
                         .copied()
@@ -594,7 +449,7 @@ mod tests {
                     let (l1, _) = crate::test_utils::get_sample_vectors::<$t>(533);
 
                     let mut result = vec![$t::default(); 533];
-                    unsafe { [< $variant _cmp_ $op _value >](l1.len(), 2 as $t, &l1, &mut result) };
+                    unsafe { [< $variant _cmp_ $op _vertical >](2 as $t, &l1, &mut result) };
 
                     let expected = l1.iter()
                         .copied()
@@ -612,7 +467,7 @@ mod tests {
                     let (l1, l2) = crate::test_utils::get_sample_vectors::<$t>(533);
 
                     let mut result = vec![$t::default(); 533];
-                    unsafe { [< $variant _cmp_ $op _vector >](l1.len(), &l1, &l2, &mut result) };
+                    unsafe { [< $variant _cmp_ $op _vertical >](&l1, &l2, &mut result) };
 
                     let expected = l1.iter()
                         .copied()
@@ -638,66 +493,66 @@ mod tests {
         };
     }
 
-    // define_cmp_test!(
-    //     generic_fallback,
-    //     types = f32,
-    //     f64,
-    //     i8,
-    //     i16,
-    //     i32,
-    //     i64,
-    //     u8,
-    //     u16,
-    //     u32,
-    //     u64
-    // );
-    // #[cfg(all(
-    //     any(target_arch = "x86", target_arch = "x86_64"),
-    //     target_feature = "avx2"
-    // ))]
-    // define_cmp_test!(
-    //     generic_avx2,
-    //     types = f32,
-    //     f64,
-    //     i8,
-    //     i16,
-    //     i32,
-    //     i64,
-    //     u8,
-    //     u16,
-    //     u32,
-    //     u64
-    // );
-    // #[cfg(all(
-    //     any(target_arch = "x86", target_arch = "x86_64"),
-    //     feature = "nightly",
-    //     target_feature = "avx512f"
-    // ))]
-    // define_cmp_test!(
-    //     generic_avx512,
-    //     types = f32,
-    //     f64,
-    //     i8,
-    //     i16,
-    //     i32,
-    //     i64,
-    //     u8,
-    //     u16,
-    //     u32,
-    //     u64
-    // );
-    // #[cfg(target_arch = "aarch64")]
-    // define_cmp_test!(
-    //     generic_neon,
-    //     types = f32,
-    //     f64,
-    //     i8,
-    //     i16,
-    //     i32,
-    //     i64,
-    //     u8,
-    //     u16,
-    //     u32,
-    //     u64
-    // );
+    define_cmp_test!(
+        generic_fallback,
+        types = f32,
+        f64,
+        i8,
+        i16,
+        i32,
+        i64,
+        u8,
+        u16,
+        u32,
+        u64
+    );
+    #[cfg(all(
+        any(target_arch = "x86", target_arch = "x86_64"),
+        target_feature = "avx2"
+    ))]
+    define_cmp_test!(
+        generic_avx2,
+        types = f32,
+        f64,
+        i8,
+        i16,
+        i32,
+        i64,
+        u8,
+        u16,
+        u32,
+        u64
+    );
+    #[cfg(all(
+        any(target_arch = "x86", target_arch = "x86_64"),
+        feature = "nightly",
+        target_feature = "avx512f"
+    ))]
+    define_cmp_test!(
+        generic_avx512,
+        types = f32,
+        f64,
+        i8,
+        i16,
+        i32,
+        i64,
+        u8,
+        u16,
+        u32,
+        u64
+    );
+    #[cfg(target_arch = "aarch64")]
+    define_cmp_test!(
+        generic_neon,
+        types = f32,
+        f64,
+        i8,
+        i16,
+        i32,
+        i64,
+        u8,
+        u16,
+        u32,
+        u64
+    );
 }

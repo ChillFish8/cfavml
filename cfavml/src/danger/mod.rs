@@ -41,10 +41,10 @@ pub use self::impl_fallback::*;
 #[cfg(target_arch = "aarch64")]
 pub use self::impl_neon::*;
 pub use self::op_arithmetic_vertical::{
-    generic_add_vector,
-    generic_div_vector,
-    generic_mul_vector,
-    generic_sub_vector,
+    generic_add_vertical,
+    generic_div_vertical,
+    generic_mul_vertical,
+    generic_sub_vertical,
 };
 pub use self::op_cmp_max::{generic_cmp_max, generic_cmp_max_vertical};
 pub use self::op_cmp_min::{generic_cmp_min, generic_cmp_min_vertical};

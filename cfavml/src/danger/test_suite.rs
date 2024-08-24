@@ -4,6 +4,7 @@ use super::*;
 use crate::buffer::WriteOnlyBuffer;
 use crate::danger::SimdRegister;
 use crate::math::{AutoMath, Math};
+use crate::mem_loader::IntoMemLoader;
 
 const DATA_SIZE: usize = if cfg!(miri) { 133 } else { 1043 };
 
@@ -110,63 +111,67 @@ macro_rules! test_suite {
     };
 }
 
-fn test_arithmetic_value_all<T: Copy + PartialEq + Debug, R>(l1: Vec<T>, value: T)
+fn test_arithmetic_value_all<T, R>(l1: Vec<T>, value: T)
 where
+    T: Copy + PartialEq + Debug + IntoMemLoader<T>,
     R: SimdRegister<T>,
     AutoMath: Math<T>,
     for<'a> &'a mut [T]: WriteOnlyBuffer<Item = T>,
 {
     unsafe {
-        op_arithmetic_value::tests::test_add::<_, R>(l1.clone(), value);
-        op_arithmetic_value::tests::test_sub::<_, R>(l1.clone(), value);
-        op_arithmetic_value::tests::test_div::<_, R>(l1.clone(), value);
-        op_arithmetic_value::tests::test_mul::<_, R>(l1, value)
+        op_arithmetic_vertical::tests::test_broadcast_value_add::<_, R>(l1.clone(), value);
+        op_arithmetic_vertical::tests::test_broadcast_value_sub::<_, R>(l1.clone(), value);
+        op_arithmetic_vertical::tests::test_broadcast_value_div::<_, R>(l1.clone(), value);
+        op_arithmetic_vertical::tests::test_broadcast_value_mul::<_, R>(l1, value)
     };
 }
 
-fn test_arithmetic_vector_all<T: Copy + PartialEq + Debug, R>(l1: Vec<T>, l2: Vec<T>)
+fn test_arithmetic_vector_all<T, R>(l1: Vec<T>, l2: Vec<T>)
 where
+    T: Copy + PartialEq + Debug,
     R: SimdRegister<T>,
     AutoMath: Math<T>,
     for<'a> &'a mut [T]: WriteOnlyBuffer<Item = T>,
 {
     unsafe {
-        op_arithmetic_vertical::tests::test_add::<_, R>(l1.clone(), l2.clone());
-        op_arithmetic_vertical::tests::test_sub::<_, R>(l1.clone(), l2.clone());
-        op_arithmetic_vertical::tests::test_div::<_, R>(l1.clone(), l2.clone());
-        op_arithmetic_vertical::tests::test_mul::<_, R>(l1, l2);
+        op_arithmetic_vertical::tests::test_simple_vector_add::<_, R>(l1.clone(), l2.clone());
+        op_arithmetic_vertical::tests::test_simple_vector_sub::<_, R>(l1.clone(), l2.clone());
+        op_arithmetic_vertical::tests::test_simple_vector_div::<_, R>(l1.clone(), l2.clone());
+        op_arithmetic_vertical::tests::test_simple_vector_mul::<_, R>(l1, l2);
     };
 }
 
-fn test_cmp_vector_all<T: Copy + PartialEq + Debug, R>(l1: Vec<T>, l2: Vec<T>)
+fn test_cmp_vector_all<T, R>(l1: Vec<T>, l2: Vec<T>)
 where
+    T: Copy + PartialEq + Debug,
     R: SimdRegister<T>,
     AutoMath: Math<T>,
     for<'a> &'a mut [T]: WriteOnlyBuffer<Item = T>,
 {
     unsafe {
-        op_cmp_vertical::tests::test_eq::<_, R>(l1.clone(), l2.clone());
-        op_cmp_vertical::tests::test_neq::<_, R>(l1.clone(), l2.clone());
-        op_cmp_vertical::tests::test_lt::<_, R>(l1.clone(), l2.clone());
-        op_cmp_vertical::tests::test_lte::<_, R>(l1.clone(), l2.clone());
-        op_cmp_vertical::tests::test_gt::<_, R>(l1.clone(), l2.clone());
-        op_cmp_vertical::tests::test_gte::<_, R>(l1, l2);
+        op_cmp_vertical::tests::test_simple_vectors_eq::<_, R>(l1.clone(), l2.clone());
+        op_cmp_vertical::tests::test_simple_vectors_neq::<_, R>(l1.clone(), l2.clone());
+        op_cmp_vertical::tests::test_simple_vectors_lt::<_, R>(l1.clone(), l2.clone());
+        op_cmp_vertical::tests::test_simple_vectors_lte::<_, R>(l1.clone(), l2.clone());
+        op_cmp_vertical::tests::test_simple_vectors_gt::<_, R>(l1.clone(), l2.clone());
+        op_cmp_vertical::tests::test_simple_vectors_gte::<_, R>(l1, l2);
     };
 }
 
-fn test_cmp_value_all<T: Copy + PartialEq + Debug, R>(l1: Vec<T>, value: T)
+fn test_cmp_value_all<T, R>(l1: Vec<T>, value: T)
 where
+    T: Copy + PartialEq + Debug + IntoMemLoader<T>,
     R: SimdRegister<T>,
     AutoMath: Math<T>,
     for<'a> &'a mut [T]: WriteOnlyBuffer<Item = T>,
 {
     unsafe {
-        op_cmp_value::tests::test_eq::<_, R>(l1.clone(), value);
-        op_cmp_value::tests::test_neq::<_, R>(l1.clone(), value);
-        op_cmp_value::tests::test_lt::<_, R>(l1.clone(), value);
-        op_cmp_value::tests::test_lte::<_, R>(l1.clone(), value);
-        op_cmp_value::tests::test_gt::<_, R>(l1.clone(), value);
-        op_cmp_value::tests::test_gte::<_, R>(l1, value);
+        op_cmp_vertical::tests::test_broadcast_value_eq::<_, R>(l1.clone(), value);
+        op_cmp_vertical::tests::test_broadcast_value_neq::<_, R>(l1.clone(), value);
+        op_cmp_vertical::tests::test_broadcast_value_lt::<_, R>(l1.clone(), value);
+        op_cmp_vertical::tests::test_broadcast_value_lte::<_, R>(l1.clone(), value);
+        op_cmp_vertical::tests::test_broadcast_value_gt::<_, R>(l1.clone(), value);
+        op_cmp_vertical::tests::test_broadcast_value_gte::<_, R>(l1, value);
     };
 }
 

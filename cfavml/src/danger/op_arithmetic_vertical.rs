@@ -126,7 +126,7 @@ pub(crate) mod tests {
     use crate::danger::SimdRegister;
     use crate::math::Math;
 
-    pub(crate) unsafe fn test_add<T, R>(l1: Vec<T>, l2: Vec<T>)
+    pub(crate) unsafe fn test_simple_vector_add<T, R>(l1: Vec<T>, l2: Vec<T>)
     where
         T: Copy + PartialEq + std::fmt::Debug,
         R: SimdRegister<T>,
@@ -146,7 +146,7 @@ pub(crate) mod tests {
         assert_eq!(result, expected_result, "value mismatch");
     }
 
-    pub(crate) unsafe fn test_sub<T, R>(l1: Vec<T>, l2: Vec<T>)
+    pub(crate) unsafe fn test_simple_vector_sub<T, R>(l1: Vec<T>, l2: Vec<T>)
     where
         T: Copy + PartialEq + std::fmt::Debug,
         R: SimdRegister<T>,
@@ -166,7 +166,7 @@ pub(crate) mod tests {
         assert_eq!(result, expected_result, "value mismatch");
     }
 
-    pub(crate) unsafe fn test_div<T, R>(l1: Vec<T>, l2: Vec<T>)
+    pub(crate) unsafe fn test_simple_vector_div<T, R>(l1: Vec<T>, l2: Vec<T>)
     where
         T: Copy + PartialEq + std::fmt::Debug,
         R: SimdRegister<T>,
@@ -186,7 +186,7 @@ pub(crate) mod tests {
         assert_eq!(result, expected_result, "value mismatch");
     }
 
-    pub(crate) unsafe fn test_mul<T, R>(l1: Vec<T>, l2: Vec<T>)
+    pub(crate) unsafe fn test_simple_vector_mul<T, R>(l1: Vec<T>, l2: Vec<T>)
     where
         T: Copy + PartialEq + std::fmt::Debug,
         R: SimdRegister<T>,
@@ -202,6 +202,86 @@ pub(crate) mod tests {
         let mut expected_result = Vec::new();
         for (a, b) in l1.iter().copied().zip(l2) {
             expected_result.push(AutoMath::mul(a, b));
+        }
+        assert_eq!(result, expected_result, "value mismatch");
+    }
+    
+    pub(crate) unsafe fn test_broadcast_value_add<T, R>(l1: Vec<T>, value: T)
+    where
+        T: Copy + PartialEq + std::fmt::Debug + IntoMemLoader<T>,
+        R: SimdRegister<T>,
+        crate::math::AutoMath: Math<T>,
+        for<'a> &'a mut [T]: WriteOnlyBuffer<Item = T>,
+    {
+        use crate::math::AutoMath;
+
+        let dims = l1.len();
+        let mut result = vec![AutoMath::zero(); dims];
+        generic_add_vertical::<T, R, AutoMath, _, _, _>(&l1, value, &mut result);
+
+        let mut expected_result = Vec::new();
+        for a in l1.iter().copied() {
+            expected_result.push(AutoMath::add(a, value));
+        }
+        assert_eq!(result, expected_result, "value mismatch");
+    }
+
+    pub(crate) unsafe fn test_broadcast_value_sub<T, R>(l1: Vec<T>, value: T)
+    where
+        T: Copy + PartialEq + std::fmt::Debug + IntoMemLoader<T>,
+        R: SimdRegister<T>,
+        crate::math::AutoMath: Math<T>,
+        for<'a> &'a mut [T]: WriteOnlyBuffer<Item = T>,
+    {
+        use crate::math::AutoMath;
+
+        let dims = l1.len();
+        let mut result = vec![AutoMath::zero(); dims];
+        generic_sub_vertical::<T, R, AutoMath, _, _, _>(&l1, value, &mut result);
+
+        let mut expected_result = Vec::new();
+        for a in l1.iter().copied() {
+            expected_result.push(AutoMath::sub(a, value));
+        }
+        assert_eq!(result, expected_result, "value mismatch");
+    }
+
+    pub(crate) unsafe fn test_broadcast_value_div<T, R>(l1: Vec<T>, value: T)
+    where
+        T: Copy + PartialEq + std::fmt::Debug + IntoMemLoader<T>,
+        R: SimdRegister<T>,
+        crate::math::AutoMath: Math<T>,
+        for<'a> &'a mut [T]: WriteOnlyBuffer<Item = T>,
+    {
+        use crate::math::AutoMath;
+
+        let dims = l1.len();
+        let mut result = vec![AutoMath::zero(); dims];
+        generic_div_vertical::<T, R, AutoMath, _, _, _>(&l1, value, &mut result);
+
+        let mut expected_result = Vec::new();
+        for a in l1.iter().copied() {
+            expected_result.push(AutoMath::div(a, value));
+        }
+        assert_eq!(result, expected_result, "value mismatch");
+    }
+
+    pub(crate) unsafe fn test_broadcast_value_mul<T, R>(l1: Vec<T>, value: T)
+    where
+        T: Copy + PartialEq + std::fmt::Debug + IntoMemLoader<T>,
+        R: SimdRegister<T>,
+        crate::math::AutoMath: Math<T>,
+        for<'a> &'a mut [T]: WriteOnlyBuffer<Item = T>,
+    {
+        use crate::math::AutoMath;
+
+        let dims = l1.len();
+        let mut result = vec![AutoMath::zero(); dims];
+        generic_mul_vertical::<T, R, AutoMath, _, _, _>(&l1, value, &mut result);
+
+        let mut expected_result = Vec::new();
+        for a in l1.iter().copied() {
+            expected_result.push(AutoMath::mul(a, value));
         }
         assert_eq!(result, expected_result, "value mismatch");
     }
