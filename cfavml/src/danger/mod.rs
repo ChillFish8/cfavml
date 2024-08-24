@@ -56,8 +56,7 @@ pub use self::op_arithmetic_vector::{
 };
 pub use self::op_cmp_max::{
     generic_cmp_max,
-    generic_cmp_max_value,
-    generic_cmp_max_vector,
+    generic_cmp_max_vertical,
 };
 pub use self::op_cmp_min::{
     generic_cmp_min,

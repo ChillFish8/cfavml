@@ -1,32 +1,34 @@
 use crate::buffer::WriteOnlyBuffer;
 use crate::danger::core_simd_api::SimdRegister;
 use crate::math::Math;
+use crate::mem_loader::{IntoMemLoader, MemLoader};
 
 #[inline(always)]
 /// A generic horizontal max implementation over one vectors of a given set of dimensions.
 ///
 /// # Safety
 ///
-/// The sizes of `a` must be equal to `dims`, the safety requirements of
-/// `M` definition the basic math operations and the requirements of `R` SIMD register
-/// must also be followed.
-pub unsafe fn generic_cmp_max<T, R, M>(dims: usize, a: &[T]) -> T
+/// The safety requirements of `M` definition the basic math operations and 
+/// the requirements of `R` SIMD register must also be followed.
+pub unsafe fn generic_cmp_max<T, R, M, B1>(a: B1) -> T
 where
     T: Copy,
     R: SimdRegister<T>,
     M: Math<T>,
+    B1: IntoMemLoader<T>,
+    B1::Loader: MemLoader<Value=T>,
 {
-    debug_assert_eq!(a.len(), dims, "Vector a does not match size `dims`");
+    let mut a = a.into_mem_loader();   
+    let len = a.projected_len();
 
-    let offset_from = dims % R::elements_per_dense();
-    let a_ptr = a.as_ptr();
+    let offset_from = len % R::elements_per_dense();
 
     let mut max = R::filled_dense(M::min());
 
     // Operate over dense lanes first.
     let mut i = 0;
-    while i < (dims - offset_from) {
-        let l1 = R::load_dense(a_ptr.add(i));
+    while i < (len - offset_from) {
+        let l1 = a.load_dense::<R>();
         max = R::max_dense(max, l1);
 
         i += R::elements_per_dense();
@@ -36,8 +38,8 @@ where
 
     // Operate over single registers next.
     let offset_from = offset_from % R::elements_per_lane();
-    while i < (dims - offset_from) {
-        let l1 = R::load(a_ptr.add(i));
+    while i < (len - offset_from) {
+        let l1 = a.load::<R>();
         max = R::max(max, l1);
 
         i += R::elements_per_lane();
@@ -46,9 +48,8 @@ where
     // Handle the remainder.
     let mut max = R::max_to_value(max);
 
-    while i < dims {
-        let a = *a.get_unchecked(i);
-        max = M::cmp_max(max, a);
+    while i < len {
+        max = M::cmp_max(max, a.read());
 
         i += 1;
     }
@@ -56,45 +57,45 @@ where
     max
 }
 
-// TODO: Are we really sure this is the most optimal way of doing vertical max/min/etc...
-//       or should we be stepping through the entire matrix each time? Probably this since
-//       I imagine it is more friendly on the cache. But we should test 0-0
 #[inline(always)]
 /// A generic vertical max implementation over two vectors of a given set of dimensions.
 ///
-/// NOTE:
-/// This implementation with compared the values of `a` and `b` and store the max
-/// of the two elements in `result`.
-///
+/// # Panics
+/// 
+/// If `a` and `b` cannot be projected to the size of `result` .
+/// 
 /// # Safety
 ///
-/// The sizes of `a`, `b` and `result`  must be equal to `dims`, the safety requirements of
-/// `M` definition the basic math operations and the requirements of `R` SIMD register
-/// must also be followed.
-pub unsafe fn generic_cmp_max_vector<T, R, M, B>(
-    dims: usize,
-    a: &[T],
-    b: &[T],
-    mut result: &mut [B],
+/// `result` must be safe to _write_ to, it does not have to be initialized but must stay 
+/// within bounds, the safety requirements of `M` definition the basic math operations 
+/// and the requirements of `R` SIMD register must also be followed.
+pub unsafe fn generic_cmp_max_vertical<T, R, M, B1, B2, B3>(
+    a: B1,
+    b: B2,
+    mut result: &mut [B3],
 ) where
     T: Copy,
     R: SimdRegister<T>,
     M: Math<T>,
-    for<'a> &'a mut [B]: WriteOnlyBuffer<Item = T>,
+    B1: IntoMemLoader<T>,
+    B1::Loader: MemLoader<Value=T>,
+    B2: IntoMemLoader<T>,
+    B2::Loader: MemLoader<Value=T>,
+    for<'a> &'a mut [B3]: WriteOnlyBuffer<Item = T>,
 {
-    debug_assert_eq!(a.len(), dims, "Vector a does not match size `dims`");
-    debug_assert_eq!(b.len(), dims, "Vector result does not match size `dims`");
-
-    let offset_from = dims % R::elements_per_dense();
-    let a_ptr = a.as_ptr();
-    let b_ptr = b.as_ptr();
+    let project_to_len = result.raw_buffer_len();
     let result_ptr = result.as_write_only_ptr();
+    
+    let mut a = a.into_projected_mem_loader(project_to_len);
+    let mut b = b.into_projected_mem_loader(project_to_len);
+    
+    let offset_from = project_to_len % R::elements_per_dense();
 
     // Operate over dense lanes first.
     let mut i = 0;
-    while i < (dims - offset_from) {
-        let l1 = R::load_dense(a_ptr.add(i));
-        let l2 = R::load_dense(b_ptr.add(i));
+    while i < (project_to_len - offset_from) {
+        let l1 = a.load_dense::<R>();
+        let l2 = b.load_dense::<R>();
         let max = R::max_dense(l1, l2);
         R::write_dense(result_ptr.add(i), max);
 
@@ -103,80 +104,17 @@ pub unsafe fn generic_cmp_max_vector<T, R, M, B>(
 
     // Operate over single registers next.
     let offset_from = offset_from % R::elements_per_lane();
-    while i < (dims - offset_from) {
-        let l1 = R::load(a_ptr.add(i));
-        let l2 = R::load(b_ptr.add(i));
+    while i < (project_to_len - offset_from) {
+        let l1 = a.load::<R>();
+        let l2 = b.load::<R>();
         let max = R::max(l1, l2);
         R::write(result_ptr.add(i), max);
 
         i += R::elements_per_lane();
     }
 
-    while i < dims {
-        let v1 = *a.get_unchecked(i);
-        let v2 = *b.get_unchecked(i);
-        result.write_at(i, M::cmp_max(v1, v2));
-
-        i += 1;
-    }
-}
-
-#[inline(always)]
-/// A generic max implementation over one vector of a given set of dimensions
-/// and a single value target.
-///
-/// This routine is primarily aimed for workloads like Relu activation where
-/// you want to cap the value at zero or above.
-///
-/// # Safety
-///
-/// The sizes of `a` and `result` must be equal to `dims`, the safety requirements of
-/// `M` definition the basic math operations and the requirements of `R` SIMD register
-/// must also be followed.
-pub unsafe fn generic_cmp_max_value<T, R, M, B>(
-    dims: usize,
-    value: T,
-    a: &[T],
-    mut result: &mut [B],
-) where
-    T: Copy,
-    R: SimdRegister<T>,
-    M: Math<T>,
-    for<'a> &'a mut [B]: WriteOnlyBuffer<Item = T>,
-{
-    debug_assert_eq!(a.len(), dims, "Vector a does not match size `dims`");
-
-    let broadcast_dense = R::filled_dense(value);
-
-    let offset_from = dims % R::elements_per_dense();
-    let a_ptr = a.as_ptr();
-    let result_ptr = result.as_write_only_ptr();
-
-    // Operate over dense lanes first.
-    let mut i = 0;
-    while i < (dims - offset_from) {
-        let l1 = R::load_dense(a_ptr.add(i));
-        let max = R::max_dense(l1, broadcast_dense);
-        R::write_dense(result_ptr.add(i), max);
-
-        i += R::elements_per_dense();
-    }
-
-    let broadcast_reg = broadcast_dense.a;
-
-    // Operate over single registers next.
-    let offset_from = offset_from % R::elements_per_lane();
-    while i < (dims - offset_from) {
-        let l1 = R::load(a_ptr.add(i));
-        let max = R::max(l1, broadcast_reg);
-        R::write(result_ptr.add(i), max);
-
-        i += R::elements_per_lane();
-    }
-
-    while i < dims {
-        let v1 = *a.get_unchecked(i);
-        result.write_at(i, M::cmp_max(v1, value));
+    while i < project_to_len {
+        result.write_at(i, M::cmp_max(a.read(), b.read()));
 
         i += 1;
     }
@@ -188,13 +126,14 @@ where
     T: Copy + PartialEq + std::fmt::Debug,
     R: SimdRegister<T>,
     crate::math::AutoMath: Math<T>,
+    for<'a> &'a Vec<T>: IntoMemLoader<T>,
     for<'a> &'a mut [T]: WriteOnlyBuffer<Item = T>,
 {
     use crate::math::AutoMath;
 
     let dims = l1.len();
     let mut result = vec![AutoMath::min(); dims];
-    generic_cmp_max_vector::<T, R, AutoMath, _>(dims, &l1, &l2, &mut result);
+    generic_cmp_max_vertical::<T, R, AutoMath, _, _, _>(&l1, &l2, &mut result);
     let mut expected_result = Vec::new();
     for (a, b) in l1.iter().copied().zip(l2) {
         expected_result.push(AutoMath::cmp_max(a, b));
@@ -203,14 +142,14 @@ where
 
     let dims = l1.len();
     let mut result = vec![AutoMath::min(); dims];
-    generic_cmp_max_value::<T, R, AutoMath, _>(dims, AutoMath::zero(), &l1, &mut result);
+    generic_cmp_max_vertical::<T, R, AutoMath, _, _, _>(AutoMath::zero(), &l1, &mut result);
     let mut expected_result = Vec::new();
     for a in l1.iter().copied() {
         expected_result.push(AutoMath::cmp_max(a, AutoMath::zero()));
     }
     assert_eq!(result, expected_result, "value mismatch");
 
-    let max = generic_cmp_max::<T, R, AutoMath>(dims, &l1);
+    let max = generic_cmp_max::<T, R, AutoMath, _>(&l1);
     let expected_max = l1
         .iter()
         .fold(AutoMath::min(), |a, b| AutoMath::cmp_max(a, *b));

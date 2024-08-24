@@ -24,5 +24,6 @@ pub mod safe_trait_cmp_ops;
 pub mod safe_trait_distance_ops;
 #[cfg(test)]
 mod test_utils;
+pub mod mem_loader;
 
 pub use self::safe_function_ops::*;
