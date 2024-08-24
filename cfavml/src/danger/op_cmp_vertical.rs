@@ -1,7 +1,8 @@
-use super::core_routine_boilerplate::apply_vector_x_vector_kernel;
+use super::core_routine_boilerplate::apply_vertical_kernel;
 use crate::buffer::WriteOnlyBuffer;
 use crate::danger::SimdRegister;
 use crate::math::Math;
+use crate::mem_loader::{IntoMemLoader, MemLoader};
 
 #[inline(always)]
 /// A generic vector element-wise equality check of vectors `a` and `b` checking if
@@ -14,19 +15,21 @@ use crate::math::Math;
 /// The sizes of `a`, `b` and `result` must be equal to `dims`, the safety requirements of
 /// `M` definition the basic math operations and the requirements of `R` SIMD register
 /// must also be followed.
-pub unsafe fn generic_cmp_eq_vector<T, R, M, B>(
-    dims: usize,
-    a: &[T],
-    b: &[T],
-    result: &mut [B],
+pub unsafe fn generic_cmp_eq_vertical<T, R, M, B1, B2, B3>(
+    a: B1,
+    b: B2,
+    result: &mut [B3],
 ) where
     T: Copy,
     R: SimdRegister<T>,
     M: Math<T>,
-    for<'a> &'a mut [B]: WriteOnlyBuffer<Item = T>,
+    B1: IntoMemLoader<T>,
+    B1::Loader: MemLoader<Value = T>,
+    B2: IntoMemLoader<T>,
+    B2::Loader: MemLoader<Value = T>,
+    for<'a> &'a mut [B3]: WriteOnlyBuffer<Item = T>,
 {
-    apply_vector_x_vector_kernel::<T, R, B>(
-        dims,
+    apply_vertical_kernel::<T, R, M, B1, B2, B3>(
         a,
         b,
         result,
@@ -47,19 +50,21 @@ pub unsafe fn generic_cmp_eq_vector<T, R, M, B>(
 /// The sizes of `a`, `b` and `result` must be equal to `dims`, the safety requirements of
 /// `M` definition the basic math operations and the requirements of `R` SIMD register
 /// must also be followed.
-pub unsafe fn generic_cmp_neq_vector<T, R, M, B>(
-    dims: usize,
-    a: &[T],
-    b: &[T],
-    result: &mut [B],
+pub unsafe fn generic_cmp_neq_vertical<T, R, M, B1, B2, B3>(
+    a: B1,
+    b: B2,
+    result: &mut [B3],
 ) where
     T: Copy,
     R: SimdRegister<T>,
     M: Math<T>,
-    for<'a> &'a mut [B]: WriteOnlyBuffer<Item = T>,
+    B1: IntoMemLoader<T>,
+    B1::Loader: MemLoader<Value = T>,
+    B2: IntoMemLoader<T>,
+    B2::Loader: MemLoader<Value = T>,
+    for<'a> &'a mut [B3]: WriteOnlyBuffer<Item = T>,
 {
-    apply_vector_x_vector_kernel::<T, R, B>(
-        dims,
+    apply_vertical_kernel::<T, R, M, B1, B2, B3>(
         a,
         b,
         result,
@@ -80,19 +85,21 @@ pub unsafe fn generic_cmp_neq_vector<T, R, M, B>(
 /// The sizes of `a`, `b` and `result` must be equal to `dims`, the safety requirements of
 /// `M` definition the basic math operations and the requirements of `R` SIMD register
 /// must also be followed.
-pub unsafe fn generic_cmp_lt_vector<T, R, M, B>(
-    dims: usize,
-    a: &[T],
-    b: &[T],
-    result: &mut [B],
+pub unsafe fn generic_cmp_lt_vertical<T, R, M, B1, B2, B3>(
+    a: B1,
+    b: B2,
+    result: &mut [B3],
 ) where
     T: Copy,
     R: SimdRegister<T>,
     M: Math<T>,
-    for<'a> &'a mut [B]: WriteOnlyBuffer<Item = T>,
+    B1: IntoMemLoader<T>,
+    B1::Loader: MemLoader<Value = T>,
+    B2: IntoMemLoader<T>,
+    B2::Loader: MemLoader<Value = T>,
+    for<'a> &'a mut [B3]: WriteOnlyBuffer<Item = T>,
 {
-    apply_vector_x_vector_kernel::<T, R, B>(
-        dims,
+    apply_vertical_kernel::<T, R, M, B1, B2, B3>(
         a,
         b,
         result,
@@ -113,19 +120,21 @@ pub unsafe fn generic_cmp_lt_vector<T, R, M, B>(
 /// The sizes of `a`, `b` and `result` must be equal to `dims`, the safety requirements of
 /// `M` definition the basic math operations and the requirements of `R` SIMD register
 /// must also be followed.
-pub unsafe fn generic_cmp_lte_vector<T, R, M, B>(
-    dims: usize,
-    a: &[T],
-    b: &[T],
-    result: &mut [B],
+pub unsafe fn generic_cmp_lte_vertical<T, R, M, B1, B2, B3>(
+    a: B1,
+    b: B2,
+    result: &mut [B3],
 ) where
     T: Copy,
     R: SimdRegister<T>,
     M: Math<T>,
-    for<'a> &'a mut [B]: WriteOnlyBuffer<Item = T>,
+    B1: IntoMemLoader<T>,
+    B1::Loader: MemLoader<Value = T>,
+    B2: IntoMemLoader<T>,
+    B2::Loader: MemLoader<Value = T>,
+    for<'a> &'a mut [B3]: WriteOnlyBuffer<Item = T>,
 {
-    apply_vector_x_vector_kernel::<T, R, B>(
-        dims,
+    apply_vertical_kernel::<T, R, M, B1, B2, B3>(
         a,
         b,
         result,
@@ -146,19 +155,21 @@ pub unsafe fn generic_cmp_lte_vector<T, R, M, B>(
 /// The sizes of `a`, `b` and `result` must be equal to `dims`, the safety requirements of
 /// `M` definition the basic math operations and the requirements of `R` SIMD register
 /// must also be followed.
-pub unsafe fn generic_cmp_gt_vector<T, R, M, B>(
-    dims: usize,
-    a: &[T],
-    b: &[T],
-    result: &mut [B],
+pub unsafe fn generic_cmp_gt_vertical<T, R, M, B1, B2, B3>(
+    a: B1,
+    b: B2,
+    result: &mut [B3],
 ) where
     T: Copy,
     R: SimdRegister<T>,
     M: Math<T>,
-    for<'a> &'a mut [B]: WriteOnlyBuffer<Item = T>,
+    B1: IntoMemLoader<T>,
+    B1::Loader: MemLoader<Value = T>,
+    B2: IntoMemLoader<T>,
+    B2::Loader: MemLoader<Value = T>,
+    for<'a> &'a mut [B3]: WriteOnlyBuffer<Item = T>,
 {
-    apply_vector_x_vector_kernel::<T, R, B>(
-        dims,
+    apply_vertical_kernel::<T, R, M, B1, B2, B3>(
         a,
         b,
         result,
@@ -179,19 +190,21 @@ pub unsafe fn generic_cmp_gt_vector<T, R, M, B>(
 /// The sizes of `a`, `b` and `result` must be equal to `dims`, the safety requirements of
 /// `M` definition the basic math operations and the requirements of `R` SIMD register
 /// must also be followed.
-pub unsafe fn generic_cmp_gte_vector<T, R, M, B>(
-    dims: usize,
-    a: &[T],
-    b: &[T],
-    result: &mut [B],
+pub unsafe fn generic_cmp_gte_vertical<T, R, M, B1, B2, B3>(
+    a: B1,
+    b: B2,
+    result: &mut [B3],
 ) where
     T: Copy,
     R: SimdRegister<T>,
     M: Math<T>,
-    for<'a> &'a mut [B]: WriteOnlyBuffer<Item = T>,
+    B1: IntoMemLoader<T>,
+    B1::Loader: MemLoader<Value = T>,
+    B2: IntoMemLoader<T>,
+    B2::Loader: MemLoader<Value = T>,
+    for<'a> &'a mut [B3]: WriteOnlyBuffer<Item = T>,
 {
-    apply_vector_x_vector_kernel::<T, R, B>(
-        dims,
+    apply_vertical_kernel::<T, R, M, B1, B2, B3>(
         a,
         b,
         result,
@@ -220,7 +233,7 @@ pub(crate) mod tests {
 
         let dims = l1.len();
         let mut result = vec![AutoMath::zero(); dims];
-        generic_cmp_eq_vector::<T, R, AutoMath, _>(dims, &l1, &l2, &mut result);
+        generic_cmp_eq_vertical::<T, R, AutoMath, _, _, _>(&l1, &l2, &mut result);
 
         let mut expected_result = Vec::new();
         for (a, b) in zip(l1, l2) {
@@ -240,7 +253,7 @@ pub(crate) mod tests {
 
         let dims = l1.len();
         let mut result = vec![AutoMath::zero(); dims];
-        generic_cmp_neq_vector::<T, R, AutoMath, _>(dims, &l1, &l2, &mut result);
+        generic_cmp_neq_vertical::<T, R, AutoMath, _, _, _>(&l1, &l2, &mut result);
 
         let mut expected_result = Vec::new();
         for (a, b) in zip(l1, l2) {
@@ -260,7 +273,7 @@ pub(crate) mod tests {
 
         let dims = l1.len();
         let mut result = vec![AutoMath::zero(); dims];
-        generic_cmp_lt_vector::<T, R, AutoMath, _>(dims, &l1, &l2, &mut result);
+        generic_cmp_lt_vertical::<T, R, AutoMath, _, _, _>(&l1, &l2, &mut result);
 
         let mut expected_result = Vec::new();
         for (a, b) in zip(l1, l2) {
@@ -280,7 +293,7 @@ pub(crate) mod tests {
 
         let dims = l1.len();
         let mut result = vec![AutoMath::zero(); dims];
-        generic_cmp_lte_vector::<T, R, AutoMath, _>(dims, &l1, &l2, &mut result);
+        generic_cmp_lte_vertical::<T, R, AutoMath, _, _, _>(&l1, &l2, &mut result);
 
         let mut expected_result = Vec::new();
         for (a, b) in zip(l1, l2) {
@@ -300,7 +313,7 @@ pub(crate) mod tests {
 
         let dims = l1.len();
         let mut result = vec![AutoMath::zero(); dims];
-        generic_cmp_gt_vector::<T, R, AutoMath, _>(dims, &l1, &l2, &mut result);
+        generic_cmp_gt_vertical::<T, R, AutoMath, _, _, _>(&l1, &l2, &mut result);
 
         let mut expected_result = Vec::new();
         for (a, b) in zip(l1, l2) {
@@ -320,7 +333,7 @@ pub(crate) mod tests {
 
         let dims = l1.len();
         let mut result = vec![AutoMath::zero(); dims];
-        generic_cmp_gte_vector::<T, R, AutoMath, _>(dims, &l1, &l2, &mut result);
+        generic_cmp_gte_vertical::<T, R, AutoMath, _, _, _>(&l1, &l2, &mut result);
 
         let mut expected_result = Vec::new();
         for (a, b) in zip(l1, l2) {

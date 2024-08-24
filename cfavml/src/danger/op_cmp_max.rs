@@ -1,4 +1,5 @@
 use crate::buffer::WriteOnlyBuffer;
+use crate::danger::core_routine_boilerplate::apply_vertical_kernel;
 use crate::danger::core_simd_api::SimdRegister;
 use crate::math::Math;
 use crate::mem_loader::{IntoMemLoader, MemLoader};
@@ -8,7 +9,7 @@ use crate::mem_loader::{IntoMemLoader, MemLoader};
 ///
 /// # Safety
 ///
-/// The safety requirements of `M` definition the basic math operations and 
+/// The safety requirements of `M` definition the basic math operations and
 /// the requirements of `R` SIMD register must also be followed.
 pub unsafe fn generic_cmp_max<T, R, M, B1>(a: B1) -> T
 where
@@ -16,9 +17,9 @@ where
     R: SimdRegister<T>,
     M: Math<T>,
     B1: IntoMemLoader<T>,
-    B1::Loader: MemLoader<Value=T>,
+    B1::Loader: MemLoader<Value = T>,
 {
-    let mut a = a.into_mem_loader();   
+    let mut a = a.into_mem_loader();
     let len = a.projected_len();
 
     let offset_from = len % R::elements_per_dense();
@@ -61,69 +62,42 @@ where
 /// A generic vertical max implementation over two vectors of a given set of dimensions.
 ///
 /// # Panics
-/// 
+///
 /// If `a` and `b` cannot be projected to the size of `result` .
-/// 
+///
 /// # Safety
 ///
-/// `result` must be safe to _write_ to, it does not have to be initialized but must stay 
-/// within bounds, the safety requirements of `M` definition the basic math operations 
+/// `result` must be safe to _write_ to, it does not have to be initialized but must stay
+/// within bounds, the safety requirements of `M` definition the basic math operations
 /// and the requirements of `R` SIMD register must also be followed.
 pub unsafe fn generic_cmp_max_vertical<T, R, M, B1, B2, B3>(
     a: B1,
     b: B2,
-    mut result: &mut [B3],
+    result: &mut [B3],
 ) where
     T: Copy,
     R: SimdRegister<T>,
     M: Math<T>,
     B1: IntoMemLoader<T>,
-    B1::Loader: MemLoader<Value=T>,
+    B1::Loader: MemLoader<Value = T>,
     B2: IntoMemLoader<T>,
-    B2::Loader: MemLoader<Value=T>,
+    B2::Loader: MemLoader<Value = T>,
     for<'a> &'a mut [B3]: WriteOnlyBuffer<Item = T>,
 {
-    let project_to_len = result.raw_buffer_len();
-    let result_ptr = result.as_write_only_ptr();
-    
-    let mut a = a.into_projected_mem_loader(project_to_len);
-    let mut b = b.into_projected_mem_loader(project_to_len);
-    
-    let offset_from = project_to_len % R::elements_per_dense();
-
-    // Operate over dense lanes first.
-    let mut i = 0;
-    while i < (project_to_len - offset_from) {
-        let l1 = a.load_dense::<R>();
-        let l2 = b.load_dense::<R>();
-        let max = R::max_dense(l1, l2);
-        R::write_dense(result_ptr.add(i), max);
-
-        i += R::elements_per_dense();
-    }
-
-    // Operate over single registers next.
-    let offset_from = offset_from % R::elements_per_lane();
-    while i < (project_to_len - offset_from) {
-        let l1 = a.load::<R>();
-        let l2 = b.load::<R>();
-        let max = R::max(l1, l2);
-        R::write(result_ptr.add(i), max);
-
-        i += R::elements_per_lane();
-    }
-
-    while i < project_to_len {
-        result.write_at(i, M::cmp_max(a.read(), b.read()));
-
-        i += 1;
-    }
+    apply_vertical_kernel::<T, R, M, B1, B2, B3>(
+        a,
+        b,
+        result,
+        R::max_dense,
+        R::max,
+        M::cmp_max,
+    );
 }
 
 #[cfg(test)]
 pub(crate) unsafe fn test_max<T, R>(l1: Vec<T>, l2: Vec<T>)
 where
-    T: Copy + PartialEq + std::fmt::Debug,
+    T: Copy + PartialEq + std::fmt::Debug + IntoMemLoader<T>,
     R: SimdRegister<T>,
     crate::math::AutoMath: Math<T>,
     for<'a> &'a Vec<T>: IntoMemLoader<T>,
@@ -142,7 +116,11 @@ where
 
     let dims = l1.len();
     let mut result = vec![AutoMath::min(); dims];
-    generic_cmp_max_vertical::<T, R, AutoMath, _, _, _>(AutoMath::zero(), &l1, &mut result);
+    generic_cmp_max_vertical::<T, R, AutoMath, _, _, _>(
+        AutoMath::zero(),
+        &l1,
+        &mut result,
+    );
     let mut expected_result = Vec::new();
     for a in l1.iter().copied() {
         expected_result.push(AutoMath::cmp_max(a, AutoMath::zero()));

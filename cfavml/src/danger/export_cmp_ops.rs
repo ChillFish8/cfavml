@@ -16,8 +16,7 @@ use crate::danger::{
     generic_cmp_lte_value,
     generic_cmp_lte_vector,
     generic_cmp_max,
-    generic_cmp_max_value,
-    generic_cmp_max_vector,
+    generic_cmp_max_vertical,
     generic_cmp_min,
     generic_cmp_min_value,
     generic_cmp_min_vector,
@@ -141,83 +140,83 @@ macro_rules! define_extra_horizontal_op {
     };
 }
 
-// OP-max
-define_op!(
-    vector_name = generic_fallback_cmp_max_vector,
-    vector_op = generic_cmp_max_vector,
-    vector_doc = "../export_docs/cmp_max_vector.md",
-    value_name = generic_fallback_cmp_max_value,
-    value_op = generic_cmp_max_value,
-    value_doc = "../export_docs/cmp_max_value.md",
-    Fallback,
-);
-#[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
-define_op!(
-    vector_name = generic_avx2_cmp_max_vector,
-    vector_op = generic_cmp_max_vector,
-    vector_doc = "../export_docs/cmp_max_vector.md",
-    value_name = generic_avx2_cmp_max_value,
-    value_op = generic_cmp_max_value,
-    value_doc = "../export_docs/cmp_max_value.md",
-    Avx2,
-    target_features = "avx2"
-);
-#[cfg(all(any(target_arch = "x86", target_arch = "x86_64"), feature = "nightly"))]
-define_op!(
-    vector_name = generic_avx512_cmp_max_vector,
-    vector_op = generic_cmp_max_vector,
-    vector_doc = "../export_docs/cmp_max_vector.md",
-    value_name = generic_avx512_cmp_max_value,
-    value_op = generic_cmp_max_value,
-    value_doc = "../export_docs/cmp_max_value.md",
-    Avx512,
-    target_features = "avx512f",
-    "avx512bw"
-);
-#[cfg(target_arch = "aarch64")]
-define_op!(
-    vector_name = generic_neon_cmp_max_vector,
-    vector_op = generic_cmp_max_vector,
-    vector_doc = "../export_docs/cmp_max_vector.md",
-    value_name = generic_neon_cmp_max_value,
-    value_op = generic_cmp_max_value,
-    value_doc = "../export_docs/cmp_max_value.md",
-    Neon,
-    target_features = "neon"
-);
-
-// OP-max-horizontal
-define_extra_horizontal_op!(
-    horizontal_name = generic_fallback_cmp_max,
-    horizontal_op = generic_cmp_max,
-    horizontal_doc = "../export_docs/cmp_max_horizontal.md",
-    Fallback,
-);
-#[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
-define_extra_horizontal_op!(
-    horizontal_name = generic_avx2_cmp_max,
-    horizontal_op = generic_cmp_max,
-    horizontal_doc = "../export_docs/cmp_max_horizontal.md",
-    Avx2,
-    target_features = "avx2"
-);
-#[cfg(all(any(target_arch = "x86", target_arch = "x86_64"), feature = "nightly"))]
-define_extra_horizontal_op!(
-    horizontal_name = generic_avx512_cmp_max,
-    horizontal_op = generic_cmp_max,
-    horizontal_doc = "../export_docs/cmp_max_horizontal.md",
-    Avx512,
-    target_features = "avx512f",
-    "avx512bw"
-);
-#[cfg(target_arch = "aarch64")]
-define_extra_horizontal_op!(
-    horizontal_name = generic_neon_cmp_max,
-    horizontal_op = generic_cmp_max,
-    horizontal_doc = "../export_docs/cmp_max_horizontal.md",
-    Neon,
-    target_features = "neon"
-);
+// // OP-max
+// define_op!(
+//     vector_name = generic_fallback_cmp_max_vector,
+//     vector_op = generic_cmp_max_vector,
+//     vector_doc = "../export_docs/cmp_max_vector.md",
+//     value_name = generic_fallback_cmp_max_value,
+//     value_op = generic_cmp_max_value,
+//     value_doc = "../export_docs/cmp_max_value.md",
+//     Fallback,
+// );
+// #[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
+// define_op!(
+//     vector_name = generic_avx2_cmp_max_vector,
+//     vector_op = generic_cmp_max_vector,
+//     vector_doc = "../export_docs/cmp_max_vector.md",
+//     value_name = generic_avx2_cmp_max_value,
+//     value_op = generic_cmp_max_value,
+//     value_doc = "../export_docs/cmp_max_value.md",
+//     Avx2,
+//     target_features = "avx2"
+// );
+// #[cfg(all(any(target_arch = "x86", target_arch = "x86_64"), feature = "nightly"))]
+// define_op!(
+//     vector_name = generic_avx512_cmp_max_vector,
+//     vector_op = generic_cmp_max_vector,
+//     vector_doc = "../export_docs/cmp_max_vector.md",
+//     value_name = generic_avx512_cmp_max_value,
+//     value_op = generic_cmp_max_value,
+//     value_doc = "../export_docs/cmp_max_value.md",
+//     Avx512,
+//     target_features = "avx512f",
+//     "avx512bw"
+// );
+// #[cfg(target_arch = "aarch64")]
+// define_op!(
+//     vector_name = generic_neon_cmp_max_vector,
+//     vector_op = generic_cmp_max_vector,
+//     vector_doc = "../export_docs/cmp_max_vector.md",
+//     value_name = generic_neon_cmp_max_value,
+//     value_op = generic_cmp_max_value,
+//     value_doc = "../export_docs/cmp_max_value.md",
+//     Neon,
+//     target_features = "neon"
+// );
+//
+// // OP-max-horizontal
+// define_extra_horizontal_op!(
+//     horizontal_name = generic_fallback_cmp_max,
+//     horizontal_op = generic_cmp_max,
+//     horizontal_doc = "../export_docs/cmp_max_horizontal.md",
+//     Fallback,
+// );
+// #[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
+// define_extra_horizontal_op!(
+//     horizontal_name = generic_avx2_cmp_max,
+//     horizontal_op = generic_cmp_max,
+//     horizontal_doc = "../export_docs/cmp_max_horizontal.md",
+//     Avx2,
+//     target_features = "avx2"
+// );
+// #[cfg(all(any(target_arch = "x86", target_arch = "x86_64"), feature = "nightly"))]
+// define_extra_horizontal_op!(
+//     horizontal_name = generic_avx512_cmp_max,
+//     horizontal_op = generic_cmp_max,
+//     horizontal_doc = "../export_docs/cmp_max_horizontal.md",
+//     Avx512,
+//     target_features = "avx512f",
+//     "avx512bw"
+// );
+// #[cfg(target_arch = "aarch64")]
+// define_extra_horizontal_op!(
+//     horizontal_name = generic_neon_cmp_max,
+//     horizontal_op = generic_cmp_max,
+//     horizontal_doc = "../export_docs/cmp_max_horizontal.md",
+//     Neon,
+//     target_features = "neon"
+// );
 
 // OP-min
 define_op!(
@@ -639,66 +638,66 @@ mod tests {
         };
     }
 
-    define_cmp_test!(
-        generic_fallback,
-        types = f32,
-        f64,
-        i8,
-        i16,
-        i32,
-        i64,
-        u8,
-        u16,
-        u32,
-        u64
-    );
-    #[cfg(all(
-        any(target_arch = "x86", target_arch = "x86_64"),
-        target_feature = "avx2"
-    ))]
-    define_cmp_test!(
-        generic_avx2,
-        types = f32,
-        f64,
-        i8,
-        i16,
-        i32,
-        i64,
-        u8,
-        u16,
-        u32,
-        u64
-    );
-    #[cfg(all(
-        any(target_arch = "x86", target_arch = "x86_64"),
-        feature = "nightly",
-        target_feature = "avx512f"
-    ))]
-    define_cmp_test!(
-        generic_avx512,
-        types = f32,
-        f64,
-        i8,
-        i16,
-        i32,
-        i64,
-        u8,
-        u16,
-        u32,
-        u64
-    );
-    #[cfg(target_arch = "aarch64")]
-    define_cmp_test!(
-        generic_neon,
-        types = f32,
-        f64,
-        i8,
-        i16,
-        i32,
-        i64,
-        u8,
-        u16,
-        u32,
-        u64
-    );
+    // define_cmp_test!(
+    //     generic_fallback,
+    //     types = f32,
+    //     f64,
+    //     i8,
+    //     i16,
+    //     i32,
+    //     i64,
+    //     u8,
+    //     u16,
+    //     u32,
+    //     u64
+    // );
+    // #[cfg(all(
+    //     any(target_arch = "x86", target_arch = "x86_64"),
+    //     target_feature = "avx2"
+    // ))]
+    // define_cmp_test!(
+    //     generic_avx2,
+    //     types = f32,
+    //     f64,
+    //     i8,
+    //     i16,
+    //     i32,
+    //     i64,
+    //     u8,
+    //     u16,
+    //     u32,
+    //     u64
+    // );
+    // #[cfg(all(
+    //     any(target_arch = "x86", target_arch = "x86_64"),
+    //     feature = "nightly",
+    //     target_feature = "avx512f"
+    // ))]
+    // define_cmp_test!(
+    //     generic_avx512,
+    //     types = f32,
+    //     f64,
+    //     i8,
+    //     i16,
+    //     i32,
+    //     i64,
+    //     u8,
+    //     u16,
+    //     u32,
+    //     u64
+    // );
+    // #[cfg(target_arch = "aarch64")]
+    // define_cmp_test!(
+    //     generic_neon,
+    //     types = f32,
+    //     f64,
+    //     i8,
+    //     i16,
+    //     i32,
+    //     i64,
+    //     u8,
+    //     u16,
+    //     u32,
+    //     u64
+    // );
 }

@@ -3,19 +3,19 @@ use crate::danger::{DenseLane, SimdRegister};
 /// A buffer or value that can be turned into a [MemLoader].
 ///
 /// NOTE: You are not supposed to implement this trait yourself.
-pub(crate) trait IntoMemLoader<T> {
+pub trait IntoMemLoader<T> {
     /// The actual [MemLoader] produced by this implementation.
     type Loader: MemLoader<Value = T>;
-    
+
     /// Consumes the value returning the configured [MemLoader]
     fn into_mem_loader(self) -> Self::Loader;
-    
+
     /// Consumes the value returning the configured [MemLoader]
     fn into_projected_mem_loader(self, projected_len: usize) -> Self::Loader;
 }
 
 /// A trait that provides generic memory access and loading patterns for SIMD routines.
-pub(crate) trait MemLoader {
+pub trait MemLoader {
     /// The inner value type within the loader.
     type Value: Copy;
 
@@ -35,7 +35,9 @@ pub(crate) trait MemLoader {
     /// This method has no concept of checking the remaining length of the loader,
     /// out of bounds access can easily happen if the routine does not track the current
     /// positions of buffers.
-    unsafe fn load_dense<R: SimdRegister<Self::Value>>(&mut self) -> DenseLane<R::Register>;
+    unsafe fn load_dense<R: SimdRegister<Self::Value>>(
+        &mut self,
+    ) -> DenseLane<R::Register>;
 
     /// Performs an unsafe load of a single register from the [MemLoader] and advances
     //     /// the statemachine.
@@ -61,19 +63,19 @@ pub(crate) trait MemLoader {
 impl<'a, B, T> IntoMemLoader<T> for &'a B
 where
     T: Copy,
-    B: AsRef<[T]>,
+    B: AsRef<[T]> + ?Sized,
 {
     type Loader = PtrBufferLoader<T>;
 
     fn into_projected_mem_loader(self, projected_len: usize) -> Self::Loader {
         assert_eq!(
             projected_len,
-            self.as_ref().len(), 
+            self.as_ref().len(),
             "Buffer cannot be projected outside of its existing dimensions currently",
         );
         self.into_mem_loader()
     }
-    
+
     fn into_mem_loader(self) -> Self::Loader {
         let slice = self.as_ref();
         PtrBufferLoader {
@@ -85,22 +87,22 @@ where
 }
 
 macro_rules! impl_scalar_buffer_loader {
-    ($t:ty) => {        
+    ($t:ty) => {
         impl IntoMemLoader<$t> for $t {
             type Loader = ScalarBufferLoader<$t>;
-        
+
             fn into_projected_mem_loader(self, projected_len: usize) -> Self::Loader {
                 ScalarBufferLoader {
                     data: self,
                     projected_len,
                 }
             }
-            
+
             fn into_mem_loader(self) -> Self::Loader {
                 ScalarBufferLoader {
                     data: self,
                     projected_len: 1,
-                }                
+                }
             }
         }
     };
@@ -117,10 +119,9 @@ impl_scalar_buffer_loader!(u16);
 impl_scalar_buffer_loader!(u32);
 impl_scalar_buffer_loader!(u64);
 
-
 /// A [MemLoader] implementation that reads from a contiguous buffer represented
 /// as a data pointer.
-pub(crate) struct PtrBufferLoader<T> {
+pub struct PtrBufferLoader<T> {
     data: *const T,
     data_len: usize,
 
@@ -142,9 +143,11 @@ impl<T: Copy> MemLoader for PtrBufferLoader<T> {
     }
 
     #[inline(always)]
-    unsafe fn load_dense<R: SimdRegister<Self::Value>>(&mut self) -> DenseLane<R::Register> {
-        let dense = R::load_dense(self.data.add(self.data_cursor));        
-        self.data_cursor += R::elements_per_dense();        
+    unsafe fn load_dense<R: SimdRegister<Self::Value>>(
+        &mut self,
+    ) -> DenseLane<R::Register> {
+        let dense = R::load_dense(self.data.add(self.data_cursor));
+        self.data_cursor += R::elements_per_dense();
         dense
     }
 
@@ -165,7 +168,7 @@ impl<T: Copy> MemLoader for PtrBufferLoader<T> {
 
 /// A [MemLoader] implementation that holds a single value that has been broadcast
 /// to a desired size.
-pub(crate) struct ScalarBufferLoader<T> {
+pub struct ScalarBufferLoader<T> {
     data: T,
     projected_len: usize,
 }
@@ -184,7 +187,9 @@ impl<T: Copy> MemLoader for ScalarBufferLoader<T> {
     }
 
     #[inline(always)]
-    unsafe fn load_dense<R: SimdRegister<Self::Value>>(&mut self) -> DenseLane<R::Register> {
+    unsafe fn load_dense<R: SimdRegister<Self::Value>>(
+        &mut self,
+    ) -> DenseLane<R::Register> {
         R::filled_dense(self.data)
     }
 

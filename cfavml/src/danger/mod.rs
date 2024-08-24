@@ -10,8 +10,7 @@ mod impl_avx512;
 mod impl_fallback;
 #[cfg(target_arch = "aarch64")]
 mod impl_neon;
-mod op_arithmetic_value;
-mod op_arithmetic_vector;
+mod op_arithmetic_vertical;
 mod op_cmp_max;
 mod op_cmp_min;
 mod op_cosine;
@@ -27,8 +26,7 @@ pub mod export_cmp_ops;
 pub mod export_distance_ops;
 #[cfg(test)]
 mod impl_test;
-mod op_cmp_value;
-mod op_cmp_vector;
+mod op_cmp_vertical;
 #[cfg(test)]
 mod test_suite;
 
@@ -42,42 +40,21 @@ pub use self::impl_avx512::*;
 pub use self::impl_fallback::*;
 #[cfg(target_arch = "aarch64")]
 pub use self::impl_neon::*;
-pub use self::op_arithmetic_value::{
-    generic_add_value,
-    generic_div_value,
-    generic_mul_value,
-    generic_sub_value,
-};
-pub use self::op_arithmetic_vector::{
+pub use self::op_arithmetic_vertical::{
     generic_add_vector,
     generic_div_vector,
     generic_mul_vector,
     generic_sub_vector,
 };
-pub use self::op_cmp_max::{
-    generic_cmp_max,
-    generic_cmp_max_vertical,
-};
-pub use self::op_cmp_min::{
-    generic_cmp_min,
-    generic_cmp_min_value,
-    generic_cmp_min_vector,
-};
-pub use self::op_cmp_value::{
-    generic_cmp_eq_value,
-    generic_cmp_gt_value,
-    generic_cmp_gte_value,
-    generic_cmp_lt_value,
-    generic_cmp_lte_value,
-    generic_cmp_neq_value,
-};
-pub use self::op_cmp_vector::{
-    generic_cmp_eq_vector,
-    generic_cmp_gt_vector,
-    generic_cmp_gte_vector,
-    generic_cmp_lt_vector,
-    generic_cmp_lte_vector,
-    generic_cmp_neq_vector,
+pub use self::op_cmp_max::{generic_cmp_max, generic_cmp_max_vertical};
+pub use self::op_cmp_min::{generic_cmp_min, generic_cmp_min_vertical};
+pub use self::op_cmp_vertical::{
+    generic_cmp_eq_vertical,
+    generic_cmp_gt_vertical,
+    generic_cmp_gte_vertical,
+    generic_cmp_lt_vertical,
+    generic_cmp_lte_vertical,
+    generic_cmp_neq_vertical,
 };
 #[cfg(test)]
 pub(crate) use self::op_cosine::cosine;

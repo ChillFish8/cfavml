@@ -17,6 +17,7 @@ pub mod dispatch;
 pub mod math;
 
 pub mod buffer;
+pub mod mem_loader;
 mod safe_function_ops;
 pub mod safe_trait_agg_ops;
 pub mod safe_trait_arithmetic_ops;
@@ -24,6 +25,5 @@ pub mod safe_trait_cmp_ops;
 pub mod safe_trait_distance_ops;
 #[cfg(test)]
 mod test_utils;
-pub mod mem_loader;
 
 pub use self::safe_function_ops::*;

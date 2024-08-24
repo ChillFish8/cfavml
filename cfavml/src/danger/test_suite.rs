@@ -131,10 +131,10 @@ where
     for<'a> &'a mut [T]: WriteOnlyBuffer<Item = T>,
 {
     unsafe {
-        op_arithmetic_vector::tests::test_add::<_, R>(l1.clone(), l2.clone());
-        op_arithmetic_vector::tests::test_sub::<_, R>(l1.clone(), l2.clone());
-        op_arithmetic_vector::tests::test_div::<_, R>(l1.clone(), l2.clone());
-        op_arithmetic_vector::tests::test_mul::<_, R>(l1, l2);
+        op_arithmetic_vertical::tests::test_add::<_, R>(l1.clone(), l2.clone());
+        op_arithmetic_vertical::tests::test_sub::<_, R>(l1.clone(), l2.clone());
+        op_arithmetic_vertical::tests::test_div::<_, R>(l1.clone(), l2.clone());
+        op_arithmetic_vertical::tests::test_mul::<_, R>(l1, l2);
     };
 }
 
@@ -145,12 +145,12 @@ where
     for<'a> &'a mut [T]: WriteOnlyBuffer<Item = T>,
 {
     unsafe {
-        op_cmp_vector::tests::test_eq::<_, R>(l1.clone(), l2.clone());
-        op_cmp_vector::tests::test_neq::<_, R>(l1.clone(), l2.clone());
-        op_cmp_vector::tests::test_lt::<_, R>(l1.clone(), l2.clone());
-        op_cmp_vector::tests::test_lte::<_, R>(l1.clone(), l2.clone());
-        op_cmp_vector::tests::test_gt::<_, R>(l1.clone(), l2.clone());
-        op_cmp_vector::tests::test_gte::<_, R>(l1, l2);
+        op_cmp_vertical::tests::test_eq::<_, R>(l1.clone(), l2.clone());
+        op_cmp_vertical::tests::test_neq::<_, R>(l1.clone(), l2.clone());
+        op_cmp_vertical::tests::test_lt::<_, R>(l1.clone(), l2.clone());
+        op_cmp_vertical::tests::test_lte::<_, R>(l1.clone(), l2.clone());
+        op_cmp_vertical::tests::test_gt::<_, R>(l1.clone(), l2.clone());
+        op_cmp_vertical::tests::test_gte::<_, R>(l1, l2);
     };
 }
 

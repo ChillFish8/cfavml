@@ -328,3 +328,31 @@ pub mod neon_ops {
 pub fn ndarray_dot(a: &ndarray::Array1<f32>, b: &ndarray::Array1<f32>) -> f32 {
     a.dot(b)
 }
+
+#[no_mangle]
+#[inline(never)]
+#[target_feature(enable = "avx2")]
+pub unsafe fn cmp_max_test(a: &[f32], b: &[f32], buf: &mut [f32]) {
+    generic_cmp_max_vertical::<f32, Avx2, cfavml::math::AutoMath, _, _, _>(a, b, buf);
+}
+
+#[no_mangle]
+#[inline(never)]
+#[target_feature(enable = "avx2")]
+pub unsafe fn cmp_max_broadcast_test(a: f32, b: &[f32], buf: &mut [f32]) {
+    generic_cmp_max_vertical::<f32, Avx2, cfavml::math::AutoMath, _, _, _>(a, b, buf);
+}
+
+#[no_mangle]
+#[inline(never)]
+#[target_feature(enable = "avx2")]
+pub unsafe fn cmp_min_test(a: &[f32], b: &[f32], buf: &mut [f32]) {
+    generic_cmp_min_vector::<f32, Avx2, cfavml::math::AutoMath, _>(a.len(), a, b, buf);
+}
+
+#[no_mangle]
+#[inline(never)]
+#[target_feature(enable = "avx2")]
+pub unsafe fn cmp_min_broadcast_test(a: f32, b: &[f32], buf: &mut [f32]) {
+    generic_cmp_min_value::<f32, Avx2, cfavml::math::AutoMath, _>(b.len(), a, b, buf);
+}

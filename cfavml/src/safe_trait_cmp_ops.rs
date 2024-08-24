@@ -991,13 +991,13 @@ macro_rules! cmp_ops {
     };
 }
 
-cmp_ops!(f32);
-cmp_ops!(f64);
-cmp_ops!(i8);
-cmp_ops!(i16);
-cmp_ops!(i32);
-cmp_ops!(i64);
-cmp_ops!(u8);
-cmp_ops!(u16);
-cmp_ops!(u32);
-cmp_ops!(u64);
+// cmp_ops!(f32);
+// cmp_ops!(f64);
+// cmp_ops!(i8);
+// cmp_ops!(i16);
+// cmp_ops!(i32);
+// cmp_ops!(i64);
+// cmp_ops!(u8);
+// cmp_ops!(u16);
+// cmp_ops!(u32);
+// cmp_ops!(u64);
