@@ -32,10 +32,10 @@ return mask
 For `f32` and `f64` types, `NaN` values are handled as always being `false` in **ANY** comparison. 
 Even when compared against each other.
 
-- `1.0 > 0.0 -> true`
-- `1.0 > NaN -> false`
-- `NaN > 1.0 -> false`
-- `NaN > NaN -> false`
+- `1.0 >= 0.0 -> true`
+- `1.0 >= NaN -> false`
+- `NaN >= 1.0 -> false`
+- `NaN >= NaN -> false`
 
 # Panics
 

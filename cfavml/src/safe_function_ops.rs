@@ -174,8 +174,20 @@ where
 }
 
 #[inline]
-/// Performs an element wise max on each element pair from vectors `a` and `b`, writing the result
-/// to `result`.
+/// Takes the element wise max of vectors `a` and `b` of size `dims` and stores the result
+/// in `result` of size `dims`.
+///
+/// ### Projecting Vectors
+///
+/// CFAVML allows for working over a wide variety of buffers for applications, projection is effectively
+/// broadcasting of two input buffers implementing `IntoMemLoader<T>`.
+///
+/// By default, you can provide _two slices_, _one slice and a broadcast value_, or _two broadcast values_,
+/// which exhibit the standard behaviour as you might expect.
+///
+/// When providing two slices as inputs they cannot be projected to a buffer
+/// that is larger their input sizes by default. This means providing two slices
+/// of `128` elements in length must take a result buffer of `128` elements in length.
 ///
 /// ### Pseudocode
 ///
@@ -188,16 +200,10 @@ where
 /// return result
 /// ```
 ///
-/// ### Result buffer
+/// # Panics
 ///
-/// The result buffer can be either an initialized slice i.e. `&mut [T]`
-/// or it can be a slice holding potentially uninitialized data i.e. `&mut [MaybeUninit<T>]`.
-///
-/// Once the operation is complete, it is safe to assume the data written is fully initialized.
-///
-/// ### Panics
-///
-/// Panics if the size of vectors `a`, `b` and `result` do not match.
+/// If vectors `a` and `b` cannot be projected to the target size of `result`.
+/// Note that the projection rules are tied to the `MemLoader` implementation.
 pub fn max_vertical<T, B1, B2, B3>(lhs: B1, rhs: B2, result: &mut [B3])
 where
     T: CmpOps,
@@ -233,8 +239,20 @@ where
 }
 
 #[inline]
-/// Performs an element wise min on each element pair from vectors `a` and `b`, writing the result
-/// to `result`.
+/// Takes the element wise min of vectors `a` and `b` of size `dims` and stores the result
+/// in `result` of size `dims`.
+///
+/// ### Projecting Vectors
+///
+/// CFAVML allows for working over a wide variety of buffers for applications, projection is effectively
+/// broadcasting of two input buffers implementing `IntoMemLoader<T>`.
+///
+/// By default, you can provide _two slices_, _one slice and a broadcast value_, or _two broadcast values_,
+/// which exhibit the standard behaviour as you might expect.
+///
+/// When providing two slices as inputs they cannot be projected to a buffer
+/// that is larger their input sizes by default. This means providing two slices
+/// of `128` elements in length must take a result buffer of `128` elements in length.
 ///
 /// ### Pseudocode
 ///
@@ -247,16 +265,10 @@ where
 /// return result
 /// ```
 ///
-/// ### Result buffer
+/// # Panics
 ///
-/// The result buffer can be either an initialized slice i.e. `&mut [T]`
-/// or it can be a slice holding potentially uninitialized data i.e. `&mut [MaybeUninit<T>]`.
-///
-/// Once the operation is complete, it is safe to assume the data written is fully initialized.
-///
-/// ### Panics
-///
-/// Panics if the size of vectors `a`, `b` and `result` do not match.
+/// If vectors `a` and `b` cannot be projected to the target size of `result`.
+/// Note that the projection rules are tied to the `MemLoader` implementation.
 pub fn min_vertical<T, B1, B2, B3>(lhs: B1, rhs: B2, result: &mut [B3])
 where
     T: CmpOps,
@@ -270,8 +282,23 @@ where
 }
 
 #[inline]
-/// Checks each element pair from vectors `a` and `b` of size `dims`  comparing
-/// if element `a` is **_equal to_** element `b` returning a mask vector of the same type.
+/// Checks each element pair of elements from vectors `a` and `b` comparing if
+/// element `a` is **_equal to_** element `b`, storing the output as `1` (true) or `0` (false)
+/// in `result`.
+///
+/// Vectors `a` and `b` can be projected to the new size of `result` if the mem loader allows.
+///
+/// ### Projecting Vectors
+///
+/// CFAVML allows for working over a wide variety of buffers for applications, projection is effectively
+/// broadcasting of two input buffers implementing `IntoMemLoader<T>`.
+///
+/// By default, you can provide _two slices_, _one slice and a broadcast value_, or _two broadcast values_,
+/// which exhibit the standard behaviour as you might expect.
+///
+/// When providing two slices as inputs they cannot be projected to a buffer
+/// that is larger their input sizes by default. This means providing two slices
+/// of `128` elements in length must take a result buffer of `128` elements in length.
 ///
 /// ### Pseudocode
 ///
@@ -293,16 +320,10 @@ where
 /// - `0.0 == NaN -> false`
 /// - `NaN == NaN -> false`
 ///
-/// ### Result buffer
+/// # Panics
 ///
-/// The result buffer can be either an initialized slice i.e. `&mut [T]`
-/// or it can be a slice holding potentially uninitialized data i.e. `&mut [MaybeUninit<T>]`.
-///
-/// Once the operation is complete, it is safe to assume the data written is fully initialized.
-///
-/// ### Panics
-///
-/// Panics if the size of vectors `a`, `b` and `result` do not match.
+/// If vectors `a` and `b` cannot be projected to the target size of `result`.
+/// Note that the projection rules are tied to the `MemLoader` implementation.
 pub fn eq_vertical<T, B1, B2, B3>(lhs: B1, rhs: B2, result: &mut [B3])
 where
     T: CmpOps,
@@ -316,8 +337,23 @@ where
 }
 
 #[inline]
-/// Checks each element pair from vectors `a` and `b` of size `dims`  comparing
-/// if element `a` is **_not equal to_** element `b` returning a mask vector of the same type.
+/// Checks each element pair of elements from vectors `a` and `b` comparing if
+/// element `a` is **_not equal to_** element `b`, storing the output as `1` (true)
+/// or `0` (false) in `result`.
+///
+/// Vectors `a` and `b` can be projected to the new size of `result` if the mem loader allows.
+///
+/// ### Projecting Vectors
+///
+/// CFAVML allows for working over a wide variety of buffers for applications, projection is effectively
+/// broadcasting of two input buffers implementing `IntoMemLoader<T>`.
+///
+/// By default, you can provide _two slices_, _one slice and a broadcast value_, or _two broadcast values_,
+/// which exhibit the standard behaviour as you might expect.
+///
+/// When providing two slices as inputs they cannot be projected to a buffer
+/// that is larger their input sizes by default. This means providing two slices
+/// of `128` elements in length must take a result buffer of `128` elements in length.
 ///
 /// ### Pseudocode
 ///
@@ -333,22 +369,16 @@ where
 /// ### Note on `NaN` handling on `f32/f64` types
 ///
 /// For `f32` and `f64` types, `NaN` values are handled as always being `false` in **ANY** comparison.
-/// Even when compared against each other, meaning in the case of NOT equal, they become `true`.
+/// Even when compared against each other.
 ///
 /// - `0.0 != 1.0 -> true`
 /// - `0.0 != NaN -> true`
 /// - `NaN != NaN -> true`
 ///
-/// ### Result buffer
+/// # Panics
 ///
-/// The result buffer can be either an initialized slice i.e. `&mut [T]`
-/// or it can be a slice holding potentially uninitialized data i.e. `&mut [MaybeUninit<T>]`.
-///
-/// Once the operation is complete, it is safe to assume the data written is fully initialized.
-///
-/// ### Panics
-///
-/// Panics if the size of vectors `a`, `b` and `result` do not match.
+/// If vectors `a` and `b` cannot be projected to the target size of `result`.
+/// Note that the projection rules are tied to the `MemLoader` implementation.
 pub fn neq_vertical<T, B1, B2, B3>(lhs: B1, rhs: B2, result: &mut [B3])
 where
     T: CmpOps,
@@ -362,8 +392,23 @@ where
 }
 
 #[inline]
-/// Checks each element pair from vectors `a` and `b` of size `dims`  comparing
-/// if element `a` is **_less than_** element `b` returning a mask vector of the same type.
+/// Checks each element pair of elements from vectors `a` and `b` comparing if
+/// element `a` is **_less than_** element `b`, storing the output as `1` (true)
+/// or `0` (false) in `result`.
+///
+/// Vectors `a` and `b` can be projected to the new size of `result` if the mem loader allows.
+///
+/// ### Projecting Vectors
+///
+/// CFAVML allows for working over a wide variety of buffers for applications, projection is effectively
+/// broadcasting of two input buffers implementing `IntoMemLoader<T>`.
+///
+/// By default, you can provide _two slices_, _one slice and a broadcast value_, or _two broadcast values_,
+/// which exhibit the standard behaviour as you might expect.
+///
+/// When providing two slices as inputs they cannot be projected to a buffer
+/// that is larger their input sizes by default. This means providing two slices
+/// of `128` elements in length must take a result buffer of `128` elements in length.
 ///
 /// ### Pseudocode
 ///
@@ -383,18 +428,13 @@ where
 ///
 /// - `0.0 < 1.0 -> true`
 /// - `0.0 < NaN -> false`
+/// - `NaN < 1.0 -> false`
 /// - `NaN < NaN -> false`
 ///
-/// ### Result buffer
+/// # Panics
 ///
-/// The result buffer can be either an initialized slice i.e. `&mut [T]`
-/// or it can be a slice holding potentially uninitialized data i.e. `&mut [MaybeUninit<T>]`.
-///
-/// Once the operation is complete, it is safe to assume the data written is fully initialized.
-///
-/// ### Panics
-///
-/// Panics if the size of vectors `a`, `b` and `result` do not match.
+/// If vectors `a` and `b` cannot be projected to the target size of `result`.
+/// Note that the projection rules are tied to the `MemLoader` implementation.
 pub fn lt_vertical<T, B1, B2, B3>(lhs: B1, rhs: B2, result: &mut [B3])
 where
     T: CmpOps,
@@ -408,8 +448,23 @@ where
 }
 
 #[inline]
-/// Checks each element pair from vectors `a` and `b` of size `dims`  comparing
-/// if element `a` is **_less than or equal to_** element `b` returning a mask vector of the same type.
+/// Checks each element pair of elements from vectors `a` and `b` comparing if
+/// element `a` is **_less than or equal to_** element `b`, storing the output as `1` (true)
+/// or `0` (false) in `result`.
+///
+/// Vectors `a` and `b` can be projected to the new size of `result` if the mem loader allows.
+///
+/// ### Projecting Vectors
+///
+/// CFAVML allows for working over a wide variety of buffers for applications, projection is effectively
+/// broadcasting of two input buffers implementing `IntoMemLoader<T>`.
+///
+/// By default, you can provide _two slices_, _one slice and a broadcast value_, or _two broadcast values_,
+/// which exhibit the standard behaviour as you might expect.
+///
+/// When providing two slices as inputs they cannot be projected to a buffer
+/// that is larger their input sizes by default. This means providing two slices
+/// of `128` elements in length must take a result buffer of `128` elements in length.
 ///
 /// ### Pseudocode
 ///
@@ -428,19 +483,15 @@ where
 /// Even when compared against each other.
 ///
 /// - `0.0 <= 1.0 -> true`
+/// - `1.0 <= 1.0 -> true`
 /// - `0.0 <= NaN -> false`
+/// - `NaN <= 1.0 -> false`
 /// - `NaN <= NaN -> false`
 ///
-/// ### Result buffer
+/// # Panics
 ///
-/// The result buffer can be either an initialized slice i.e. `&mut [T]`
-/// or it can be a slice holding potentially uninitialized data i.e. `&mut [MaybeUninit<T>]`.
-///
-/// Once the operation is complete, it is safe to assume the data written is fully initialized.
-///
-/// ### Panics
-///
-/// Panics if the size of vectors `a`, `b` and `result` do not match.
+/// If vectors `a` and `b` cannot be projected to the target size of `result`.
+/// Note that the projection rules are tied to the `MemLoader` implementation.
 pub fn lte_vertical<T, B1, B2, B3>(lhs: B1, rhs: B2, result: &mut [B3])
 where
     T: CmpOps,
@@ -454,8 +505,23 @@ where
 }
 
 #[inline]
-/// Checks each element pair from vectors `a` and `b` of size `dims`  comparing
-/// if element `a` is **_greater than_** element `b` returning a mask vector of the same type.
+/// Checks each element pair of elements from vectors `a` and `b` comparing if
+/// element `a` is **_greater than_** element `b`, storing the output as `1` (true) or `0` (false)
+/// in `result`.
+///
+/// Vectors `a` and `b` can be projected to the new size of `result` if the mem loader allows.
+///
+/// ### Projecting Vectors
+///
+/// CFAVML allows for working over a wide variety of buffers for applications, projection is effectively
+/// broadcasting of two input buffers implementing `IntoMemLoader<T>`.
+///
+/// By default, you can provide _two slices_, _one slice and a broadcast value_, or _two broadcast values_,
+/// which exhibit the standard behaviour as you might expect.
+///
+/// When providing two slices as inputs they cannot be projected to a buffer
+/// that is larger their input sizes by default. This means providing two slices
+/// of `128` elements in length must take a result buffer of `128` elements in length.
 ///
 /// ### Pseudocode
 ///
@@ -475,18 +541,13 @@ where
 ///
 /// - `1.0 > 0.0 -> true`
 /// - `1.0 > NaN -> false`
+/// - `NaN > 1.0 -> false`
 /// - `NaN > NaN -> false`
 ///
-/// ### Result buffer
+/// # Panics
 ///
-/// The result buffer can be either an initialized slice i.e. `&mut [T]`
-/// or it can be a slice holding potentially uninitialized data i.e. `&mut [MaybeUninit<T>]`.
-///
-/// Once the operation is complete, it is safe to assume the data written is fully initialized.
-///
-/// ### Panics
-///
-/// Panics if the size of vectors `a`, `b` and `result` do not match.
+/// If vectors `a` and `b` cannot be projected to the target size of `result`.
+/// Note that the projection rules are tied to the `MemLoader` implementation.
 pub fn gt_vertical<T, B1, B2, B3>(lhs: B1, rhs: B2, result: &mut [B3])
 where
     T: CmpOps,
@@ -500,8 +561,23 @@ where
 }
 
 #[inline]
-/// Checks each element pair from vectors `a` and `b` of size `dims`  comparing
-/// if element `a` is **_greater than_** element `b` returning a mask vector of the same type.
+/// Checks each element pair of elements from vectors `a` and `b` comparing if
+/// element `a` is **_greater than or equal to_** element `b`, storing the output as `1` (true)
+/// or `0` (false) in `result`.
+///
+/// Vectors `a` and `b` can be projected to the new size of `result` if the mem loader allows.
+///
+/// ### Projecting Vectors
+///
+/// CFAVML allows for working over a wide variety of buffers for applications, projection is effectively
+/// broadcasting of two input buffers implementing `IntoMemLoader<T>`.
+///
+/// By default, you can provide _two slices_, _one slice and a broadcast value_, or _two broadcast values_,
+/// which exhibit the standard behaviour as you might expect.
+///
+/// When providing two slices as inputs they cannot be projected to a buffer
+/// that is larger their input sizes by default. This means providing two slices
+/// of `128` elements in length must take a result buffer of `128` elements in length.
 ///
 /// ### Pseudocode
 ///
@@ -521,18 +597,13 @@ where
 ///
 /// - `1.0 >= 0.0 -> true`
 /// - `1.0 >= NaN -> false`
+/// - `NaN >= 1.0 -> false`
 /// - `NaN >= NaN -> false`
 ///
-/// ### Result buffer
+/// # Panics
 ///
-/// The result buffer can be either an initialized slice i.e. `&mut [T]`
-/// or it can be a slice holding potentially uninitialized data i.e. `&mut [MaybeUninit<T>]`.
-///
-/// Once the operation is complete, it is safe to assume the data written is fully initialized.
-///
-/// ### Panics
-///
-/// Panics if the size of vectors `a`, `b` and `result` do not match.
+/// If vectors `a` and `b` cannot be projected to the target size of `result`.
+/// Note that the projection rules are tied to the `MemLoader` implementation.
 pub fn gte_vertical<T, B1, B2, B3>(lhs: B1, rhs: B2, result: &mut [B3])
 where
     T: CmpOps,
@@ -545,8 +616,20 @@ where
     T::gte_vertical(lhs, rhs, result)
 }
 
-/// Performs an element wise addition of each element pair of vector `a` and `b`,
-/// writing the result to `result`.
+/// Performs an element wise addition of two input buffers `a` and `b` that can
+/// be projected to the desired output size of `result`.
+///
+/// ### Projecting Vectors
+///
+/// CFAVML allows for working over a wide variety of buffers for applications, projection is effectively
+/// broadcasting of two input buffers implementing `IntoMemLoader<T>`.
+///
+/// By default, you can provide _two slices_, _one slice and a broadcast value_, or _two broadcast values_,
+/// which exhibit the standard behaviour as you might expect.
+///
+/// When providing two slices as inputs they cannot be projected to a buffer
+/// that is larger their input sizes by default. This means providing two slices
+/// of `128` elements in length must take a result buffer of `128` elements in length.
 ///
 /// ### Pseudocode
 ///
@@ -559,16 +642,10 @@ where
 /// return result
 /// ```
 ///
-/// ### Result buffer
+/// # Panics
 ///
-/// The result buffer can be either an initialized slice i.e. `&mut [T]`
-/// or it can be a slice holding potentially uninitialized data i.e. `&mut [MaybeUninit<T>]`.
-///
-/// Once the operation is complete, it is safe to assume the data written is fully initialized.
-///
-/// ### Panics
-///
-/// Panics if the size of vectors `a`, `b` and `result` do not match.
+/// If vectors `a` and `b` cannot be projected to the target size of `result`.
+/// Note that the projection rules are tied to the `MemLoader` implementation.
 pub fn add_vertical<T, B1, B2, B3>(lhs: B1, rhs: B2, result: &mut [B3])
 where
     T: ArithmeticOps,
@@ -581,8 +658,20 @@ where
     T::add_vertical(lhs, rhs, result)
 }
 
-/// Performs an element wise subtraction of each element pair from vectors `a` and `b`,
-/// writing the result to `result`.
+/// Performs an element wise subtraction of two input buffers `a` and `b` that can
+/// be projected to the desired output size of `result`.
+///
+/// ### Projecting Vectors
+///
+/// CFAVML allows for working over a wide variety of buffers for applications, projection is effectively
+/// broadcasting of two input buffers implementing `IntoMemLoader<T>`.
+///
+/// By default, you can provide _two slices_, _one slice and a broadcast value_, or _two broadcast values_,
+/// which exhibit the standard behaviour as you might expect.
+///
+/// When providing two slices as inputs they cannot be projected to a buffer
+/// that is larger their input sizes by default. This means providing two slices
+/// of `128` elements in length must take a result buffer of `128` elements in length.
 ///
 /// ### Pseudocode
 ///
@@ -595,16 +684,10 @@ where
 /// return result
 /// ```
 ///
-/// ### Result buffer
+/// # Panics
 ///
-/// The result buffer can be either an initialized slice i.e. `&mut [T]`
-/// or it can be a slice holding potentially uninitialized data i.e. `&mut [MaybeUninit<T>]`.
-///
-/// Once the operation is complete, it is safe to assume the data written is fully initialized.
-///
-/// ### Panics
-///
-/// Panics if the size of vectors `a`, `b` and `result` do not match.
+/// If vectors `a` and `b` cannot be projected to the target size of `result`.
+/// Note that the projection rules are tied to the `MemLoader` implementation.
 pub fn sub_vertical<T, B1, B2, B3>(lhs: B1, rhs: B2, result: &mut [B3])
 where
     T: ArithmeticOps,
@@ -617,8 +700,20 @@ where
     T::sub_vertical(lhs, rhs, result)
 }
 
-/// Performs an element wise multiplication of each element pair from vectors `a` and `b`,
-/// writing the result to `result`.
+/// Performs an element wise multiply of two input buffers `a` and `b` that can
+/// be projected to the desired output size of `result`.
+///
+/// ### Projecting Vectors
+///
+/// CFAVML allows for working over a wide variety of buffers for applications, projection is effectively
+/// broadcasting of two input buffers implementing `IntoMemLoader<T>`.
+///
+/// By default, you can provide _two slices_, _one slice and a broadcast value_, or _two broadcast values_,
+/// which exhibit the standard behaviour as you might expect.
+///
+/// When providing two slices as inputs they cannot be projected to a buffer
+/// that is larger their input sizes by default. This means providing two slices
+/// of `128` elements in length must take a result buffer of `128` elements in length.
 ///
 /// ### Pseudocode
 ///
@@ -631,16 +726,10 @@ where
 /// return result
 /// ```
 ///
-/// ### Result buffer
+/// # Panics
 ///
-/// The result buffer can be either an initialized slice i.e. `&mut [T]`
-/// or it can be a slice holding potentially uninitialized data i.e. `&mut [MaybeUninit<T>]`.
-///
-/// Once the operation is complete, it is safe to assume the data written is fully initialized.
-///
-/// ### Panics
-///
-/// Panics if the size of vectors `a`, `b` and `result` do not match.
+/// If vectors `a` and `b` cannot be projected to the target size of `result`.
+/// Note that the projection rules are tied to the `MemLoader` implementation.
 pub fn mul_vertical<T, B1, B2, B3>(lhs: B1, rhs: B2, result: &mut [B3])
 where
     T: ArithmeticOps,
@@ -653,8 +742,20 @@ where
     T::mul_vertical(lhs, rhs, result)
 }
 
-/// Performs an element wise division on each element pair from vectors `a` and `b`,
-/// writing the result to `result`.
+/// Performs an element wise division of two input buffers `a` and `b` that can
+/// be projected to the desired output size of `result`.
+///
+/// ### Projecting Vectors
+///
+/// CFAVML allows for working over a wide variety of buffers for applications, projection is effectively
+/// broadcasting of two input buffers implementing `IntoMemLoader<T>`.
+///
+/// By default, you can provide _two slices_, _one slice and a broadcast value_, or _two broadcast values_,
+/// which exhibit the standard behaviour as you might expect.
+///
+/// When providing two slices as inputs they cannot be projected to a buffer
+/// that is larger their input sizes by default. This means providing two slices
+/// of `128` elements in length must take a result buffer of `128` elements in length.
 ///
 /// ### Pseudocode
 ///
@@ -667,16 +768,10 @@ where
 /// return result
 /// ```
 ///
-/// ### Result buffer
+/// # Panics
 ///
-/// The result buffer can be either an initialized slice i.e. `&mut [T]`
-/// or it can be a slice holding potentially uninitialized data i.e. `&mut [MaybeUninit<T>]`.
-///
-/// Once the operation is complete, it is safe to assume the data written is fully initialized.
-///
-/// ### Panics
-///
-/// Panics if the size of vectors `a`, `b` and `result` do not match.
+/// If vectors `a` and `b` cannot be projected to the target size of `result`.
+/// Note that the projection rules are tied to the `MemLoader` implementation.
 pub fn div_vertical<T, B1, B2, B3>(lhs: B1, rhs: B2, result: &mut [B3])
 where
     T: ArithmeticOps,

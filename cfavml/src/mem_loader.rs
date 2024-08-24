@@ -207,3 +207,41 @@ impl<T: Copy> MemLoader for ScalarBufferLoader<T> {
         self.data
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_value_broadcast_loader() {
+        let mut loader = f32::into_mem_loader(1.0);
+        assert_eq!(loader.projected_len(), 1);
+        let a = unsafe { loader.read() };
+        assert_eq!(a, 1.0);
+
+        let mut loader = f32::into_projected_mem_loader(1.0, 10);
+        assert_eq!(loader.projected_len(), 10);
+        for _ in 0..10 {
+            let a = unsafe { loader.read() };
+            assert_eq!(a, 1.0);
+        }
+    }
+
+    #[allow(clippy::needless_range_loop)]
+    #[test]
+    fn test_buffer_basic_loader() {
+        let sample = [1.0, 2.0, 3.0];
+        let mut loader = (&sample).into_mem_loader();
+        assert_eq!(loader.projected_len(), 3);
+        for i in 0..3 {
+            assert_eq!(unsafe { loader.read() }, sample[i]);
+        }
+    }
+
+    #[test]
+    #[should_panic]
+    fn test_buffer_basic_loader_projection_panic() {
+        let sample = [1.0, 2.0, 3.0];
+        let _loader = (&sample).into_projected_mem_loader(10);
+    }
+}
