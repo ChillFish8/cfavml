@@ -1,21 +1,22 @@
+use core::mem::ManuallyDrop;
 use ndarray::{Array, ArrayBase, Data, DataMut, Dimension};
 use cfavml::safe_trait_arithmetic_ops::ArithmeticOps;
 
-// /// Transmute from A to B.
-// ///
-// /// Like transmute, but does not have the compile-time size check which blocks
-// /// using regular transmute in some cases.
-// ///
-// /// **Panics** if the size of A and B are different.
-// #[track_caller]
-// #[inline]
-// pub(crate) unsafe fn unlimited_transmute<A, B>(data: A) -> B
-// {
-//     // safe when sizes are equal and caller guarantees that representations are equal
-//     assert_eq!(size_of::<A>(), size_of::<B>());
-//     let old_data = ManuallyDrop::new(data);
-//     (&*old_data as *const A as *const B).read()
-// }
+/// Transmute from A to B.
+///
+/// Like transmute, but does not have the compile-time size check which blocks
+/// using regular transmute in some cases.
+///
+/// **Panics** if the size of A and B are different.
+#[track_caller]
+#[inline]
+pub(crate) unsafe fn unlimited_transmute<A, B>(data: A) -> B
+{
+    // safe when sizes are equal and caller guarantees that representations are equal
+    assert_eq!(size_of::<A>(), size_of::<B>());
+    let old_data = ManuallyDrop::new(data);
+    (&*old_data as *const A as *const B).read()
+}
 
 #[inline]
 /// Attempts to extract the underlying slice of memory backing the array if it is contiguous,

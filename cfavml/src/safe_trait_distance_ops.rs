@@ -4,13 +4,9 @@
 //! some syntax sugar over these traits.
 
 use crate::danger::export_distance_ops;
-use crate::math::{AutoMath, Math};
 
 /// Various spacial distance operations between vectors.
-pub trait DistanceOps: Sized + Copy
-where
-    AutoMath: Math<Self>
-{
+pub trait DistanceOps: Sized + Copy {
     /// Calculates the cosine similarity distance of vectors `a` and `b` of size `dims`.
     ///
     /// ### Pseudocode

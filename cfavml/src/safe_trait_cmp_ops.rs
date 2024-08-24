@@ -5,13 +5,9 @@
 
 use crate::buffer::WriteOnlyBuffer;
 use crate::danger::export_cmp_ops;
-use crate::math::{AutoMath, Math};
 
 /// Various comparison operations over vectors.
-pub trait CmpOps: Sized  + Copy
-where
-    AutoMath: Math<Self>
-{
+pub trait CmpOps: Sized  + Copy {
     /// Finds the horizontal max element of a given vector and returns the result.
     ///
     /// ### Pseudocode
