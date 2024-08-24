@@ -5,9 +5,13 @@
 
 use crate::buffer::WriteOnlyBuffer;
 use crate::danger::export_arithmetic_ops;
+use crate::math::{AutoMath, Math};
 
 /// Various arithmetic operations over vectors.
-pub trait ArithmeticOps: Sized {
+pub trait ArithmeticOps: Sized + Copy
+where
+    AutoMath: Math<Self>
+{
     /// Performs an element wise addition of each element of vector `a` and the provided broadcast
     /// value, writing the result to `result`.
     ///

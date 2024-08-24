@@ -4,9 +4,13 @@
 //! some syntax sugar over these traits.
 
 use crate::danger::export_agg_ops;
+use crate::math::{AutoMath, Math};
 
 /// Various aggregation operations on a single vector.
-pub trait AggOps: Sized {
+pub trait AggOps: Sized  + Copy
+where
+    AutoMath: Math<Self>
+{
     /// Performs a horizontal sum of all elements in `a` returning the result.
     ///
     /// ### Pseudocode
