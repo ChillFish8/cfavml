@@ -1782,6 +1782,11 @@ where
 /// that is larger their input sizes by default. This means providing two slices
 /// of `128` elements in length must take a result buffer of `128` elements in length.
 ///
+/// You can wrap your inputs in a [cfavml::mem_loader::Projected] wrapper which
+/// enables projecting of the input buffer to new sizes providing the new size is a 
+/// multiple of the original size. When this buffer is projected, it is effectively
+/// repeated `N` times, where `N` is how many times the old size fits into the new size.
+/// 
 /// ### Implementation Pseudocode
 ///
 /// _This is the logic of the routine being called._
