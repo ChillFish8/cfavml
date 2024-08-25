@@ -121,7 +121,7 @@ define_dist_impl!(
     "avx512bw"
 );
 #[cfg(target_arch = "aarch64")]
-define_dot_impl!(
+define_dist_impl!(
     name = generic_neon_dot,
     op = generic_dot,
     doc = "../export_docs/dist_dot.md",
