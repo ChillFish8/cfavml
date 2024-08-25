@@ -334,4 +334,3 @@ pub mod neon_ops {
 pub fn ndarray_dot(a: &ndarray::Array1<f32>, b: &ndarray::Array1<f32>) -> f32 {
     a.dot(b)
 }
-
