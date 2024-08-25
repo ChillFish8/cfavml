@@ -293,7 +293,7 @@ where
 /// Takes the element wise max of vectors `a` and `b` of size `dims` and stores the result
 /// in `result` of size `dims`.
 ///
-/// ### Examples
+/// ### Things To Know
 ///
 /// ###### Supported patterns
 ///
@@ -318,6 +318,8 @@ where
 /// - `[0, 0, 0] + 1 == [1, 1, 1]`  w/result_buffer_len=3
 /// - `0 + 1 == [1, 1, 1]`  w/result_buffer_len=3
 /// - `1 + 1 == [1]`  w/result_buffer_len=1
+///
+/// ### Examples
 ///
 /// ##### Two vectors
 ///
@@ -457,7 +459,7 @@ where
 /// Takes the element wise min of vectors `a` and `b` of size `dims` and stores the result
 /// in `result` of size `dims`.
 ///
-/// ### Examples
+/// ### Things To Know
 ///
 /// ###### Supported patterns
 ///
@@ -482,6 +484,8 @@ where
 /// - `[0, 0, 0] + 1 == [1, 1, 1]`  w/result_buffer_len=3
 /// - `0 + 1 == [1, 1, 1]`  w/result_buffer_len=3
 /// - `1 + 1 == [1]`  w/result_buffer_len=1
+///
+/// ### Examples
 ///
 /// ##### Two vectors
 ///
@@ -578,7 +582,7 @@ where
 /// element `a` is **_equal to_** element `b`, storing the output as `1` (true) or `0` (false)
 /// in `result`.
 ///
-/// ### Examples
+/// ### Things To Know
 ///
 /// ###### Supported patterns
 ///
@@ -609,6 +613,8 @@ where
 /// CFAVML follows the same pattern as numpy, which is it representing boolean results as
 /// either `1` or `0` in the respective type. This allows you to do various bit manipulation
 /// and arithmetic techniques for processing values within the vector.
+///
+/// ### Examples
 ///
 /// ##### Two vectors
 ///
@@ -724,7 +730,7 @@ where
 /// element `a` is **_not equal to_** element `b`, storing the output as `1` (true)
 /// or `0` (false) in `result`.
 ///
-/// ### Examples
+/// ### Things To Know
 ///
 /// ###### Supported patterns
 ///
@@ -755,6 +761,8 @@ where
 /// CFAVML follows the same pattern as numpy, which is it representing boolean results as
 /// either `1` or `0` in the respective type. This allows you to do various bit manipulation
 /// and arithmetic techniques for processing values within the vector.
+///
+/// ### Examples
 ///
 /// ##### Two vectors
 ///
@@ -870,7 +878,7 @@ where
 /// element `a` is **_less than_** element `b`, storing the output as `1` (true)
 /// or `0` (false) in `result`.
 ///
-/// ### Examples
+/// ### Things To Know
 ///
 /// ###### Supported patterns
 ///
@@ -901,6 +909,8 @@ where
 /// CFAVML follows the same pattern as numpy, which is it representing boolean results as
 /// either `1` or `0` in the respective type. This allows you to do various bit manipulation
 /// and arithmetic techniques for processing values within the vector.
+///
+/// ### Examples
 ///
 /// ##### Two vectors
 ///
@@ -1017,7 +1027,7 @@ where
 /// element `a` is **_less than or equal to_** element `b`, storing the output as `1` (true)
 /// or `0` (false) in `result`.
 ///
-/// ### Examples
+/// ### Things To Know
 ///
 /// ###### Supported patterns
 ///
@@ -1048,6 +1058,8 @@ where
 /// CFAVML follows the same pattern as numpy, which is it representing boolean results as
 /// either `1` or `0` in the respective type. This allows you to do various bit manipulation
 /// and arithmetic techniques for processing values within the vector.
+///
+/// ### Examples
 ///
 /// ##### Two vectors
 ///
@@ -1165,7 +1177,7 @@ where
 /// element `a` is **_greater than_** element `b`, storing the output as `1` (true) or `0` (false)
 /// in `result`.
 ///
-/// ### Examples
+/// ### Things To Know
 ///
 /// ###### Supported patterns
 ///
@@ -1196,6 +1208,8 @@ where
 /// CFAVML follows the same pattern as numpy, which is it representing boolean results as
 /// either `1` or `0` in the respective type. This allows you to do various bit manipulation
 /// and arithmetic techniques for processing values within the vector.
+///
+/// ### Examples
 ///
 /// ##### Two vectors
 ///
@@ -1312,7 +1326,7 @@ where
 /// element `a` is **_greater than or equal to_** element `b`, storing the output as `1` (true)
 /// or `0` (false) in `result`.
 ///
-/// ### Examples
+/// ### Things To Know
 ///
 /// ###### Supported patterns
 ///
@@ -1343,6 +1357,8 @@ where
 /// CFAVML follows the same pattern as numpy, which is it representing boolean results as
 /// either `1` or `0` in the respective type. This allows you to do various bit manipulation
 /// and arithmetic techniques for processing values within the vector.
+///
+/// ### Examples
 ///
 /// ##### Two vectors
 ///
@@ -1457,7 +1473,7 @@ where
 /// Performs an element wise addition of two input buffers `a` and `b` that can
 /// be projected to the desired output size of `result`.
 ///
-/// ### Examples
+/// ### Things To Know
 ///
 /// ###### Supported patterns
 ///
@@ -1482,6 +1498,8 @@ where
 /// - `[0, 0, 0] + 1 == [1, 1, 1]`  w/result_buffer_len=3
 /// - `0 + 1 == [1, 1, 1]`  w/result_buffer_len=3
 /// - `1 + 1 == [1]`  w/result_buffer_len=1
+///
+/// ### Examples
 ///
 /// ##### Two vectors
 ///
@@ -1576,7 +1594,7 @@ where
 /// Performs an element wise subtraction of two input buffers `a` and `b` that can
 /// be projected to the desired output size of `result`.
 ///
-/// ### Examples
+/// ### Things To Know
 ///
 /// ###### Supported patterns
 ///
@@ -1601,6 +1619,8 @@ where
 /// - `[0, 0, 0] + 1 == [1, 1, 1]`  w/result_buffer_len=3
 /// - `0 + 1 == [1, 1, 1]`  w/result_buffer_len=3
 /// - `1 + 1 == [1]`  w/result_buffer_len=1
+///
+/// ### Examples
 ///
 /// ##### Two vectors
 ///
@@ -1695,7 +1715,7 @@ where
 /// Performs an element wise multiply of two input buffers `a` and `b` that can
 /// be projected to the desired output size of `result`.
 ///
-/// ### Examples
+/// ### Things To Know
 ///
 /// ###### Supported patterns
 ///
@@ -1720,6 +1740,8 @@ where
 /// - `[0, 0, 0] + 1 == [1, 1, 1]`  w/result_buffer_len=3
 /// - `0 + 1 == [1, 1, 1]`  w/result_buffer_len=3
 /// - `1 + 1 == [1]`  w/result_buffer_len=1
+///
+/// ### Examples
 ///
 /// ##### Two vectors
 ///
@@ -1834,7 +1856,7 @@ where
 /// assert_eq!(result, [0.5, 1.0, 1.5]);
 /// ```
 ///
-/// ### Examples
+/// ### Things To Know
 ///
 /// ###### Supported patterns
 ///
@@ -1859,6 +1881,8 @@ where
 /// - `[0, 0, 0] + 1 == [1, 1, 1]`  w/result_buffer_len=3
 /// - `0 + 1 == [1, 1, 1]`  w/result_buffer_len=3
 /// - `1 + 1 == [1]`  w/result_buffer_len=1
+///
+/// ### Examples
 ///
 /// ##### Two vectors
 ///

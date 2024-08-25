@@ -23,7 +23,7 @@ macro_rules! test_cosine_extra {
     };
 }
 
-// In cases like f32 and f64 where have have comparison we need to ensure that
+// In cases like f32 and f64 where we have comparison we need to ensure that
 // all implementations behave equivalently and consistently.
 macro_rules! test_nan_sanity {
     ($t:ident, $im:ident) => {
@@ -80,7 +80,7 @@ macro_rules! test_suite {
 
             #[test]
             fn [<test_ $im:lower _ $t _sum>]() {
-                let l1 = vec![1 as $t; 1043];
+                let l1 = vec![1 as $t; DATA_SIZE];
                 unsafe { crate::danger::op_sum::test_sum::<$t, $im>(l1) };
             }
 
@@ -106,6 +106,176 @@ macro_rules! test_suite {
             fn [<test_ $im:lower _ $t _cmp_vector>]() {
                 let (l1, l2) = (vec![1 as $t; DATA_SIZE], vec![3 as $t; DATA_SIZE]);
                 test_cmp_vector_all::<$t, $im>(l1, l2);
+            }
+
+            #[test]
+            #[should_panic]
+            fn [<test_ $im:lower _ $t _cosine_length_missmatch_no_projection>]() {
+                let l1 = vec![1 as $t, 2 as $t, 3 as $t];
+                let l2 = vec![1 as $t, 2 as $t];
+                unsafe { crate::danger::op_cosine::test_cosine::<$t, $im>(l1, l2) };
+            }
+
+            #[test]
+            #[should_panic]
+            fn [<test_ $im:lower _ $t _dot_length_missmatch_no_projection>]() {
+                let l1 = vec![1 as $t, 2 as $t, 3 as $t];
+                let l2 = vec![1 as $t, 2 as $t];
+                unsafe { crate::danger::op_dot::test_dot::<$t, $im>(l1, l2) };
+            }
+
+            #[test]
+            #[should_panic]
+            fn [<test_ $im:lower _ $t _euclidean_length_missmatch_no_projection>]() {
+                let l1 = vec![1 as $t, 2 as $t, 3 as $t];
+                let l2 = vec![1 as $t, 2 as $t];
+                unsafe { crate::danger::op_euclidean::test_euclidean::<$t, $im>(l1, l2) };
+            }
+
+            #[test]
+            #[should_panic]
+            fn [<test_ $im:lower _ $t _vector_add_length_missmatch_no_projection >]() {
+                let l1 = vec![1 as $t, 2 as $t, 3 as $t];
+                let l2 = vec![1 as $t, 2 as $t];
+                unsafe {
+                    op_arithmetic_vertical::tests::test_simple_vector_add::<$t, $im>(
+                        l1,
+                        l2,
+                    )
+                };
+            }
+
+            #[test]
+            #[should_panic]
+            fn [<test_ $im:lower _ $t _vector_sub_length_missmatch_no_projection >]() {
+                let l1 = vec![1 as $t, 2 as $t, 3 as $t];
+                let l2 = vec![1 as $t, 2 as $t];
+                unsafe {
+                    op_arithmetic_vertical::tests::test_simple_vector_sub::<$t, $im>(
+                        l1,
+                        l2,
+                    )
+                };
+            }
+
+            #[test]
+            #[should_panic]
+            fn [<test_ $im:lower _ $t _vector_mul_length_missmatch_no_projection >]() {
+                let l1 = vec![1 as $t, 2 as $t, 3 as $t];
+                let l2 = vec![1 as $t, 2 as $t];
+                unsafe {
+                    op_arithmetic_vertical::tests::test_simple_vector_mul::<$t, $im>(
+                        l1,
+                        l2,
+                    )
+                };
+            }
+
+            #[test]
+            #[should_panic]
+            fn [<test_ $im:lower _ $t _vector_div_length_missmatch_no_projection >]() {
+                let l1 = vec![1 as $t, 2 as $t, 3 as $t];
+                let l2 = vec![1 as $t, 2 as $t];
+                unsafe {
+                    op_arithmetic_vertical::tests::test_simple_vector_div::<$t, $im>(
+                        l1,
+                        l2,
+                    )
+                };
+            }
+
+            #[test]
+            #[should_panic]
+            fn [<test_ $im:lower _ $t _vector_cmp_max_length_missmatch_no_projection >]() {
+                let l1 = vec![1 as $t, 2 as $t, 3 as $t];
+                let l2 = vec![1 as $t, 2 as $t];
+                unsafe { crate::danger::op_cmp_max::test_max::<$t, $im>(l1, l2) };
+            }
+
+            #[test]
+            #[should_panic]
+            fn [<test_ $im:lower _ $t _vector_cmp_min_length_missmatch_no_projection >]() {
+                let l1 = vec![1 as $t, 2 as $t, 3 as $t];
+                let l2 = vec![1 as $t, 2 as $t];
+                unsafe { crate::danger::op_cmp_min::test_min::<$t, $im>(l1, l2) };
+            }
+
+            #[test]
+            #[should_panic]
+            fn [<test_ $im:lower _ $t _vector_cmp_eq_length_missmatch_no_projection >]() {
+                let l1 = vec![1 as $t, 2 as $t, 3 as $t];
+                let l2 = vec![1 as $t, 2 as $t];
+                unsafe {
+                    op_cmp_vertical::tests::test_simple_vectors_eq::<$t, $im>(
+                        l1,
+                        l2,
+                    )
+                };
+            }
+
+            #[test]
+            #[should_panic]
+            fn [<test_ $im:lower _ $t _vector_cmp_neq_length_missmatch_no_projection >]() {
+                let l1 = vec![1 as $t, 2 as $t, 3 as $t];
+                let l2 = vec![1 as $t, 2 as $t];
+                unsafe {
+                    op_cmp_vertical::tests::test_simple_vectors_neq::<$t, $im>(
+                        l1,
+                        l2,
+                    )
+                };
+            }
+
+            #[test]
+            #[should_panic]
+            fn [<test_ $im:lower _ $t _vector_cmp_lt_length_missmatch_no_projection >]() {
+                let l1 = vec![1 as $t, 2 as $t, 3 as $t];
+                let l2 = vec![1 as $t, 2 as $t];
+                unsafe {
+                    op_cmp_vertical::tests::test_simple_vectors_lt::<$t, $im>(
+                        l1,
+                        l2,
+                    )
+                };
+            }
+
+            #[test]
+            #[should_panic]
+            fn [<test_ $im:lower _ $t _vector_cmp_lte_length_missmatch_no_projection >]() {
+                let l1 = vec![1 as $t, 2 as $t, 3 as $t];
+                let l2 = vec![1 as $t, 2 as $t];
+                unsafe {
+                    op_cmp_vertical::tests::test_simple_vectors_lte::<$t, $im>(
+                        l1,
+                        l2,
+                    )
+                };
+            }
+
+            #[test]
+            #[should_panic]
+            fn [<test_ $im:lower _ $t _vector_cmp_gt_length_missmatch_no_projection >]() {
+                let l1 = vec![1 as $t, 2 as $t, 3 as $t];
+                let l2 = vec![1 as $t, 2 as $t];
+                unsafe {
+                    op_cmp_vertical::tests::test_simple_vectors_gt::<$t, $im>(
+                        l1,
+                        l2,
+                    )
+                };
+            }
+
+            #[test]
+            #[should_panic]
+            fn [<test_ $im:lower _ $t _vector_cmp_gte_length_missmatch_no_projection >]() {
+                let l1 = vec![1 as $t, 2 as $t, 3 as $t];
+                let l2 = vec![1 as $t, 2 as $t];
+                unsafe {
+                    op_cmp_vertical::tests::test_simple_vectors_gte::<$t, $im>(
+                        l1,
+                        l2,
+                    )
+                };
             }
         }
     };
