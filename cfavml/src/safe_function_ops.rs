@@ -319,6 +319,23 @@ where
 /// - `0 + 1 == [1, 1, 1]`  w/result_buffer_len=3
 /// - `1 + 1 == [1]`  w/result_buffer_len=1
 ///
+/// ###### Projecting Vectors
+///
+/// CFAVML allows for working over a wide variety of buffers for applications, projection is effectively
+/// broadcasting of two input buffers implementing `IntoMemLoader<T>`.
+///
+/// By default, you can provide _two slices_, _one slice and a broadcast value_, or _two broadcast values_,
+/// which exhibit the standard behaviour as you might expect.
+///
+/// When providing two slices as inputs they cannot be projected to a buffer
+/// that is larger their input sizes by default. This means providing two slices
+/// of `128` elements in length must take a result buffer of `128` elements in length.
+///
+/// You can wrap your inputs in a [Projected](crate::mem_loader::Projected) wrapper which
+/// enables projecting of the input buffer to new sizes providing the new size is a
+/// multiple of the original size. When this buffer is projected, it is effectively
+/// repeated `N` times, where `N` is how many times the old size fits into the new size.
+///
 /// ### Examples
 ///
 /// ##### Two vectors
@@ -350,6 +367,27 @@ where
 /// assert_eq!(result, [1.0; 4]);
 /// ```
 ///
+/// ##### With projected vectors
+///
+/// Using the [Projected](crate::mem_loader::Projected) wrapper type, we can create larger output
+/// vectors than the original inputs, which can allow for much better performance and
+/// memory usage when working with matrices.
+///
+/// NOTE:
+/// Projection != Matrix broadcasting, please read the documentation of `Projected` to understand
+/// how it behaves, it does not replace your matrix library's own broadcasting system.
+///
+/// ```rust
+/// use cfavml::mem_loader::Projected;
+///
+/// let lhs = [1.0, 1.0, 0.5, 3.5];    // Pretend this is a 2x2 matrix
+/// let rhs = [1.0, 2.5];               // Pretend this is a 1x2 matrix
+///
+/// let mut result = [0.0; 4];          // Our output is a 2x2 matrix
+/// cfavml::max_vertical(Projected(&lhs), Projected(&rhs), &mut result);
+/// assert_eq!(result, [1.0, 2.5, 1.0, 3.5]);
+/// ```
+///
 /// ##### With `MaybeUninit`
 ///
 /// Often if you are working with new-allocations, you do not want to initialize the data twice,
@@ -369,18 +407,6 @@ where
 /// let result = unsafe { core::mem::transmute::<Vec<MaybeUninit<f32>>, Vec<f32>>(result) };
 /// assert_eq!(result, [2.0, 2.5, 1.0, 1.0]);
 /// ```
-///
-/// ### Projecting Vectors
-///
-/// CFAVML allows for working over a wide variety of buffers for applications, projection is effectively
-/// broadcasting of two input buffers implementing `IntoMemLoader<T>`.
-///
-/// By default, you can provide _two slices_, _one slice and a broadcast value_, or _two broadcast values_,
-/// which exhibit the standard behaviour as you might expect.
-///
-/// When providing two slices as inputs they cannot be projected to a buffer
-/// that is larger their input sizes by default. This means providing two slices
-/// of `128` elements in length must take a result buffer of `128` elements in length.
 ///
 /// ### Implementation Pseudocode
 ///
@@ -485,6 +511,23 @@ where
 /// - `0 + 1 == [1, 1, 1]`  w/result_buffer_len=3
 /// - `1 + 1 == [1]`  w/result_buffer_len=1
 ///
+/// ###### Projecting Vectors
+///
+/// CFAVML allows for working over a wide variety of buffers for applications, projection is effectively
+/// broadcasting of two input buffers implementing `IntoMemLoader<T>`.
+///
+/// By default, you can provide _two slices_, _one slice and a broadcast value_, or _two broadcast values_,
+/// which exhibit the standard behaviour as you might expect.
+///
+/// When providing two slices as inputs they cannot be projected to a buffer
+/// that is larger their input sizes by default. This means providing two slices
+/// of `128` elements in length must take a result buffer of `128` elements in length.
+///
+/// You can wrap your inputs in a [Projected](crate::mem_loader::Projected) wrapper which
+/// enables projecting of the input buffer to new sizes providing the new size is a
+/// multiple of the original size. When this buffer is projected, it is effectively
+/// repeated `N` times, where `N` is how many times the old size fits into the new size.
+///
 /// ### Examples
 ///
 /// ##### Two vectors
@@ -516,6 +559,27 @@ where
 /// assert_eq!(result, [-5.0; 4]);
 /// ```
 ///
+/// ##### With projected vectors
+///
+/// Using the [Projected](crate::mem_loader::Projected) wrapper type, we can create larger output
+/// vectors than the original inputs, which can allow for much better performance and
+/// memory usage when working with matrices.
+///
+/// NOTE:
+/// Projection != Matrix broadcasting, please read the documentation of `Projected` to understand
+/// how it behaves, it does not replace your matrix library's own broadcasting system.
+///
+/// ```rust
+/// use cfavml::mem_loader::Projected;
+///
+/// let lhs = [1.0, 1.0, 0.5, 3.5];    // Pretend this is a 2x2 matrix
+/// let rhs = [1.0, 2.5];               // Pretend this is a 1x2 matrix
+///
+/// let mut result = [0.0; 4];          // Our output is a 2x2 matrix
+/// cfavml::min_vertical(Projected(&lhs), Projected(&rhs), &mut result);
+/// assert_eq!(result, [1.0, 1.0, 0.5, 2.5]);
+/// ```
+///
 /// ##### With `MaybeUninit`
 ///
 /// Often if you are working with new-allocations, you do not want to initialize the data twice,
@@ -535,18 +599,6 @@ where
 /// let result = unsafe { core::mem::transmute::<Vec<MaybeUninit<f32>>, Vec<f32>>(result) };
 /// assert_eq!(result, [1.0, -1.0, 0.5, -2.0]);
 /// ```
-///
-/// ### Projecting Vectors
-///
-/// CFAVML allows for working over a wide variety of buffers for applications, projection is effectively
-/// broadcasting of two input buffers implementing `IntoMemLoader<T>`.
-///
-/// By default, you can provide _two slices_, _one slice and a broadcast value_, or _two broadcast values_,
-/// which exhibit the standard behaviour as you might expect.
-///
-/// When providing two slices as inputs they cannot be projected to a buffer
-/// that is larger their input sizes by default. This means providing two slices
-/// of `128` elements in length must take a result buffer of `128` elements in length.
 ///
 /// ### Implementation Pseudocode
 ///
@@ -608,6 +660,23 @@ where
 /// - `0 + 1 == [1, 1, 1]`  w/result_buffer_len=3
 /// - `1 + 1 == [1]`  w/result_buffer_len=1
 ///
+/// ###### Projecting Vectors
+///
+/// CFAVML allows for working over a wide variety of buffers for applications, projection is effectively
+/// broadcasting of two input buffers implementing `IntoMemLoader<T>`.
+///
+/// By default, you can provide _two slices_, _one slice and a broadcast value_, or _two broadcast values_,
+/// which exhibit the standard behaviour as you might expect.
+///
+/// When providing two slices as inputs they cannot be projected to a buffer
+/// that is larger their input sizes by default. This means providing two slices
+/// of `128` elements in length must take a result buffer of `128` elements in length.
+///
+/// You can wrap your inputs in a [Projected](crate::mem_loader::Projected) wrapper which
+/// enables projecting of the input buffer to new sizes providing the new size is a
+/// multiple of the original size. When this buffer is projected, it is effectively
+/// repeated `N` times, where `N` is how many times the old size fits into the new size.
+///
 /// ###### Masks
 ///
 /// CFAVML follows the same pattern as numpy, which is it representing boolean results as
@@ -655,6 +724,27 @@ where
 /// assert_eq!(result, [0.0; 4]);
 /// ```
 ///
+/// ##### With projected vectors
+///
+/// Using the [Projected](crate::mem_loader::Projected) wrapper type, we can create larger output
+/// vectors than the original inputs, which can allow for much better performance and
+/// memory usage when working with matrices.
+///
+/// NOTE:
+/// Projection != Matrix broadcasting, please read the documentation of `Projected` to understand
+/// how it behaves, it does not replace your matrix library's own broadcasting system.
+///
+/// ```rust
+/// use cfavml::mem_loader::Projected;
+///
+/// let lhs = [1.0, 1.0, 0.5, 3.5];    // Pretend this is a 2x2 matrix
+/// let rhs = [1.0, 2.5];               // Pretend this is a 1x2 matrix
+///
+/// let mut result = [0.0; 4];          // Our output is a 2x2 matrix
+/// cfavml::eq_vertical(Projected(&lhs), Projected(&rhs), &mut result);
+/// assert_eq!(result, [1.0, 0.0, 0.0, 0.0]);
+/// ```
+///
 /// ##### With `MaybeUninit`
 ///
 /// Often if you are working with new-allocations, you do not want to initialize the data twice,
@@ -674,18 +764,6 @@ where
 /// let result = unsafe { core::mem::transmute::<Vec<MaybeUninit<f32>>, Vec<f32>>(result) };
 /// assert_eq!(result, [1.0, 0.0, 1.0, 0.0]);
 /// ```
-///
-/// ### Projecting Vectors
-///
-/// CFAVML allows for working over a wide variety of buffers for applications, projection is effectively
-/// broadcasting of two input buffers implementing `IntoMemLoader<T>`.
-///
-/// By default, you can provide _two slices_, _one slice and a broadcast value_, or _two broadcast values_,
-/// which exhibit the standard behaviour as you might expect.
-///
-/// When providing two slices as inputs they cannot be projected to a buffer
-/// that is larger their input sizes by default. This means providing two slices
-/// of `128` elements in length must take a result buffer of `128` elements in length.
 ///
 /// ### Implementation Pseudocode
 ///
@@ -756,6 +834,23 @@ where
 /// - `0 + 1 == [1, 1, 1]`  w/result_buffer_len=3
 /// - `1 + 1 == [1]`  w/result_buffer_len=1
 ///
+/// ###### Projecting Vectors
+///
+/// CFAVML allows for working over a wide variety of buffers for applications, projection is effectively
+/// broadcasting of two input buffers implementing `IntoMemLoader<T>`.
+///
+/// By default, you can provide _two slices_, _one slice and a broadcast value_, or _two broadcast values_,
+/// which exhibit the standard behaviour as you might expect.
+///
+/// When providing two slices as inputs they cannot be projected to a buffer
+/// that is larger their input sizes by default. This means providing two slices
+/// of `128` elements in length must take a result buffer of `128` elements in length.
+///
+/// You can wrap your inputs in a [Projected](crate::mem_loader::Projected) wrapper which
+/// enables projecting of the input buffer to new sizes providing the new size is a
+/// multiple of the original size. When this buffer is projected, it is effectively
+/// repeated `N` times, where `N` is how many times the old size fits into the new size.
+///
 /// ###### Masks
 ///
 /// CFAVML follows the same pattern as numpy, which is it representing boolean results as
@@ -803,6 +898,27 @@ where
 /// assert_eq!(result, [1.0; 4]);
 /// ```
 ///
+/// ##### With projected vectors
+///
+/// Using the [Projected](crate::mem_loader::Projected) wrapper type, we can create larger output
+/// vectors than the original inputs, which can allow for much better performance and
+/// memory usage when working with matrices.
+///
+/// NOTE:
+/// Projection != Matrix broadcasting, please read the documentation of `Projected` to understand
+/// how it behaves, it does not replace your matrix library's own broadcasting system.
+///
+/// ```rust
+/// use cfavml::mem_loader::Projected;
+///
+/// let lhs = [1.0, 1.0, 0.5, 3.5];    // Pretend this is a 2x2 matrix
+/// let rhs = [1.0, 2.5];               // Pretend this is a 1x2 matrix
+///
+/// let mut result = [0.0; 4];          // Our output is a 2x2 matrix
+/// cfavml::neq_vertical(Projected(&lhs), Projected(&rhs), &mut result);
+/// assert_eq!(result, [0.0, 1.0, 1.0, 1.0]);
+/// ```
+///
 /// ##### With `MaybeUninit`
 ///
 /// Often if you are working with new-allocations, you do not want to initialize the data twice,
@@ -822,18 +938,6 @@ where
 /// let result = unsafe { core::mem::transmute::<Vec<MaybeUninit<f32>>, Vec<f32>>(result) };
 /// assert_eq!(result, [0.0, 1.0, 0.0, 1.0]);
 /// ```
-///
-/// ### Projecting Vectors
-///
-/// CFAVML allows for working over a wide variety of buffers for applications, projection is effectively
-/// broadcasting of two input buffers implementing `IntoMemLoader<T>`.
-///
-/// By default, you can provide _two slices_, _one slice and a broadcast value_, or _two broadcast values_,
-/// which exhibit the standard behaviour as you might expect.
-///
-/// When providing two slices as inputs they cannot be projected to a buffer
-/// that is larger their input sizes by default. This means providing two slices
-/// of `128` elements in length must take a result buffer of `128` elements in length.
 ///
 /// ### Implementation Pseudocode
 ///
@@ -904,6 +1008,23 @@ where
 /// - `0 + 1 == [1, 1, 1]`  w/result_buffer_len=3
 /// - `1 + 1 == [1]`  w/result_buffer_len=1
 ///
+/// ###### Projecting Vectors
+///
+/// CFAVML allows for working over a wide variety of buffers for applications, projection is effectively
+/// broadcasting of two input buffers implementing `IntoMemLoader<T>`.
+///
+/// By default, you can provide _two slices_, _one slice and a broadcast value_, or _two broadcast values_,
+/// which exhibit the standard behaviour as you might expect.
+///
+/// When providing two slices as inputs they cannot be projected to a buffer
+/// that is larger their input sizes by default. This means providing two slices
+/// of `128` elements in length must take a result buffer of `128` elements in length.
+///
+/// You can wrap your inputs in a [Projected](crate::mem_loader::Projected) wrapper which
+/// enables projecting of the input buffer to new sizes providing the new size is a
+/// multiple of the original size. When this buffer is projected, it is effectively
+/// repeated `N` times, where `N` is how many times the old size fits into the new size.
+///
 /// ###### Masks
 ///
 /// CFAVML follows the same pattern as numpy, which is it representing boolean results as
@@ -951,6 +1072,27 @@ where
 /// assert_eq!(result, [1.0; 4]);
 /// ```
 ///
+/// ##### With projected vectors
+///
+/// Using the [Projected](crate::mem_loader::Projected) wrapper type, we can create larger output
+/// vectors than the original inputs, which can allow for much better performance and
+/// memory usage when working with matrices.
+///
+/// NOTE:
+/// Projection != Matrix broadcasting, please read the documentation of `Projected` to understand
+/// how it behaves, it does not replace your matrix library's own broadcasting system.
+///
+/// ```rust
+/// use cfavml::mem_loader::Projected;
+///
+/// let lhs = [1.0, 1.0, 0.5, 3.5];    // Pretend this is a 2x2 matrix
+/// let rhs = [1.0, 2.5];               // Pretend this is a 1x2 matrix
+///
+/// let mut result = [0.0; 4];          // Our output is a 2x2 matrix
+/// cfavml::lt_vertical(Projected(&lhs), Projected(&rhs), &mut result);
+/// assert_eq!(result, [0.0, 1.0, 1.0, 0.0]);
+/// ```
+///
 /// ##### With `MaybeUninit`
 ///
 /// Often if you are working with new-allocations, you do not want to initialize the data twice,
@@ -970,18 +1112,6 @@ where
 /// let result = unsafe { core::mem::transmute::<Vec<MaybeUninit<f32>>, Vec<f32>>(result) };
 /// assert_eq!(result, [0.0, 1.0, 0.0, 0.0]);
 /// ```
-///
-/// ### Projecting Vectors
-///
-/// CFAVML allows for working over a wide variety of buffers for applications, projection is effectively
-/// broadcasting of two input buffers implementing `IntoMemLoader<T>`.
-///
-/// By default, you can provide _two slices_, _one slice and a broadcast value_, or _two broadcast values_,
-/// which exhibit the standard behaviour as you might expect.
-///
-/// When providing two slices as inputs they cannot be projected to a buffer
-/// that is larger their input sizes by default. This means providing two slices
-/// of `128` elements in length must take a result buffer of `128` elements in length.
 ///
 /// ### Implementation Pseudocode
 ///
@@ -1053,6 +1183,23 @@ where
 /// - `0 + 1 == [1, 1, 1]`  w/result_buffer_len=3
 /// - `1 + 1 == [1]`  w/result_buffer_len=1
 ///
+/// ###### Projecting Vectors
+///
+/// CFAVML allows for working over a wide variety of buffers for applications, projection is effectively
+/// broadcasting of two input buffers implementing `IntoMemLoader<T>`.
+///
+/// By default, you can provide _two slices_, _one slice and a broadcast value_, or _two broadcast values_,
+/// which exhibit the standard behaviour as you might expect.
+///
+/// When providing two slices as inputs they cannot be projected to a buffer
+/// that is larger their input sizes by default. This means providing two slices
+/// of `128` elements in length must take a result buffer of `128` elements in length.
+///
+/// You can wrap your inputs in a [Projected](crate::mem_loader::Projected) wrapper which
+/// enables projecting of the input buffer to new sizes providing the new size is a
+/// multiple of the original size. When this buffer is projected, it is effectively
+/// repeated `N` times, where `N` is how many times the old size fits into the new size.
+///
 /// ###### Masks
 ///
 /// CFAVML follows the same pattern as numpy, which is it representing boolean results as
@@ -1100,6 +1247,27 @@ where
 /// assert_eq!(result, [1.0; 4]);
 /// ```
 ///
+/// ##### With projected vectors
+///
+/// Using the [Projected](crate::mem_loader::Projected) wrapper type, we can create larger output
+/// vectors than the original inputs, which can allow for much better performance and
+/// memory usage when working with matrices.
+///
+/// NOTE:
+/// Projection != Matrix broadcasting, please read the documentation of `Projected` to understand
+/// how it behaves, it does not replace your matrix library's own broadcasting system.
+///
+/// ```rust
+/// use cfavml::mem_loader::Projected;
+///
+/// let lhs = [1.0, 1.0, 0.5, 3.5];    // Pretend this is a 2x2 matrix
+/// let rhs = [1.0, 2.5];               // Pretend this is a 1x2 matrix
+///
+/// let mut result = [0.0; 4];          // Our output is a 2x2 matrix
+/// cfavml::lte_vertical(Projected(&lhs), Projected(&rhs), &mut result);
+/// assert_eq!(result, [1.0, 1.0, 1.0, 0.0]);
+/// ```
+///
 /// ##### With `MaybeUninit`
 ///
 /// Often if you are working with new-allocations, you do not want to initialize the data twice,
@@ -1119,18 +1287,6 @@ where
 /// let result = unsafe { core::mem::transmute::<Vec<MaybeUninit<f32>>, Vec<f32>>(result) };
 /// assert_eq!(result, [1.0, 1.0, 1.0, 0.0]);
 /// ```
-///
-/// ### Projecting Vectors
-///
-/// CFAVML allows for working over a wide variety of buffers for applications, projection is effectively
-/// broadcasting of two input buffers implementing `IntoMemLoader<T>`.
-///
-/// By default, you can provide _two slices_, _one slice and a broadcast value_, or _two broadcast values_,
-/// which exhibit the standard behaviour as you might expect.
-///
-/// When providing two slices as inputs they cannot be projected to a buffer
-/// that is larger their input sizes by default. This means providing two slices
-/// of `128` elements in length must take a result buffer of `128` elements in length.
 ///
 /// ### Implementation Pseudocode
 ///
@@ -1203,6 +1359,23 @@ where
 /// - `0 + 1 == [1, 1, 1]`  w/result_buffer_len=3
 /// - `1 + 1 == [1]`  w/result_buffer_len=1
 ///
+/// ###### Projecting Vectors
+///
+/// CFAVML allows for working over a wide variety of buffers for applications, projection is effectively
+/// broadcasting of two input buffers implementing `IntoMemLoader<T>`.
+///
+/// By default, you can provide _two slices_, _one slice and a broadcast value_, or _two broadcast values_,
+/// which exhibit the standard behaviour as you might expect.
+///
+/// When providing two slices as inputs they cannot be projected to a buffer
+/// that is larger their input sizes by default. This means providing two slices
+/// of `128` elements in length must take a result buffer of `128` elements in length.
+///
+/// You can wrap your inputs in a [Projected](crate::mem_loader::Projected) wrapper which
+/// enables projecting of the input buffer to new sizes providing the new size is a
+/// multiple of the original size. When this buffer is projected, it is effectively
+/// repeated `N` times, where `N` is how many times the old size fits into the new size.
+///
 /// ###### Masks
 ///
 /// CFAVML follows the same pattern as numpy, which is it representing boolean results as
@@ -1250,6 +1423,27 @@ where
 /// assert_eq!(result, [1.0; 4]);
 /// ```
 ///
+/// ##### With projected vectors
+///
+/// Using the [Projected](crate::mem_loader::Projected) wrapper type, we can create larger output
+/// vectors than the original inputs, which can allow for much better performance and
+/// memory usage when working with matrices.
+///
+/// NOTE:
+/// Projection != Matrix broadcasting, please read the documentation of `Projected` to understand
+/// how it behaves, it does not replace your matrix library's own broadcasting system.
+///
+/// ```rust
+/// use cfavml::mem_loader::Projected;
+///
+/// let lhs = [1.0, 1.0, 0.5, 3.5];    // Pretend this is a 2x2 matrix
+/// let rhs = [1.0, 2.5];               // Pretend this is a 1x2 matrix
+///
+/// let mut result = [0.0; 4];          // Our output is a 2x2 matrix
+/// cfavml::gt_vertical(Projected(&lhs), Projected(&rhs), &mut result);
+/// assert_eq!(result, [0.0, 0.0, 0.0, 1.0]);
+/// ```
+///
 /// ##### With `MaybeUninit`
 ///
 /// Often if you are working with new-allocations, you do not want to initialize the data twice,
@@ -1269,18 +1463,6 @@ where
 /// let result = unsafe { core::mem::transmute::<Vec<MaybeUninit<f32>>, Vec<f32>>(result) };
 /// assert_eq!(result, [0.0, 0.0, 0.0, 1.0]);
 /// ```
-///
-/// ### Projecting Vectors
-///
-/// CFAVML allows for working over a wide variety of buffers for applications, projection is effectively
-/// broadcasting of two input buffers implementing `IntoMemLoader<T>`.
-///
-/// By default, you can provide _two slices_, _one slice and a broadcast value_, or _two broadcast values_,
-/// which exhibit the standard behaviour as you might expect.
-///
-/// When providing two slices as inputs they cannot be projected to a buffer
-/// that is larger their input sizes by default. This means providing two slices
-/// of `128` elements in length must take a result buffer of `128` elements in length.
 ///
 /// ### Implementation Pseudocode
 ///
@@ -1352,6 +1534,23 @@ where
 /// - `0 + 1 == [1, 1, 1]`  w/result_buffer_len=3
 /// - `1 + 1 == [1]`  w/result_buffer_len=1
 ///
+/// ###### Projecting Vectors
+///
+/// CFAVML allows for working over a wide variety of buffers for applications, projection is effectively
+/// broadcasting of two input buffers implementing `IntoMemLoader<T>`.
+///
+/// By default, you can provide _two slices_, _one slice and a broadcast value_, or _two broadcast values_,
+/// which exhibit the standard behaviour as you might expect.
+///
+/// When providing two slices as inputs they cannot be projected to a buffer
+/// that is larger their input sizes by default. This means providing two slices
+/// of `128` elements in length must take a result buffer of `128` elements in length.
+///
+/// You can wrap your inputs in a [Projected](crate::mem_loader::Projected) wrapper which
+/// enables projecting of the input buffer to new sizes providing the new size is a
+/// multiple of the original size. When this buffer is projected, it is effectively
+/// repeated `N` times, where `N` is how many times the old size fits into the new size.
+///
 /// ###### Masks
 ///
 /// CFAVML follows the same pattern as numpy, which is it representing boolean results as
@@ -1399,6 +1598,27 @@ where
 /// assert_eq!(result, [1.0; 4]);
 /// ```
 ///
+/// ##### With projected vectors
+///
+/// Using the [Projected](crate::mem_loader::Projected) wrapper type, we can create larger output
+/// vectors than the original inputs, which can allow for much better performance and
+/// memory usage when working with matrices.
+///
+/// NOTE:
+/// Projection != Matrix broadcasting, please read the documentation of `Projected` to understand
+/// how it behaves, it does not replace your matrix library's own broadcasting system.
+///
+/// ```rust
+/// use cfavml::mem_loader::Projected;
+///
+/// let lhs = [1.0, 1.0, 0.5, 1.0];    // Pretend this is a 2x2 matrix
+/// let rhs = [1.0, 2.5];               // Pretend this is a 1x2 matrix
+///
+/// let mut result = [0.0; 4];          // Our output is a 2x2 matrix
+/// cfavml::gte_vertical(Projected(&lhs), Projected(&rhs), &mut result);
+/// assert_eq!(result, [1.0, 0.0, 0.0, 0.0]);
+/// ```
+///
 /// ##### With `MaybeUninit`
 ///
 /// Often if you are working with new-allocations, you do not want to initialize the data twice,
@@ -1418,18 +1638,6 @@ where
 /// let result = unsafe { core::mem::transmute::<Vec<MaybeUninit<f32>>, Vec<f32>>(result) };
 /// assert_eq!(result, [1.0, 0.0, 1.0, 1.0]);
 /// ```
-///
-/// ### Projecting Vectors
-///
-/// CFAVML allows for working over a wide variety of buffers for applications, projection is effectively
-/// broadcasting of two input buffers implementing `IntoMemLoader<T>`.
-///
-/// By default, you can provide _two slices_, _one slice and a broadcast value_, or _two broadcast values_,
-/// which exhibit the standard behaviour as you might expect.
-///
-/// When providing two slices as inputs they cannot be projected to a buffer
-/// that is larger their input sizes by default. This means providing two slices
-/// of `128` elements in length must take a result buffer of `128` elements in length.
 ///
 /// ### Implementation Pseudocode
 ///
@@ -1499,6 +1707,23 @@ where
 /// - `0 + 1 == [1, 1, 1]`  w/result_buffer_len=3
 /// - `1 + 1 == [1]`  w/result_buffer_len=1
 ///
+/// ###### Projecting Vectors
+///
+/// CFAVML allows for working over a wide variety of buffers for applications, projection is effectively
+/// broadcasting of two input buffers implementing `IntoMemLoader<T>`.
+///
+/// By default, you can provide _two slices_, _one slice and a broadcast value_, or _two broadcast values_,
+/// which exhibit the standard behaviour as you might expect.
+///
+/// When providing two slices as inputs they cannot be projected to a buffer
+/// that is larger their input sizes by default. This means providing two slices
+/// of `128` elements in length must take a result buffer of `128` elements in length.
+///
+/// You can wrap your inputs in a [Projected](crate::mem_loader::Projected) wrapper which
+/// enables projecting of the input buffer to new sizes providing the new size is a
+/// multiple of the original size. When this buffer is projected, it is effectively
+/// repeated `N` times, where `N` is how many times the old size fits into the new size.
+///
 /// ### Examples
 ///
 /// ##### Two vectors
@@ -1530,6 +1755,27 @@ where
 /// assert_eq!(result, [10.0; 4]);
 /// ```
 ///
+/// ##### With projected vectors
+///
+/// Using the [Projected](crate::mem_loader::Projected) wrapper type, we can create larger output
+/// vectors than the original inputs, which can allow for much better performance and
+/// memory usage when working with matrices.
+///
+/// NOTE:
+/// Projection != Matrix broadcasting, please read the documentation of `Projected` to understand
+/// how it behaves, it does not replace your matrix library's own broadcasting system.
+///
+/// ```rust
+/// use cfavml::mem_loader::Projected;
+///
+/// let lhs = [1.0, 1.0, 0.5, 1.0];    // Pretend this is a 2x2 matrix
+/// let rhs = [1.0, 2.5];               // Pretend this is a 1x2 matrix
+///
+/// let mut result = [0.0; 4];          // Our output is a 2x2 matrix
+/// cfavml::add_vertical(Projected(&lhs), Projected(&rhs), &mut result);
+/// assert_eq!(result, [2.0, 3.5, 1.5, 3.5]);
+/// ```
+///
 /// ##### With `MaybeUninit`
 ///
 /// Often if you are working with new-allocations, you do not want to initialize the data twice,
@@ -1549,18 +1795,6 @@ where
 /// let result = unsafe { core::mem::transmute::<Vec<MaybeUninit<f32>>, Vec<f32>>(result) };
 /// assert_eq!(result, [2.0, 1.5, 1.0, -1.0]);
 /// ```
-///
-/// ### Projecting Vectors
-///
-/// CFAVML allows for working over a wide variety of buffers for applications, projection is effectively
-/// broadcasting of two input buffers implementing `IntoMemLoader<T>`.
-///
-/// By default, you can provide _two slices_, _one slice and a broadcast value_, or _two broadcast values_,
-/// which exhibit the standard behaviour as you might expect.
-///
-/// When providing two slices as inputs they cannot be projected to a buffer
-/// that is larger their input sizes by default. This means providing two slices
-/// of `128` elements in length must take a result buffer of `128` elements in length.
 ///
 /// ### Implementation Pseudocode
 ///
@@ -1620,6 +1854,23 @@ where
 /// - `0 + 1 == [1, 1, 1]`  w/result_buffer_len=3
 /// - `1 + 1 == [1]`  w/result_buffer_len=1
 ///
+/// ###### Projecting Vectors
+///
+/// CFAVML allows for working over a wide variety of buffers for applications, projection is effectively
+/// broadcasting of two input buffers implementing `IntoMemLoader<T>`.
+///
+/// By default, you can provide _two slices_, _one slice and a broadcast value_, or _two broadcast values_,
+/// which exhibit the standard behaviour as you might expect.
+///
+/// When providing two slices as inputs they cannot be projected to a buffer
+/// that is larger their input sizes by default. This means providing two slices
+/// of `128` elements in length must take a result buffer of `128` elements in length.
+///
+/// You can wrap your inputs in a [Projected](crate::mem_loader::Projected) wrapper which
+/// enables projecting of the input buffer to new sizes providing the new size is a
+/// multiple of the original size. When this buffer is projected, it is effectively
+/// repeated `N` times, where `N` is how many times the old size fits into the new size.
+///
 /// ### Examples
 ///
 /// ##### Two vectors
@@ -1651,6 +1902,27 @@ where
 /// assert_eq!(result, [0.0; 4]);
 /// ```
 ///
+/// ##### With projected vectors
+///
+/// Using the [Projected](crate::mem_loader::Projected) wrapper type, we can create larger output
+/// vectors than the original inputs, which can allow for much better performance and
+/// memory usage when working with matrices.
+///
+/// NOTE:
+/// Projection != Matrix broadcasting, please read the documentation of `Projected` to understand
+/// how it behaves, it does not replace your matrix library's own broadcasting system.
+///
+/// ```rust
+/// use cfavml::mem_loader::Projected;
+///
+/// let lhs = [1.0, 1.0, 0.5, 1.0];    // Pretend this is a 2x2 matrix
+/// let rhs = [1.0, 2.5];               // Pretend this is a 1x2 matrix
+///
+/// let mut result = [0.0; 4];          // Our output is a 2x2 matrix
+/// cfavml::sub_vertical(Projected(&lhs), Projected(&rhs), &mut result);
+/// assert_eq!(result, [0.0, -1.5, -0.5, -1.5]);
+/// ```
+///
 /// ##### With `MaybeUninit`
 ///
 /// Often if you are working with new-allocations, you do not want to initialize the data twice,
@@ -1670,18 +1942,6 @@ where
 /// let result = unsafe { core::mem::transmute::<Vec<MaybeUninit<f32>>, Vec<f32>>(result) };
 /// assert_eq!(result, [0.0, -3.5, 0.0, 3.0]);
 /// ```
-///
-/// ### Projecting Vectors
-///
-/// CFAVML allows for working over a wide variety of buffers for applications, projection is effectively
-/// broadcasting of two input buffers implementing `IntoMemLoader<T>`.
-///
-/// By default, you can provide _two slices_, _one slice and a broadcast value_, or _two broadcast values_,
-/// which exhibit the standard behaviour as you might expect.
-///
-/// When providing two slices as inputs they cannot be projected to a buffer
-/// that is larger their input sizes by default. This means providing two slices
-/// of `128` elements in length must take a result buffer of `128` elements in length.
 ///
 /// ### Implementation Pseudocode
 ///
@@ -1741,6 +2001,23 @@ where
 /// - `0 + 1 == [1, 1, 1]`  w/result_buffer_len=3
 /// - `1 + 1 == [1]`  w/result_buffer_len=1
 ///
+/// ###### Projecting Vectors
+///
+/// CFAVML allows for working over a wide variety of buffers for applications, projection is effectively
+/// broadcasting of two input buffers implementing `IntoMemLoader<T>`.
+///
+/// By default, you can provide _two slices_, _one slice and a broadcast value_, or _two broadcast values_,
+/// which exhibit the standard behaviour as you might expect.
+///
+/// When providing two slices as inputs they cannot be projected to a buffer
+/// that is larger their input sizes by default. This means providing two slices
+/// of `128` elements in length must take a result buffer of `128` elements in length.
+///
+/// You can wrap your inputs in a [Projected](crate::mem_loader::Projected) wrapper which
+/// enables projecting of the input buffer to new sizes providing the new size is a
+/// multiple of the original size. When this buffer is projected, it is effectively
+/// repeated `N` times, where `N` is how many times the old size fits into the new size.
+///
 /// ### Examples
 ///
 /// ##### Two vectors
@@ -1772,6 +2049,27 @@ where
 /// assert_eq!(result, [25.0; 4]);
 /// ```
 ///
+/// ##### With projected vectors
+///
+/// Using the [Projected](crate::mem_loader::Projected) wrapper type, we can create larger output
+/// vectors than the original inputs, which can allow for much better performance and
+/// memory usage when working with matrices.
+///
+/// NOTE:
+/// Projection != Matrix broadcasting, please read the documentation of `Projected` to understand
+/// how it behaves, it does not replace your matrix library's own broadcasting system.
+///
+/// ```rust
+/// use cfavml::mem_loader::Projected;
+///
+/// let lhs = [1.0, 1.0, 0.5, 1.0];    // Pretend this is a 2x2 matrix
+/// let rhs = [1.0, 2.5];               // Pretend this is a 1x2 matrix
+///
+/// let mut result = [0.0; 4];          // Our output is a 2x2 matrix
+/// cfavml::mul_vertical(Projected(&lhs), Projected(&rhs), &mut result);
+/// assert_eq!(result, [1.0, 2.5, 0.5, 2.5]);
+/// ```
+///
 /// ##### With `MaybeUninit`
 ///
 /// Often if you are working with new-allocations, you do not want to initialize the data twice,
@@ -1791,18 +2089,6 @@ where
 /// let result = unsafe { core::mem::transmute::<Vec<MaybeUninit<f32>>, Vec<f32>>(result) };
 /// assert_eq!(result, [1.0, -2.5, 0.25, -2.0]);
 /// ```
-///
-/// ### Projecting Vectors
-///
-/// CFAVML allows for working over a wide variety of buffers for applications, projection is effectively
-/// broadcasting of two input buffers implementing `IntoMemLoader<T>`.
-///
-/// By default, you can provide _two slices_, _one slice and a broadcast value_, or _two broadcast values_,
-/// which exhibit the standard behaviour as you might expect.
-///
-/// When providing two slices as inputs they cannot be projected to a buffer
-/// that is larger their input sizes by default. This means providing two slices
-/// of `128` elements in length must take a result buffer of `128` elements in length.
 ///
 /// ### Implementation Pseudocode
 ///
@@ -1882,6 +2168,23 @@ where
 /// - `0 + 1 == [1, 1, 1]`  w/result_buffer_len=3
 /// - `1 + 1 == [1]`  w/result_buffer_len=1
 ///
+/// ###### Projecting Vectors
+///
+/// CFAVML allows for working over a wide variety of buffers for applications, projection is effectively
+/// broadcasting of two input buffers implementing `IntoMemLoader<T>`.
+///
+/// By default, you can provide _two slices_, _one slice and a broadcast value_, or _two broadcast values_,
+/// which exhibit the standard behaviour as you might expect.
+///
+/// When providing two slices as inputs they cannot be projected to a buffer
+/// that is larger their input sizes by default. This means providing two slices
+/// of `128` elements in length must take a result buffer of `128` elements in length.
+///
+/// You can wrap your inputs in a [Projected](crate::mem_loader::Projected) wrapper which
+/// enables projecting of the input buffer to new sizes providing the new size is a
+/// multiple of the original size. When this buffer is projected, it is effectively
+/// repeated `N` times, where `N` is how many times the old size fits into the new size.
+///
 /// ### Examples
 ///
 /// ##### Two vectors
@@ -1913,6 +2216,27 @@ where
 /// assert_eq!(result, [1.0; 4]);
 /// ```
 ///
+/// ##### With projected vectors
+///
+/// Using the [Projected](crate::mem_loader::Projected) wrapper type, we can create larger output
+/// vectors than the original inputs, which can allow for much better performance and
+/// memory usage when working with matrices.
+///
+/// NOTE:
+/// Projection != Matrix broadcasting, please read the documentation of `Projected` to understand
+/// how it behaves, it does not replace your matrix library's own broadcasting system.
+///
+/// ```rust
+/// use cfavml::mem_loader::Projected;
+///
+/// let lhs = [1.0, -1.0, 0.5, 1.0];    // Pretend this is a 2x2 matrix
+/// let rhs = [1.0, 2.5];               // Pretend this is a 1x2 matrix
+///
+/// let mut result = [0.0; 4];          // Our output is a 2x2 matrix
+/// cfavml::div_vertical(Projected(&lhs), Projected(&rhs), &mut result);
+/// assert_eq!(result, [1.0, -0.4, 0.5, 0.4]);
+/// ```
+///
 /// ##### With `MaybeUninit`
 ///
 /// Often if you are working with new-allocations, you do not want to initialize the data twice,
@@ -1932,18 +2256,6 @@ where
 /// let result = unsafe { core::mem::transmute::<Vec<MaybeUninit<f32>>, Vec<f32>>(result) };
 /// assert_eq!(result, [1.0, -0.4, 1.0, -0.5]);
 /// ```
-///
-/// ### Projecting Vectors
-///
-/// CFAVML allows for working over a wide variety of buffers for applications, projection is effectively
-/// broadcasting of two input buffers implementing `IntoMemLoader<T>`.
-///
-/// By default, you can provide _two slices_, _one slice and a broadcast value_, or _two broadcast values_,
-/// which exhibit the standard behaviour as you might expect.
-///
-/// When providing two slices as inputs they cannot be projected to a buffer
-/// that is larger their input sizes by default. This means providing two slices
-/// of `128` elements in length must take a result buffer of `128` elements in length.
 ///
 /// ### Implementation Pseudocode
 ///
