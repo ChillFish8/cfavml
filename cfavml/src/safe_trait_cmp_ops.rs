@@ -33,6 +33,26 @@ pub trait CmpOps: Sized + Copy {
     /// Performs an element wise max on each element of vector `a` and `b`,
     /// writing the result to `result`.
     ///
+    /// See [cfavml::max_vertical](crate::max_vertical) for examples.
+    ///
+    /// ### Projecting Vectors
+    ///
+    /// CFAVML allows for working over a wide variety of buffers for applications, projection is effectively
+    /// broadcasting of two input buffers implementing `IntoMemLoader<T>`.
+    ///
+    /// By default, you can provide _two slices_, _one slice and a broadcast value_, or _two broadcast values_,
+    /// which exhibit the standard behaviour as you might expect.
+    ///
+    /// When providing two slices as inputs they cannot be projected to a buffer
+    /// that is larger their input sizes by default. This means providing two slices
+    /// of `128` elements in length must take a result buffer of `128` elements in length.
+    ///
+    /// You can wrap your inputs in a [Projected](crate::mem_loader::Projected) wrapper which
+    /// enables projecting of the input buffer to new sizes providing the new size is a
+    /// multiple of the original size. When this buffer is projected, it is effectively
+    /// repeated `N` times, where `N` is how many times the old size fits into the new size.
+    ///
+    ///
     /// ### Implementation Pseudocode
     ///
     /// ```ignore
@@ -82,6 +102,25 @@ pub trait CmpOps: Sized + Copy {
     /// Performs an element wise min on each element of vector `a` and `b`,
     /// writing the result to `result`.
     ///
+    /// See [cfavml::min_vertical](crate::min_vertical) for examples.
+    ///
+    /// ### Projecting Vectors
+    ///
+    /// CFAVML allows for working over a wide variety of buffers for applications, projection is effectively
+    /// broadcasting of two input buffers implementing `IntoMemLoader<T>`.
+    ///
+    /// By default, you can provide _two slices_, _one slice and a broadcast value_, or _two broadcast values_,
+    /// which exhibit the standard behaviour as you might expect.
+    ///
+    /// When providing two slices as inputs they cannot be projected to a buffer
+    /// that is larger their input sizes by default. This means providing two slices
+    /// of `128` elements in length must take a result buffer of `128` elements in length.
+    ///
+    /// You can wrap your inputs in a [Projected](crate::mem_loader::Projected) wrapper which
+    /// enables projecting of the input buffer to new sizes providing the new size is a
+    /// multiple of the original size. When this buffer is projected, it is effectively
+    /// repeated `N` times, where `N` is how many times the old size fits into the new size.
+    ///
     /// ### Implementation Pseudocode
     ///
     /// ```ignore
@@ -113,6 +152,25 @@ pub trait CmpOps: Sized + Copy {
 
     /// Checks each element pair from vectors `a` and `b` of size `dims`  comparing
     /// if element `a` is **_equal to_** element `b` returning a mask vector of the same type.
+    ///
+    /// See [cfavml::eq_vertical](crate::eq_vertical) for examples.
+    ///
+    /// ### Projecting Vectors
+    ///
+    /// CFAVML allows for working over a wide variety of buffers for applications, projection is effectively
+    /// broadcasting of two input buffers implementing `IntoMemLoader<T>`.
+    ///
+    /// By default, you can provide _two slices_, _one slice and a broadcast value_, or _two broadcast values_,
+    /// which exhibit the standard behaviour as you might expect.
+    ///
+    /// When providing two slices as inputs they cannot be projected to a buffer
+    /// that is larger their input sizes by default. This means providing two slices
+    /// of `128` elements in length must take a result buffer of `128` elements in length.
+    ///
+    /// You can wrap your inputs in a [Projected](crate::mem_loader::Projected) wrapper which
+    /// enables projecting of the input buffer to new sizes providing the new size is a
+    /// multiple of the original size. When this buffer is projected, it is effectively
+    /// repeated `N` times, where `N` is how many times the old size fits into the new size.
     ///
     /// ### Implementation Pseudocode
     ///
@@ -155,6 +213,25 @@ pub trait CmpOps: Sized + Copy {
     /// Checks each element pair from vectors `a` and `b` of size `dims`  comparing
     /// if element `a` is **_not equal to_** element `b` returning a mask vector of the same type.
     ///
+    /// See [cfavml::neq_vertical](crate::neq_vertical) for examples.
+    ///
+    /// ### Projecting Vectors
+    ///
+    /// CFAVML allows for working over a wide variety of buffers for applications, projection is effectively
+    /// broadcasting of two input buffers implementing `IntoMemLoader<T>`.
+    ///
+    /// By default, you can provide _two slices_, _one slice and a broadcast value_, or _two broadcast values_,
+    /// which exhibit the standard behaviour as you might expect.
+    ///
+    /// When providing two slices as inputs they cannot be projected to a buffer
+    /// that is larger their input sizes by default. This means providing two slices
+    /// of `128` elements in length must take a result buffer of `128` elements in length.
+    ///
+    /// You can wrap your inputs in a [Projected](crate::mem_loader::Projected) wrapper which
+    /// enables projecting of the input buffer to new sizes providing the new size is a
+    /// multiple of the original size. When this buffer is projected, it is effectively
+    /// repeated `N` times, where `N` is how many times the old size fits into the new size.
+    ///
     /// ### Implementation Pseudocode
     ///
     /// ```ignore
@@ -195,6 +272,25 @@ pub trait CmpOps: Sized + Copy {
 
     /// Checks each element pair from vectors `a` and `b` of size `dims`  comparing
     /// if element `a` is **_less than_** element `b` returning a mask vector of the same type.
+    ///
+    /// See [cfavml::lt_vertical](crate::lt_vertical) for examples.
+    ///
+    /// ### Projecting Vectors
+    ///
+    /// CFAVML allows for working over a wide variety of buffers for applications, projection is effectively
+    /// broadcasting of two input buffers implementing `IntoMemLoader<T>`.
+    ///
+    /// By default, you can provide _two slices_, _one slice and a broadcast value_, or _two broadcast values_,
+    /// which exhibit the standard behaviour as you might expect.
+    ///
+    /// When providing two slices as inputs they cannot be projected to a buffer
+    /// that is larger their input sizes by default. This means providing two slices
+    /// of `128` elements in length must take a result buffer of `128` elements in length.
+    ///
+    /// You can wrap your inputs in a [Projected](crate::mem_loader::Projected) wrapper which
+    /// enables projecting of the input buffer to new sizes providing the new size is a
+    /// multiple of the original size. When this buffer is projected, it is effectively
+    /// repeated `N` times, where `N` is how many times the old size fits into the new size.
     ///
     /// ### Implementation Pseudocode
     ///
@@ -237,6 +333,25 @@ pub trait CmpOps: Sized + Copy {
     /// Checks each element pair from vectors `a` and `b` of size `dims`  comparing
     /// if element `a` is **_less than or equal to_** element `b` returning a mask vector of the same type.
     ///
+    /// See [cfavml::lte_vertical](crate::lte_vertical) for examples.
+    ///
+    /// ### Projecting Vectors
+    ///
+    /// CFAVML allows for working over a wide variety of buffers for applications, projection is effectively
+    /// broadcasting of two input buffers implementing `IntoMemLoader<T>`.
+    ///
+    /// By default, you can provide _two slices_, _one slice and a broadcast value_, or _two broadcast values_,
+    /// which exhibit the standard behaviour as you might expect.
+    ///
+    /// When providing two slices as inputs they cannot be projected to a buffer
+    /// that is larger their input sizes by default. This means providing two slices
+    /// of `128` elements in length must take a result buffer of `128` elements in length.
+    ///
+    /// You can wrap your inputs in a [Projected](crate::mem_loader::Projected) wrapper which
+    /// enables projecting of the input buffer to new sizes providing the new size is a
+    /// multiple of the original size. When this buffer is projected, it is effectively
+    /// repeated `N` times, where `N` is how many times the old size fits into the new size.
+    ///
     /// ### Implementation Pseudocode
     ///
     /// ```ignore
@@ -278,6 +393,25 @@ pub trait CmpOps: Sized + Copy {
     /// Checks each element pair from vectors `a` and `b` of size `dims`  comparing
     /// if element `a` is **_greater than_** element `b` returning a mask vector of the same type.
     ///
+    /// See [cfavml::gt_vertical](crate::gt_vertical) for examples.
+    ///
+    /// ### Projecting Vectors
+    ///
+    /// CFAVML allows for working over a wide variety of buffers for applications, projection is effectively
+    /// broadcasting of two input buffers implementing `IntoMemLoader<T>`.
+    ///
+    /// By default, you can provide _two slices_, _one slice and a broadcast value_, or _two broadcast values_,
+    /// which exhibit the standard behaviour as you might expect.
+    ///
+    /// When providing two slices as inputs they cannot be projected to a buffer
+    /// that is larger their input sizes by default. This means providing two slices
+    /// of `128` elements in length must take a result buffer of `128` elements in length.
+    ///
+    /// You can wrap your inputs in a [Projected](crate::mem_loader::Projected) wrapper which
+    /// enables projecting of the input buffer to new sizes providing the new size is a
+    /// multiple of the original size. When this buffer is projected, it is effectively
+    /// repeated `N` times, where `N` is how many times the old size fits into the new size.
+    ///
     /// ### Implementation Pseudocode
     ///
     /// ```ignore
@@ -318,6 +452,25 @@ pub trait CmpOps: Sized + Copy {
 
     /// Checks each element pair from vectors `a` and `b` of size `dims`  comparing
     /// if element `a` is **_greater than_** element `b` returning a mask vector of the same type.
+    ///
+    /// See [cfavml::gte_vertical](crate::gte_vertical) for examples.
+    ///
+    /// ### Projecting Vectors
+    ///
+    /// CFAVML allows for working over a wide variety of buffers for applications, projection is effectively
+    /// broadcasting of two input buffers implementing `IntoMemLoader<T>`.
+    ///
+    /// By default, you can provide _two slices_, _one slice and a broadcast value_, or _two broadcast values_,
+    /// which exhibit the standard behaviour as you might expect.
+    ///
+    /// When providing two slices as inputs they cannot be projected to a buffer
+    /// that is larger their input sizes by default. This means providing two slices
+    /// of `128` elements in length must take a result buffer of `128` elements in length.
+    ///
+    /// You can wrap your inputs in a [Projected](crate::mem_loader::Projected) wrapper which
+    /// enables projecting of the input buffer to new sizes providing the new size is a
+    /// multiple of the original size. When this buffer is projected, it is effectively
+    /// repeated `N` times, where `N` is how many times the old size fits into the new size.
     ///
     /// ### Implementation Pseudocode
     ///

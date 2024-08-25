@@ -12,6 +12,8 @@ pub trait ArithmeticOps: Sized + Copy {
     /// Performs an element wise addition of two input buffers `lhs` and `rhs` that can
     /// be projected to the desired output size of `result`.
     ///
+    /// See [cfavml::add_vertical](crate::add_vertical) for examples.
+    ///
     /// ### Projecting Vectors
     ///
     /// CFAVML allows for working over a wide variety of buffers for applications, projection is effectively
@@ -23,6 +25,11 @@ pub trait ArithmeticOps: Sized + Copy {
     /// When providing two slices as inputs they cannot be projected to a buffer
     /// that is larger their input sizes by default. This means providing two slices
     /// of `128` elements in length must take a result buffer of `128` elements in length.
+    ///
+    /// You can wrap your inputs in a [Projected](crate::mem_loader::Projected) wrapper which
+    /// enables projecting of the input buffer to new sizes providing the new size is a
+    /// multiple of the original size. When this buffer is projected, it is effectively
+    /// repeated `N` times, where `N` is how many times the old size fits into the new size.
     ///
     /// ### Implementation Pseudocode
     ///
@@ -50,6 +57,8 @@ pub trait ArithmeticOps: Sized + Copy {
     /// Performs an element wise subtraction of two input buffers `a` and `b` that can
     /// be projected to the desired output size of `result`.
     ///
+    /// See [cfavml::sub_vertical](crate::sub_vertical) for examples.
+    ///
     /// ### Projecting Vectors
     ///
     /// CFAVML allows for working over a wide variety of buffers for applications, projection is effectively
@@ -61,6 +70,11 @@ pub trait ArithmeticOps: Sized + Copy {
     /// When providing two slices as inputs they cannot be projected to a buffer
     /// that is larger their input sizes by default. This means providing two slices
     /// of `128` elements in length must take a result buffer of `128` elements in length.
+    ///
+    /// You can wrap your inputs in a [Projected](crate::mem_loader::Projected) wrapper which
+    /// enables projecting of the input buffer to new sizes providing the new size is a
+    /// multiple of the original size. When this buffer is projected, it is effectively
+    /// repeated `N` times, where `N` is how many times the old size fits into the new size.
     ///
     /// ### Implementation Pseudocode
     ///
@@ -88,6 +102,8 @@ pub trait ArithmeticOps: Sized + Copy {
     /// Performs an element wise multiply of two input buffers `a` and `b` that can
     /// be projected to the desired output size of `result`.
     ///
+    /// See [cfavml::mul_vertical](crate::mul_vertical) for examples.
+    ///
     /// ### Projecting Vectors
     ///
     /// CFAVML allows for working over a wide variety of buffers for applications, projection is effectively
@@ -99,6 +115,11 @@ pub trait ArithmeticOps: Sized + Copy {
     /// When providing two slices as inputs they cannot be projected to a buffer
     /// that is larger their input sizes by default. This means providing two slices
     /// of `128` elements in length must take a result buffer of `128` elements in length.
+    ///
+    /// You can wrap your inputs in a [Projected](crate::mem_loader::Projected) wrapper which
+    /// enables projecting of the input buffer to new sizes providing the new size is a
+    /// multiple of the original size. When this buffer is projected, it is effectively
+    /// repeated `N` times, where `N` is how many times the old size fits into the new size.
     ///
     /// ### Implementation Pseudocode
     ///
@@ -126,6 +147,8 @@ pub trait ArithmeticOps: Sized + Copy {
     /// Performs an element wise division of two input buffers `a` and `b` that can
     /// be projected to the desired output size of `result`.
     ///
+    /// See [cfavml::div_vertical](crate::div_vertical) for examples.
+    ///
     /// ### Projecting Vectors
     ///
     /// CFAVML allows for working over a wide variety of buffers for applications, projection is effectively
@@ -137,6 +160,11 @@ pub trait ArithmeticOps: Sized + Copy {
     /// When providing two slices as inputs they cannot be projected to a buffer
     /// that is larger their input sizes by default. This means providing two slices
     /// of `128` elements in length must take a result buffer of `128` elements in length.
+    ///
+    /// You can wrap your inputs in a [Projected](crate::mem_loader::Projected) wrapper which
+    /// enables projecting of the input buffer to new sizes providing the new size is a
+    /// multiple of the original size. When this buffer is projected, it is effectively
+    /// repeated `N` times, where `N` is how many times the old size fits into the new size.
     ///
     /// ### Implementation Pseudocode
     ///

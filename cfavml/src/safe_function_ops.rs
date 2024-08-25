@@ -331,7 +331,7 @@ where
 /// that is larger their input sizes by default. This means providing two slices
 /// of `128` elements in length must take a result buffer of `128` elements in length.
 ///
-/// You can wrap your inputs in a [cfavml::mem_loader::Projected] wrapper which
+/// You can wrap your inputs in a [Projected](crate::mem_loader::Projected) wrapper which
 /// enables projecting of the input buffer to new sizes providing the new size is a
 /// multiple of the original size. When this buffer is projected, it is effectively
 /// repeated `N` times, where `N` is how many times the old size fits into the new size.
@@ -365,6 +365,27 @@ where
 /// let mut result = [0.0; 4];
 /// cfavml::max_vertical(1.0, 0.0, &mut result);
 /// assert_eq!(result, [1.0; 4]);
+/// ```
+///
+/// ##### With projected vectors
+///
+/// Using the [Projected](crate::mem_loader::Projected) wrapper type, we can create larger output
+/// vectors than the original inputs, which can allow for much better performance and
+/// memory usage when working with matrices.
+///
+/// NOTE:
+/// Projection != Matrix broadcasting, please read the documentation of `Projected` to understand
+/// how it behaves, it does not replace your matrix library's own broadcasting system.
+///
+/// ```rust
+/// use cfavml::mem_loader::Projected;
+///
+/// let lhs = [1.0, 1.0, 0.5, 3.5];    // Pretend this is a 2x2 matrix
+/// let rhs = [1.0, 2.5];               // Pretend this is a 1x2 matrix
+///
+/// let mut result = [0.0; 4];          // Our output is a 2x2 matrix
+/// cfavml::max_vertical(Projected(&lhs), Projected(&rhs), &mut result);
+/// assert_eq!(result, [1.0, 2.5, 1.0, 3.5]);
 /// ```
 ///
 /// ##### With `MaybeUninit`
@@ -502,7 +523,7 @@ where
 /// that is larger their input sizes by default. This means providing two slices
 /// of `128` elements in length must take a result buffer of `128` elements in length.
 ///
-/// You can wrap your inputs in a [cfavml::mem_loader::Projected] wrapper which
+/// You can wrap your inputs in a [Projected](crate::mem_loader::Projected) wrapper which
 /// enables projecting of the input buffer to new sizes providing the new size is a
 /// multiple of the original size. When this buffer is projected, it is effectively
 /// repeated `N` times, where `N` is how many times the old size fits into the new size.
@@ -536,6 +557,27 @@ where
 /// let mut result = [0.0; 4];
 /// cfavml::min_vertical(1.0, -5.0, &mut result);
 /// assert_eq!(result, [-5.0; 4]);
+/// ```
+///
+/// ##### With projected vectors
+///
+/// Using the [Projected](crate::mem_loader::Projected) wrapper type, we can create larger output
+/// vectors than the original inputs, which can allow for much better performance and
+/// memory usage when working with matrices.
+///
+/// NOTE:
+/// Projection != Matrix broadcasting, please read the documentation of `Projected` to understand
+/// how it behaves, it does not replace your matrix library's own broadcasting system.
+///
+/// ```rust
+/// use cfavml::mem_loader::Projected;
+///
+/// let lhs = [1.0, 1.0, 0.5, 3.5];    // Pretend this is a 2x2 matrix
+/// let rhs = [1.0, 2.5];               // Pretend this is a 1x2 matrix
+///
+/// let mut result = [0.0; 4];          // Our output is a 2x2 matrix
+/// cfavml::min_vertical(Projected(&lhs), Projected(&rhs), &mut result);
+/// assert_eq!(result, [1.0, 1.0, 0.5, 2.5]);
 /// ```
 ///
 /// ##### With `MaybeUninit`
@@ -630,7 +672,7 @@ where
 /// that is larger their input sizes by default. This means providing two slices
 /// of `128` elements in length must take a result buffer of `128` elements in length.
 ///
-/// You can wrap your inputs in a [cfavml::mem_loader::Projected] wrapper which
+/// You can wrap your inputs in a [Projected](crate::mem_loader::Projected) wrapper which
 /// enables projecting of the input buffer to new sizes providing the new size is a
 /// multiple of the original size. When this buffer is projected, it is effectively
 /// repeated `N` times, where `N` is how many times the old size fits into the new size.
@@ -680,6 +722,27 @@ where
 /// let mut result = [0.0f32; 4];
 /// cfavml::eq_vertical(1.0, -5.0, &mut result);
 /// assert_eq!(result, [0.0; 4]);
+/// ```
+///
+/// ##### With projected vectors
+///
+/// Using the [Projected](crate::mem_loader::Projected) wrapper type, we can create larger output
+/// vectors than the original inputs, which can allow for much better performance and
+/// memory usage when working with matrices.
+///
+/// NOTE:
+/// Projection != Matrix broadcasting, please read the documentation of `Projected` to understand
+/// how it behaves, it does not replace your matrix library's own broadcasting system.
+///
+/// ```rust
+/// use cfavml::mem_loader::Projected;
+///
+/// let lhs = [1.0, 1.0, 0.5, 3.5];    // Pretend this is a 2x2 matrix
+/// let rhs = [1.0, 2.5];               // Pretend this is a 1x2 matrix
+///
+/// let mut result = [0.0; 4];          // Our output is a 2x2 matrix
+/// cfavml::eq_vertical(Projected(&lhs), Projected(&rhs), &mut result);
+/// assert_eq!(result, [1.0, 0.0, 0.0, 0.0]);
 /// ```
 ///
 /// ##### With `MaybeUninit`
@@ -783,7 +846,7 @@ where
 /// that is larger their input sizes by default. This means providing two slices
 /// of `128` elements in length must take a result buffer of `128` elements in length.
 ///
-/// You can wrap your inputs in a [cfavml::mem_loader::Projected] wrapper which
+/// You can wrap your inputs in a [Projected](crate::mem_loader::Projected) wrapper which
 /// enables projecting of the input buffer to new sizes providing the new size is a
 /// multiple of the original size. When this buffer is projected, it is effectively
 /// repeated `N` times, where `N` is how many times the old size fits into the new size.
@@ -833,6 +896,27 @@ where
 /// let mut result = [0.0f32; 4];
 /// cfavml::neq_vertical(1.0, -5.0, &mut result);
 /// assert_eq!(result, [1.0; 4]);
+/// ```
+///
+/// ##### With projected vectors
+///
+/// Using the [Projected](crate::mem_loader::Projected) wrapper type, we can create larger output
+/// vectors than the original inputs, which can allow for much better performance and
+/// memory usage when working with matrices.
+///
+/// NOTE:
+/// Projection != Matrix broadcasting, please read the documentation of `Projected` to understand
+/// how it behaves, it does not replace your matrix library's own broadcasting system.
+///
+/// ```rust
+/// use cfavml::mem_loader::Projected;
+///
+/// let lhs = [1.0, 1.0, 0.5, 3.5];    // Pretend this is a 2x2 matrix
+/// let rhs = [1.0, 2.5];               // Pretend this is a 1x2 matrix
+///
+/// let mut result = [0.0; 4];          // Our output is a 2x2 matrix
+/// cfavml::neq_vertical(Projected(&lhs), Projected(&rhs), &mut result);
+/// assert_eq!(result, [0.0, 1.0, 1.0, 1.0]);
 /// ```
 ///
 /// ##### With `MaybeUninit`
@@ -936,7 +1020,7 @@ where
 /// that is larger their input sizes by default. This means providing two slices
 /// of `128` elements in length must take a result buffer of `128` elements in length.
 ///
-/// You can wrap your inputs in a [cfavml::mem_loader::Projected] wrapper which
+/// You can wrap your inputs in a [Projected](crate::mem_loader::Projected) wrapper which
 /// enables projecting of the input buffer to new sizes providing the new size is a
 /// multiple of the original size. When this buffer is projected, it is effectively
 /// repeated `N` times, where `N` is how many times the old size fits into the new size.
@@ -986,6 +1070,27 @@ where
 /// let mut result = [0.0f32; 4];
 /// cfavml::lt_vertical(-1.0, 5.0, &mut result);
 /// assert_eq!(result, [1.0; 4]);
+/// ```
+///
+/// ##### With projected vectors
+///
+/// Using the [Projected](crate::mem_loader::Projected) wrapper type, we can create larger output
+/// vectors than the original inputs, which can allow for much better performance and
+/// memory usage when working with matrices.
+///
+/// NOTE:
+/// Projection != Matrix broadcasting, please read the documentation of `Projected` to understand
+/// how it behaves, it does not replace your matrix library's own broadcasting system.
+///
+/// ```rust
+/// use cfavml::mem_loader::Projected;
+///
+/// let lhs = [1.0, 1.0, 0.5, 3.5];    // Pretend this is a 2x2 matrix
+/// let rhs = [1.0, 2.5];               // Pretend this is a 1x2 matrix
+///
+/// let mut result = [0.0; 4];          // Our output is a 2x2 matrix
+/// cfavml::lt_vertical(Projected(&lhs), Projected(&rhs), &mut result);
+/// assert_eq!(result, [0.0, 1.0, 1.0, 0.0]);
 /// ```
 ///
 /// ##### With `MaybeUninit`
@@ -1090,7 +1195,7 @@ where
 /// that is larger their input sizes by default. This means providing two slices
 /// of `128` elements in length must take a result buffer of `128` elements in length.
 ///
-/// You can wrap your inputs in a [cfavml::mem_loader::Projected] wrapper which
+/// You can wrap your inputs in a [Projected](crate::mem_loader::Projected) wrapper which
 /// enables projecting of the input buffer to new sizes providing the new size is a
 /// multiple of the original size. When this buffer is projected, it is effectively
 /// repeated `N` times, where `N` is how many times the old size fits into the new size.
@@ -1140,6 +1245,27 @@ where
 /// let mut result = [0.0f32; 4];
 /// cfavml::lte_vertical(5.0, 5.0, &mut result);
 /// assert_eq!(result, [1.0; 4]);
+/// ```
+///
+/// ##### With projected vectors
+///
+/// Using the [Projected](crate::mem_loader::Projected) wrapper type, we can create larger output
+/// vectors than the original inputs, which can allow for much better performance and
+/// memory usage when working with matrices.
+///
+/// NOTE:
+/// Projection != Matrix broadcasting, please read the documentation of `Projected` to understand
+/// how it behaves, it does not replace your matrix library's own broadcasting system.
+///
+/// ```rust
+/// use cfavml::mem_loader::Projected;
+///
+/// let lhs = [1.0, 1.0, 0.5, 3.5];    // Pretend this is a 2x2 matrix
+/// let rhs = [1.0, 2.5];               // Pretend this is a 1x2 matrix
+///
+/// let mut result = [0.0; 4];          // Our output is a 2x2 matrix
+/// cfavml::lte_vertical(Projected(&lhs), Projected(&rhs), &mut result);
+/// assert_eq!(result, [1.0, 1.0, 1.0, 0.0]);
 /// ```
 ///
 /// ##### With `MaybeUninit`
@@ -1245,7 +1371,7 @@ where
 /// that is larger their input sizes by default. This means providing two slices
 /// of `128` elements in length must take a result buffer of `128` elements in length.
 ///
-/// You can wrap your inputs in a [cfavml::mem_loader::Projected] wrapper which
+/// You can wrap your inputs in a [Projected](crate::mem_loader::Projected) wrapper which
 /// enables projecting of the input buffer to new sizes providing the new size is a
 /// multiple of the original size. When this buffer is projected, it is effectively
 /// repeated `N` times, where `N` is how many times the old size fits into the new size.
@@ -1295,6 +1421,27 @@ where
 /// let mut result = [0.0f32; 4];
 /// cfavml::gt_vertical(6.0, 5.0, &mut result);
 /// assert_eq!(result, [1.0; 4]);
+/// ```
+///
+/// ##### With projected vectors
+///
+/// Using the [Projected](crate::mem_loader::Projected) wrapper type, we can create larger output
+/// vectors than the original inputs, which can allow for much better performance and
+/// memory usage when working with matrices.
+///
+/// NOTE:
+/// Projection != Matrix broadcasting, please read the documentation of `Projected` to understand
+/// how it behaves, it does not replace your matrix library's own broadcasting system.
+///
+/// ```rust
+/// use cfavml::mem_loader::Projected;
+///
+/// let lhs = [1.0, 1.0, 0.5, 3.5];    // Pretend this is a 2x2 matrix
+/// let rhs = [1.0, 2.5];               // Pretend this is a 1x2 matrix
+///
+/// let mut result = [0.0; 4];          // Our output is a 2x2 matrix
+/// cfavml::gt_vertical(Projected(&lhs), Projected(&rhs), &mut result);
+/// assert_eq!(result, [0.0, 0.0, 0.0, 1.0]);
 /// ```
 ///
 /// ##### With `MaybeUninit`
@@ -1399,7 +1546,7 @@ where
 /// that is larger their input sizes by default. This means providing two slices
 /// of `128` elements in length must take a result buffer of `128` elements in length.
 ///
-/// You can wrap your inputs in a [cfavml::mem_loader::Projected] wrapper which
+/// You can wrap your inputs in a [Projected](crate::mem_loader::Projected) wrapper which
 /// enables projecting of the input buffer to new sizes providing the new size is a
 /// multiple of the original size. When this buffer is projected, it is effectively
 /// repeated `N` times, where `N` is how many times the old size fits into the new size.
@@ -1449,6 +1596,27 @@ where
 /// let mut result = [0.0f32; 4];
 /// cfavml::gte_vertical(5.0, 5.0, &mut result);
 /// assert_eq!(result, [1.0; 4]);
+/// ```
+///
+/// ##### With projected vectors
+///
+/// Using the [Projected](crate::mem_loader::Projected) wrapper type, we can create larger output
+/// vectors than the original inputs, which can allow for much better performance and
+/// memory usage when working with matrices.
+///
+/// NOTE:
+/// Projection != Matrix broadcasting, please read the documentation of `Projected` to understand
+/// how it behaves, it does not replace your matrix library's own broadcasting system.
+///
+/// ```rust
+/// use cfavml::mem_loader::Projected;
+///
+/// let lhs = [1.0, 1.0, 0.5, 1.0];    // Pretend this is a 2x2 matrix
+/// let rhs = [1.0, 2.5];               // Pretend this is a 1x2 matrix
+///
+/// let mut result = [0.0; 4];          // Our output is a 2x2 matrix
+/// cfavml::gte_vertical(Projected(&lhs), Projected(&rhs), &mut result);
+/// assert_eq!(result, [1.0, 0.0, 0.0, 0.0]);
 /// ```
 ///
 /// ##### With `MaybeUninit`
@@ -1551,7 +1719,7 @@ where
 /// that is larger their input sizes by default. This means providing two slices
 /// of `128` elements in length must take a result buffer of `128` elements in length.
 ///
-/// You can wrap your inputs in a [cfavml::mem_loader::Projected] wrapper which
+/// You can wrap your inputs in a [Projected](crate::mem_loader::Projected) wrapper which
 /// enables projecting of the input buffer to new sizes providing the new size is a
 /// multiple of the original size. When this buffer is projected, it is effectively
 /// repeated `N` times, where `N` is how many times the old size fits into the new size.
@@ -1585,6 +1753,27 @@ where
 /// let mut result = [0.0f32; 4];
 /// cfavml::add_vertical(5.0, 5.0, &mut result);
 /// assert_eq!(result, [10.0; 4]);
+/// ```
+///
+/// ##### With projected vectors
+///
+/// Using the [Projected](crate::mem_loader::Projected) wrapper type, we can create larger output
+/// vectors than the original inputs, which can allow for much better performance and
+/// memory usage when working with matrices.
+///
+/// NOTE:
+/// Projection != Matrix broadcasting, please read the documentation of `Projected` to understand
+/// how it behaves, it does not replace your matrix library's own broadcasting system.
+///
+/// ```rust
+/// use cfavml::mem_loader::Projected;
+///
+/// let lhs = [1.0, 1.0, 0.5, 1.0];    // Pretend this is a 2x2 matrix
+/// let rhs = [1.0, 2.5];               // Pretend this is a 1x2 matrix
+///
+/// let mut result = [0.0; 4];          // Our output is a 2x2 matrix
+/// cfavml::add_vertical(Projected(&lhs), Projected(&rhs), &mut result);
+/// assert_eq!(result, [2.0, 3.5, 1.5, 3.5]);
 /// ```
 ///
 /// ##### With `MaybeUninit`
@@ -1677,7 +1866,7 @@ where
 /// that is larger their input sizes by default. This means providing two slices
 /// of `128` elements in length must take a result buffer of `128` elements in length.
 ///
-/// You can wrap your inputs in a [cfavml::mem_loader::Projected] wrapper which
+/// You can wrap your inputs in a [Projected](crate::mem_loader::Projected) wrapper which
 /// enables projecting of the input buffer to new sizes providing the new size is a
 /// multiple of the original size. When this buffer is projected, it is effectively
 /// repeated `N` times, where `N` is how many times the old size fits into the new size.
@@ -1711,6 +1900,27 @@ where
 /// let mut result = [0.0f32; 4];
 /// cfavml::sub_vertical(5.0, 5.0, &mut result);
 /// assert_eq!(result, [0.0; 4]);
+/// ```
+///
+/// ##### With projected vectors
+///
+/// Using the [Projected](crate::mem_loader::Projected) wrapper type, we can create larger output
+/// vectors than the original inputs, which can allow for much better performance and
+/// memory usage when working with matrices.
+///
+/// NOTE:
+/// Projection != Matrix broadcasting, please read the documentation of `Projected` to understand
+/// how it behaves, it does not replace your matrix library's own broadcasting system.
+///
+/// ```rust
+/// use cfavml::mem_loader::Projected;
+///
+/// let lhs = [1.0, 1.0, 0.5, 1.0];    // Pretend this is a 2x2 matrix
+/// let rhs = [1.0, 2.5];               // Pretend this is a 1x2 matrix
+///
+/// let mut result = [0.0; 4];          // Our output is a 2x2 matrix
+/// cfavml::sub_vertical(Projected(&lhs), Projected(&rhs), &mut result);
+/// assert_eq!(result, [0.0, -1.5, -0.5, -1.5]);
 /// ```
 ///
 /// ##### With `MaybeUninit`
@@ -1803,7 +2013,7 @@ where
 /// that is larger their input sizes by default. This means providing two slices
 /// of `128` elements in length must take a result buffer of `128` elements in length.
 ///
-/// You can wrap your inputs in a [cfavml::mem_loader::Projected] wrapper which
+/// You can wrap your inputs in a [Projected](crate::mem_loader::Projected) wrapper which
 /// enables projecting of the input buffer to new sizes providing the new size is a
 /// multiple of the original size. When this buffer is projected, it is effectively
 /// repeated `N` times, where `N` is how many times the old size fits into the new size.
@@ -1837,6 +2047,27 @@ where
 /// let mut result = [0.0f32; 4];
 /// cfavml::mul_vertical(5.0, 5.0, &mut result);
 /// assert_eq!(result, [25.0; 4]);
+/// ```
+///
+/// ##### With projected vectors
+///
+/// Using the [Projected](crate::mem_loader::Projected) wrapper type, we can create larger output
+/// vectors than the original inputs, which can allow for much better performance and
+/// memory usage when working with matrices.
+///
+/// NOTE:
+/// Projection != Matrix broadcasting, please read the documentation of `Projected` to understand
+/// how it behaves, it does not replace your matrix library's own broadcasting system.
+///
+/// ```rust
+/// use cfavml::mem_loader::Projected;
+///
+/// let lhs = [1.0, 1.0, 0.5, 1.0];    // Pretend this is a 2x2 matrix
+/// let rhs = [1.0, 2.5];               // Pretend this is a 1x2 matrix
+///
+/// let mut result = [0.0; 4];          // Our output is a 2x2 matrix
+/// cfavml::mul_vertical(Projected(&lhs), Projected(&rhs), &mut result);
+/// assert_eq!(result, [1.0, 2.5, 0.5, 2.5]);
 /// ```
 ///
 /// ##### With `MaybeUninit`
@@ -1949,7 +2180,7 @@ where
 /// that is larger their input sizes by default. This means providing two slices
 /// of `128` elements in length must take a result buffer of `128` elements in length.
 ///
-/// You can wrap your inputs in a [cfavml::mem_loader::Projected] wrapper which
+/// You can wrap your inputs in a [Projected](crate::mem_loader::Projected) wrapper which
 /// enables projecting of the input buffer to new sizes providing the new size is a
 /// multiple of the original size. When this buffer is projected, it is effectively
 /// repeated `N` times, where `N` is how many times the old size fits into the new size.
@@ -1983,6 +2214,27 @@ where
 /// let mut result = [0.0f32; 4];
 /// cfavml::div_vertical(5.0, 5.0, &mut result);
 /// assert_eq!(result, [1.0; 4]);
+/// ```
+///
+/// ##### With projected vectors
+///
+/// Using the [Projected](crate::mem_loader::Projected) wrapper type, we can create larger output
+/// vectors than the original inputs, which can allow for much better performance and
+/// memory usage when working with matrices.
+///
+/// NOTE:
+/// Projection != Matrix broadcasting, please read the documentation of `Projected` to understand
+/// how it behaves, it does not replace your matrix library's own broadcasting system.
+///
+/// ```rust
+/// use cfavml::mem_loader::Projected;
+///
+/// let lhs = [1.0, -1.0, 0.5, 1.0];    // Pretend this is a 2x2 matrix
+/// let rhs = [1.0, 2.5];               // Pretend this is a 1x2 matrix
+///
+/// let mut result = [0.0; 4];          // Our output is a 2x2 matrix
+/// cfavml::div_vertical(Projected(&lhs), Projected(&rhs), &mut result);
+/// assert_eq!(result, [1.0, -0.4, 0.5, 0.4]);
 /// ```
 ///
 /// ##### With `MaybeUninit`
