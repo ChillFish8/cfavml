@@ -637,7 +637,8 @@ mod tests {
 
     #[cfg(all(
         any(target_arch = "x86", target_arch = "x86_64"),
-        target_feature = "avx512f"
+        target_feature = "avx512f",
+        feature = "nightly"
     ))]
     #[test]
     fn test_buffer_projection_avx512_dense_load() {
@@ -728,7 +729,8 @@ mod tests {
 
     #[cfg(all(
         any(target_arch = "x86", target_arch = "x86_64"),
-        target_feature = "avx512f"
+        target_feature = "avx512f",
+        feature = "nightly",
     ))]
     #[test]
     fn test_buffer_projection_avx512_load() {
