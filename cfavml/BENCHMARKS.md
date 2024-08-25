@@ -173,5 +173,5 @@ power management: ts ttp tm hwpstate cpb eff_freq_ro [13] [14] [15]
 
 ### Results
 
-- [Run 2024-08-16](benchmark-runs/hetzner-ax42-amd-cfavml-v0_2_0-2024-08-16)
+- [Run 2024-08-16](benchmark-runs/hetzner-ax42-amd-cfavml-v0_2_0-2024-08-16.txt)
   - Note: Euclidean distance measures are omitted due to a mistake in the benchmark code.
