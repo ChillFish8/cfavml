@@ -26,6 +26,7 @@ mod add {
 
     use cfavml::buffer::WriteOnlyBuffer;
     use cfavml::math::{Math, StdMath};
+    use cfavml::mem_loader::IntoMemLoader;
     use cfavml::safe_trait_arithmetic_ops::ArithmeticOps;
     use ndarray::{Array1, Data, DataMut, ViewRepr};
     use rand::distributions::{Distribution, Standard};
@@ -82,7 +83,7 @@ mod add {
     #[divan::bench(types = [f32, f64, i8, i16, i32, i64, u8, u16, u32, u64])]
     fn cfavml_value<T>(bencher: Bencher)
     where
-        T: ArithmeticOps + Default + Copy + TryFrom<u16>,
+        T: ArithmeticOps + Default + Copy + TryFrom<u16> + IntoMemLoader<T>,
         Standard: Distribution<T>,
         <T as TryFrom<u16>>::Error: core::fmt::Debug,
         for<'a> &'a mut [T]: WriteOnlyBuffer<Item = T>,
@@ -92,10 +93,9 @@ mod add {
 
         bencher.bench_local(|| {
             let value = black_box(T::try_from(VALUE).unwrap());
-            let l1_view = black_box(l1.as_ref());
             let result = black_box(&mut result);
 
-            cfavml::add_value(value, l1_view, result)
+            cfavml::add_vertical(value, black_box(&l1), result)
         });
     }
 
@@ -110,10 +110,8 @@ mod add {
         let mut result = vec![T::default(); DIMS];
 
         bencher.bench_local(|| {
-            let l1_view = black_box(l1.as_ref());
-            let l2_view = black_box(l2.as_ref());
             let result = black_box(&mut result);
-            cfavml::add_vector(l1_view, l2_view, result)
+            cfavml::add_vertical(black_box(&l1), black_box(&l2), result)
         });
     }
 }
@@ -129,6 +127,7 @@ mod sub {
 
     use cfavml::buffer::WriteOnlyBuffer;
     use cfavml::math::{Math, StdMath};
+    use cfavml::mem_loader::IntoMemLoader;
     use cfavml::safe_trait_arithmetic_ops::ArithmeticOps;
     use ndarray::{Array1, Data, DataMut, ViewRepr};
     use rand::distributions::{Distribution, Standard};
@@ -185,7 +184,7 @@ mod sub {
     #[divan::bench(types = [f32, f64, i8, i16, i32, i64, u8, u16, u32, u64])]
     fn cfavml_value<T>(bencher: Bencher)
     where
-        T: ArithmeticOps + Default + Copy + TryFrom<u16>,
+        T: ArithmeticOps + Default + Copy + TryFrom<u16> + IntoMemLoader<T>,
         Standard: Distribution<T>,
         <T as TryFrom<u16>>::Error: core::fmt::Debug,
         for<'a> &'a mut [T]: WriteOnlyBuffer<Item = T>,
@@ -195,10 +194,9 @@ mod sub {
 
         bencher.bench_local(|| {
             let value = black_box(T::try_from(VALUE).unwrap());
-            let l1_view = black_box(l1.as_ref());
             let result = black_box(&mut result);
 
-            cfavml::add_value(value, l1_view, result)
+            cfavml::add_vertical(value, black_box(&l1), result)
         });
     }
 
@@ -213,10 +211,8 @@ mod sub {
         let mut result = vec![T::default(); DIMS];
 
         bencher.bench_local(|| {
-            let l1_view = black_box(l1.as_ref());
-            let l2_view = black_box(l2.as_ref());
             let result = black_box(&mut result);
-            cfavml::add_vector(l1_view, l2_view, result)
+            cfavml::add_vertical(black_box(&l1), black_box(&l2), result)
         });
     }
 }
@@ -232,6 +228,7 @@ mod mul {
 
     use cfavml::buffer::WriteOnlyBuffer;
     use cfavml::math::{Math, StdMath};
+    use cfavml::mem_loader::IntoMemLoader;
     use cfavml::safe_trait_arithmetic_ops::ArithmeticOps;
     use ndarray::{Array1, Data, DataMut, ViewRepr};
     use rand::distributions::{Distribution, Standard};
@@ -288,7 +285,7 @@ mod mul {
     #[divan::bench(types = [f32, f64, i8, i16, i32, i64, u8, u16, u32, u64])]
     fn cfavml_value<T>(bencher: Bencher)
     where
-        T: ArithmeticOps + Default + Copy + TryFrom<u16>,
+        T: ArithmeticOps + Default + Copy + TryFrom<u16> + IntoMemLoader<T>,
         Standard: Distribution<T>,
         <T as TryFrom<u16>>::Error: core::fmt::Debug,
         for<'a> &'a mut [T]: WriteOnlyBuffer<Item = T>,
@@ -298,10 +295,9 @@ mod mul {
 
         bencher.bench_local(|| {
             let value = black_box(T::try_from(VALUE).unwrap());
-            let l1_view = black_box(l1.as_ref());
             let result = black_box(&mut result);
 
-            cfavml::mul_value(value, l1_view, result)
+            cfavml::mul_vertical(value, black_box(&l1), result)
         });
     }
 
@@ -316,10 +312,8 @@ mod mul {
         let mut result = vec![T::default(); DIMS];
 
         bencher.bench_local(|| {
-            let l1_view = black_box(l1.as_ref());
-            let l2_view = black_box(l2.as_ref());
             let result = black_box(&mut result);
-            cfavml::mul_vector(l1_view, l2_view, result)
+            cfavml::mul_vertical(black_box(&l1), black_box(&l2), result)
         });
     }
 }
@@ -335,6 +329,7 @@ mod div {
 
     use cfavml::buffer::WriteOnlyBuffer;
     use cfavml::math::{Math, StdMath};
+    use cfavml::mem_loader::IntoMemLoader;
     use cfavml::safe_trait_arithmetic_ops::ArithmeticOps;
     use ndarray::{Array1, Data, DataMut, ViewRepr};
     use rand::distributions::{Distribution, Standard};
@@ -391,7 +386,7 @@ mod div {
     #[divan::bench(types = [f32, f64, i8, i16, i32, i64, u8, u16, u32, u64])]
     fn cfavml_value<T>(bencher: Bencher)
     where
-        T: ArithmeticOps + Default + Copy + TryFrom<u16>,
+        T: ArithmeticOps + Default + Copy + TryFrom<u16> + IntoMemLoader<T>,
         StdMath: Math<T>,
         Standard: Distribution<T>,
         <T as TryFrom<u16>>::Error: core::fmt::Debug,
@@ -402,10 +397,9 @@ mod div {
 
         bencher.bench_local(|| {
             let value = black_box(T::try_from(VALUE).unwrap());
-            let l1_view = black_box(l1.as_ref());
             let result = black_box(&mut result);
 
-            cfavml::div_value(value, l1_view, result)
+            cfavml::div_vertical(value, black_box(&l1), result)
         });
     }
 
@@ -421,10 +415,8 @@ mod div {
         let mut result = vec![T::default(); DIMS];
 
         bencher.bench_local(|| {
-            let l1_view = black_box(l1.as_ref());
-            let l2_view = black_box(l2.as_ref());
             let result = black_box(&mut result);
-            cfavml::div_vector(l1_view, l2_view, result)
+            cfavml::div_vertical(black_box(&l1), black_box(&l2), result)
         });
     }
 }

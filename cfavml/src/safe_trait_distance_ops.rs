@@ -7,7 +7,7 @@ use crate::danger::export_distance_ops;
 use crate::mem_loader::{IntoMemLoader, MemLoader};
 
 /// Various spacial distance operations between vectors.
-pub trait DistanceOps: Sized {
+pub trait DistanceOps: Sized + Copy {
     /// Calculates the cosine similarity distance between vectors `a` and `b`.
     ///
     /// ### Implementation Pseudocode

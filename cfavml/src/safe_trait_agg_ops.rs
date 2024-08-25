@@ -7,7 +7,7 @@ use crate::danger::export_agg_ops;
 use crate::mem_loader::{IntoMemLoader, MemLoader};
 
 /// Various aggregation operations on a single vector.
-pub trait AggOps: Sized {
+pub trait AggOps: Sized + Copy {
     /// Performs a horizontal sum of all elements in `a` returning the result.
     ///
     /// ### Implementation Pseudocode

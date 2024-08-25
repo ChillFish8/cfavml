@@ -8,7 +8,7 @@ use crate::danger::export_arithmetic_ops;
 use crate::mem_loader::{IntoMemLoader, MemLoader};
 
 /// Various arithmetic operations over vectors.
-pub trait ArithmeticOps: Sized {
+pub trait ArithmeticOps: Sized + Copy {
     /// Performs an element wise addition of two input buffers `lhs` and `rhs` that can
     /// be projected to the desired output size of `result`.
     ///

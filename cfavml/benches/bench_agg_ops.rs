@@ -53,10 +53,6 @@ mod sum {
     {
         let (l1, _) = utils::get_sample_vectors::<T>(DIMS);
 
-        bencher.bench_local(|| {
-            let l1_view = black_box(l1.as_ref());
-
-            cfavml::sum(l1_view)
-        });
+        bencher.bench_local(|| cfavml::sum(black_box(&l1)));
     }
 }

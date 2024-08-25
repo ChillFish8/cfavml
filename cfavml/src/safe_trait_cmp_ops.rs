@@ -8,7 +8,7 @@ use crate::danger::export_cmp_ops;
 use crate::mem_loader::{IntoMemLoader, MemLoader};
 
 /// Various comparison operations over vectors.
-pub trait CmpOps: Sized {
+pub trait CmpOps: Sized + Copy {
     /// Finds the horizontal max element of a given vector and returns the result.
     ///
     /// ### Implementation Pseudocode
