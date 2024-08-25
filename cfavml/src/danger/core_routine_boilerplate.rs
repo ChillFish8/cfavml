@@ -1,12 +1,13 @@
 use crate::buffer::WriteOnlyBuffer;
 use crate::danger::{DenseLane, SimdRegister};
+use crate::math::Math;
+use crate::mem_loader::{IntoMemLoader, MemLoader};
 
 #[inline(always)]
-pub(crate) unsafe fn apply_vector_x_value_kernel<T, R, B>(
-    dims: usize,
-    value: T,
-    a: &[T],
-    mut result: &mut [B],
+pub(crate) unsafe fn apply_vertical_kernel<T, R, M, B1, B2, B3>(
+    a: B1,
+    b: B2,
+    mut result: &mut [B3],
     dense_lane_kernel: unsafe fn(
         DenseLane<R::Register>,
         DenseLane<R::Register>,
@@ -16,106 +17,45 @@ pub(crate) unsafe fn apply_vector_x_value_kernel<T, R, B>(
 ) where
     T: Copy,
     R: SimdRegister<T>,
-    for<'a> &'a mut [B]: WriteOnlyBuffer<Item = T>,
+    M: Math<T>,
+    B1: IntoMemLoader<T>,
+    B1::Loader: MemLoader<Value = T>,
+    B2: IntoMemLoader<T>,
+    B2::Loader: MemLoader<Value = T>,
+    for<'a> &'a mut [B3]: WriteOnlyBuffer<Item = T>,
 {
-    debug_assert_eq!(a.len(), dims, "Vector `a` does not match size `dims`");
-    debug_assert_eq!(
-        result.raw_buffer_len(),
-        dims,
-        "Vector `result` does not match size `dims`"
-    );
-
-    let value_reg = R::filled(value);
-    let value_dense = DenseLane::copy(value_reg);
-
-    let offset_from = dims % R::elements_per_dense();
-    let a_ptr = a.as_ptr();
+    let project_to_len = result.raw_buffer_len();
     let result_ptr = result.as_write_only_ptr();
+
+    let mut a = a.into_projected_mem_loader(project_to_len);
+    let mut b = b.into_projected_mem_loader(project_to_len);
+
+    let offset_from = project_to_len % R::elements_per_dense();
 
     // Operate over dense lanes first.
     let mut i = 0;
-    while i < (dims - offset_from) {
-        let l1 = R::load_dense(a_ptr.add(i));
-        let mask = dense_lane_kernel(l1, value_dense);
-        R::write_dense(result_ptr.add(i), mask);
+    while i < (project_to_len - offset_from) {
+        let l1 = a.load_dense::<R>();
+        let l2 = b.load_dense::<R>();
+        let max = dense_lane_kernel(l1, l2);
+        R::write_dense(result_ptr.add(i), max);
 
         i += R::elements_per_dense();
     }
 
     // Operate over single registers next.
     let offset_from = offset_from % R::elements_per_lane();
-    while i < (dims - offset_from) {
-        let l1 = R::load(a_ptr.add(i));
-        let mask = reg_kernel(l1, value_reg);
-        R::write(result_ptr.add(i), mask);
+    while i < (project_to_len - offset_from) {
+        let l1 = a.load::<R>();
+        let l2 = b.load::<R>();
+        let max = reg_kernel(l1, l2);
+        R::write(result_ptr.add(i), max);
 
         i += R::elements_per_lane();
     }
 
-    while i < dims {
-        let a = *a.get_unchecked(i);
-        result.write_at(i, single_kernel(a, value));
-
-        i += 1;
-    }
-}
-
-#[inline(always)]
-pub(crate) unsafe fn apply_vector_x_vector_kernel<T, R, B>(
-    dims: usize,
-    a: &[T],
-    b: &[T],
-    mut result: &mut [B],
-    dense_lane_kernel: unsafe fn(
-        DenseLane<R::Register>,
-        DenseLane<R::Register>,
-    ) -> DenseLane<R::Register>,
-    reg_kernel: unsafe fn(R::Register, R::Register) -> R::Register,
-    single_kernel: unsafe fn(T, T) -> T,
-) where
-    T: Copy,
-    R: SimdRegister<T>,
-    for<'a> &'a mut [B]: WriteOnlyBuffer<Item = T>,
-{
-    debug_assert_eq!(a.len(), dims, "Vector `a` does not match size `dims`");
-    debug_assert_eq!(b.len(), dims, "Vector `b` does not match size `dims`");
-    debug_assert_eq!(
-        result.raw_buffer_len(),
-        dims,
-        "Vector `result` does not match size `dims`"
-    );
-
-    let offset_from = dims % R::elements_per_dense();
-    let a_ptr = a.as_ptr();
-    let b_ptr = b.as_ptr();
-    let result_ptr = result.as_write_only_ptr();
-
-    // Operate over dense lanes first.
-    let mut i = 0;
-    while i < (dims - offset_from) {
-        let l1 = R::load_dense(a_ptr.add(i));
-        let l2 = R::load_dense(b_ptr.add(i));
-        let res = dense_lane_kernel(l1, l2);
-        R::write_dense(result_ptr.add(i), res);
-
-        i += R::elements_per_dense();
-    }
-
-    // Operate over single registers next.
-    let offset_from = offset_from % R::elements_per_lane();
-    while i < (dims - offset_from) {
-        let l1 = R::load(a_ptr.add(i));
-        let l2 = R::load(b_ptr.add(i));
-        let res = reg_kernel(l1, l2);
-        R::write(result_ptr.add(i), res);
-
-        i += R::elements_per_lane();
-    }
-
-    while i < dims {
-        let a = *a.get_unchecked(i);
-        let b = *b.get_unchecked(i);
-        result.write_at(i, single_kernel(a, b));
+    while i < project_to_len {
+        result.write_at(i, single_kernel(a.read(), b.read()));
 
         i += 1;
     }

@@ -25,6 +25,7 @@ fn main() {
 mod max {
     use cfavml::buffer::WriteOnlyBuffer;
     use cfavml::math::{Math, StdMath};
+    use cfavml::mem_loader::IntoMemLoader;
     use cfavml::safe_trait_cmp_ops::CmpOps;
     use ndarray::{Array1, Data, ViewRepr};
     use rand::distributions::{Distribution, Standard};
@@ -100,16 +101,13 @@ mod max {
     {
         let (l1, _) = utils::get_sample_vectors::<T>(DIMS);
 
-        bencher.bench_local(|| {
-            let l1_view = black_box(l1.as_ref());
-            cfavml::max(l1_view)
-        });
+        bencher.bench_local(|| cfavml::max(black_box(&l1)));
     }
 
     #[divan::bench(types = [f32, f64, i8, i16, i32, i64, u8, u16, u32, u64])]
     fn cfavml_value<T>(bencher: Bencher)
     where
-        T: CmpOps + Default + Copy + TryFrom<u16>,
+        T: CmpOps + Default + Copy + TryFrom<u16> + IntoMemLoader<T>,
         Standard: Distribution<T>,
         <T as TryFrom<u16>>::Error: core::fmt::Debug,
         for<'a> &'a mut [T]: WriteOnlyBuffer<Item = T>,
@@ -119,10 +117,9 @@ mod max {
 
         bencher.bench_local(|| {
             let value = black_box(T::try_from(CMP_VALUE).unwrap());
-            let l1_view = black_box(l1.as_ref());
             let result = black_box(&mut result);
 
-            cfavml::max_value(value, l1_view, result)
+            cfavml::max_vertical(value, black_box(&l1), result)
         });
     }
 
@@ -137,10 +134,8 @@ mod max {
         let mut result = vec![T::default(); DIMS];
 
         bencher.bench_local(|| {
-            let l1_view = black_box(l1.as_ref());
-            let l2_view = black_box(l2.as_ref());
             let result = black_box(&mut result);
-            cfavml::max_vector(l1_view, l2_view, result)
+            cfavml::max_vertical(black_box(&l1), black_box(&l2), result)
         });
     }
 }
@@ -154,6 +149,7 @@ mod max {
 mod min {
     use cfavml::buffer::WriteOnlyBuffer;
     use cfavml::math::{Math, StdMath};
+    use cfavml::mem_loader::IntoMemLoader;
     use cfavml::safe_trait_cmp_ops::CmpOps;
     use ndarray::{Array1, Data, ViewRepr};
     use rand::distributions::{Distribution, Standard};
@@ -229,16 +225,13 @@ mod min {
     {
         let (l1, _) = utils::get_sample_vectors::<T>(DIMS);
 
-        bencher.bench_local(|| {
-            let l1_view = black_box(l1.as_ref());
-            cfavml::min(l1_view)
-        });
+        bencher.bench_local(|| cfavml::min(black_box(&l1)));
     }
 
     #[divan::bench(types = [f32, f64, i8, i16, i32, i64, u8, u16, u32, u64])]
     fn cfavml_value<T>(bencher: Bencher)
     where
-        T: CmpOps + Default + Copy + TryFrom<u16>,
+        T: CmpOps + Default + Copy + TryFrom<u16> + IntoMemLoader<T>,
         Standard: Distribution<T>,
         <T as TryFrom<u16>>::Error: core::fmt::Debug,
         for<'a> &'a mut [T]: WriteOnlyBuffer<Item = T>,
@@ -248,10 +241,9 @@ mod min {
 
         bencher.bench_local(|| {
             let value = black_box(T::try_from(CMP_VALUE).unwrap());
-            let l1_view = black_box(l1.as_ref());
             let result = black_box(&mut result);
 
-            cfavml::min_value(value, l1_view, result)
+            cfavml::min_vertical(value, black_box(&l1), result)
         });
     }
 
@@ -266,10 +258,8 @@ mod min {
         let mut result = vec![T::default(); DIMS];
 
         bencher.bench_local(|| {
-            let l1_view = black_box(l1.as_ref());
-            let l2_view = black_box(l2.as_ref());
             let result = black_box(&mut result);
-            cfavml::min_vector(l1_view, l2_view, result)
+            cfavml::min_vertical(black_box(&l1), black_box(&l2), result)
         });
     }
 }
@@ -283,6 +273,7 @@ mod min {
 mod eq {
     use cfavml::buffer::WriteOnlyBuffer;
     use cfavml::math::{Math, StdMath};
+    use cfavml::mem_loader::IntoMemLoader;
     use cfavml::safe_trait_cmp_ops::CmpOps;
     use ndarray::{Array1, Data, ViewRepr};
     use rand::distributions::{Distribution, Standard};
@@ -336,7 +327,7 @@ mod eq {
     #[divan::bench(types = [f32, f64, i8, i16, i32, i64, u8, u16, u32, u64])]
     fn cfavml_value<T>(bencher: Bencher)
     where
-        T: CmpOps + Default + Copy + TryFrom<u16>,
+        T: CmpOps + Default + Copy + TryFrom<u16> + IntoMemLoader<T>,
         Standard: Distribution<T>,
         <T as TryFrom<u16>>::Error: core::fmt::Debug,
         for<'a> &'a mut [T]: WriteOnlyBuffer<Item = T>,
@@ -346,10 +337,9 @@ mod eq {
 
         bencher.bench_local(|| {
             let value = black_box(T::try_from(CMP_VALUE).unwrap());
-            let l1_view = black_box(l1.as_ref());
             let result = black_box(&mut result);
 
-            cfavml::eq_value(value, l1_view, result)
+            cfavml::eq_vertical(value, black_box(&l1), result)
         });
     }
 
@@ -364,10 +354,8 @@ mod eq {
         let mut result = vec![T::default(); DIMS];
 
         bencher.bench_local(|| {
-            let l1_view = black_box(l1.as_ref());
-            let l2_view = black_box(l2.as_ref());
             let result = black_box(&mut result);
-            cfavml::eq_vector(l1_view, l2_view, result)
+            cfavml::eq_vertical(black_box(&l1), black_box(&l2), result)
         });
     }
 }
@@ -381,6 +369,7 @@ mod eq {
 mod neq {
     use cfavml::buffer::WriteOnlyBuffer;
     use cfavml::math::{Math, StdMath};
+    use cfavml::mem_loader::IntoMemLoader;
     use cfavml::safe_trait_cmp_ops::CmpOps;
     use ndarray::{Array1, Data, ViewRepr};
     use rand::distributions::{Distribution, Standard};
@@ -434,7 +423,7 @@ mod neq {
     #[divan::bench(types = [f32, f64, i8, i16, i32, i64, u8, u16, u32, u64])]
     fn cfavml_value<T>(bencher: Bencher)
     where
-        T: CmpOps + Default + Copy + TryFrom<u16>,
+        T: CmpOps + Default + Copy + TryFrom<u16> + IntoMemLoader<T>,
         Standard: Distribution<T>,
         <T as TryFrom<u16>>::Error: core::fmt::Debug,
         for<'a> &'a mut [T]: WriteOnlyBuffer<Item = T>,
@@ -444,10 +433,9 @@ mod neq {
 
         bencher.bench_local(|| {
             let value = black_box(T::try_from(CMP_VALUE).unwrap());
-            let l1_view = black_box(l1.as_ref());
             let result = black_box(&mut result);
 
-            cfavml::neq_value(value, l1_view, result)
+            cfavml::neq_vertical(value, black_box(&l1), result)
         });
     }
 
@@ -462,10 +450,8 @@ mod neq {
         let mut result = vec![T::default(); DIMS];
 
         bencher.bench_local(|| {
-            let l1_view = black_box(l1.as_ref());
-            let l2_view = black_box(l2.as_ref());
             let result = black_box(&mut result);
-            cfavml::neq_vector(l1_view, l2_view, result)
+            cfavml::neq_vertical(black_box(&l1), black_box(&l2), result)
         });
     }
 }
@@ -479,6 +465,7 @@ mod neq {
 mod lt {
     use cfavml::buffer::WriteOnlyBuffer;
     use cfavml::math::{Math, StdMath};
+    use cfavml::mem_loader::IntoMemLoader;
     use cfavml::safe_trait_cmp_ops::CmpOps;
     use ndarray::{Array1, Data, ViewRepr};
     use rand::distributions::{Distribution, Standard};
@@ -532,7 +519,7 @@ mod lt {
     #[divan::bench(types = [f32, f64, i8, i16, i32, i64, u8, u16, u32, u64])]
     fn cfavml_value<T>(bencher: Bencher)
     where
-        T: CmpOps + Default + Copy + TryFrom<u16>,
+        T: CmpOps + Default + Copy + TryFrom<u16> + IntoMemLoader<T>,
         Standard: Distribution<T>,
         <T as TryFrom<u16>>::Error: core::fmt::Debug,
         for<'a> &'a mut [T]: WriteOnlyBuffer<Item = T>,
@@ -542,10 +529,9 @@ mod lt {
 
         bencher.bench_local(|| {
             let value = black_box(T::try_from(CMP_VALUE).unwrap());
-            let l1_view = black_box(l1.as_ref());
             let result = black_box(&mut result);
 
-            cfavml::lt_value(value, l1_view, result)
+            cfavml::lt_vertical(value, black_box(&l1), result)
         });
     }
 
@@ -560,10 +546,8 @@ mod lt {
         let mut result = vec![T::default(); DIMS];
 
         bencher.bench_local(|| {
-            let l1_view = black_box(l1.as_ref());
-            let l2_view = black_box(l2.as_ref());
             let result = black_box(&mut result);
-            cfavml::lt_vector(l1_view, l2_view, result)
+            cfavml::lt_vertical(black_box(&l1), black_box(&l2), result)
         });
     }
 }
@@ -577,6 +561,7 @@ mod lt {
 mod lte {
     use cfavml::buffer::WriteOnlyBuffer;
     use cfavml::math::{Math, StdMath};
+    use cfavml::mem_loader::IntoMemLoader;
     use cfavml::safe_trait_cmp_ops::CmpOps;
     use ndarray::{Array1, Data, ViewRepr};
     use rand::distributions::{Distribution, Standard};
@@ -630,7 +615,7 @@ mod lte {
     #[divan::bench(types = [f32, f64, i8, i16, i32, i64, u8, u16, u32, u64])]
     fn cfavml_value<T>(bencher: Bencher)
     where
-        T: CmpOps + Default + Copy + TryFrom<u16>,
+        T: CmpOps + Default + Copy + TryFrom<u16> + IntoMemLoader<T>,
         Standard: Distribution<T>,
         <T as TryFrom<u16>>::Error: core::fmt::Debug,
         for<'a> &'a mut [T]: WriteOnlyBuffer<Item = T>,
@@ -640,10 +625,9 @@ mod lte {
 
         bencher.bench_local(|| {
             let value = black_box(T::try_from(CMP_VALUE).unwrap());
-            let l1_view = black_box(l1.as_ref());
             let result = black_box(&mut result);
 
-            cfavml::lte_value(value, l1_view, result)
+            cfavml::lte_vertical(value, black_box(&l1), result)
         });
     }
 
@@ -658,10 +642,8 @@ mod lte {
         let mut result = vec![T::default(); DIMS];
 
         bencher.bench_local(|| {
-            let l1_view = black_box(l1.as_ref());
-            let l2_view = black_box(l2.as_ref());
             let result = black_box(&mut result);
-            cfavml::lte_vector(l1_view, l2_view, result)
+            cfavml::lte_vertical(black_box(&l1), black_box(&l2), result)
         });
     }
 }
@@ -675,6 +657,7 @@ mod lte {
 mod gt {
     use cfavml::buffer::WriteOnlyBuffer;
     use cfavml::math::{Math, StdMath};
+    use cfavml::mem_loader::IntoMemLoader;
     use cfavml::safe_trait_cmp_ops::CmpOps;
     use ndarray::{Array1, Data, ViewRepr};
     use rand::distributions::{Distribution, Standard};
@@ -728,7 +711,7 @@ mod gt {
     #[divan::bench(types = [f32, f64, i8, i16, i32, i64, u8, u16, u32, u64])]
     fn cfavml_value<T>(bencher: Bencher)
     where
-        T: CmpOps + Default + Copy + TryFrom<u16>,
+        T: CmpOps + Default + Copy + TryFrom<u16> + IntoMemLoader<T>,
         Standard: Distribution<T>,
         <T as TryFrom<u16>>::Error: core::fmt::Debug,
         for<'a> &'a mut [T]: WriteOnlyBuffer<Item = T>,
@@ -738,10 +721,9 @@ mod gt {
 
         bencher.bench_local(|| {
             let value = black_box(T::try_from(CMP_VALUE).unwrap());
-            let l1_view = black_box(l1.as_ref());
             let result = black_box(&mut result);
 
-            cfavml::gt_value(value, l1_view, result)
+            cfavml::gt_vertical(value, black_box(&l1), result)
         });
     }
 
@@ -756,10 +738,8 @@ mod gt {
         let mut result = vec![T::default(); DIMS];
 
         bencher.bench_local(|| {
-            let l1_view = black_box(l1.as_ref());
-            let l2_view = black_box(l2.as_ref());
             let result = black_box(&mut result);
-            cfavml::gt_vector(l1_view, l2_view, result)
+            cfavml::gt_vertical(black_box(&l1), black_box(&l2), result)
         });
     }
 }
@@ -773,6 +753,7 @@ mod gt {
 mod gte {
     use cfavml::buffer::WriteOnlyBuffer;
     use cfavml::math::{Math, StdMath};
+    use cfavml::mem_loader::IntoMemLoader;
     use cfavml::safe_trait_cmp_ops::CmpOps;
     use ndarray::{Array1, Data, ViewRepr};
     use rand::distributions::{Distribution, Standard};
@@ -826,7 +807,7 @@ mod gte {
     #[divan::bench(types = [f32, f64, i8, i16, i32, i64, u8, u16, u32, u64])]
     fn cfavml_value<T>(bencher: Bencher)
     where
-        T: CmpOps + Default + Copy + TryFrom<u16>,
+        T: CmpOps + Default + Copy + TryFrom<u16> + IntoMemLoader<T>,
         Standard: Distribution<T>,
         <T as TryFrom<u16>>::Error: core::fmt::Debug,
         for<'a> &'a mut [T]: WriteOnlyBuffer<Item = T>,
@@ -836,10 +817,9 @@ mod gte {
 
         bencher.bench_local(|| {
             let value = black_box(T::try_from(CMP_VALUE).unwrap());
-            let l1_view = black_box(l1.as_ref());
             let result = black_box(&mut result);
 
-            cfavml::gte_value(value, l1_view, result)
+            cfavml::gte_vertical(value, black_box(&l1), result)
         });
     }
 
@@ -854,10 +834,8 @@ mod gte {
         let mut result = vec![T::default(); DIMS];
 
         bencher.bench_local(|| {
-            let l1_view = black_box(l1.as_ref());
-            let l2_view = black_box(l2.as_ref());
             let result = black_box(&mut result);
-            cfavml::gte_vector(l1_view, l2_view, result)
+            cfavml::gte_vertical(black_box(&l1), black_box(&l2), result)
         });
     }
 }

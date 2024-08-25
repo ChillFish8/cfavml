@@ -1,0 +1,1209 @@
+Timer precision: 9 ns
+bench_agg_ops  fastest       │ slowest       │ median        │ mean          │ samples │ iters
+╰─ sum                       │               │               │               │         │
+   ├─ cfavml                 │               │               │               │         │
+   │  ├─ f32   35.14 ns      │ 41.56 ns      │ 35.92 ns      │ 36.36 ns      │ 500     │ 2500000
+   │  │        43.7 Gitem/s  │ 36.95 Gitem/s │ 42.75 Gitem/s │ 42.24 Gitem/s │         │
+   │  ├─ f64   40.01 ns      │ 54.52 ns      │ 40.86 ns      │ 41.06 ns      │ 500     │ 2500000
+   │  │        38.38 Gitem/s │ 28.16 Gitem/s │ 37.58 Gitem/s │ 37.4 Gitem/s  │         │
+   │  ├─ i16   15.88 ns      │ 18.48 ns      │ 16.05 ns      │ 16.1 ns       │ 500     │ 2500000
+   │  │        96.69 Gitem/s │ 83.07 Gitem/s │ 95.69 Gitem/s │ 95.39 Gitem/s │         │
+   │  ├─ i32   34.83 ns      │ 52.98 ns      │ 35.38 ns      │ 35.5 ns       │ 500     │ 2500000
+   │  │        44.09 Gitem/s │ 28.99 Gitem/s │ 43.41 Gitem/s │ 43.26 Gitem/s │         │
+   │  ├─ i64   71.41 ns      │ 90.3 ns       │ 72.58 ns      │ 72.86 ns      │ 500     │ 2500000
+   │  │        21.5 Gitem/s  │ 17 Gitem/s    │ 21.16 Gitem/s │ 21.07 Gitem/s │         │
+   │  ├─ i8    5.649 ns      │ 9.745 ns      │ 5.766 ns      │ 5.848 ns      │ 500     │ 2500000
+   │  │        271.9 Gitem/s │ 157.6 Gitem/s │ 266.3 Gitem/s │ 262.6 Gitem/s │         │
+   │  ├─ u16   10.78 ns      │ 15.14 ns      │ 11.07 ns      │ 11.11 ns      │ 500     │ 2500000
+   │  │        142.4 Gitem/s │ 101.4 Gitem/s │ 138.7 Gitem/s │ 138.2 Gitem/s │         │
+   │  ├─ u32   20.66 ns      │ 31.59 ns      │ 21 ns         │ 21.93 ns      │ 500     │ 2500000
+   │  │        74.34 Gitem/s │ 48.62 Gitem/s │ 73.13 Gitem/s │ 70.01 Gitem/s │         │
+   │  ├─ u64   40.04 ns      │ 59.11 ns      │ 41.82 ns      │ 42.88 ns      │ 500     │ 2500000
+   │  │        38.35 Gitem/s │ 25.98 Gitem/s │ 36.72 Gitem/s │ 35.81 Gitem/s │         │
+   │  ╰─ u8    6.523 ns      │ 14.22 ns      │ 6.753 ns      │ 6.784 ns      │ 500     │ 2500000
+   │           235.4 Gitem/s │ 107.9 Gitem/s │ 227.4 Gitem/s │ 226.4 Gitem/s │         │
+   ╰─ ndarray                │               │               │               │         │
+      ├─ f32   114.9 ns      │ 176.1 ns      │ 125.4 ns      │ 133.4 ns      │ 500     │ 2500000
+      │        13.36 Gitem/s │ 8.717 Gitem/s │ 12.24 Gitem/s │ 11.51 Gitem/s │         │
+      ├─ f64   117.8 ns      │ 171 ns        │ 147.3 ns      │ 142.6 ns      │ 500     │ 2500000
+      │        13.03 Gitem/s │ 8.979 Gitem/s │ 10.42 Gitem/s │ 10.76 Gitem/s │         │
+      ├─ i16   25.84 ns      │ 44.62 ns      │ 26.3 ns       │ 27.9 ns       │ 500     │ 2500000
+      │        59.43 Gitem/s │ 34.41 Gitem/s │ 58.39 Gitem/s │ 55.04 Gitem/s │         │
+      ├─ i32   120.7 ns      │ 225.3 ns      │ 125 ns        │ 128 ns        │ 500     │ 2500000
+      │        12.72 Gitem/s │ 6.815 Gitem/s │ 12.28 Gitem/s │ 11.99 Gitem/s │         │
+      ├─ i64   122.4 ns      │ 274.2 ns      │ 125.3 ns      │ 129.8 ns      │ 500     │ 2500000
+      │        12.54 Gitem/s │ 5.599 Gitem/s │ 12.24 Gitem/s │ 11.83 Gitem/s │         │
+      ├─ i8    119.7 ns      │ 191.2 ns      │ 120.9 ns      │ 122.2 ns      │ 500     │ 2500000
+      │        12.82 Gitem/s │ 8.032 Gitem/s │ 12.69 Gitem/s │ 12.56 Gitem/s │         │
+      ├─ u16   23.79 ns      │ 42.64 ns      │ 25.01 ns      │ 25.11 ns      │ 500     │ 2500000
+      │        64.54 Gitem/s │ 36.02 Gitem/s │ 61.39 Gitem/s │ 61.16 Gitem/s │         │
+      ├─ u32   120.7 ns      │ 218.2 ns      │ 122.3 ns      │ 124.1 ns      │ 500     │ 2500000
+      │        12.72 Gitem/s │ 7.037 Gitem/s │ 12.55 Gitem/s │ 12.36 Gitem/s │         │
+      ├─ u64   122.7 ns      │ 214.7 ns      │ 125.8 ns      │ 129.8 ns      │ 500     │ 2500000
+      │        12.51 Gitem/s │ 7.153 Gitem/s │ 12.2 Gitem/s  │ 11.82 Gitem/s │         │
+      ╰─ u8    119.7 ns      │ 207.2 ns      │ 121.3 ns      │ 122.5 ns      │ 500     │ 2500000
+               12.82 Gitem/s │ 7.412 Gitem/s │ 12.65 Gitem/s │ 12.53 Gitem/s │         │
+
+     Running benches/bench_arithmetic_ops.rs (target/release/deps/bench_arithmetic_ops-0d1cb3378ad5afef)
+Timer precision: 29 ns
+bench_arithmetic_ops  fastest       │ slowest       │ median        │ mean          │ samples │ iters
+├─ add                              │               │               │               │         │
+│  ├─ cfavml_value                  │               │               │               │         │
+│  │  ├─ f32          51.8 ns       │ 60.51 ns      │ 52.41 ns      │ 52.51 ns      │ 500     │ 2500000
+│  │  │               29.64 Gitem/s │ 25.38 Gitem/s │ 29.3 Gitem/s  │ 29.24 Gitem/s │         │
+│  │  ├─ f64          78.31 ns      │ 82.56 ns      │ 78.91 ns      │ 79.06 ns      │ 500     │ 2500000
+│  │  │               19.61 Gitem/s │ 18.6 Gitem/s  │ 19.46 Gitem/s │ 19.42 Gitem/s │         │
+│  │  ├─ i16          26.53 ns      │ 30.84 ns      │ 26.7 ns       │ 26.81 ns      │ 500     │ 2500000
+│  │  │               57.88 Gitem/s │ 49.79 Gitem/s │ 57.52 Gitem/s │ 57.28 Gitem/s │         │
+│  │  ├─ i32          38.81 ns      │ 44.46 ns      │ 39.6 ns       │ 39.52 ns      │ 500     │ 2500000
+│  │  │               39.57 Gitem/s │ 34.54 Gitem/s │ 38.78 Gitem/s │ 38.86 Gitem/s │         │
+│  │  ├─ i64          98.02 ns      │ 140.7 ns      │ 100.1 ns      │ 100.7 ns      │ 500     │ 2500000
+│  │  │               15.66 Gitem/s │ 10.91 Gitem/s │ 15.34 Gitem/s │ 15.23 Gitem/s │         │
+│  │  ├─ i8           13.12 ns      │ 16.92 ns      │ 13.25 ns      │ 13.31 ns      │ 500     │ 2500000
+│  │  │               116.9 Gitem/s │ 90.77 Gitem/s │ 115.9 Gitem/s │ 115.3 Gitem/s │         │
+│  │  ├─ u16          22.04 ns      │ 25.51 ns      │ 23.86 ns      │ 23.81 ns      │ 500     │ 2500000
+│  │  │               69.66 Gitem/s │ 60.2 Gitem/s  │ 64.36 Gitem/s │ 64.5 Gitem/s  │         │
+│  │  ├─ u32          45.52 ns      │ 50.84 ns      │ 46.04 ns      │ 46.14 ns      │ 500     │ 2500000
+│  │  │               33.74 Gitem/s │ 30.21 Gitem/s │ 33.35 Gitem/s │ 33.28 Gitem/s │         │
+│  │  ├─ u64          95.84 ns      │ 101.1 ns      │ 97.08 ns      │ 97.12 ns      │ 500     │ 2500000
+│  │  │               16.02 Gitem/s │ 15.17 Gitem/s │ 15.82 Gitem/s │ 15.81 Gitem/s │         │
+│  │  ╰─ u8           13.28 ns      │ 14.34 ns      │ 13.36 ns      │ 13.44 ns      │ 500     │ 2500000
+│  │                  115.6 Gitem/s │ 107 Gitem/s   │ 114.8 Gitem/s │ 114.2 Gitem/s │         │
+│  ├─ cfavml_vector                 │               │               │               │         │
+│  │  ├─ f32          68.49 ns      │ 77.84 ns      │ 69.02 ns      │ 69.15 ns      │ 500     │ 2500000
+│  │  │               22.42 Gitem/s │ 19.73 Gitem/s │ 22.25 Gitem/s │ 22.21 Gitem/s │         │
+│  │  ├─ f64          168.3 ns      │ 187 ns        │ 169.8 ns      │ 170.6 ns      │ 500     │ 2500000
+│  │  │               9.126 Gitem/s │ 8.213 Gitem/s │ 9.043 Gitem/s │ 9.002 Gitem/s │         │
+│  │  ├─ i16          33.86 ns      │ 50.12 ns      │ 34.04 ns      │ 34.2 ns       │ 500     │ 2500000
+│  │  │               45.35 Gitem/s │ 30.64 Gitem/s │ 45.11 Gitem/s │ 44.9 Gitem/s  │         │
+│  │  ├─ i32          68.48 ns      │ 77.21 ns      │ 69.04 ns      │ 69.15 ns      │ 500     │ 2500000
+│  │  │               22.42 Gitem/s │ 19.89 Gitem/s │ 22.24 Gitem/s │ 22.21 Gitem/s │         │
+│  │  ├─ i64          184.2 ns      │ 229.1 ns      │ 185.3 ns      │ 186.1 ns      │ 500     │ 2500000
+│  │  │               8.334 Gitem/s │ 6.703 Gitem/s │ 8.285 Gitem/s │ 8.249 Gitem/s │         │
+│  │  ├─ i8           17.84 ns      │ 33.64 ns      │ 18.3 ns       │ 19.79 ns      │ 500     │ 2500000
+│  │  │               86.09 Gitem/s │ 45.65 Gitem/s │ 83.91 Gitem/s │ 77.58 Gitem/s │         │
+│  │  ├─ u16          34.38 ns      │ 42.42 ns      │ 34.78 ns      │ 35.15 ns      │ 500     │ 2500000
+│  │  │               44.67 Gitem/s │ 36.2 Gitem/s  │ 44.16 Gitem/s │ 43.69 Gitem/s │         │
+│  │  ├─ u32          68.47 ns      │ 87.11 ns      │ 68.91 ns      │ 69.03 ns      │ 500     │ 2500000
+│  │  │               22.43 Gitem/s │ 17.63 Gitem/s │ 22.28 Gitem/s │ 22.25 Gitem/s │         │
+│  │  ├─ u64          184.5 ns      │ 256.9 ns      │ 185.9 ns      │ 187.6 ns      │ 500     │ 2500000
+│  │  │               8.323 Gitem/s │ 5.978 Gitem/s │ 8.26 Gitem/s  │ 8.185 Gitem/s │         │
+│  │  ╰─ u8           17.85 ns      │ 22.46 ns      │ 18.1 ns       │ 18.16 ns      │ 500     │ 2500000
+│  │                  86.03 Gitem/s │ 68.36 Gitem/s │ 84.83 Gitem/s │ 84.56 Gitem/s │         │
+│  ├─ ndarray_value                 │               │               │               │         │
+│  │  ├─ f32          459.7 ns      │ 648.7 ns      │ 507.9 ns      │ 512.7 ns      │ 500     │ 2500000
+│  │  │               3.341 Gitem/s │ 2.367 Gitem/s │ 3.023 Gitem/s │ 2.995 Gitem/s │         │
+│  │  ├─ f64          1.012 µs      │ 1.303 µs      │ 1.132 µs      │ 1.131 µs      │ 500     │ 2500000
+│  │  │               1.517 Gitem/s │ 1.178 Gitem/s │ 1.356 Gitem/s │ 1.357 Gitem/s │         │
+│  │  ├─ i16          193.4 ns      │ 303.6 ns      │ 214.9 ns      │ 217.8 ns      │ 500     │ 2500000
+│  │  │               7.938 Gitem/s │ 5.058 Gitem/s │ 7.146 Gitem/s │ 7.05 Gitem/s  │         │
+│  │  ├─ i32          448.5 ns      │ 897.9 ns      │ 510.8 ns      │ 524.1 ns      │ 500     │ 2500000
+│  │  │               3.424 Gitem/s │ 1.71 Gitem/s  │ 3.007 Gitem/s │ 2.93 Gitem/s  │         │
+│  │  ├─ i64          1.017 µs      │ 1.479 µs      │ 1.158 µs      │ 1.16 µs       │ 500     │ 2500000
+│  │  │               1.509 Gitem/s │ 1.038 Gitem/s │ 1.326 Gitem/s │ 1.323 Gitem/s │         │
+│  │  ├─ i8           87.19 ns      │ 159.3 ns      │ 89.56 ns      │ 90.92 ns      │ 500     │ 2500000
+│  │  │               17.61 Gitem/s │ 9.641 Gitem/s │ 17.14 Gitem/s │ 16.89 Gitem/s │         │
+│  │  ├─ u16          192.7 ns      │ 302.8 ns      │ 217.9 ns      │ 219.7 ns      │ 500     │ 2500000
+│  │  │               7.967 Gitem/s │ 5.072 Gitem/s │ 7.048 Gitem/s │ 6.989 Gitem/s │         │
+│  │  ├─ u32          451.4 ns      │ 682.7 ns      │ 508.7 ns      │ 516.1 ns      │ 500     │ 2500000
+│  │  │               3.402 Gitem/s │ 2.249 Gitem/s │ 3.018 Gitem/s │ 2.975 Gitem/s │         │
+│  │  ├─ u64          1.055 µs      │ 1.285 µs      │ 1.157 µs      │ 1.16 µs       │ 500     │ 2500000
+│  │  │               1.455 Gitem/s │ 1.194 Gitem/s │ 1.326 Gitem/s │ 1.323 Gitem/s │         │
+│  │  ╰─ u8           86.54 ns      │ 122.2 ns      │ 89.08 ns      │ 89.96 ns      │ 500     │ 2500000
+│  │                  17.74 Gitem/s │ 12.56 Gitem/s │ 17.24 Gitem/s │ 17.07 Gitem/s │         │
+│  ╰─ ndarray_vector                │               │               │               │         │
+│     ├─ f32          101 ns        │ 119.2 ns      │ 103.1 ns      │ 103 ns        │ 500     │ 2500000
+│     │               15.19 Gitem/s │ 12.88 Gitem/s │ 14.89 Gitem/s │ 14.9 Gitem/s  │         │
+│     ├─ f64          218.6 ns      │ 245.8 ns      │ 219.4 ns      │ 220.6 ns      │ 500     │ 2500000
+│     │               7.025 Gitem/s │ 6.247 Gitem/s │ 6.998 Gitem/s │ 6.96 Gitem/s  │         │
+│     ├─ i16          53.46 ns      │ 58.71 ns      │ 54.47 ns      │ 54.61 ns      │ 500     │ 2500000
+│     │               28.72 Gitem/s │ 26.16 Gitem/s │ 28.19 Gitem/s │ 28.12 Gitem/s │         │
+│     ├─ i32          101 ns        │ 114.2 ns      │ 102.4 ns      │ 102.8 ns      │ 500     │ 2500000
+│     │               15.19 Gitem/s │ 13.44 Gitem/s │ 14.99 Gitem/s │ 14.92 Gitem/s │         │
+│     ├─ i64          218 ns        │ 281.7 ns      │ 218.7 ns      │ 220 ns        │ 500     │ 2500000
+│     │               7.044 Gitem/s │ 5.451 Gitem/s │ 7.02 Gitem/s  │ 6.981 Gitem/s │         │
+│     ├─ i8           27.72 ns      │ 45.98 ns      │ 27.83 ns      │ 28.08 ns      │ 500     │ 2500000
+│     │               55.4 Gitem/s  │ 33.4 Gitem/s  │ 55.17 Gitem/s │ 54.68 Gitem/s │         │
+│     ├─ u16          53.51 ns      │ 65.7 ns       │ 54.37 ns      │ 54.49 ns      │ 500     │ 2500000
+│     │               28.7 Gitem/s  │ 23.37 Gitem/s │ 28.24 Gitem/s │ 28.18 Gitem/s │         │
+│     ├─ u32          101.3 ns      │ 117.4 ns      │ 102.7 ns      │ 103.1 ns      │ 500     │ 2500000
+│     │               15.15 Gitem/s │ 13.08 Gitem/s │ 14.94 Gitem/s │ 14.88 Gitem/s │         │
+│     ├─ u64          218 ns        │ 248 ns        │ 218.9 ns      │ 220.1 ns      │ 500     │ 2500000
+│     │               7.043 Gitem/s │ 6.192 Gitem/s │ 7.014 Gitem/s │ 6.976 Gitem/s │         │
+│     ╰─ u8           27.67 ns      │ 31.94 ns      │ 27.86 ns      │ 28.04 ns      │ 500     │ 2500000
+│                     55.5 Gitem/s  │ 48.08 Gitem/s │ 55.11 Gitem/s │ 54.77 Gitem/s │         │
+├─ div                              │               │               │               │         │
+│  ├─ cfavml_value                  │               │               │               │         │
+│  │  ├─ f32          113.3 ns      │ 120.7 ns      │ 113.7 ns      │ 114 ns        │ 500     │ 2500000
+│  │  │               13.55 Gitem/s │ 12.71 Gitem/s │ 13.49 Gitem/s │ 13.47 Gitem/s │         │
+│  │  ├─ f64          339.7 ns      │ 395.2 ns      │ 359.2 ns      │ 363.3 ns      │ 500     │ 2500000
+│  │  │               4.521 Gitem/s │ 3.886 Gitem/s │ 4.275 Gitem/s │ 4.227 Gitem/s │         │
+│  │  ├─ i16          3.623 µs      │ 3.658 µs      │ 3.631 µs      │ 3.633 µs      │ 500     │ 2500000
+│  │  │               423.9 Mitem/s │ 419.8 Mitem/s │ 422.9 Mitem/s │ 422.7 Mitem/s │         │
+│  │  ├─ i32          1.962 µs      │ 2.004 µs      │ 1.969 µs      │ 1.97 µs       │ 500     │ 2500000
+│  │  │               782.8 Mitem/s │ 766.1 Mitem/s │ 779.7 Mitem/s │ 779.4 Mitem/s │         │
+│  │  ├─ i64          2.122 µs      │ 2.182 µs      │ 2.129 µs      │ 2.13 µs       │ 500     │ 2500000
+│  │  │               723.5 Mitem/s │ 703.8 Mitem/s │ 721.2 Mitem/s │ 720.9 Mitem/s │         │
+│  │  ├─ i8           1.299 µs      │ 1.415 µs      │ 1.344 µs      │ 1.342 µs      │ 500     │ 2500000
+│  │  │               1.182 Gitem/s │ 1.085 Gitem/s │ 1.142 Gitem/s │ 1.144 Gitem/s │         │
+│  │  ├─ u16          1.27 µs       │ 1.31 µs       │ 1.274 µs      │ 1.275 µs      │ 500     │ 2500000
+│  │  │               1.209 Gitem/s │ 1.171 Gitem/s │ 1.205 Gitem/s │ 1.203 Gitem/s │         │
+│  │  ├─ u32          1.81 µs       │ 1.837 µs      │ 1.815 µs      │ 1.816 µs      │ 500     │ 2500000
+│  │  │               848.3 Mitem/s │ 836 Mitem/s   │ 845.8 Mitem/s │ 845.5 Mitem/s │         │
+│  │  ├─ u64          2.122 µs      │ 2.166 µs      │ 2.129 µs      │ 2.13 µs       │ 500     │ 2500000
+│  │  │               723.5 Mitem/s │ 708.8 Mitem/s │ 721.2 Mitem/s │ 720.9 Mitem/s │         │
+│  │  ╰─ u8           1.212 µs      │ 1.291 µs      │ 1.218 µs      │ 1.22 µs       │ 500     │ 2500000
+│  │                  1.266 Gitem/s │ 1.189 Gitem/s │ 1.26 Gitem/s  │ 1.258 Gitem/s │         │
+│  ├─ cfavml_vector                 │               │               │               │         │
+│  │  ├─ f32          113.3 ns      │ 117.6 ns      │ 113.7 ns      │ 113.8 ns      │ 500     │ 2500000
+│  │  │               13.55 Gitem/s │ 13.05 Gitem/s │ 13.5 Gitem/s  │ 13.49 Gitem/s │         │
+│  │  ├─ f64          340 ns        │ 392.1 ns      │ 373.9 ns      │ 369.5 ns      │ 500     │ 2500000
+│  │  │               4.517 Gitem/s │ 3.917 Gitem/s │ 4.107 Gitem/s │ 4.156 Gitem/s │         │
+│  │  ├─ i16          3.628 µs      │ 3.678 µs      │ 3.636 µs      │ 3.638 µs      │ 500     │ 2500000
+│  │  │               423.3 Mitem/s │ 417.6 Mitem/s │ 422.4 Mitem/s │ 422.1 Mitem/s │         │
+│  │  ├─ i32          2.069 µs      │ 2.133 µs      │ 2.076 µs      │ 2.078 µs      │ 500     │ 2500000
+│  │  │               742.1 Mitem/s │ 720 Mitem/s   │ 739.5 Mitem/s │ 739 Mitem/s   │         │
+│  │  ├─ i64          2.334 µs      │ 2.384 µs      │ 2.341 µs      │ 2.342 µs      │ 500     │ 2500000
+│  │  │               657.9 Mitem/s │ 644 Mitem/s   │ 655.9 Mitem/s │ 655.6 Mitem/s │         │
+│  │  ├─ i8           1.328 µs      │ 1.425 µs      │ 1.37 µs       │ 1.37 µs       │ 500     │ 2500000
+│  │  │               1.156 Gitem/s │ 1.077 Gitem/s │ 1.12 Gitem/s  │ 1.12 Gitem/s  │         │
+│  │  ├─ u16          1.273 µs      │ 1.318 µs      │ 1.278 µs      │ 1.279 µs      │ 500     │ 2500000
+│  │  │               1.206 Gitem/s │ 1.165 Gitem/s │ 1.201 Gitem/s │ 1.2 Gitem/s   │         │
+│  │  ├─ u32          1.81 µs       │ 1.869 µs      │ 1.818 µs      │ 1.819 µs      │ 500     │ 2500000
+│  │  │               848.3 Mitem/s │ 821.5 Mitem/s │ 844.7 Mitem/s │ 844.1 Mitem/s │         │
+│  │  ├─ u64          2.133 µs      │ 2.247 µs      │ 2.139 µs      │ 2.141 µs      │ 500     │ 2500000
+│  │  │               720 Mitem/s   │ 683.5 Mitem/s │ 717.8 Mitem/s │ 717.4 Mitem/s │         │
+│  │  ╰─ u8           1.221 µs      │ 1.276 µs      │ 1.233 µs      │ 1.233 µs      │ 500     │ 2500000
+│  │                  1.257 Gitem/s │ 1.202 Gitem/s │ 1.245 Gitem/s │ 1.245 Gitem/s │         │
+│  ├─ ndarray_value                 │               │               │               │         │
+│  │  ├─ f32          503.2 ns      │ 720.9 ns      │ 549.9 ns      │ 553.6 ns      │ 500     │ 2500000
+│  │  │               3.052 Gitem/s │ 2.13 Gitem/s  │ 2.792 Gitem/s │ 2.774 Gitem/s │         │
+│  │  ├─ f64          1.336 µs      │ 1.519 µs      │ 1.451 µs      │ 1.45 µs       │ 500     │ 2500000
+│  │  │               1.149 Gitem/s │ 1.01 Gitem/s  │ 1.058 Gitem/s │ 1.058 Gitem/s │         │
+│  │  ├─ i16          3.743 µs      │ 3.842 µs      │ 3.756 µs      │ 3.76 µs       │ 500     │ 2500000
+│  │  │               410.3 Mitem/s │ 399.7 Mitem/s │ 408.8 Mitem/s │ 408.4 Mitem/s │         │
+│  │  ├─ i32          2.074 µs      │ 2.228 µs      │ 2.114 µs      │ 2.114 µs      │ 500     │ 2500000
+│  │  │               740.4 Mitem/s │ 689.1 Mitem/s │ 726.4 Mitem/s │ 726.3 Mitem/s │         │
+│  │  ├─ i64          3.218 µs      │ 3.575 µs      │ 3.334 µs      │ 3.334 µs      │ 500     │ 2500000
+│  │  │               477.2 Mitem/s │ 429.6 Mitem/s │ 460.7 Mitem/s │ 460.6 Mitem/s │         │
+│  │  ├─ i8           1.272 µs      │ 1.365 µs      │ 1.279 µs      │ 1.282 µs      │ 500     │ 2500000
+│  │  │               1.206 Gitem/s │ 1.124 Gitem/s │ 1.2 Gitem/s   │ 1.197 Gitem/s │         │
+│  │  ├─ u16          1.344 µs      │ 1.477 µs      │ 1.361 µs      │ 1.362 µs      │ 500     │ 2500000
+│  │  │               1.142 Gitem/s │ 1.039 Gitem/s │ 1.128 Gitem/s │ 1.127 Gitem/s │         │
+│  │  ├─ u32          2.074 µs      │ 2.324 µs      │ 2.109 µs      │ 2.113 µs      │ 500     │ 2500000
+│  │  │               740.4 Mitem/s │ 660.8 Mitem/s │ 727.9 Mitem/s │ 726.7 Mitem/s │         │
+│  │  ├─ u64          3.271 µs      │ 3.497 µs      │ 3.383 µs      │ 3.384 µs      │ 500     │ 2500000
+│  │  │               469.5 Mitem/s │ 439.1 Mitem/s │ 453.9 Mitem/s │ 453.7 Mitem/s │         │
+│  │  ╰─ u8           1.271 µs      │ 1.33 µs       │ 1.278 µs      │ 1.28 µs       │ 500     │ 2500000
+│  │                  1.208 Gitem/s │ 1.154 Gitem/s │ 1.201 Gitem/s │ 1.199 Gitem/s │         │
+│  ╰─ ndarray_vector                │               │               │               │         │
+│     ├─ f32          227.1 ns      │ 245 ns        │ 228.3 ns      │ 228.4 ns      │ 500     │ 2500000
+│     │               6.762 Gitem/s │ 6.269 Gitem/s │ 6.726 Gitem/s │ 6.722 Gitem/s │         │
+│     ├─ f64          713.3 ns      │ 796.6 ns      │ 756.7 ns      │ 752.7 ns      │ 500     │ 2500000
+│     │               2.153 Gitem/s │ 1.927 Gitem/s │ 2.029 Gitem/s │ 2.04 Gitem/s  │         │
+│     ├─ i16          1.213 µs      │ 1.714 µs      │ 1.219 µs      │ 1.222 µs      │ 500     │ 2500000
+│     │               1.266 Gitem/s │ 895.8 Mitem/s │ 1.259 Gitem/s │ 1.256 Gitem/s │         │
+│     ├─ i32          1.819 µs      │ 2.341 µs      │ 1.826 µs      │ 1.835 µs      │ 500     │ 2500000
+│     │               844.3 Mitem/s │ 656 Mitem/s   │ 840.7 Mitem/s │ 837 Mitem/s   │         │
+│     ├─ i64          2.122 µs      │ 2.786 µs      │ 2.13 µs       │ 2.14 µs       │ 500     │ 2500000
+│     │               723.6 Mitem/s │ 551.2 Mitem/s │ 720.8 Mitem/s │ 717.4 Mitem/s │         │
+│     ├─ i8           1.213 µs      │ 2.018 µs      │ 1.219 µs      │ 1.229 µs      │ 500     │ 2500000
+│     │               1.266 Gitem/s │ 760.9 Mitem/s │ 1.259 Gitem/s │ 1.248 Gitem/s │         │
+│     ├─ u16          1.212 µs      │ 1.455 µs      │ 1.217 µs      │ 1.222 µs      │ 500     │ 2500000
+│     │               1.266 Gitem/s │ 1.055 Gitem/s │ 1.261 Gitem/s │ 1.256 Gitem/s │         │
+│     ├─ u32          1.81 µs       │ 1.845 µs      │ 1.816 µs      │ 1.818 µs      │ 500     │ 2500000
+│     │               848.4 Mitem/s │ 832.2 Mitem/s │ 845.4 Mitem/s │ 844.7 Mitem/s │         │
+│     ├─ u64          2.119 µs      │ 2.156 µs      │ 2.126 µs      │ 2.127 µs      │ 500     │ 2500000
+│     │               724.5 Mitem/s │ 712.3 Mitem/s │ 722.2 Mitem/s │ 721.8 Mitem/s │         │
+│     ╰─ u8           1.212 µs      │ 1.267 µs      │ 1.216 µs      │ 1.217 µs      │ 500     │ 2500000
+│                     1.266 Gitem/s │ 1.212 Gitem/s │ 1.262 Gitem/s │ 1.262 Gitem/s │         │
+├─ mul                              │               │               │               │         │
+│  ├─ cfavml_value                  │               │               │               │         │
+│  │  ├─ f32          45.32 ns      │ 53.3 ns       │ 45.56 ns      │ 45.7 ns       │ 500     │ 2500000
+│  │  │               33.89 Gitem/s │ 28.81 Gitem/s │ 33.71 Gitem/s │ 33.6 Gitem/s  │         │
+│  │  ├─ f64          96.06 ns      │ 113.1 ns      │ 97.13 ns      │ 97.36 ns      │ 500     │ 2500000
+│  │  │               15.98 Gitem/s │ 13.57 Gitem/s │ 15.81 Gitem/s │ 15.77 Gitem/s │         │
+│  │  ├─ i16          22.36 ns      │ 27.57 ns      │ 22.87 ns      │ 23.06 ns      │ 500     │ 2500000
+│  │  │               68.67 Gitem/s │ 55.7 Gitem/s  │ 67.15 Gitem/s │ 66.58 Gitem/s │         │
+│  │  ├─ i32          45.12 ns      │ 53.5 ns       │ 45.85 ns      │ 45.96 ns      │ 500     │ 2500000
+│  │  │               34.04 Gitem/s │ 28.7 Gitem/s  │ 33.49 Gitem/s │ 33.41 Gitem/s │         │
+│  │  ├─ i64          163.9 ns      │ 187.6 ns      │ 167 ns        │ 167.6 ns      │ 500     │ 2500000
+│  │  │               9.367 Gitem/s │ 8.186 Gitem/s │ 9.194 Gitem/s │ 9.162 Gitem/s │         │
+│  │  ├─ i8           15.54 ns      │ 34.28 ns      │ 16.18 ns      │ 16.22 ns      │ 500     │ 2500000
+│  │  │               98.78 Gitem/s │ 44.8 Gitem/s  │ 94.87 Gitem/s │ 94.64 Gitem/s │         │
+│  │  ├─ u16          22.82 ns      │ 36.04 ns      │ 23.83 ns      │ 23.87 ns      │ 500     │ 2500000
+│  │  │               67.28 Gitem/s │ 42.6 Gitem/s  │ 64.44 Gitem/s │ 64.34 Gitem/s │         │
+│  │  ├─ u32          45.18 ns      │ 50.3 ns       │ 45.75 ns      │ 45.84 ns      │ 500     │ 2500000
+│  │  │               33.99 Gitem/s │ 30.53 Gitem/s │ 33.57 Gitem/s │ 33.5 Gitem/s  │         │
+│  │  ├─ u64          164.8 ns      │ 184.4 ns      │ 166.9 ns      │ 167.4 ns      │ 500     │ 2500000
+│  │  │               9.316 Gitem/s │ 8.329 Gitem/s │ 9.198 Gitem/s │ 9.17 Gitem/s  │         │
+│  │  ╰─ u8           15.44 ns      │ 19.54 ns      │ 16.04 ns      │ 16.08 ns      │ 500     │ 2500000
+│  │                  99.42 Gitem/s │ 78.57 Gitem/s │ 95.72 Gitem/s │ 95.47 Gitem/s │         │
+│  ├─ cfavml_vector                 │               │               │               │         │
+│  │  ├─ f32          68.18 ns      │ 72 ns         │ 69.11 ns      │ 69.23 ns      │ 500     │ 2500000
+│  │  │               22.52 Gitem/s │ 21.33 Gitem/s │ 22.22 Gitem/s │ 22.18 Gitem/s │         │
+│  │  ├─ f64          167.9 ns      │ 182.1 ns      │ 169.6 ns      │ 169.7 ns      │ 500     │ 2500000
+│  │  │               9.145 Gitem/s │ 8.434 Gitem/s │ 9.052 Gitem/s │ 9.047 Gitem/s │         │
+│  │  ├─ i16          33.69 ns      │ 38.18 ns      │ 33.88 ns      │ 34.1 ns       │ 500     │ 2500000
+│  │  │               45.58 Gitem/s │ 40.22 Gitem/s │ 45.32 Gitem/s │ 45.04 Gitem/s │         │
+│  │  ├─ i32          68.12 ns      │ 78.39 ns      │ 68.69 ns      │ 68.81 ns      │ 500     │ 2500000
+│  │  │               22.54 Gitem/s │ 19.59 Gitem/s │ 22.36 Gitem/s │ 22.31 Gitem/s │         │
+│  │  ├─ i64          241.1 ns      │ 263.1 ns      │ 243.5 ns      │ 244 ns        │ 500     │ 2500000
+│  │  │               6.369 Gitem/s │ 5.836 Gitem/s │ 6.307 Gitem/s │ 6.293 Gitem/s │         │
+│  │  ├─ i8           21.3 ns       │ 35.03 ns      │ 21.54 ns      │ 21.77 ns      │ 500     │ 2500000
+│  │  │               72.08 Gitem/s │ 43.83 Gitem/s │ 71.29 Gitem/s │ 70.55 Gitem/s │         │
+│  │  ├─ u16          34.18 ns      │ 38.77 ns      │ 34.42 ns      │ 34.58 ns      │ 500     │ 2500000
+│  │  │               44.93 Gitem/s │ 39.6 Gitem/s  │ 44.61 Gitem/s │ 44.41 Gitem/s │         │
+│  │  ├─ u32          68.15 ns      │ 83.43 ns      │ 68.73 ns      │ 68.89 ns      │ 500     │ 2500000
+│  │  │               22.53 Gitem/s │ 18.4 Gitem/s  │ 22.34 Gitem/s │ 22.29 Gitem/s │         │
+│  │  ├─ u64          241.5 ns      │ 261.3 ns      │ 244 ns        │ 244.6 ns      │ 500     │ 2500000
+│  │  │               6.358 Gitem/s │ 5.877 Gitem/s │ 6.293 Gitem/s │ 6.278 Gitem/s │         │
+│  │  ╰─ u8           21.37 ns      │ 30.29 ns      │ 21.5 ns       │ 21.69 ns      │ 500     │ 2500000
+│  │                  71.87 Gitem/s │ 50.7 Gitem/s  │ 71.41 Gitem/s │ 70.81 Gitem/s │         │
+│  ├─ ndarray_value                 │               │               │               │         │
+│  │  ├─ f32          447.5 ns      │ 666.6 ns      │ 500.3 ns      │ 508.5 ns      │ 500     │ 2500000
+│  │  │               3.432 Gitem/s │ 2.303 Gitem/s │ 3.07 Gitem/s  │ 3.02 Gitem/s  │         │
+│  │  ├─ f64          1.046 µs      │ 1.301 µs      │ 1.183 µs      │ 1.182 µs      │ 500     │ 2500000
+│  │  │               1.468 Gitem/s │ 1.179 Gitem/s │ 1.298 Gitem/s │ 1.298 Gitem/s │         │
+│  │  ├─ i16          195.5 ns      │ 298.6 ns      │ 216 ns        │ 219.5 ns      │ 500     │ 2500000
+│  │  │               7.854 Gitem/s │ 5.142 Gitem/s │ 7.108 Gitem/s │ 6.997 Gitem/s │         │
+│  │  ├─ i32          459.6 ns      │ 777.7 ns      │ 527.7 ns      │ 538.8 ns      │ 500     │ 2500000
+│  │  │               3.341 Gitem/s │ 1.974 Gitem/s │ 2.91 Gitem/s  │ 2.85 Gitem/s  │         │
+│  │  ├─ i64          1.113 µs      │ 1.413 µs      │ 1.239 µs      │ 1.239 µs      │ 500     │ 2500000
+│  │  │               1.379 Gitem/s │ 1.086 Gitem/s │ 1.239 Gitem/s │ 1.238 Gitem/s │         │
+│  │  ├─ i8           106.9 ns      │ 138.3 ns      │ 109.3 ns      │ 110.1 ns      │ 500     │ 2500000
+│  │  │               14.36 Gitem/s │ 11.1 Gitem/s  │ 14.05 Gitem/s │ 13.94 Gitem/s │         │
+│  │  ├─ u16          195.6 ns      │ 288.8 ns      │ 216.5 ns      │ 218.6 ns      │ 500     │ 2500000
+│  │  │               7.849 Gitem/s │ 5.316 Gitem/s │ 7.094 Gitem/s │ 7.024 Gitem/s │         │
+│  │  ├─ u32          461.1 ns      │ 736.4 ns      │ 520.3 ns      │ 529.7 ns      │ 500     │ 2500000
+│  │  │               3.33 Gitem/s  │ 2.085 Gitem/s │ 2.951 Gitem/s │ 2.899 Gitem/s │         │
+│  │  ├─ u64          1.109 µs      │ 1.414 µs      │ 1.236 µs      │ 1.239 µs      │ 500     │ 2500000
+│  │  │               1.384 Gitem/s │ 1.085 Gitem/s │ 1.242 Gitem/s │ 1.238 Gitem/s │         │
+│  │  ╰─ u8           107.7 ns      │ 142 ns        │ 109.7 ns      │ 110.6 ns      │ 500     │ 2500000
+│  │                  14.25 Gitem/s │ 10.81 Gitem/s │ 13.99 Gitem/s │ 13.87 Gitem/s │         │
+│  ╰─ ndarray_vector                │               │               │               │         │
+│     ├─ f32          101.2 ns      │ 167 ns        │ 102.2 ns      │ 102.7 ns      │ 500     │ 2500000
+│     │               15.16 Gitem/s │ 9.193 Gitem/s │ 15.02 Gitem/s │ 14.94 Gitem/s │         │
+│     ├─ f64          217.8 ns      │ 233 ns        │ 219.5 ns      │ 220.5 ns      │ 500     │ 2500000
+│     │               7.049 Gitem/s │ 6.591 Gitem/s │ 6.996 Gitem/s │ 6.965 Gitem/s │         │
+│     ├─ i16          53.51 ns      │ 71.82 ns      │ 54.04 ns      │ 54.2 ns       │ 500     │ 2500000
+│     │               28.7 Gitem/s  │ 21.38 Gitem/s │ 28.42 Gitem/s │ 28.33 Gitem/s │         │
+│     ├─ i32          173.5 ns      │ 210.6 ns      │ 175.9 ns      │ 176.3 ns      │ 500     │ 2500000
+│     │               8.852 Gitem/s │ 7.293 Gitem/s │ 8.729 Gitem/s │ 8.71 Gitem/s  │         │
+│     ├─ i64          412.3 ns      │ 467.6 ns      │ 415.4 ns      │ 416.1 ns      │ 500     │ 2500000
+│     │               3.724 Gitem/s │ 3.284 Gitem/s │ 3.696 Gitem/s │ 3.69 Gitem/s  │         │
+│     ├─ i8           54.16 ns      │ 66.84 ns      │ 54.85 ns      │ 55.02 ns      │ 500     │ 2500000
+│     │               28.35 Gitem/s │ 22.97 Gitem/s │ 28 Gitem/s    │ 27.91 Gitem/s │         │
+│     ├─ u16          53.19 ns      │ 64.48 ns      │ 53.6 ns       │ 53.73 ns      │ 500     │ 2500000
+│     │               28.87 Gitem/s │ 23.81 Gitem/s │ 28.65 Gitem/s │ 28.58 Gitem/s │         │
+│     ├─ u32          174.3 ns      │ 223.8 ns      │ 177.4 ns      │ 177.6 ns      │ 500     │ 2500000
+│     │               8.807 Gitem/s │ 6.861 Gitem/s │ 8.658 Gitem/s │ 8.647 Gitem/s │         │
+│     ├─ u64          411.9 ns      │ 455.8 ns      │ 414.8 ns      │ 415.8 ns      │ 500     │ 2500000
+│     │               3.728 Gitem/s │ 3.369 Gitem/s │ 3.702 Gitem/s │ 3.694 Gitem/s │         │
+│     ╰─ u8           53.99 ns      │ 61.91 ns      │ 54.89 ns      │ 55.1 ns       │ 500     │ 2500000
+│                     28.44 Gitem/s │ 24.8 Gitem/s  │ 27.97 Gitem/s │ 27.87 Gitem/s │         │
+╰─ sub                              │               │               │               │         │
+   ├─ cfavml_value                  │               │               │               │         │
+   │  ├─ f32          45.32 ns      │ 63.77 ns      │ 45.77 ns      │ 45.94 ns      │ 500     │ 2500000
+   │  │               33.89 Gitem/s │ 24.08 Gitem/s │ 33.55 Gitem/s │ 33.43 Gitem/s │         │
+   │  ├─ f64          95.66 ns      │ 113.6 ns      │ 97.02 ns      │ 97.32 ns      │ 500     │ 2500000
+   │  │               16.05 Gitem/s │ 13.51 Gitem/s │ 15.83 Gitem/s │ 15.78 Gitem/s │         │
+   │  ├─ i16          22.44 ns      │ 29.02 ns      │ 23.8 ns       │ 23.85 ns      │ 500     │ 2500000
+   │  │               68.43 Gitem/s │ 52.92 Gitem/s │ 64.53 Gitem/s │ 64.37 Gitem/s │         │
+   │  ├─ i32          45.17 ns      │ 50.58 ns      │ 45.85 ns      │ 46 ns         │ 500     │ 2500000
+   │  │               34 Gitem/s    │ 30.36 Gitem/s │ 33.49 Gitem/s │ 33.39 Gitem/s │         │
+   │  ├─ i64          95.37 ns      │ 134.3 ns      │ 96.73 ns      │ 97.17 ns      │ 500     │ 2500000
+   │  │               16.1 Gitem/s  │ 11.43 Gitem/s │ 15.87 Gitem/s │ 15.8 Gitem/s  │         │
+   │  ├─ i8           13.12 ns      │ 18.21 ns      │ 13.25 ns      │ 13.32 ns      │ 500     │ 2500000
+   │  │               117 Gitem/s   │ 84.31 Gitem/s │ 115.8 Gitem/s │ 115.2 Gitem/s │         │
+   │  ├─ u16          21.9 ns       │ 30.87 ns      │ 23.45 ns      │ 23.25 ns      │ 500     │ 2500000
+   │  │               70.12 Gitem/s │ 49.75 Gitem/s │ 65.48 Gitem/s │ 66.05 Gitem/s │         │
+   │  ├─ u32          45.22 ns      │ 63.66 ns      │ 45.87 ns      │ 46.11 ns      │ 500     │ 2500000
+   │  │               33.96 Gitem/s │ 24.12 Gitem/s │ 33.48 Gitem/s │ 33.3 Gitem/s  │         │
+   │  ├─ u64          95.37 ns      │ 102.1 ns      │ 96.62 ns      │ 96.9 ns       │ 500     │ 2500000
+   │  │               16.1 Gitem/s  │ 15.03 Gitem/s │ 15.89 Gitem/s │ 15.84 Gitem/s │         │
+   │  ╰─ u8           13.17 ns      │ 30.76 ns      │ 13.39 ns      │ 13.5 ns       │ 500     │ 2500000
+   │                  116.6 Gitem/s │ 49.92 Gitem/s │ 114.6 Gitem/s │ 113.7 Gitem/s │         │
+   ├─ cfavml_vector                 │               │               │               │         │
+   │  ├─ f32          68.14 ns      │ 86.53 ns      │ 68.67 ns      │ 68.85 ns      │ 500     │ 2500000
+   │  │               22.54 Gitem/s │ 17.74 Gitem/s │ 22.36 Gitem/s │ 22.3 Gitem/s  │         │
+   │  ├─ f64          167.6 ns      │ 202.5 ns      │ 169.2 ns      │ 169.6 ns      │ 500     │ 2500000
+   │  │               9.164 Gitem/s │ 7.583 Gitem/s │ 9.077 Gitem/s │ 9.054 Gitem/s │         │
+   │  ├─ i16          33.69 ns      │ 52.56 ns      │ 34.03 ns      │ 34.17 ns      │ 500     │ 2500000
+   │  │               45.58 Gitem/s │ 29.21 Gitem/s │ 45.13 Gitem/s │ 44.94 Gitem/s │         │
+   │  ├─ i32          68.15 ns      │ 87.53 ns      │ 68.68 ns      │ 68.96 ns      │ 500     │ 2500000
+   │  │               22.53 Gitem/s │ 17.54 Gitem/s │ 22.36 Gitem/s │ 22.27 Gitem/s │         │
+   │  ├─ i64          183.4 ns      │ 203.9 ns      │ 184.3 ns      │ 185.6 ns      │ 500     │ 2500000
+   │  │               8.372 Gitem/s │ 7.531 Gitem/s │ 8.334 Gitem/s │ 8.273 Gitem/s │         │
+   │  ├─ i8           17.75 ns      │ 20.79 ns      │ 17.85 ns      │ 18.02 ns      │ 500     │ 2500000
+   │  │               86.5 Gitem/s  │ 73.87 Gitem/s │ 86.04 Gitem/s │ 85.22 Gitem/s │         │
+   │  ├─ u16          34.19 ns      │ 46.96 ns      │ 34.55 ns      │ 34.68 ns      │ 500     │ 2500000
+   │  │               44.91 Gitem/s │ 32.7 Gitem/s  │ 44.45 Gitem/s │ 44.28 Gitem/s │         │
+   │  ├─ u32          68.14 ns      │ 84.22 ns      │ 68.75 ns      │ 68.86 ns      │ 500     │ 2500000
+   │  │               22.54 Gitem/s │ 18.23 Gitem/s │ 22.34 Gitem/s │ 22.3 Gitem/s  │         │
+   │  ├─ u64          183.1 ns      │ 197.7 ns      │ 184.1 ns      │ 184.7 ns      │ 500     │ 2500000
+   │  │               8.386 Gitem/s │ 7.767 Gitem/s │ 8.34 Gitem/s  │ 8.312 Gitem/s │         │
+   │  ╰─ u8           17.78 ns      │ 22.19 ns      │ 17.93 ns      │ 18.04 ns      │ 500     │ 2500000
+   │                  86.35 Gitem/s │ 69.21 Gitem/s │ 85.66 Gitem/s │ 85.12 Gitem/s │         │
+   ├─ ndarray_value                 │               │               │               │         │
+   │  ├─ f32          453.8 ns      │ 659.1 ns      │ 518.6 ns      │ 523.7 ns      │ 500     │ 2500000
+   │  │               3.384 Gitem/s │ 2.33 Gitem/s  │ 2.961 Gitem/s │ 2.932 Gitem/s │         │
+   │  ├─ f64          1.093 µs      │ 1.289 µs      │ 1.186 µs      │ 1.189 µs      │ 500     │ 2500000
+   │  │               1.404 Gitem/s │ 1.19 Gitem/s  │ 1.294 Gitem/s │ 1.291 Gitem/s │         │
+   │  ├─ i16          194.2 ns      │ 308.4 ns      │ 227.8 ns      │ 231 ns        │ 500     │ 2500000
+   │  │               7.905 Gitem/s │ 4.98 Gitem/s  │ 6.741 Gitem/s │ 6.647 Gitem/s │         │
+   │  ├─ i32          465 ns        │ 655.6 ns      │ 533.1 ns      │ 539.7 ns      │ 500     │ 2500000
+   │  │               3.302 Gitem/s │ 2.342 Gitem/s │ 2.88 Gitem/s  │ 2.845 Gitem/s │         │
+   │  ├─ i64          1.038 µs      │ 1.292 µs      │ 1.181 µs      │ 1.182 µs      │ 500     │ 2500000
+   │  │               1.478 Gitem/s │ 1.187 Gitem/s │ 1.299 Gitem/s │ 1.299 Gitem/s │         │
+   │  ├─ i8           87.62 ns      │ 121.6 ns      │ 89.97 ns      │ 90.84 ns      │ 500     │ 2500000
+   │  │               17.53 Gitem/s │ 12.62 Gitem/s │ 17.07 Gitem/s │ 16.9 Gitem/s  │         │
+   │  ├─ u16          190.4 ns      │ 314.4 ns      │ 219.3 ns      │ 221.3 ns      │ 500     │ 2500000
+   │  │               8.063 Gitem/s │ 4.885 Gitem/s │ 7.003 Gitem/s │ 6.939 Gitem/s │         │
+   │  ├─ u32          467.6 ns      │ 674.8 ns      │ 537.7 ns      │ 545 ns        │ 500     │ 2500000
+   │  │               3.284 Gitem/s │ 2.276 Gitem/s │ 2.856 Gitem/s │ 2.818 Gitem/s │         │
+   │  ├─ u64          1.083 µs      │ 1.305 µs      │ 1.185 µs      │ 1.184 µs      │ 500     │ 2500000
+   │  │               1.417 Gitem/s │ 1.176 Gitem/s │ 1.295 Gitem/s │ 1.296 Gitem/s │         │
+   │  ╰─ u8           87.88 ns      │ 151.6 ns      │ 90.13 ns      │ 91.55 ns      │ 500     │ 2500000
+   │                  17.47 Gitem/s │ 10.12 Gitem/s │ 17.04 Gitem/s │ 16.77 Gitem/s │         │
+   ╰─ ndarray_vector                │               │               │               │         │
+      ├─ f32          101 ns        │ 130.8 ns      │ 102.2 ns      │ 102.7 ns      │ 500     │ 2500000
+      │               15.19 Gitem/s │ 11.73 Gitem/s │ 15.01 Gitem/s │ 14.95 Gitem/s │         │
+      ├─ f64          217.5 ns      │ 238.9 ns      │ 219 ns        │ 220 ns        │ 500     │ 2500000
+      │               7.059 Gitem/s │ 6.427 Gitem/s │ 7.011 Gitem/s │ 6.981 Gitem/s │         │
+      ├─ i16          53.26 ns      │ 58.99 ns      │ 54.27 ns      │ 54.36 ns      │ 500     │ 2500000
+      │               28.83 Gitem/s │ 26.03 Gitem/s │ 28.29 Gitem/s │ 28.25 Gitem/s │         │
+      ├─ i32          101 ns        │ 160.4 ns      │ 101.8 ns      │ 102.3 ns      │ 500     │ 2500000
+      │               15.2 Gitem/s  │ 9.571 Gitem/s │ 15.08 Gitem/s │ 15 Gitem/s    │         │
+      ├─ i64          218.1 ns      │ 240 ns        │ 218.8 ns      │ 220.1 ns      │ 500     │ 2500000
+      │               7.039 Gitem/s │ 6.399 Gitem/s │ 7.02 Gitem/s  │ 6.978 Gitem/s │         │
+      ├─ i8           27.57 ns      │ 31.99 ns      │ 28.01 ns      │ 28.02 ns      │ 500     │ 2500000
+      │               55.71 Gitem/s │ 48 Gitem/s    │ 54.83 Gitem/s │ 54.81 Gitem/s │         │
+      ├─ u16          53.07 ns      │ 58.52 ns      │ 53.66 ns      │ 53.97 ns      │ 500     │ 2500000
+      │               28.94 Gitem/s │ 26.24 Gitem/s │ 28.61 Gitem/s │ 28.45 Gitem/s │         │
+      ├─ u32          101.5 ns      │ 156.8 ns      │ 102.3 ns      │ 102.8 ns      │ 500     │ 2500000
+      │               15.12 Gitem/s │ 9.791 Gitem/s │ 15.01 Gitem/s │ 14.93 Gitem/s │         │
+      ├─ u64          218.1 ns      │ 238.5 ns      │ 218.6 ns      │ 220 ns        │ 500     │ 2500000
+      │               7.039 Gitem/s │ 6.439 Gitem/s │ 7.024 Gitem/s │ 6.981 Gitem/s │         │
+      ╰─ u8           27.46 ns      │ 31.78 ns      │ 27.6 ns       │ 27.77 ns      │ 500     │ 2500000
+                      55.92 Gitem/s │ 48.32 Gitem/s │ 55.63 Gitem/s │ 55.29 Gitem/s │         │
+
+     Running benches/bench_cmp_ops.rs (target/release/deps/bench_cmp_ops-eddce12af6b8c55b)
+Timer precision: 9 ns
+bench_cmp_ops             fastest       │ slowest       │ median        │ mean          │ samples │ iters
+├─ eq                                   │               │               │               │         │
+│  ├─ cfavml_value                      │               │               │               │         │
+│  │  ├─ f32              38.44 ns      │ 56.65 ns      │ 38.82 ns      │ 39.19 ns      │ 500     │ 2500000
+│  │  │                   39.95 Gitem/s │ 27.11 Gitem/s │ 39.55 Gitem/s │ 39.19 Gitem/s │         │
+│  │  ├─ f64              76.55 ns      │ 80.99 ns      │ 77.09 ns      │ 77.39 ns      │ 500     │ 2500000
+│  │  │                   20.06 Gitem/s │ 18.96 Gitem/s │ 19.92 Gitem/s │ 19.84 Gitem/s │         │
+│  │  ├─ i16              19.8 ns       │ 21.5 ns       │ 19.8 ns       │ 20 ns         │ 500     │ 2500000
+│  │  │                   77.55 Gitem/s │ 71.43 Gitem/s │ 77.54 Gitem/s │ 76.77 Gitem/s │         │
+│  │  ├─ i32              51.54 ns      │ 59.51 ns      │ 52.1 ns       │ 52.2 ns       │ 500     │ 2500000
+│  │  │                   29.79 Gitem/s │ 25.8 Gitem/s  │ 29.47 Gitem/s │ 29.42 Gitem/s │         │
+│  │  ├─ i64              76 ns         │ 79.31 ns      │ 76.98 ns      │ 77.13 ns      │ 500     │ 2500000
+│  │  │                   20.2 Gitem/s  │ 19.36 Gitem/s │ 19.95 Gitem/s │ 19.91 Gitem/s │         │
+│  │  ├─ i8               10.44 ns      │ 15.43 ns      │ 10.49 ns      │ 10.55 ns      │ 500     │ 2500000
+│  │  │                   147.1 Gitem/s │ 99.53 Gitem/s │ 146.3 Gitem/s │ 145.5 Gitem/s │         │
+│  │  ├─ u16              19.8 ns       │ 28.67 ns      │ 19.8 ns       │ 20 ns         │ 500     │ 2500000
+│  │  │                   77.55 Gitem/s │ 53.57 Gitem/s │ 77.54 Gitem/s │ 76.78 Gitem/s │         │
+│  │  ├─ u32              38.35 ns      │ 56.43 ns      │ 38.61 ns      │ 38.81 ns      │ 500     │ 2500000
+│  │  │                   40.05 Gitem/s │ 27.21 Gitem/s │ 39.78 Gitem/s │ 39.57 Gitem/s │         │
+│  │  ├─ u64              76.1 ns       │ 95.3 ns       │ 76.53 ns      │ 76.85 ns      │ 500     │ 2500000
+│  │  │                   20.18 Gitem/s │ 16.11 Gitem/s │ 20.06 Gitem/s │ 19.98 Gitem/s │         │
+│  │  ╰─ u8               10.44 ns      │ 11.91 ns      │ 10.65 ns      │ 10.73 ns      │ 500     │ 2500000
+│  │                      147.1 Gitem/s │ 128.9 Gitem/s │ 144.1 Gitem/s │ 143 Gitem/s   │         │
+│  ├─ cfavml_vector                     │               │               │               │         │
+│  │  ├─ f32              52.35 ns      │ 64.56 ns      │ 52.84 ns      │ 53.04 ns      │ 500     │ 2500000
+│  │  │                   29.33 Gitem/s │ 23.78 Gitem/s │ 29.06 Gitem/s │ 28.95 Gitem/s │         │
+│  │  ├─ f64              162.4 ns      │ 182.2 ns      │ 164.3 ns      │ 164.4 ns      │ 500     │ 2500000
+│  │  │                   9.452 Gitem/s │ 8.428 Gitem/s │ 9.344 Gitem/s │ 9.34 Gitem/s  │         │
+│  │  ├─ i16              28.88 ns      │ 35.05 ns      │ 29.23 ns      │ 29.38 ns      │ 500     │ 2500000
+│  │  │                   53.17 Gitem/s │ 43.81 Gitem/s │ 52.53 Gitem/s │ 52.27 Gitem/s │         │
+│  │  ├─ i32              51.31 ns      │ 63.93 ns      │ 52.84 ns      │ 53.62 ns      │ 500     │ 2500000
+│  │  │                   29.93 Gitem/s │ 24.02 Gitem/s │ 29.06 Gitem/s │ 28.64 Gitem/s │         │
+│  │  ├─ i64              175.5 ns      │ 185.9 ns      │ 176.6 ns      │ 177.5 ns      │ 500     │ 2500000
+│  │  │                   8.751 Gitem/s │ 8.258 Gitem/s │ 8.692 Gitem/s │ 8.653 Gitem/s │         │
+│  │  ├─ i8               16.17 ns      │ 20.44 ns      │ 16.35 ns      │ 16.47 ns      │ 500     │ 2500000
+│  │  │                   94.95 Gitem/s │ 75.11 Gitem/s │ 93.9 Gitem/s  │ 93.23 Gitem/s │         │
+│  │  ├─ u16              28.9 ns       │ 39.04 ns      │ 29.49 ns      │ 29.51 ns      │ 500     │ 2500000
+│  │  │                   53.14 Gitem/s │ 39.33 Gitem/s │ 52.08 Gitem/s │ 52.04 Gitem/s │         │
+│  │  ├─ u32              51.25 ns      │ 74.97 ns      │ 52.7 ns       │ 53.66 ns      │ 500     │ 2500000
+│  │  │                   29.96 Gitem/s │ 20.48 Gitem/s │ 29.14 Gitem/s │ 28.62 Gitem/s │         │
+│  │  ├─ u64              175.5 ns      │ 187.8 ns      │ 176.6 ns      │ 177.3 ns      │ 500     │ 2500000
+│  │  │                   8.75 Gitem/s  │ 8.176 Gitem/s │ 8.692 Gitem/s │ 8.66 Gitem/s  │         │
+│  │  ╰─ u8               16.13 ns      │ 30.29 ns      │ 16.31 ns      │ 16.42 ns      │ 500     │ 2500000
+│  │                      95.21 Gitem/s │ 50.69 Gitem/s │ 94.17 Gitem/s │ 93.49 Gitem/s │         │
+│  ├─ ndarray_value                     │               │               │               │         │
+│  │  ├─ f32              77.75 ns      │ 95.41 ns      │ 79.25 ns      │ 79.53 ns      │ 500     │ 2500000
+│  │  │                   19.75 Gitem/s │ 16.09 Gitem/s │ 19.38 Gitem/s │ 19.31 Gitem/s │         │
+│  │  ├─ f64              152.5 ns      │ 166.8 ns      │ 153.5 ns      │ 154.3 ns      │ 500     │ 2500000
+│  │  │                   10.06 Gitem/s │ 9.204 Gitem/s │ 10 Gitem/s    │ 9.952 Gitem/s │         │
+│  │  ├─ i16              41.17 ns      │ 46.34 ns      │ 41.53 ns      │ 41.59 ns      │ 500     │ 2500000
+│  │  │                   37.3 Gitem/s  │ 33.14 Gitem/s │ 36.98 Gitem/s │ 36.93 Gitem/s │         │
+│  │  ├─ i32              77.66 ns      │ 95.79 ns      │ 78.07 ns      │ 78.29 ns      │ 500     │ 2500000
+│  │  │                   19.77 Gitem/s │ 16.03 Gitem/s │ 19.67 Gitem/s │ 19.61 Gitem/s │         │
+│  │  ├─ i64              183.6 ns      │ 197.2 ns      │ 184 ns        │ 185.3 ns      │ 500     │ 2500000
+│  │  │                   8.365 Gitem/s │ 7.785 Gitem/s │ 8.345 Gitem/s │ 8.287 Gitem/s │         │
+│  │  ├─ i8               21.31 ns      │ 26 ns         │ 21.48 ns      │ 21.59 ns      │ 500     │ 2500000
+│  │  │                   72.05 Gitem/s │ 59.07 Gitem/s │ 71.48 Gitem/s │ 71.14 Gitem/s │         │
+│  │  ├─ u16              41.17 ns      │ 56.23 ns      │ 41.17 ns      │ 41.56 ns      │ 500     │ 2500000
+│  │  │                   37.3 Gitem/s  │ 27.31 Gitem/s │ 37.3 Gitem/s  │ 36.95 Gitem/s │         │
+│  │  ├─ u32              77.66 ns      │ 87.51 ns      │ 78.02 ns      │ 78.25 ns      │ 500     │ 2500000
+│  │  │                   19.77 Gitem/s │ 17.55 Gitem/s │ 19.68 Gitem/s │ 19.62 Gitem/s │         │
+│  │  ├─ u64              183.6 ns      │ 201.7 ns      │ 184 ns        │ 185.6 ns      │ 500     │ 2500000
+│  │  │                   8.365 Gitem/s │ 7.613 Gitem/s │ 8.344 Gitem/s │ 8.275 Gitem/s │         │
+│  │  ╰─ u8               21.27 ns      │ 35.79 ns      │ 21.35 ns      │ 21.48 ns      │ 500     │ 2500000
+│  │                      72.21 Gitem/s │ 42.91 Gitem/s │ 71.94 Gitem/s │ 71.48 Gitem/s │         │
+│  ╰─ ndarray_vector                    │               │               │               │         │
+│     ├─ f32              101.3 ns      │ 114.7 ns      │ 103 ns        │ 103.4 ns      │ 500     │ 2500000
+│     │                   15.15 Gitem/s │ 13.38 Gitem/s │ 14.9 Gitem/s  │ 14.85 Gitem/s │         │
+│     ├─ f64              223.6 ns      │ 308.7 ns      │ 227.4 ns      │ 228 ns        │ 500     │ 2500000
+│     │                   6.868 Gitem/s │ 4.974 Gitem/s │ 6.753 Gitem/s │ 6.734 Gitem/s │         │
+│     ├─ i16              52.76 ns      │ 86.56 ns      │ 54.08 ns      │ 54.82 ns      │ 500     │ 2500000
+│     │                   29.11 Gitem/s │ 17.74 Gitem/s │ 28.39 Gitem/s │ 28.01 Gitem/s │         │
+│     ├─ i32              102.1 ns      │ 122 ns        │ 104 ns        │ 104.1 ns      │ 500     │ 2500000
+│     │                   15.03 Gitem/s │ 12.58 Gitem/s │ 14.76 Gitem/s │ 14.75 Gitem/s │         │
+│     ├─ i64              250.3 ns      │ 267.7 ns      │ 252.9 ns      │ 253.8 ns      │ 500     │ 2500000
+│     │                   6.135 Gitem/s │ 5.736 Gitem/s │ 6.073 Gitem/s │ 6.05 Gitem/s  │         │
+│     ├─ i8               27.59 ns      │ 32.78 ns      │ 28.33 ns      │ 28.43 ns      │ 500     │ 2500000
+│     │                   55.66 Gitem/s │ 46.84 Gitem/s │ 54.2 Gitem/s  │ 54.02 Gitem/s │         │
+│     ├─ u16              52.68 ns      │ 70.92 ns      │ 53.07 ns      │ 53.41 ns      │ 500     │ 2500000
+│     │                   29.15 Gitem/s │ 21.65 Gitem/s │ 28.94 Gitem/s │ 28.75 Gitem/s │         │
+│     ├─ u32              101.8 ns      │ 110.3 ns      │ 103.1 ns      │ 103.4 ns      │ 500     │ 2500000
+│     │                   15.07 Gitem/s │ 13.91 Gitem/s │ 14.89 Gitem/s │ 14.84 Gitem/s │         │
+│     ├─ u64              250.1 ns      │ 278.4 ns      │ 252.1 ns      │ 253.6 ns      │ 500     │ 2500000
+│     │                   6.139 Gitem/s │ 5.517 Gitem/s │ 6.09 Gitem/s  │ 6.054 Gitem/s │         │
+│     ╰─ u8               27.7 ns       │ 33.54 ns      │ 28.24 ns      │ 28.25 ns      │ 500     │ 2500000
+│                         55.43 Gitem/s │ 45.78 Gitem/s │ 54.38 Gitem/s │ 54.36 Gitem/s │         │
+├─ gt                                   │               │               │               │         │
+│  ├─ cfavml_value                      │               │               │               │         │
+│  │  ├─ f32              38.63 ns      │ 44.17 ns      │ 38.63 ns      │ 38.99 ns      │ 500     │ 2500000
+│  │  │                   39.75 Gitem/s │ 34.77 Gitem/s │ 39.75 Gitem/s │ 39.38 Gitem/s │         │
+│  │  ├─ f64              76.1 ns       │ 92.53 ns      │ 76.52 ns      │ 76.79 ns      │ 500     │ 2500000
+│  │  │                   20.18 Gitem/s │ 16.59 Gitem/s │ 20.07 Gitem/s │ 20 Gitem/s    │         │
+│  │  ├─ i16              19.8 ns       │ 21.51 ns      │ 19.9 ns       │ 20.01 ns      │ 500     │ 2500000
+│  │  │                   77.55 Gitem/s │ 71.4 Gitem/s  │ 77.17 Gitem/s │ 76.74 Gitem/s │         │
+│  │  ├─ i32              38.53 ns      │ 43.13 ns      │ 38.93 ns      │ 38.93 ns      │ 500     │ 2500000
+│  │  │                   39.85 Gitem/s │ 35.61 Gitem/s │ 39.45 Gitem/s │ 39.44 Gitem/s │         │
+│  │  ├─ i64              76.1 ns       │ 93.13 ns      │ 76.47 ns      │ 76.59 ns      │ 500     │ 2500000
+│  │  │                   20.18 Gitem/s │ 16.49 Gitem/s │ 20.08 Gitem/s │ 20.05 Gitem/s │         │
+│  │  ├─ i8               10.44 ns      │ 12.03 ns      │ 10.49 ns      │ 10.59 ns      │ 500     │ 2500000
+│  │  │                   147.1 Gitem/s │ 127.6 Gitem/s │ 146.3 Gitem/s │ 144.9 Gitem/s │         │
+│  │  ├─ u16              19.8 ns       │ 22.75 ns      │ 19.9 ns       │ 20.04 ns      │ 500     │ 2500000
+│  │  │                   77.55 Gitem/s │ 67.49 Gitem/s │ 77.16 Gitem/s │ 76.62 Gitem/s │         │
+│  │  ├─ u32              38.53 ns      │ 43.15 ns      │ 38.73 ns      │ 38.98 ns      │ 500     │ 2500000
+│  │  │                   39.85 Gitem/s │ 35.59 Gitem/s │ 39.65 Gitem/s │ 39.39 Gitem/s │         │
+│  │  ├─ u64              76.1 ns       │ 93.9 ns       │ 77.13 ns      │ 77.38 ns      │ 500     │ 2500000
+│  │  │                   20.18 Gitem/s │ 16.35 Gitem/s │ 19.91 Gitem/s │ 19.84 Gitem/s │         │
+│  │  ╰─ u8               10.44 ns      │ 19.95 ns      │ 10.5 ns       │ 10.59 ns      │ 500     │ 2500000
+│  │                      147 Gitem/s   │ 76.97 Gitem/s │ 146.1 Gitem/s │ 145 Gitem/s   │         │
+│  ├─ cfavml_vector                     │               │               │               │         │
+│  │  ├─ f32              51.91 ns      │ 65.23 ns      │ 53.18 ns      │ 53.39 ns      │ 500     │ 2500000
+│  │  │                   29.58 Gitem/s │ 23.54 Gitem/s │ 28.87 Gitem/s │ 28.76 Gitem/s │         │
+│  │  ├─ f64              176.8 ns      │ 183.1 ns      │ 178.1 ns      │ 178.6 ns      │ 500     │ 2500000
+│  │  │                   8.686 Gitem/s │ 8.387 Gitem/s │ 8.623 Gitem/s │ 8.599 Gitem/s │         │
+│  │  ├─ i16              28.83 ns      │ 47.6 ns       │ 29.08 ns      │ 29.3 ns       │ 500     │ 2500000
+│  │  │                   53.27 Gitem/s │ 32.26 Gitem/s │ 52.81 Gitem/s │ 52.41 Gitem/s │         │
+│  │  ├─ i32              51.42 ns      │ 64.63 ns      │ 52.44 ns      │ 52.71 ns      │ 500     │ 2500000
+│  │  │                   29.86 Gitem/s │ 23.76 Gitem/s │ 29.28 Gitem/s │ 29.13 Gitem/s │         │
+│  │  ├─ i64              176.9 ns      │ 195 ns        │ 178.1 ns      │ 179 ns        │ 500     │ 2500000
+│  │  │                   8.68 Gitem/s  │ 7.874 Gitem/s │ 8.62 Gitem/s  │ 8.578 Gitem/s │         │
+│  │  ├─ i8               16.86 ns      │ 29.41 ns      │ 16.97 ns      │ 17.13 ns      │ 500     │ 2500000
+│  │  │                   91.05 Gitem/s │ 52.22 Gitem/s │ 90.48 Gitem/s │ 89.62 Gitem/s │         │
+│  │  ├─ u16              31.13 ns      │ 35.99 ns      │ 31.31 ns      │ 31.51 ns      │ 500     │ 2500000
+│  │  │                   49.32 Gitem/s │ 42.67 Gitem/s │ 49.05 Gitem/s │ 48.73 Gitem/s │         │
+│  │  ├─ u32              53.98 ns      │ 65.84 ns      │ 55.17 ns      │ 55.3 ns       │ 500     │ 2500000
+│  │  │                   28.45 Gitem/s │ 23.32 Gitem/s │ 27.84 Gitem/s │ 27.77 Gitem/s │         │
+│  │  ├─ u64              169.8 ns      │ 187.4 ns      │ 171.7 ns      │ 172.4 ns      │ 500     │ 2500000
+│  │  │                   9.041 Gitem/s │ 8.195 Gitem/s │ 8.942 Gitem/s │ 8.908 Gitem/s │         │
+│  │  ╰─ u8               16.16 ns      │ 27.37 ns      │ 16.34 ns      │ 16.5 ns       │ 500     │ 2500000
+│  │                      95.02 Gitem/s │ 56.11 Gitem/s │ 94 Gitem/s    │ 93.04 Gitem/s │         │
+│  ├─ ndarray_value                     │               │               │               │         │
+│  │  ├─ f32              80.58 ns      │ 97.78 ns      │ 81.02 ns      │ 81.5 ns       │ 500     │ 2500000
+│  │  │                   19.06 Gitem/s │ 15.7 Gitem/s  │ 18.95 Gitem/s │ 18.84 Gitem/s │         │
+│  │  ├─ f64              155.3 ns      │ 170.7 ns      │ 157.3 ns      │ 157 ns        │ 500     │ 2500000
+│  │  │                   9.889 Gitem/s │ 8.998 Gitem/s │ 9.763 Gitem/s │ 9.783 Gitem/s │         │
+│  │  ├─ i16              42.73 ns      │ 47 ns         │ 42.99 ns      │ 43.19 ns      │ 500     │ 2500000
+│  │  │                   35.94 Gitem/s │ 32.67 Gitem/s │ 35.72 Gitem/s │ 35.56 Gitem/s │         │
+│  │  ├─ i32              77.51 ns      │ 95.65 ns      │ 77.98 ns      │ 78.38 ns      │ 500     │ 2500000
+│  │  │                   19.81 Gitem/s │ 16.05 Gitem/s │ 19.69 Gitem/s │ 19.59 Gitem/s │         │
+│  │  ├─ i64              328.5 ns      │ 348.4 ns      │ 330.6 ns      │ 331.3 ns      │ 500     │ 2500000
+│  │  │                   4.675 Gitem/s │ 4.407 Gitem/s │ 4.645 Gitem/s │ 4.636 Gitem/s │         │
+│  │  ├─ i8               21.26 ns      │ 25.55 ns      │ 21.41 ns      │ 21.56 ns      │ 500     │ 2500000
+│  │  │                   72.24 Gitem/s │ 60.11 Gitem/s │ 71.71 Gitem/s │ 71.23 Gitem/s │         │
+│  │  ├─ u16              43.12 ns      │ 61.3 ns       │ 43.49 ns      │ 43.68 ns      │ 500     │ 2500000
+│  │  │                   35.61 Gitem/s │ 25.05 Gitem/s │ 35.31 Gitem/s │ 35.15 Gitem/s │         │
+│  │  ├─ u32              80 ns         │ 86.31 ns      │ 81.19 ns      │ 81.13 ns      │ 500     │ 2500000
+│  │  │                   19.19 Gitem/s │ 17.79 Gitem/s │ 18.91 Gitem/s │ 18.93 Gitem/s │         │
+│  │  ├─ u64              344.5 ns      │ 364.2 ns      │ 347.3 ns      │ 348.6 ns      │ 500     │ 2500000
+│  │  │                   4.457 Gitem/s │ 4.216 Gitem/s │ 4.422 Gitem/s │ 4.405 Gitem/s │         │
+│  │  ╰─ u8               21.61 ns      │ 40.2 ns       │ 21.83 ns      │ 22.02 ns      │ 500     │ 2500000
+│  │                      71.05 Gitem/s │ 38.2 Gitem/s  │ 70.34 Gitem/s │ 69.74 Gitem/s │         │
+│  ╰─ ndarray_vector                    │               │               │               │         │
+│     ├─ f32              101.5 ns      │ 110.6 ns      │ 102.5 ns      │ 103 ns        │ 500     │ 2500000
+│     │                   15.11 Gitem/s │ 13.88 Gitem/s │ 14.97 Gitem/s │ 14.9 Gitem/s  │         │
+│     ├─ f64              223.2 ns      │ 242.3 ns      │ 224.8 ns      │ 225.5 ns      │ 500     │ 2500000
+│     │                   6.88 Gitem/s  │ 6.338 Gitem/s │ 6.832 Gitem/s │ 6.81 Gitem/s  │         │
+│     ├─ i16              53.27 ns      │ 64.17 ns      │ 54.25 ns      │ 54.42 ns      │ 500     │ 2500000
+│     │                   28.83 Gitem/s │ 23.93 Gitem/s │ 28.31 Gitem/s │ 28.22 Gitem/s │         │
+│     ├─ i32              102.2 ns      │ 122.7 ns      │ 103.3 ns      │ 103.8 ns      │ 500     │ 2500000
+│     │                   15.02 Gitem/s │ 12.51 Gitem/s │ 14.86 Gitem/s │ 14.78 Gitem/s │         │
+│     ├─ i64              413.5 ns      │ 432.6 ns      │ 415.2 ns      │ 416.3 ns      │ 500     │ 2500000
+│     │                   3.713 Gitem/s │ 3.55 Gitem/s  │ 3.699 Gitem/s │ 3.689 Gitem/s │         │
+│     ├─ i8               27.61 ns      │ 33.01 ns      │ 27.79 ns      │ 28 ns         │ 500     │ 2500000
+│     │                   55.62 Gitem/s │ 46.52 Gitem/s │ 55.26 Gitem/s │ 54.83 Gitem/s │         │
+│     ├─ u16              65.36 ns      │ 70.72 ns      │ 65.73 ns      │ 65.81 ns      │ 500     │ 2500000
+│     │                   23.49 Gitem/s │ 21.71 Gitem/s │ 23.36 Gitem/s │ 23.33 Gitem/s │         │
+│     ├─ u32              126 ns        │ 133.3 ns      │ 127.9 ns      │ 128.3 ns      │ 500     │ 2500000
+│     │                   12.18 Gitem/s │ 11.51 Gitem/s │ 12 Gitem/s    │ 11.96 Gitem/s │         │
+│     ├─ u64              412.3 ns      │ 431.3 ns      │ 414.1 ns      │ 415.1 ns      │ 500     │ 2500000
+│     │                   3.724 Gitem/s │ 3.561 Gitem/s │ 3.708 Gitem/s │ 3.7 Gitem/s   │         │
+│     ╰─ u8               28.25 ns      │ 35.66 ns      │ 28.46 ns      │ 28.69 ns      │ 500     │ 2500000
+│                         54.36 Gitem/s │ 43.07 Gitem/s │ 53.95 Gitem/s │ 53.52 Gitem/s │         │
+├─ gte                                  │               │               │               │         │
+│  ├─ cfavml_value                      │               │               │               │         │
+│  │  ├─ f32              38.44 ns      │ 56.81 ns      │ 39.07 ns      │ 39.31 ns      │ 500     │ 2500000
+│  │  │                   39.95 Gitem/s │ 27.03 Gitem/s │ 39.3 Gitem/s  │ 39.06 Gitem/s │         │
+│  │  ├─ f64              76.1 ns       │ 94.26 ns      │ 76.54 ns      │ 76.82 ns      │ 500     │ 2500000
+│  │  │                   20.18 Gitem/s │ 16.29 Gitem/s │ 20.06 Gitem/s │ 19.99 Gitem/s │         │
+│  │  ├─ i16              19.8 ns       │ 26.91 ns      │ 20.1 ns       │ 20.1 ns       │ 500     │ 2500000
+│  │  │                   77.55 Gitem/s │ 57.07 Gitem/s │ 76.4 Gitem/s  │ 76.4 Gitem/s  │         │
+│  │  ├─ i32              38.53 ns      │ 47.21 ns      │ 38.54 ns      │ 38.87 ns      │ 500     │ 2500000
+│  │  │                   39.85 Gitem/s │ 32.53 Gitem/s │ 39.85 Gitem/s │ 39.5 Gitem/s  │         │
+│  │  ├─ i64              76.1 ns       │ 80.41 ns      │ 76.54 ns      │ 76.71 ns      │ 500     │ 2500000
+│  │  │                   20.18 Gitem/s │ 19.1 Gitem/s  │ 20.06 Gitem/s │ 20.02 Gitem/s │         │
+│  │  ├─ i8               10.44 ns      │ 14.72 ns      │ 10.45 ns      │ 10.56 ns      │ 500     │ 2500000
+│  │  │                   147.1 Gitem/s │ 104.3 Gitem/s │ 146.9 Gitem/s │ 145.4 Gitem/s │         │
+│  │  ├─ u16              19.8 ns       │ 34.16 ns      │ 19.84 ns      │ 20.04 ns      │ 500     │ 2500000
+│  │  │                   77.55 Gitem/s │ 44.96 Gitem/s │ 77.41 Gitem/s │ 76.61 Gitem/s │         │
+│  │  ├─ u32              38.53 ns      │ 56.52 ns      │ 38.54 ns      │ 38.93 ns      │ 500     │ 2500000
+│  │  │                   39.85 Gitem/s │ 27.17 Gitem/s │ 39.85 Gitem/s │ 39.45 Gitem/s │         │
+│  │  ├─ u64              76.1 ns       │ 81.57 ns      │ 76.6 ns       │ 77.01 ns      │ 500     │ 2500000
+│  │  │                   20.18 Gitem/s │ 18.82 Gitem/s │ 20.04 Gitem/s │ 19.94 Gitem/s │         │
+│  │  ╰─ u8               10.45 ns      │ 28.48 ns      │ 10.65 ns      │ 10.68 ns      │ 500     │ 2500000
+│  │                      146.9 Gitem/s │ 53.91 Gitem/s │ 144.1 Gitem/s │ 143.7 Gitem/s │         │
+│  ├─ cfavml_vector                     │               │               │               │         │
+│  │  ├─ f32              51.5 ns       │ 66.64 ns      │ 53.72 ns      │ 55.07 ns      │ 500     │ 2500000
+│  │  │                   29.82 Gitem/s │ 23.04 Gitem/s │ 28.59 Gitem/s │ 27.89 Gitem/s │         │
+│  │  ├─ f64              177.1 ns      │ 196.6 ns      │ 178.1 ns      │ 178.8 ns      │ 500     │ 2500000
+│  │  │                   8.67 Gitem/s  │ 7.809 Gitem/s │ 8.621 Gitem/s │ 8.59 Gitem/s  │         │
+│  │  ├─ i16              29.36 ns      │ 34.53 ns      │ 29.6 ns       │ 29.83 ns      │ 500     │ 2500000
+│  │  │                   52.3 Gitem/s  │ 44.48 Gitem/s │ 51.89 Gitem/s │ 51.48 Gitem/s │         │
+│  │  ├─ i32              52.31 ns      │ 57.54 ns      │ 52.83 ns      │ 52.91 ns      │ 500     │ 2500000
+│  │  │                   29.36 Gitem/s │ 26.69 Gitem/s │ 29.07 Gitem/s │ 29.02 Gitem/s │         │
+│  │  ├─ i64              161.9 ns      │ 180 ns        │ 162.9 ns      │ 163.8 ns      │ 500     │ 2500000
+│  │  │                   9.484 Gitem/s │ 8.533 Gitem/s │ 9.428 Gitem/s │ 9.372 Gitem/s │         │
+│  │  ├─ i8               16.56 ns      │ 18.2 ns       │ 16.8 ns       │ 16.9 ns       │ 500     │ 2500000
+│  │  │                   92.72 Gitem/s │ 84.36 Gitem/s │ 91.38 Gitem/s │ 90.83 Gitem/s │         │
+│  │  ├─ u16              29.33 ns      │ 36.32 ns      │ 29.57 ns      │ 29.75 ns      │ 500     │ 2500000
+│  │  │                   52.35 Gitem/s │ 42.28 Gitem/s │ 51.93 Gitem/s │ 51.61 Gitem/s │         │
+│  │  ├─ u32              54.05 ns      │ 72.43 ns      │ 54.97 ns      │ 55.17 ns      │ 500     │ 2500000
+│  │  │                   28.41 Gitem/s │ 21.2 Gitem/s  │ 27.94 Gitem/s │ 27.83 Gitem/s │         │
+│  │  ├─ u64              172.5 ns      │ 187.4 ns      │ 174.3 ns      │ 174.4 ns      │ 500     │ 2500000
+│  │  │                   8.899 Gitem/s │ 8.193 Gitem/s │ 8.811 Gitem/s │ 8.806 Gitem/s │         │
+│  │  ╰─ u8               16.82 ns      │ 34.92 ns      │ 17.13 ns      │ 17.13 ns      │ 500     │ 2500000
+│  │                      91.3 Gitem/s  │ 43.98 Gitem/s │ 89.64 Gitem/s │ 89.66 Gitem/s │         │
+│  ├─ ndarray_value                     │               │               │               │         │
+│  │  ├─ f32              79.61 ns      │ 97.83 ns      │ 81.19 ns      │ 81.2 ns       │ 500     │ 2500000
+│  │  │                   19.29 Gitem/s │ 15.7 Gitem/s  │ 18.91 Gitem/s │ 18.91 Gitem/s │         │
+│  │  ├─ f64              155.5 ns      │ 173.4 ns      │ 156 ns        │ 156.9 ns      │ 500     │ 2500000
+│  │  │                   9.876 Gitem/s │ 8.854 Gitem/s │ 9.845 Gitem/s │ 9.786 Gitem/s │         │
+│  │  ├─ i16              42.92 ns      │ 47.21 ns      │ 43.28 ns      │ 43.31 ns      │ 500     │ 2500000
+│  │  │                   35.78 Gitem/s │ 32.52 Gitem/s │ 35.48 Gitem/s │ 35.46 Gitem/s │         │
+│  │  ├─ i32              80.39 ns      │ 98.04 ns      │ 81.59 ns      │ 81.36 ns      │ 500     │ 2500000
+│  │  │                   19.1 Gitem/s  │ 15.66 Gitem/s │ 18.82 Gitem/s │ 18.87 Gitem/s │         │
+│  │  ├─ i64              327.7 ns      │ 350.1 ns      │ 330.7 ns      │ 331.4 ns      │ 500     │ 2500000
+│  │  │                   4.686 Gitem/s │ 4.386 Gitem/s │ 4.644 Gitem/s │ 4.633 Gitem/s │         │
+│  │  ├─ i8               21.19 ns      │ 28.24 ns      │ 21.58 ns      │ 21.72 ns      │ 500     │ 2500000
+│  │  │                   72.48 Gitem/s │ 54.38 Gitem/s │ 71.17 Gitem/s │ 70.71 Gitem/s │         │
+│  │  ├─ u16              49.36 ns      │ 60.13 ns      │ 49.73 ns      │ 49.85 ns      │ 500     │ 2500000
+│  │  │                   31.11 Gitem/s │ 25.54 Gitem/s │ 30.88 Gitem/s │ 30.81 Gitem/s │         │
+│  │  ├─ u32              93.2 ns       │ 101.3 ns      │ 94.12 ns      │ 94.61 ns      │ 500     │ 2500000
+│  │  │                   16.47 Gitem/s │ 15.14 Gitem/s │ 16.31 Gitem/s │ 16.23 Gitem/s │         │
+│  │  ├─ u64              344.2 ns      │ 365.7 ns      │ 348.3 ns      │ 348.6 ns      │ 500     │ 2500000
+│  │  │                   4.462 Gitem/s │ 4.199 Gitem/s │ 4.409 Gitem/s │ 4.405 Gitem/s │         │
+│  │  ╰─ u8               21.28 ns      │ 33.85 ns      │ 21.79 ns      │ 21.93 ns      │ 500     │ 2500000
+│  │                      72.17 Gitem/s │ 45.36 Gitem/s │ 70.46 Gitem/s │ 70.01 Gitem/s │         │
+│  ╰─ ndarray_vector                    │               │               │               │         │
+│     ├─ f32              101.6 ns      │ 111.7 ns      │ 103.4 ns      │ 103.7 ns      │ 500     │ 2500000
+│     │                   15.1 Gitem/s  │ 13.74 Gitem/s │ 14.85 Gitem/s │ 14.8 Gitem/s  │         │
+│     ├─ f64              224.3 ns      │ 240.9 ns      │ 225.9 ns      │ 226.6 ns      │ 500     │ 2500000
+│     │                   6.846 Gitem/s │ 6.375 Gitem/s │ 6.796 Gitem/s │ 6.775 Gitem/s │         │
+│     ├─ i16              53.27 ns      │ 62.51 ns      │ 53.72 ns      │ 53.97 ns      │ 500     │ 2500000
+│     │                   28.83 Gitem/s │ 24.57 Gitem/s │ 28.58 Gitem/s │ 28.45 Gitem/s │         │
+│     ├─ i32              101.3 ns      │ 114 ns        │ 103.3 ns      │ 103.3 ns      │ 500     │ 2500000
+│     │                   15.15 Gitem/s │ 13.46 Gitem/s │ 14.86 Gitem/s │ 14.86 Gitem/s │         │
+│     ├─ i64              412.5 ns      │ 442.3 ns      │ 415.2 ns      │ 415.8 ns      │ 500     │ 2500000
+│     │                   3.723 Gitem/s │ 3.472 Gitem/s │ 3.698 Gitem/s │ 3.694 Gitem/s │         │
+│     ├─ i8               27.54 ns      │ 32.99 ns      │ 27.81 ns      │ 28.02 ns      │ 500     │ 2500000
+│     │                   55.76 Gitem/s │ 46.55 Gitem/s │ 55.21 Gitem/s │ 54.8 Gitem/s  │         │
+│     ├─ u16              55.61 ns      │ 61.67 ns      │ 56.28 ns      │ 56.33 ns      │ 500     │ 2500000
+│     │                   27.61 Gitem/s │ 24.9 Gitem/s  │ 27.28 Gitem/s │ 27.26 Gitem/s │         │
+│     ├─ u32              125.1 ns      │ 144.1 ns      │ 127.2 ns      │ 127.4 ns      │ 500     │ 2500000
+│     │                   12.27 Gitem/s │ 10.65 Gitem/s │ 12.07 Gitem/s │ 12.05 Gitem/s │         │
+│     ├─ u64              456 ns        │ 478.6 ns      │ 459.5 ns      │ 460 ns        │ 500     │ 2500000
+│     │                   3.368 Gitem/s │ 3.209 Gitem/s │ 3.342 Gitem/s │ 3.338 Gitem/s │         │
+│     ╰─ u8               28.29 ns      │ 30.29 ns      │ 28.44 ns      │ 28.62 ns      │ 500     │ 2500000
+│                         54.28 Gitem/s │ 50.7 Gitem/s  │ 54 Gitem/s    │ 53.65 Gitem/s │         │
+├─ lt                                   │               │               │               │         │
+│  ├─ cfavml_value                      │               │               │               │         │
+│  │  ├─ f32              38.44 ns      │ 43.12 ns      │ 38.82 ns      │ 38.81 ns      │ 500     │ 2500000
+│  │  │                   39.95 Gitem/s │ 35.62 Gitem/s │ 39.56 Gitem/s │ 39.57 Gitem/s │         │
+│  │  ├─ f64              75.72 ns      │ 93.94 ns      │ 76.47 ns      │ 76.8 ns       │ 500     │ 2500000
+│  │  │                   20.28 Gitem/s │ 16.35 Gitem/s │ 20.08 Gitem/s │ 19.99 Gitem/s │         │
+│  │  ├─ i16              19.71 ns      │ 26.8 ns       │ 20.1 ns       │ 20.05 ns      │ 500     │ 2500000
+│  │  │                   77.92 Gitem/s │ 57.3 Gitem/s  │ 76.4 Gitem/s  │ 76.58 Gitem/s │         │
+│  │  ├─ i32              38.53 ns      │ 43.37 ns      │ 38.89 ns      │ 38.88 ns      │ 500     │ 2500000
+│  │  │                   39.85 Gitem/s │ 35.41 Gitem/s │ 39.49 Gitem/s │ 39.5 Gitem/s  │         │
+│  │  ├─ i64              75.73 ns      │ 95.3 ns       │ 76.55 ns      │ 76.85 ns      │ 500     │ 2500000
+│  │  │                   20.28 Gitem/s │ 16.11 Gitem/s │ 20.06 Gitem/s │ 19.98 Gitem/s │         │
+│  │  ├─ i8               10.44 ns      │ 12.97 ns      │ 10.65 ns      │ 10.63 ns      │ 500     │ 2500000
+│  │  │                   147.1 Gitem/s │ 118.3 Gitem/s │ 144.1 Gitem/s │ 144.4 Gitem/s │         │
+│  │  ├─ u16              19.8 ns       │ 23.96 ns      │ 19.9 ns       │ 20.05 ns      │ 500     │ 2500000
+│  │  │                   77.55 Gitem/s │ 64.09 Gitem/s │ 77.16 Gitem/s │ 76.57 Gitem/s │         │
+│  │  ├─ u32              38.53 ns      │ 43.3 ns       │ 38.9 ns       │ 38.94 ns      │ 500     │ 2500000
+│  │  │                   39.85 Gitem/s │ 35.47 Gitem/s │ 39.47 Gitem/s │ 39.43 Gitem/s │         │
+│  │  ├─ u64              76.1 ns       │ 94.39 ns      │ 76.54 ns      │ 76.85 ns      │ 500     │ 2500000
+│  │  │                   20.18 Gitem/s │ 16.27 Gitem/s │ 20.06 Gitem/s │ 19.98 Gitem/s │         │
+│  │  ╰─ u8               10.44 ns      │ 11.48 ns      │ 10.5 ns       │ 10.58 ns      │ 500     │ 2500000
+│  │                      147.1 Gitem/s │ 133.7 Gitem/s │ 146.2 Gitem/s │ 145 Gitem/s   │         │
+│  ├─ cfavml_vector                     │               │               │               │         │
+│  │  ├─ f32              51.56 ns      │ 67.41 ns      │ 53.81 ns      │ 54.85 ns      │ 500     │ 2500000
+│  │  │                   29.78 Gitem/s │ 22.78 Gitem/s │ 28.54 Gitem/s │ 28 Gitem/s    │         │
+│  │  ├─ f64              176.8 ns      │ 194.5 ns      │ 178 ns        │ 178.6 ns      │ 500     │ 2500000
+│  │  │                   8.684 Gitem/s │ 7.894 Gitem/s │ 8.627 Gitem/s │ 8.598 Gitem/s │         │
+│  │  ├─ i16              30.19 ns      │ 34.85 ns      │ 30.42 ns      │ 30.61 ns      │ 500     │ 2500000
+│  │  │                   50.86 Gitem/s │ 44.06 Gitem/s │ 50.48 Gitem/s │ 50.17 Gitem/s │         │
+│  │  ├─ i32              52.28 ns      │ 70.66 ns      │ 52.76 ns      │ 52.92 ns      │ 500     │ 2500000
+│  │  │                   29.38 Gitem/s │ 21.73 Gitem/s │ 29.11 Gitem/s │ 29.02 Gitem/s │         │
+│  │  ├─ i64              161.5 ns      │ 178.5 ns      │ 162.5 ns      │ 163.4 ns      │ 500     │ 2500000
+│  │  │                   9.509 Gitem/s │ 8.602 Gitem/s │ 9.447 Gitem/s │ 9.397 Gitem/s │         │
+│  │  ├─ i8               16.35 ns      │ 20.6 ns       │ 16.5 ns       │ 16.61 ns      │ 500     │ 2500000
+│  │  │                   93.93 Gitem/s │ 74.55 Gitem/s │ 93.06 Gitem/s │ 92.45 Gitem/s │         │
+│  │  ├─ u16              29.53 ns      │ 39.1 ns       │ 29.75 ns      │ 29.95 ns      │ 500     │ 2500000
+│  │  │                   52.01 Gitem/s │ 39.27 Gitem/s │ 51.62 Gitem/s │ 51.28 Gitem/s │         │
+│  │  ├─ u32              54.54 ns      │ 58.25 ns      │ 55.44 ns      │ 55.56 ns      │ 500     │ 2500000
+│  │  │                   28.16 Gitem/s │ 26.36 Gitem/s │ 27.7 Gitem/s  │ 27.64 Gitem/s │         │
+│  │  ├─ u64              171.9 ns      │ 179 ns        │ 173 ns        │ 173.5 ns      │ 500     │ 2500000
+│  │  │                   8.932 Gitem/s │ 8.579 Gitem/s │ 8.877 Gitem/s │ 8.851 Gitem/s │         │
+│  │  ╰─ u8               16.08 ns      │ 20.71 ns      │ 16.33 ns      │ 16.45 ns      │ 500     │ 2500000
+│  │                      95.52 Gitem/s │ 74.15 Gitem/s │ 94.02 Gitem/s │ 93.37 Gitem/s │         │
+│  ├─ ndarray_value                     │               │               │               │         │
+│  │  ├─ f32              77.86 ns      │ 84.46 ns      │ 78.68 ns      │ 79.07 ns      │ 500     │ 2500000
+│  │  │                   19.72 Gitem/s │ 18.18 Gitem/s │ 19.52 Gitem/s │ 19.42 Gitem/s │         │
+│  │  ├─ f64              152.2 ns      │ 172.6 ns      │ 154.3 ns      │ 154.5 ns      │ 500     │ 2500000
+│  │  │                   10.08 Gitem/s │ 8.898 Gitem/s │ 9.953 Gitem/s │ 9.939 Gitem/s │         │
+│  │  ├─ i16              43.12 ns      │ 60.94 ns      │ 43.48 ns      │ 43.57 ns      │ 500     │ 2500000
+│  │  │                   35.61 Gitem/s │ 25.2 Gitem/s  │ 35.32 Gitem/s │ 35.24 Gitem/s │         │
+│  │  ├─ i32              80.58 ns      │ 97.86 ns      │ 81.02 ns      │ 81.31 ns      │ 500     │ 2500000
+│  │  │                   19.06 Gitem/s │ 15.69 Gitem/s │ 18.95 Gitem/s │ 18.88 Gitem/s │         │
+│  │  ├─ i64              327.8 ns      │ 348.5 ns      │ 331.4 ns      │ 331.6 ns      │ 500     │ 2500000
+│  │  │                   4.685 Gitem/s │ 4.406 Gitem/s │ 4.634 Gitem/s │ 4.631 Gitem/s │         │
+│  │  ├─ i8               21.35 ns      │ 27.57 ns      │ 21.46 ns      │ 21.63 ns      │ 500     │ 2500000
+│  │  │                   71.91 Gitem/s │ 55.71 Gitem/s │ 71.55 Gitem/s │ 71 Gitem/s    │         │
+│  │  ├─ u16              48.97 ns      │ 54.42 ns      │ 49.7 ns       │ 49.67 ns      │ 500     │ 2500000
+│  │  │                   31.36 Gitem/s │ 28.22 Gitem/s │ 30.9 Gitem/s  │ 30.92 Gitem/s │         │
+│  │  ├─ u32              93.85 ns      │ 105.8 ns      │ 94.28 ns      │ 94.59 ns      │ 500     │ 2500000
+│  │  │                   16.36 Gitem/s │ 14.51 Gitem/s │ 16.29 Gitem/s │ 16.23 Gitem/s │         │
+│  │  ├─ u64              346.5 ns      │ 366.6 ns      │ 348.1 ns      │ 348.7 ns      │ 500     │ 2500000
+│  │  │                   4.432 Gitem/s │ 4.189 Gitem/s │ 4.411 Gitem/s │ 4.403 Gitem/s │         │
+│  │  ╰─ u8               21.11 ns      │ 33.07 ns      │ 21.32 ns      │ 21.47 ns      │ 500     │ 2500000
+│  │                      72.74 Gitem/s │ 46.44 Gitem/s │ 72.01 Gitem/s │ 71.51 Gitem/s │         │
+│  ╰─ ndarray_vector                    │               │               │               │         │
+│     ├─ f32              101.9 ns      │ 120.1 ns      │ 103.1 ns      │ 103.6 ns      │ 500     │ 2500000
+│     │                   15.07 Gitem/s │ 12.78 Gitem/s │ 14.89 Gitem/s │ 14.82 Gitem/s │         │
+│     ├─ f64              223.6 ns      │ 231.8 ns      │ 225.1 ns      │ 225.8 ns      │ 500     │ 2500000
+│     │                   6.869 Gitem/s │ 6.624 Gitem/s │ 6.823 Gitem/s │ 6.8 Gitem/s   │         │
+│     ├─ i16              52.77 ns      │ 58.21 ns      │ 53.85 ns      │ 53.66 ns      │ 500     │ 2500000
+│     │                   29.1 Gitem/s  │ 26.38 Gitem/s │ 28.52 Gitem/s │ 28.62 Gitem/s │         │
+│     ├─ i32              102 ns        │ 121.1 ns      │ 103.7 ns      │ 103.8 ns      │ 500     │ 2500000
+│     │                   15.05 Gitem/s │ 12.67 Gitem/s │ 14.8 Gitem/s  │ 14.79 Gitem/s │         │
+│     ├─ i64              411.5 ns      │ 439 ns        │ 414.3 ns      │ 414.9 ns      │ 500     │ 2500000
+│     │                   3.732 Gitem/s │ 3.498 Gitem/s │ 3.706 Gitem/s │ 3.701 Gitem/s │         │
+│     ├─ i8               27.61 ns      │ 44.75 ns      │ 27.77 ns      │ 28.02 ns      │ 500     │ 2500000
+│     │                   55.61 Gitem/s │ 34.32 Gitem/s │ 55.29 Gitem/s │ 54.81 Gitem/s │         │
+│     ├─ u16              65.75 ns      │ 79.17 ns      │ 66.13 ns      │ 66.31 ns      │ 500     │ 2500000
+│     │                   23.35 Gitem/s │ 19.39 Gitem/s │ 23.22 Gitem/s │ 23.16 Gitem/s │         │
+│     ├─ u32              125 ns        │ 145.8 ns      │ 126.9 ns      │ 127.1 ns      │ 500     │ 2500000
+│     │                   12.28 Gitem/s │ 10.53 Gitem/s │ 12.1 Gitem/s  │ 12.08 Gitem/s │         │
+│     ├─ u64              413.3 ns      │ 443.2 ns      │ 416.2 ns      │ 416.7 ns      │ 500     │ 2500000
+│     │                   3.715 Gitem/s │ 3.465 Gitem/s │ 3.689 Gitem/s │ 3.686 Gitem/s │         │
+│     ╰─ u8               28.26 ns      │ 39.16 ns      │ 28.67 ns      │ 28.71 ns      │ 500     │ 2500000
+│                         54.34 Gitem/s │ 39.21 Gitem/s │ 53.55 Gitem/s │ 53.48 Gitem/s │         │
+├─ lte                                  │               │               │               │         │
+│  ├─ cfavml_value                      │               │               │               │         │
+│  │  ├─ f32              38.44 ns      │ 42.83 ns      │ 38.81 ns      │ 38.78 ns      │ 500     │ 2500000
+│  │  │                   39.95 Gitem/s │ 35.86 Gitem/s │ 39.57 Gitem/s │ 39.6 Gitem/s  │         │
+│  │  ├─ f64              75.72 ns      │ 88.25 ns      │ 76.18 ns      │ 76.53 ns      │ 500     │ 2500000
+│  │  │                   20.28 Gitem/s │ 17.4 Gitem/s  │ 20.16 Gitem/s │ 20.07 Gitem/s │         │
+│  │  ├─ i16              19.8 ns       │ 22.09 ns      │ 20.1 ns       │ 20.19 ns      │ 500     │ 2500000
+│  │  │                   77.55 Gitem/s │ 69.52 Gitem/s │ 76.4 Gitem/s  │ 76.04 Gitem/s │         │
+│  │  ├─ i32              38.53 ns      │ 50.46 ns      │ 38.92 ns      │ 38.92 ns      │ 500     │ 2500000
+│  │  │                   39.85 Gitem/s │ 30.43 Gitem/s │ 39.46 Gitem/s │ 39.45 Gitem/s │         │
+│  │  ├─ i64              76.09 ns      │ 81.03 ns      │ 76.54 ns      │ 76.62 ns      │ 500     │ 2500000
+│  │  │                   20.18 Gitem/s │ 18.95 Gitem/s │ 20.06 Gitem/s │ 20.04 Gitem/s │         │
+│  │  ├─ i8               10.44 ns      │ 14.51 ns      │ 10.44 ns      │ 10.56 ns      │ 500     │ 2500000
+│  │  │                   147.1 Gitem/s │ 105.8 Gitem/s │ 147 Gitem/s   │ 145.3 Gitem/s │         │
+│  │  ├─ u16              20.68 ns      │ 33.97 ns      │ 20.75 ns      │ 20.97 ns      │ 500     │ 2500000
+│  │  │                   74.26 Gitem/s │ 45.21 Gitem/s │ 74 Gitem/s    │ 73.24 Gitem/s │         │
+│  │  ├─ u32              39.41 ns      │ 44.42 ns      │ 39.45 ns      │ 39.78 ns      │ 500     │ 2500000
+│  │  │                   38.96 Gitem/s │ 34.57 Gitem/s │ 38.93 Gitem/s │ 38.6 Gitem/s  │         │
+│  │  ├─ u64              76.1 ns       │ 92.99 ns      │ 76.97 ns      │ 76.98 ns      │ 500     │ 2500000
+│  │  │                   20.18 Gitem/s │ 16.51 Gitem/s │ 19.95 Gitem/s │ 19.95 Gitem/s │         │
+│  │  ╰─ u8               11.71 ns      │ 12.77 ns      │ 11.77 ns      │ 11.84 ns      │ 500     │ 2500000
+│  │                      131.1 Gitem/s │ 120.2 Gitem/s │ 130.5 Gitem/s │ 129.6 Gitem/s │         │
+│  ├─ cfavml_vector                     │               │               │               │         │
+│  │  ├─ f32              51.86 ns      │ 62.43 ns      │ 53.15 ns      │ 53.33 ns      │ 500     │ 2500000
+│  │  │                   29.61 Gitem/s │ 24.6 Gitem/s  │ 28.89 Gitem/s │ 28.8 Gitem/s  │         │
+│  │  ├─ f64              177.1 ns      │ 190 ns        │ 178.3 ns      │ 179 ns        │ 500     │ 2500000
+│  │  │                   8.668 Gitem/s │ 8.084 Gitem/s │ 8.614 Gitem/s │ 8.577 Gitem/s │         │
+│  │  ├─ i16              30.4 ns       │ 34.88 ns      │ 30.56 ns      │ 30.75 ns      │ 500     │ 2500000
+│  │  │                   50.51 Gitem/s │ 44.03 Gitem/s │ 50.24 Gitem/s │ 49.94 Gitem/s │         │
+│  │  ├─ i32              51.44 ns      │ 72.63 ns      │ 52.29 ns      │ 53.16 ns      │ 500     │ 2500000
+│  │  │                   29.85 Gitem/s │ 21.14 Gitem/s │ 29.37 Gitem/s │ 28.89 Gitem/s │         │
+│  │  ├─ i64              177.5 ns      │ 183.9 ns      │ 178.6 ns      │ 179.1 ns      │ 500     │ 2500000
+│  │  │                   8.652 Gitem/s │ 8.349 Gitem/s │ 8.6 Gitem/s   │ 8.575 Gitem/s │         │
+│  │  ├─ i8               15.6 ns       │ 17.6 ns       │ 15.91 ns      │ 16.06 ns      │ 500     │ 2500000
+│  │  │                   98.43 Gitem/s │ 87.27 Gitem/s │ 96.5 Gitem/s  │ 95.63 Gitem/s │         │
+│  │  ├─ u16              30.22 ns      │ 34.61 ns      │ 30.28 ns      │ 30.54 ns      │ 500     │ 2500000
+│  │  │                   50.81 Gitem/s │ 44.37 Gitem/s │ 50.71 Gitem/s │ 50.29 Gitem/s │         │
+│  │  ├─ u32              54.15 ns      │ 72.47 ns      │ 55.12 ns      │ 55.28 ns      │ 500     │ 2500000
+│  │  │                   28.36 Gitem/s │ 21.19 Gitem/s │ 27.86 Gitem/s │ 27.78 Gitem/s │         │
+│  │  ├─ u64              168.9 ns      │ 187.9 ns      │ 170.9 ns      │ 170.9 ns      │ 500     │ 2500000
+│  │  │                   9.089 Gitem/s │ 8.171 Gitem/s │ 8.984 Gitem/s │ 8.982 Gitem/s │         │
+│  │  ╰─ u8               16.42 ns      │ 34.93 ns      │ 16.6 ns       │ 16.72 ns      │ 500     │ 2500000
+│  │                      93.53 Gitem/s │ 43.96 Gitem/s │ 92.51 Gitem/s │ 91.85 Gitem/s │         │
+│  ├─ ndarray_value                     │               │               │               │         │
+│  │  ├─ f32              77.86 ns      │ 80.93 ns      │ 78.67 ns      │ 78.77 ns      │ 500     │ 2500000
+│  │  │                   19.72 Gitem/s │ 18.97 Gitem/s │ 19.52 Gitem/s │ 19.49 Gitem/s │         │
+│  │  ├─ f64              152.2 ns      │ 171.7 ns      │ 153.7 ns      │ 153.9 ns      │ 500     │ 2500000
+│  │  │                   10.08 Gitem/s │ 8.942 Gitem/s │ 9.991 Gitem/s │ 9.974 Gitem/s │         │
+│  │  ├─ i16              42.53 ns      │ 48.72 ns      │ 43.16 ns      │ 43.18 ns      │ 500     │ 2500000
+│  │  │                   36.11 Gitem/s │ 31.52 Gitem/s │ 35.58 Gitem/s │ 35.56 Gitem/s │         │
+│  │  ├─ i32              77.37 ns      │ 92.95 ns      │ 78.18 ns      │ 78.33 ns      │ 500     │ 2500000
+│  │  │                   19.85 Gitem/s │ 16.52 Gitem/s │ 19.64 Gitem/s │ 19.6 Gitem/s  │         │
+│  │  ├─ i64              328 ns        │ 350.3 ns      │ 330.6 ns      │ 331 ns        │ 500     │ 2500000
+│  │  │                   4.682 Gitem/s │ 4.383 Gitem/s │ 4.645 Gitem/s │ 4.64 Gitem/s  │         │
+│  │  ├─ i8               21.35 ns      │ 25.79 ns      │ 21.51 ns      │ 21.66 ns      │ 500     │ 2500000
+│  │  │                   71.91 Gitem/s │ 59.55 Gitem/s │ 71.39 Gitem/s │ 70.89 Gitem/s │         │
+│  │  ├─ u16              43.12 ns      │ 48.29 ns      │ 43.46 ns      │ 43.6 ns       │ 500     │ 2500000
+│  │  │                   35.61 Gitem/s │ 31.8 Gitem/s  │ 35.34 Gitem/s │ 35.22 Gitem/s │         │
+│  │  ├─ u32              80.58 ns      │ 97.02 ns      │ 81.01 ns      │ 81.32 ns      │ 500     │ 2500000
+│  │  │                   19.06 Gitem/s │ 15.83 Gitem/s │ 18.95 Gitem/s │ 18.88 Gitem/s │         │
+│  │  ├─ u64              340.7 ns      │ 361.5 ns      │ 348 ns        │ 348.3 ns      │ 500     │ 2500000
+│  │  │                   4.507 Gitem/s │ 4.248 Gitem/s │ 4.412 Gitem/s │ 4.408 Gitem/s │         │
+│  │  ╰─ u8               21.28 ns      │ 25.68 ns      │ 21.42 ns      │ 21.59 ns      │ 500     │ 2500000
+│  │                      72.17 Gitem/s │ 59.8 Gitem/s  │ 71.69 Gitem/s │ 71.12 Gitem/s │         │
+│  ╰─ ndarray_vector                    │               │               │               │         │
+│     ├─ f32              101.9 ns      │ 118.6 ns      │ 103.7 ns      │ 103.6 ns      │ 500     │ 2500000
+│     │                   15.06 Gitem/s │ 12.94 Gitem/s │ 14.8 Gitem/s  │ 14.82 Gitem/s │         │
+│     ├─ f64              224 ns        │ 238.4 ns      │ 225.9 ns      │ 226.7 ns      │ 500     │ 2500000
+│     │                   6.854 Gitem/s │ 6.44 Gitem/s  │ 6.798 Gitem/s │ 6.773 Gitem/s │         │
+│     ├─ i16              53.17 ns      │ 58.51 ns      │ 53.71 ns      │ 53.88 ns      │ 500     │ 2500000
+│     │                   28.88 Gitem/s │ 26.25 Gitem/s │ 28.59 Gitem/s │ 28.5 Gitem/s  │         │
+│     ├─ i32              101.6 ns      │ 119.5 ns      │ 102.8 ns      │ 103.2 ns      │ 500     │ 2500000
+│     │                   15.1 Gitem/s  │ 12.85 Gitem/s │ 14.94 Gitem/s │ 14.88 Gitem/s │         │
+│     ├─ i64              413.6 ns      │ 431.9 ns      │ 415.4 ns      │ 416.4 ns      │ 500     │ 2500000
+│     │                   3.713 Gitem/s │ 3.556 Gitem/s │ 3.697 Gitem/s │ 3.688 Gitem/s │         │
+│     ├─ i8               27.62 ns      │ 32.83 ns      │ 27.92 ns      │ 28.12 ns      │ 500     │ 2500000
+│     │                   55.59 Gitem/s │ 46.78 Gitem/s │ 55 Gitem/s    │ 54.6 Gitem/s  │         │
+│     ├─ u16              55.61 ns      │ 60.32 ns      │ 56.58 ns      │ 56.54 ns      │ 500     │ 2500000
+│     │                   27.61 Gitem/s │ 25.46 Gitem/s │ 27.14 Gitem/s │ 27.16 Gitem/s │         │
+│     ├─ u32              124.8 ns      │ 137.6 ns      │ 126.3 ns      │ 126.5 ns      │ 500     │ 2500000
+│     │                   12.3 Gitem/s  │ 11.15 Gitem/s │ 12.15 Gitem/s │ 12.13 Gitem/s │         │
+│     ├─ u64              453.8 ns      │ 473.7 ns      │ 458.1 ns      │ 458.6 ns      │ 500     │ 2500000
+│     │                   3.384 Gitem/s │ 3.242 Gitem/s │ 3.352 Gitem/s │ 3.348 Gitem/s │         │
+│     ╰─ u8               28.16 ns      │ 33.51 ns      │ 28.43 ns      │ 28.61 ns      │ 500     │ 2500000
+│                         54.54 Gitem/s │ 45.82 Gitem/s │ 54.01 Gitem/s │ 53.68 Gitem/s │         │
+├─ max                                  │               │               │               │         │
+│  ├─ cfavml_horizontal                 │               │               │               │         │
+│  │  ├─ f32              20.83 ns      │ 36.87 ns      │ 21.08 ns      │ 21.2 ns       │ 500     │ 2500000
+│  │  │                   73.73 Gitem/s │ 41.65 Gitem/s │ 72.84 Gitem/s │ 72.42 Gitem/s │         │
+│  │  ├─ f64              40.58 ns      │ 46.19 ns      │ 41.11 ns      │ 41.2 ns       │ 500     │ 2500000
+│  │  │                   37.84 Gitem/s │ 33.24 Gitem/s │ 37.35 Gitem/s │ 37.28 Gitem/s │         │
+│  │  ├─ i16              11.11 ns      │ 20 ns         │ 11.22 ns      │ 11.27 ns      │ 500     │ 2500000
+│  │  │                   138.1 Gitem/s │ 76.78 Gitem/s │ 136.8 Gitem/s │ 136.2 Gitem/s │         │
+│  │  ├─ i32              21.18 ns      │ 32.55 ns      │ 21.28 ns      │ 21.41 ns      │ 500     │ 2500000
+│  │  │                   72.5 Gitem/s  │ 47.18 Gitem/s │ 72.16 Gitem/s │ 71.71 Gitem/s │         │
+│  │  ├─ i64              60.78 ns      │ 84.83 ns      │ 67.44 ns      │ 67.56 ns      │ 500     │ 2500000
+│  │  │                   25.26 Gitem/s │ 18.1 Gitem/s  │ 22.77 Gitem/s │ 22.73 Gitem/s │         │
+│  │  ├─ i8               7.208 ns      │ 8.181 ns      │ 7.292 ns      │ 7.324 ns      │ 500     │ 2500000
+│  │  │                   213 Gitem/s   │ 187.7 Gitem/s │ 210.6 Gitem/s │ 209.7 Gitem/s │         │
+│  │  ├─ u16              11.19 ns      │ 22.64 ns      │ 11.32 ns      │ 11.36 ns      │ 500     │ 2500000
+│  │  │                   137.2 Gitem/s │ 67.83 Gitem/s │ 135.6 Gitem/s │ 135.1 Gitem/s │         │
+│  │  ├─ u32              20.83 ns      │ 25.37 ns      │ 21.11 ns      │ 21.14 ns      │ 500     │ 2500000
+│  │  │                   73.72 Gitem/s │ 60.53 Gitem/s │ 72.76 Gitem/s │ 72.65 Gitem/s │         │
+│  │  ├─ u64              79.61 ns      │ 98.02 ns      │ 80.39 ns      │ 80.54 ns      │ 500     │ 2500000
+│  │  │                   19.29 Gitem/s │ 15.66 Gitem/s │ 19.1 Gitem/s  │ 19.07 Gitem/s │         │
+│  │  ╰─ u8               6.986 ns      │ 12.34 ns      │ 7.028 ns      │ 7.078 ns      │ 500     │ 2500000
+│  │                      219.8 Gitem/s │ 124.4 Gitem/s │ 218.5 Gitem/s │ 217 Gitem/s   │         │
+│  ├─ cfavml_value                      │               │               │               │         │
+│  │  ├─ f32              38.44 ns      │ 44.83 ns      │ 39.61 ns      │ 39.61 ns      │ 500     │ 2500000
+│  │  │                   39.95 Gitem/s │ 34.25 Gitem/s │ 38.77 Gitem/s │ 38.77 Gitem/s │         │
+│  │  ├─ f64              75.73 ns      │ 81.2 ns       │ 77.3 ns       │ 77.34 ns      │ 500     │ 2500000
+│  │  │                   20.28 Gitem/s │ 18.91 Gitem/s │ 19.86 Gitem/s │ 19.85 Gitem/s │         │
+│  │  ├─ i16              19.41 ns      │ 37.39 ns      │ 19.61 ns      │ 19.71 ns      │ 500     │ 2500000
+│  │  │                   79.1 Gitem/s  │ 41.07 Gitem/s │ 78.32 Gitem/s │ 77.92 Gitem/s │         │
+│  │  ├─ i32              38.05 ns      │ 49.46 ns      │ 38.43 ns      │ 38.43 ns      │ 500     │ 2500000
+│  │  │                   40.35 Gitem/s │ 31.05 Gitem/s │ 39.96 Gitem/s │ 39.96 Gitem/s │         │
+│  │  ├─ i64              75.91 ns      │ 80.92 ns      │ 76.89 ns      │ 77.12 ns      │ 500     │ 2500000
+│  │  │                   20.23 Gitem/s │ 18.98 Gitem/s │ 19.97 Gitem/s │ 19.91 Gitem/s │         │
+│  │  ├─ i8               10.14 ns      │ 14.54 ns      │ 10.3 ns       │ 10.33 ns      │ 500     │ 2500000
+│  │  │                   151.3 Gitem/s │ 105.5 Gitem/s │ 149 Gitem/s   │ 148.6 Gitem/s │         │
+│  │  ├─ u16              19.41 ns      │ 23.48 ns      │ 19.9 ns       │ 19.82 ns      │ 500     │ 2500000
+│  │  │                   79.1 Gitem/s  │ 65.4 Gitem/s  │ 77.16 Gitem/s │ 77.48 Gitem/s │         │
+│  │  ├─ u32              38.05 ns      │ 42.6 ns       │ 38.06 ns      │ 38.31 ns      │ 500     │ 2500000
+│  │  │                   40.35 Gitem/s │ 36.05 Gitem/s │ 40.35 Gitem/s │ 40.08 Gitem/s │         │
+│  │  ├─ u64              76.5 ns       │ 82.73 ns      │ 77.78 ns      │ 77.93 ns      │ 500     │ 2500000
+│  │  │                   20.07 Gitem/s │ 18.56 Gitem/s │ 19.74 Gitem/s │ 19.7 Gitem/s  │         │
+│  │  ╰─ u8               10.14 ns      │ 14.43 ns      │ 10.15 ns      │ 10.25 ns      │ 500     │ 2500000
+│  │                      151.3 Gitem/s │ 106.4 Gitem/s │ 151.3 Gitem/s │ 149.8 Gitem/s │         │
+│  ├─ cfavml_vector                     │               │               │               │         │
+│  │  ├─ f32              55.84 ns      │ 74.42 ns      │ 56.3 ns       │ 56.38 ns      │ 500     │ 2500000
+│  │  │                   27.5 Gitem/s  │ 20.63 Gitem/s │ 27.27 Gitem/s │ 27.24 Gitem/s │         │
+│  │  ├─ f64              176.1 ns      │ 181.6 ns      │ 177 ns        │ 177.5 ns      │ 500     │ 2500000
+│  │  │                   8.721 Gitem/s │ 8.456 Gitem/s │ 8.676 Gitem/s │ 8.651 Gitem/s │         │
+│  │  ├─ i16              29.94 ns      │ 40.8 ns       │ 30.42 ns      │ 30.48 ns      │ 500     │ 2500000
+│  │  │                   51.29 Gitem/s │ 37.64 Gitem/s │ 50.47 Gitem/s │ 50.37 Gitem/s │         │
+│  │  ├─ i32              54.95 ns      │ 60.96 ns      │ 55.49 ns      │ 55.53 ns      │ 500     │ 2500000
+│  │  │                   27.95 Gitem/s │ 25.19 Gitem/s │ 27.67 Gitem/s │ 27.65 Gitem/s │         │
+│  │  ├─ i64              184.6 ns      │ 201.1 ns      │ 185.6 ns      │ 186.2 ns      │ 500     │ 2500000
+│  │  │                   8.32 Gitem/s  │ 7.637 Gitem/s │ 8.271 Gitem/s │ 8.245 Gitem/s │         │
+│  │  ├─ i8               15.9 ns       │ 17.62 ns      │ 16.06 ns      │ 16.1 ns       │ 500     │ 2500000
+│  │  │                   96.57 Gitem/s │ 87.17 Gitem/s │ 95.61 Gitem/s │ 95.35 Gitem/s │         │
+│  │  ├─ u16              30.2 ns       │ 38.39 ns      │ 30.27 ns      │ 30.46 ns      │ 500     │ 2500000
+│  │  │                   50.84 Gitem/s │ 40 Gitem/s    │ 50.73 Gitem/s │ 50.41 Gitem/s │         │
+│  │  ├─ u32              55.34 ns      │ 70.39 ns      │ 55.77 ns      │ 55.84 ns      │ 500     │ 2500000
+│  │  │                   27.75 Gitem/s │ 21.82 Gitem/s │ 27.53 Gitem/s │ 27.5 Gitem/s  │         │
+│  │  ├─ u64              211.4 ns      │ 222.2 ns      │ 213 ns        │ 213.6 ns      │ 500     │ 2500000
+│  │  │                   7.263 Gitem/s │ 6.91 Gitem/s  │ 7.207 Gitem/s │ 7.188 Gitem/s │         │
+│  │  ╰─ u8               15.99 ns      │ 25.62 ns      │ 16.23 ns      │ 16.3 ns       │ 500     │ 2500000
+│  │                      96.04 Gitem/s │ 59.94 Gitem/s │ 94.62 Gitem/s │ 94.19 Gitem/s │         │
+│  ├─ ndarray_horizontal                │               │               │               │         │
+│  │  ├─ f32              1.339 µs      │ 1.381 µs      │ 1.34 µs       │ 1.342 µs      │ 500     │ 2500000
+│  │  │                   1.146 Gitem/s │ 1.111 Gitem/s │ 1.145 Gitem/s │ 1.144 Gitem/s │         │
+│  │  ├─ f64              1.339 µs      │ 1.375 µs      │ 1.34 µs       │ 1.341 µs      │ 500     │ 2500000
+│  │  │                   1.146 Gitem/s │ 1.116 Gitem/s │ 1.145 Gitem/s │ 1.144 Gitem/s │         │
+│  │  ├─ i16              26.4 ns       │ 29.15 ns      │ 26.54 ns      │ 26.86 ns      │ 500     │ 2500000
+│  │  │                   58.16 Gitem/s │ 52.68 Gitem/s │ 57.87 Gitem/s │ 57.18 Gitem/s │         │
+│  │  ├─ i32              148.7 ns      │ 156.1 ns      │ 150 ns        │ 150.1 ns      │ 500     │ 2500000
+│  │  │                   10.32 Gitem/s │ 9.837 Gitem/s │ 10.23 Gitem/s │ 10.22 Gitem/s │         │
+│  │  ├─ i64              692.9 ns      │ 727 ns        │ 694.5 ns      │ 695.6 ns      │ 500     │ 2500000
+│  │  │                   2.216 Gitem/s │ 2.112 Gitem/s │ 2.211 Gitem/s │ 2.208 Gitem/s │         │
+│  │  ├─ i8               38.23 ns      │ 56.88 ns      │ 38.48 ns      │ 38.74 ns      │ 500     │ 2500000
+│  │  │                   40.17 Gitem/s │ 27 Gitem/s    │ 39.9 Gitem/s  │ 39.64 Gitem/s │         │
+│  │  ├─ u16              57.76 ns      │ 62.67 ns      │ 58.21 ns      │ 58.29 ns      │ 500     │ 2500000
+│  │  │                   26.59 Gitem/s │ 24.5 Gitem/s  │ 26.38 Gitem/s │ 26.34 Gitem/s │         │
+│  │  ├─ u32              181.3 ns      │ 197.4 ns      │ 193.3 ns      │ 193.5 ns      │ 500     │ 2500000
+│  │  │                   8.47 Gitem/s  │ 7.78 Gitem/s  │ 7.943 Gitem/s │ 7.933 Gitem/s │         │
+│  │  ├─ u64              710 ns        │ 738.9 ns      │ 712.7 ns      │ 713.6 ns      │ 500     │ 2500000
+│  │  │                   2.163 Gitem/s │ 2.078 Gitem/s │ 2.155 Gitem/s │ 2.152 Gitem/s │         │
+│  │  ╰─ u8               14.55 ns      │ 26.07 ns      │ 14.73 ns      │ 14.81 ns      │ 500     │ 2500000
+│  │                      105.5 Gitem/s │ 58.91 Gitem/s │ 104.2 Gitem/s │ 103.6 Gitem/s │         │
+│  ├─ ndarray_value                     │               │               │               │         │
+│  │  ├─ f32              129.7 ns      │ 149.5 ns      │ 131.8 ns      │ 132.5 ns      │ 500     │ 2500000
+│  │  │                   11.84 Gitem/s │ 10.26 Gitem/s │ 11.64 Gitem/s │ 11.59 Gitem/s │         │
+│  │  ├─ f64              254.1 ns      │ 508.4 ns      │ 260.3 ns      │ 264.8 ns      │ 500     │ 2500000
+│  │  │                   6.043 Gitem/s │ 3.021 Gitem/s │ 5.9 Gitem/s   │ 5.8 Gitem/s   │         │
+│  │  ├─ i16              39.03 ns      │ 44.09 ns      │ 39.74 ns      │ 39.8 ns       │ 500     │ 2500000
+│  │  │                   39.35 Gitem/s │ 34.83 Gitem/s │ 38.64 Gitem/s │ 38.59 Gitem/s │         │
+│  │  ├─ i32              104.6 ns      │ 129.5 ns      │ 105.8 ns      │ 106 ns        │ 500     │ 2500000
+│  │  │                   14.67 Gitem/s │ 11.85 Gitem/s │ 14.5 Gitem/s  │ 14.47 Gitem/s │         │
+│  │  ├─ i64              458.8 ns      │ 491.3 ns      │ 462.5 ns      │ 463.4 ns      │ 500     │ 2500000
+│  │  │                   3.347 Gitem/s │ 3.125 Gitem/s │ 3.321 Gitem/s │ 3.314 Gitem/s │         │
+│  │  ├─ i8               26.4 ns       │ 30.97 ns      │ 26.54 ns      │ 26.75 ns      │ 500     │ 2500000
+│  │  │                   58.16 Gitem/s │ 49.59 Gitem/s │ 57.87 Gitem/s │ 57.42 Gitem/s │         │
+│  │  ├─ u16              43.31 ns      │ 57.6 ns       │ 43.32 ns      │ 43.7 ns       │ 500     │ 2500000
+│  │  │                   35.45 Gitem/s │ 26.66 Gitem/s │ 35.45 Gitem/s │ 35.14 Gitem/s │         │
+│  │  ├─ u32              117.6 ns      │ 126.3 ns      │ 118.1 ns      │ 118.5 ns      │ 500     │ 2500000
+│  │  │                   13.05 Gitem/s │ 12.15 Gitem/s │ 13 Gitem/s    │ 12.95 Gitem/s │         │
+│  │  ├─ u64              457.2 ns      │ 486.1 ns      │ 459.2 ns      │ 459.8 ns      │ 500     │ 2500000
+│  │  │                   3.359 Gitem/s │ 3.159 Gitem/s │ 3.344 Gitem/s │ 3.339 Gitem/s │         │
+│  │  ╰─ u8               21.03 ns      │ 26.13 ns      │ 21.05 ns      │ 21.24 ns      │ 500     │ 2500000
+│  │                      73.02 Gitem/s │ 58.78 Gitem/s │ 72.96 Gitem/s │ 72.29 Gitem/s │         │
+│  ╰─ ndarray_vector                    │               │               │               │         │
+│     ├─ f32              141.7 ns      │ 160.5 ns      │ 143.8 ns      │ 143.9 ns      │ 500     │ 2500000
+│     │                   10.83 Gitem/s │ 9.566 Gitem/s │ 10.67 Gitem/s │ 10.67 Gitem/s │         │
+│     ├─ f64              288.4 ns      │ 301.1 ns      │ 291.7 ns      │ 291.9 ns      │ 500     │ 2500000
+│     │                   5.324 Gitem/s │ 5.099 Gitem/s │ 5.265 Gitem/s │ 5.26 Gitem/s  │         │
+│     ├─ i16              52.88 ns      │ 67.67 ns      │ 53.3 ns       │ 53.41 ns      │ 500     │ 2500000
+│     │                   29.04 Gitem/s │ 22.69 Gitem/s │ 28.81 Gitem/s │ 28.75 Gitem/s │         │
+│     ├─ i32              125.3 ns      │ 136.9 ns      │ 127.9 ns      │ 128.3 ns      │ 500     │ 2500000
+│     │                   12.25 Gitem/s │ 11.21 Gitem/s │ 12 Gitem/s    │ 11.97 Gitem/s │         │
+│     ├─ i64              530.4 ns      │ 583.9 ns      │ 533.4 ns      │ 534.1 ns      │ 500     │ 2500000
+│     │                   2.895 Gitem/s │ 2.63 Gitem/s  │ 2.879 Gitem/s │ 2.875 Gitem/s │         │
+│     ├─ i8               32.91 ns      │ 37.23 ns      │ 33.07 ns      │ 33.32 ns      │ 500     │ 2500000
+│     │                   46.66 Gitem/s │ 41.25 Gitem/s │ 46.43 Gitem/s │ 46.08 Gitem/s │         │
+│     ├─ u16              47.02 ns      │ 62.02 ns      │ 47.4 ns       │ 47.63 ns      │ 500     │ 2500000
+│     │                   32.66 Gitem/s │ 24.76 Gitem/s │ 32.4 Gitem/s  │ 32.24 Gitem/s │         │
+│     ├─ u32              161.9 ns      │ 176.2 ns      │ 165.2 ns      │ 165.5 ns      │ 500     │ 2500000
+│     │                   9.484 Gitem/s │ 8.715 Gitem/s │ 9.296 Gitem/s │ 9.276 Gitem/s │         │
+│     ├─ u64              530.8 ns      │ 565.1 ns      │ 533.5 ns      │ 534.4 ns      │ 500     │ 2500000
+│     │                   2.893 Gitem/s │ 2.717 Gitem/s │ 2.878 Gitem/s │ 2.873 Gitem/s │         │
+│     ╰─ u8               27.4 ns       │ 45.58 ns      │ 27.64 ns      │ 27.89 ns      │ 500     │ 2500000
+│                         56.04 Gitem/s │ 33.69 Gitem/s │ 55.56 Gitem/s │ 55.07 Gitem/s │         │
+├─ min                                  │               │               │               │         │
+│  ├─ cfavml_horizontal                 │               │               │               │         │
+│  │  ├─ f32              20.83 ns      │ 26.73 ns      │ 20.97 ns      │ 21.09 ns      │ 500     │ 2500000
+│  │  │                   73.73 Gitem/s │ 57.44 Gitem/s │ 73.22 Gitem/s │ 72.81 Gitem/s │         │
+│  │  ├─ f64              40.38 ns      │ 50.98 ns      │ 41.2 ns       │ 41.26 ns      │ 500     │ 2500000
+│  │  │                   38.03 Gitem/s │ 30.12 Gitem/s │ 37.27 Gitem/s │ 37.21 Gitem/s │         │
+│  │  ├─ i16              11.45 ns      │ 17.58 ns      │ 11.59 ns      │ 11.64 ns      │ 500     │ 2500000
+│  │  │                   134 Gitem/s   │ 87.37 Gitem/s │ 132.5 Gitem/s │ 131.9 Gitem/s │         │
+│  │  ├─ i32              21.01 ns      │ 25.62 ns      │ 21.37 ns      │ 21.46 ns      │ 500     │ 2500000
+│  │  │                   73.1 Gitem/s  │ 59.94 Gitem/s │ 71.87 Gitem/s │ 71.56 Gitem/s │         │
+│  │  ├─ i64              60.58 ns      │ 75.26 ns      │ 69.47 ns      │ 69.19 ns      │ 500     │ 2500000
+│  │  │                   25.35 Gitem/s │ 20.4 Gitem/s  │ 22.1 Gitem/s  │ 22.19 Gitem/s │         │
+│  │  ├─ i8               6.248 ns      │ 24.38 ns      │ 6.315 ns      │ 6.374 ns      │ 500     │ 2500000
+│  │  │                   245.8 Gitem/s │ 62.98 Gitem/s │ 243.2 Gitem/s │ 240.9 Gitem/s │         │
+│  │  ├─ u16              10.1 ns       │ 14.4 ns       │ 10.24 ns      │ 10.31 ns      │ 500     │ 2500000
+│  │  │                   152 Gitem/s   │ 106.6 Gitem/s │ 149.9 Gitem/s │ 148.9 Gitem/s │         │
+│  │  ├─ u32              21.05 ns      │ 25.43 ns      │ 21.15 ns      │ 21.25 ns      │ 500     │ 2500000
+│  │  │                   72.96 Gitem/s │ 60.39 Gitem/s │ 72.6 Gitem/s  │ 72.27 Gitem/s │         │
+│  │  ├─ u64              79.61 ns      │ 99.29 ns      │ 80.56 ns      │ 80.76 ns      │ 500     │ 2500000
+│  │  │                   19.29 Gitem/s │ 15.46 Gitem/s │ 19.06 Gitem/s │ 19.01 Gitem/s │         │
+│  │  ╰─ u8               5.981 ns      │ 10.66 ns      │ 6.053 ns      │ 6.104 ns      │ 500     │ 2500000
+│  │                      256.8 Gitem/s │ 144 Gitem/s   │ 253.7 Gitem/s │ 251.6 Gitem/s │         │
+│  ├─ cfavml_value                      │               │               │               │         │
+│  │  ├─ f32              38.64 ns      │ 45.35 ns      │ 39.61 ns      │ 39.89 ns      │ 500     │ 2500000
+│  │  │                   39.74 Gitem/s │ 33.86 Gitem/s │ 38.77 Gitem/s │ 38.5 Gitem/s  │         │
+│  │  ├─ f64              75.92 ns      │ 83.22 ns      │ 77.33 ns      │ 77.51 ns      │ 500     │ 2500000
+│  │  │                   20.23 Gitem/s │ 18.45 Gitem/s │ 19.86 Gitem/s │ 19.81 Gitem/s │         │
+│  │  ├─ i16              19.41 ns      │ 31.37 ns      │ 19.61 ns      │ 19.64 ns      │ 500     │ 2500000
+│  │  │                   79.1 Gitem/s  │ 48.95 Gitem/s │ 78.32 Gitem/s │ 78.18 Gitem/s │         │
+│  │  ├─ i32              38.05 ns      │ 52.64 ns      │ 38.43 ns      │ 38.4 ns       │ 500     │ 2500000
+│  │  │                   40.35 Gitem/s │ 29.17 Gitem/s │ 39.96 Gitem/s │ 39.99 Gitem/s │         │
+│  │  ├─ i64              76.03 ns      │ 92.34 ns      │ 77.05 ns      │ 77.21 ns      │ 500     │ 2500000
+│  │  │                   20.2 Gitem/s  │ 16.63 Gitem/s │ 19.93 Gitem/s │ 19.89 Gitem/s │         │
+│  │  ├─ i8               10.14 ns      │ 28.17 ns      │ 10.3 ns       │ 10.36 ns      │ 500     │ 2500000
+│  │  │                   151.3 Gitem/s │ 54.51 Gitem/s │ 149 Gitem/s   │ 148.2 Gitem/s │         │
+│  │  ├─ u16              19.41 ns      │ 21.5 ns       │ 19.61 ns      │ 19.78 ns      │ 500     │ 2500000
+│  │  │                   79.1 Gitem/s  │ 71.44 Gitem/s │ 78.31 Gitem/s │ 77.62 Gitem/s │         │
+│  │  ├─ u32              38.05 ns      │ 42.71 ns      │ 38.06 ns      │ 38.29 ns      │ 500     │ 2500000
+│  │  │                   40.35 Gitem/s │ 35.95 Gitem/s │ 40.35 Gitem/s │ 40.11 Gitem/s │         │
+│  │  ├─ u64              76.5 ns       │ 94.96 ns      │ 77.63 ns      │ 77.99 ns      │ 500     │ 2500000
+│  │  │                   20.07 Gitem/s │ 16.17 Gitem/s │ 19.78 Gitem/s │ 19.69 Gitem/s │         │
+│  │  ╰─ u8               10.14 ns      │ 18.97 ns      │ 10.15 ns      │ 10.24 ns      │ 500     │ 2500000
+│  │                      151.3 Gitem/s │ 80.95 Gitem/s │ 151.3 Gitem/s │ 149.9 Gitem/s │         │
+│  ├─ cfavml_vector                     │               │               │               │         │
+│  │  ├─ f32              55.63 ns      │ 60.05 ns      │ 55.75 ns      │ 55.98 ns      │ 500     │ 2500000
+│  │  │                   27.61 Gitem/s │ 25.57 Gitem/s │ 27.55 Gitem/s │ 27.43 Gitem/s │         │
+│  │  ├─ f64              175.9 ns      │ 196.3 ns      │ 177 ns        │ 177.6 ns      │ 500     │ 2500000
+│  │  │                   8.729 Gitem/s │ 7.821 Gitem/s │ 8.677 Gitem/s │ 8.644 Gitem/s │         │
+│  │  ├─ i16              30.81 ns      │ 49.42 ns      │ 31.29 ns      │ 31.55 ns      │ 500     │ 2500000
+│  │  │                   49.85 Gitem/s │ 31.07 Gitem/s │ 49.08 Gitem/s │ 48.67 Gitem/s │         │
+│  │  ├─ i32              57.39 ns      │ 67.35 ns      │ 59 ns         │ 59.05 ns      │ 500     │ 2500000
+│  │  │                   26.76 Gitem/s │ 22.8 Gitem/s  │ 26.03 Gitem/s │ 26 Gitem/s    │         │
+│  │  ├─ i64              185.5 ns      │ 194.2 ns      │ 186.3 ns      │ 186.8 ns      │ 500     │ 2500000
+│  │  │                   8.279 Gitem/s │ 7.908 Gitem/s │ 8.242 Gitem/s │ 8.22 Gitem/s  │         │
+│  │  ├─ i8               16.59 ns      │ 20.99 ns      │ 16.74 ns      │ 16.81 ns      │ 500     │ 2500000
+│  │  │                   92.58 Gitem/s │ 73.15 Gitem/s │ 91.75 Gitem/s │ 91.36 Gitem/s │         │
+│  │  ├─ u16              30.85 ns      │ 40.27 ns      │ 30.99 ns      │ 31.17 ns      │ 500     │ 2500000
+│  │  │                   49.78 Gitem/s │ 38.13 Gitem/s │ 49.55 Gitem/s │ 49.27 Gitem/s │         │
+│  │  ├─ u32              55.34 ns      │ 65.26 ns      │ 55.72 ns      │ 55.77 ns      │ 500     │ 2500000
+│  │  │                   27.75 Gitem/s │ 23.53 Gitem/s │ 27.56 Gitem/s │ 27.53 Gitem/s │         │
+│  │  ├─ u64              211.3 ns      │ 223.7 ns      │ 213.1 ns      │ 213.8 ns      │ 500     │ 2500000
+│  │  │                   7.266 Gitem/s │ 6.864 Gitem/s │ 7.206 Gitem/s │ 7.182 Gitem/s │         │
+│  │  ╰─ u8               15.76 ns      │ 20.84 ns      │ 15.89 ns      │ 16 ns         │ 500     │ 2500000
+│  │                      97.41 Gitem/s │ 73.68 Gitem/s │ 96.64 Gitem/s │ 95.99 Gitem/s │         │
+│  ├─ ndarray_horizontal                │               │               │               │         │
+│  │  ├─ f32              1.339 µs      │ 1.374 µs      │ 1.34 µs       │ 1.342 µs      │ 500     │ 2500000
+│  │  │                   1.146 Gitem/s │ 1.117 Gitem/s │ 1.145 Gitem/s │ 1.144 Gitem/s │         │
+│  │  ├─ f64              1.339 µs      │ 1.368 µs      │ 1.34 µs       │ 1.341 µs      │ 500     │ 2500000
+│  │  │                   1.146 Gitem/s │ 1.122 Gitem/s │ 1.145 Gitem/s │ 1.144 Gitem/s │         │
+│  │  ├─ i16              26.4 ns       │ 28.83 ns      │ 26.54 ns      │ 26.89 ns      │ 500     │ 2500000
+│  │  │                   58.16 Gitem/s │ 53.27 Gitem/s │ 57.87 Gitem/s │ 57.1 Gitem/s  │         │
+│  │  ├─ i32              149 ns        │ 165.3 ns      │ 150.2 ns      │ 150.3 ns      │ 500     │ 2500000
+│  │  │                   10.3 Gitem/s  │ 9.29 Gitem/s  │ 10.22 Gitem/s │ 10.21 Gitem/s │         │
+│  │  ├─ i64              693.7 ns      │ 737.1 ns      │ 694.4 ns      │ 695.8 ns      │ 500     │ 2500000
+│  │  │                   2.214 Gitem/s │ 2.083 Gitem/s │ 2.211 Gitem/s │ 2.207 Gitem/s │         │
+│  │  ├─ i8               38.22 ns      │ 42.54 ns      │ 38.5 ns       │ 38.61 ns      │ 500     │ 2500000
+│  │  │                   40.18 Gitem/s │ 36.1 Gitem/s  │ 39.89 Gitem/s │ 39.78 Gitem/s │         │
+│  │  ├─ u16              57.51 ns      │ 62.19 ns      │ 57.92 ns      │ 58.04 ns      │ 500     │ 2500000
+│  │  │                   26.7 Gitem/s  │ 24.69 Gitem/s │ 26.51 Gitem/s │ 26.46 Gitem/s │         │
+│  │  ├─ u32              194.2 ns      │ 205.3 ns      │ 194.6 ns      │ 194.9 ns      │ 500     │ 2500000
+│  │  │                   7.908 Gitem/s │ 7.479 Gitem/s │ 7.891 Gitem/s │ 7.877 Gitem/s │         │
+│  │  ├─ u64              709.3 ns      │ 739.2 ns      │ 710.3 ns      │ 711.3 ns      │ 500     │ 2500000
+│  │  │                   2.165 Gitem/s │ 2.077 Gitem/s │ 2.162 Gitem/s │ 2.159 Gitem/s │         │
+│  │  ╰─ u8               19.8 ns       │ 32.7 ns       │ 19.9 ns       │ 19.97 ns      │ 500     │ 2500000
+│  │                      77.55 Gitem/s │ 46.96 Gitem/s │ 77.17 Gitem/s │ 76.9 Gitem/s  │         │
+│  ├─ ndarray_value                     │               │               │               │         │
+│  │  ├─ f32              130.3 ns      │ 147.2 ns      │ 132 ns        │ 132.5 ns      │ 500     │ 2500000
+│  │  │                   11.78 Gitem/s │ 10.42 Gitem/s │ 11.62 Gitem/s │ 11.59 Gitem/s │         │
+│  │  ├─ f64              256.6 ns      │ 276.8 ns      │ 260.1 ns      │ 261.3 ns      │ 500     │ 2500000
+│  │  │                   5.984 Gitem/s │ 5.547 Gitem/s │ 5.904 Gitem/s │ 5.876 Gitem/s │         │
+│  │  ├─ i16              42.52 ns      │ 46.87 ns      │ 42.52 ns      │ 42.84 ns      │ 500     │ 2500000
+│  │  │                   36.12 Gitem/s │ 32.77 Gitem/s │ 36.11 Gitem/s │ 35.85 Gitem/s │         │
+│  │  ├─ i32              104.6 ns      │ 120.9 ns      │ 105 ns        │ 105.5 ns      │ 500     │ 2500000
+│  │  │                   14.67 Gitem/s │ 12.7 Gitem/s  │ 14.61 Gitem/s │ 14.54 Gitem/s │         │
+│  │  ├─ i64              459.1 ns      │ 485.4 ns      │ 462.3 ns      │ 463.2 ns      │ 500     │ 2500000
+│  │  │                   3.345 Gitem/s │ 3.163 Gitem/s │ 3.322 Gitem/s │ 3.315 Gitem/s │         │
+│  │  ├─ i8               26.4 ns       │ 44.68 ns      │ 26.54 ns      │ 26.75 ns      │ 500     │ 2500000
+│  │  │                   58.16 Gitem/s │ 34.37 Gitem/s │ 57.87 Gitem/s │ 57.41 Gitem/s │         │
+│  │  ├─ u16              42.73 ns      │ 56.49 ns      │ 43.15 ns      │ 43.3 ns       │ 500     │ 2500000
+│  │  │                   35.94 Gitem/s │ 27.18 Gitem/s │ 35.59 Gitem/s │ 35.46 Gitem/s │         │
+│  │  ├─ u32              131.4 ns      │ 136.9 ns      │ 131.8 ns      │ 132.3 ns      │ 500     │ 2500000
+│  │  │                   11.68 Gitem/s │ 11.21 Gitem/s │ 11.64 Gitem/s │ 11.6 Gitem/s  │         │
+│  │  ├─ u64              458.7 ns      │ 482.1 ns      │ 462.4 ns      │ 462.9 ns      │ 500     │ 2500000
+│  │  │                   3.347 Gitem/s │ 3.185 Gitem/s │ 3.321 Gitem/s │ 3.318 Gitem/s │         │
+│  │  ╰─ u8               21.03 ns      │ 25.56 ns      │ 21.09 ns      │ 21.21 ns      │ 500     │ 2500000
+│  │                      73.01 Gitem/s │ 60.09 Gitem/s │ 72.82 Gitem/s │ 72.41 Gitem/s │         │
+│  ╰─ ndarray_vector                    │               │               │               │         │
+│     ├─ f32              141.4 ns      │ 151.1 ns      │ 143.3 ns      │ 143.4 ns      │ 500     │ 2500000
+│     │                   10.86 Gitem/s │ 10.16 Gitem/s │ 10.71 Gitem/s │ 10.7 Gitem/s  │         │
+│     ├─ f64              286.7 ns      │ 307.1 ns      │ 289.5 ns      │ 289.9 ns      │ 500     │ 2500000
+│     │                   5.355 Gitem/s │ 5 Gitem/s     │ 5.305 Gitem/s │ 5.297 Gitem/s │         │
+│     ├─ i16              52.36 ns      │ 61.72 ns      │ 53.17 ns      │ 53.33 ns      │ 500     │ 2500000
+│     │                   29.33 Gitem/s │ 24.88 Gitem/s │ 28.88 Gitem/s │ 28.79 Gitem/s │         │
+│     ├─ i32              125.2 ns      │ 144.4 ns      │ 127.4 ns      │ 127.7 ns      │ 500     │ 2500000
+│     │                   12.26 Gitem/s │ 10.63 Gitem/s │ 12.04 Gitem/s │ 12.02 Gitem/s │         │
+│     ├─ i64              530.5 ns      │ 573.5 ns      │ 534.3 ns      │ 534.9 ns      │ 500     │ 2500000
+│     │                   2.895 Gitem/s │ 2.678 Gitem/s │ 2.874 Gitem/s │ 2.871 Gitem/s │         │
+│     ├─ i8               32.91 ns      │ 37.37 ns      │ 33.08 ns      │ 33.35 ns      │ 500     │ 2500000
+│     │                   46.66 Gitem/s │ 41.09 Gitem/s │ 46.43 Gitem/s │ 46.05 Gitem/s │         │
+│     ├─ u16              56 ns         │ 67.1 ns       │ 56.43 ns      │ 56.54 ns      │ 500     │ 2500000
+│     │                   27.42 Gitem/s │ 22.89 Gitem/s │ 27.21 Gitem/s │ 27.16 Gitem/s │         │
+│     ├─ u32              162 ns        │ 338 ns        │ 164.7 ns      │ 168.9 ns      │ 500     │ 2500000
+│     │                   9.479 Gitem/s │ 4.543 Gitem/s │ 9.325 Gitem/s │ 9.092 Gitem/s │         │
+│     ├─ u64              530.2 ns      │ 565.8 ns      │ 533.2 ns      │ 534.1 ns      │ 500     │ 2500000
+│     │                   2.896 Gitem/s │ 2.714 Gitem/s │ 2.88 Gitem/s  │ 2.875 Gitem/s │         │
+│     ╰─ u8               27.37 ns      │ 32.25 ns      │ 27.6 ns       │ 27.79 ns      │ 500     │ 2500000
+│                         56.1 Gitem/s  │ 47.62 Gitem/s │ 55.64 Gitem/s │ 55.26 Gitem/s │         │
+╰─ neq                                  │               │               │               │         │
+   ├─ cfavml_value                      │               │               │               │         │
+   │  ├─ f32              38.44 ns      │ 56.25 ns      │ 38.45 ns      │ 38.77 ns      │ 500     │ 2500000
+   │  │                   39.95 Gitem/s │ 27.3 Gitem/s  │ 39.94 Gitem/s │ 39.61 Gitem/s │         │
+   │  ├─ f64              75.72 ns      │ 79.89 ns      │ 76.17 ns      │ 76.24 ns      │ 500     │ 2500000
+   │  │                   20.28 Gitem/s │ 19.22 Gitem/s │ 20.16 Gitem/s │ 20.14 Gitem/s │         │
+   │  ├─ i16              19.71 ns      │ 24.09 ns      │ 20.01 ns      │ 20.23 ns      │ 500     │ 2500000
+   │  │                   77.92 Gitem/s │ 63.75 Gitem/s │ 76.73 Gitem/s │ 75.9 Gitem/s  │         │
+   │  ├─ i32              38.35 ns      │ 42.69 ns      │ 38.35 ns      │ 38.59 ns      │ 500     │ 2500000
+   │  │                   40.05 Gitem/s │ 35.98 Gitem/s │ 40.05 Gitem/s │ 39.79 Gitem/s │         │
+   │  ├─ i64              75.72 ns      │ 93.84 ns      │ 76.17 ns      │ 76.28 ns      │ 500     │ 2500000
+   │  │                   20.28 Gitem/s │ 16.36 Gitem/s │ 20.16 Gitem/s │ 20.13 Gitem/s │         │
+   │  ├─ i8               10.4 ns       │ 24.84 ns      │ 10.44 ns      │ 10.53 ns      │ 500     │ 2500000
+   │  │                   147.6 Gitem/s │ 61.81 Gitem/s │ 147 Gitem/s   │ 145.7 Gitem/s │         │
+   │  ├─ u16              19.71 ns      │ 36.11 ns      │ 19.8 ns       │ 20.01 ns      │ 500     │ 2500000
+   │  │                   77.92 Gitem/s │ 42.52 Gitem/s │ 77.54 Gitem/s │ 76.76 Gitem/s │         │
+   │  ├─ u32              38.35 ns      │ 42.67 ns      │ 38.71 ns      │ 38.66 ns      │ 500     │ 2500000
+   │  │                   40.05 Gitem/s │ 35.99 Gitem/s │ 39.67 Gitem/s │ 39.72 Gitem/s │         │
+   │  ├─ u64              75.72 ns      │ 84.57 ns      │ 76.17 ns      │ 76.22 ns      │ 500     │ 2500000
+   │  │                   20.28 Gitem/s │ 18.16 Gitem/s │ 20.16 Gitem/s │ 20.15 Gitem/s │         │
+   │  ╰─ u8               10.39 ns      │ 11.5 ns       │ 10.49 ns      │ 10.55 ns      │ 500     │ 2500000
+   │                      147.7 Gitem/s │ 133.4 Gitem/s │ 146.3 Gitem/s │ 145.5 Gitem/s │         │
+   ├─ cfavml_vector                     │               │               │               │         │
+   │  ├─ f32              52.32 ns      │ 56.65 ns      │ 52.72 ns      │ 52.88 ns      │ 500     │ 2500000
+   │  │                   29.35 Gitem/s │ 27.11 Gitem/s │ 29.13 Gitem/s │ 29.04 Gitem/s │         │
+   │  ├─ f64              161.6 ns      │ 179.7 ns      │ 163.5 ns      │ 163.7 ns      │ 500     │ 2500000
+   │  │                   9.501 Gitem/s │ 8.543 Gitem/s │ 9.393 Gitem/s │ 9.382 Gitem/s │         │
+   │  ├─ i16              29.08 ns      │ 33.56 ns      │ 29.59 ns      │ 29.62 ns      │ 500     │ 2500000
+   │  │                   52.8 Gitem/s  │ 45.76 Gitem/s │ 51.89 Gitem/s │ 51.85 Gitem/s │         │
+   │  ├─ i32              51.43 ns      │ 68.85 ns      │ 52.67 ns      │ 53.7 ns       │ 500     │ 2500000
+   │  │                   29.86 Gitem/s │ 22.3 Gitem/s  │ 29.15 Gitem/s │ 28.6 Gitem/s  │         │
+   │  ├─ i64              177.2 ns      │ 196.5 ns      │ 178.3 ns      │ 179 ns        │ 500     │ 2500000
+   │  │                   8.665 Gitem/s │ 7.816 Gitem/s │ 8.613 Gitem/s │ 8.579 Gitem/s │         │
+   │  ├─ i8               16.52 ns      │ 21.49 ns      │ 16.61 ns      │ 16.69 ns      │ 500     │ 2500000
+   │  │                   92.95 Gitem/s │ 71.44 Gitem/s │ 92.44 Gitem/s │ 92 Gitem/s    │         │
+   │  ├─ u16              29.14 ns      │ 35.69 ns      │ 29.73 ns      │ 29.85 ns      │ 500     │ 2500000
+   │  │                   52.71 Gitem/s │ 43.03 Gitem/s │ 51.66 Gitem/s │ 51.44 Gitem/s │         │
+   │  ├─ u32              51.43 ns      │ 65.43 ns      │ 52.54 ns      │ 53.87 ns      │ 500     │ 2500000
+   │  │                   29.86 Gitem/s │ 23.47 Gitem/s │ 29.23 Gitem/s │ 28.5 Gitem/s  │         │
+   │  ├─ u64              177.2 ns      │ 195.4 ns      │ 178.2 ns      │ 178.8 ns      │ 500     │ 2500000
+   │  │                   8.664 Gitem/s │ 7.857 Gitem/s │ 8.617 Gitem/s │ 8.589 Gitem/s │         │
+   │  ╰─ u8               15.62 ns      │ 23.61 ns      │ 15.85 ns      │ 15.97 ns      │ 500     │ 2500000
+   │                      98.29 Gitem/s │ 65.05 Gitem/s │ 96.85 Gitem/s │ 96.13 Gitem/s │         │
+   ├─ ndarray_value                     │               │               │               │         │
+   │  ├─ f32              77.41 ns      │ 84.24 ns      │ 78.28 ns      │ 78.38 ns      │ 500     │ 2500000
+   │  │                   19.84 Gitem/s │ 18.23 Gitem/s │ 19.62 Gitem/s │ 19.59 Gitem/s │         │
+   │  ├─ f64              152.2 ns      │ 161.2 ns      │ 152.8 ns      │ 153.6 ns      │ 500     │ 2500000
+   │  │                   10.08 Gitem/s │ 9.522 Gitem/s │ 10.05 Gitem/s │ 9.994 Gitem/s │         │
+   │  ├─ i16              42.52 ns      │ 47.51 ns      │ 42.73 ns      │ 42.99 ns      │ 500     │ 2500000
+   │  │                   36.12 Gitem/s │ 32.32 Gitem/s │ 35.94 Gitem/s │ 35.72 Gitem/s │         │
+   │  ├─ i32              80 ns         │ 86.3 ns       │ 80.82 ns      │ 81.06 ns      │ 500     │ 2500000
+   │  │                   19.2 Gitem/s  │ 17.79 Gitem/s │ 19 Gitem/s    │ 18.94 Gitem/s │         │
+   │  ├─ i64              182.9 ns      │ 187.1 ns      │ 183.3 ns      │ 183.9 ns      │ 500     │ 2500000
+   │  │                   8.397 Gitem/s │ 8.205 Gitem/s │ 8.377 Gitem/s │ 8.349 Gitem/s │         │
+   │  ├─ i8               21.17 ns      │ 25.78 ns      │ 21.63 ns      │ 21.84 ns      │ 500     │ 2500000
+   │  │                   72.53 Gitem/s │ 59.57 Gitem/s │ 70.99 Gitem/s │ 70.32 Gitem/s │         │
+   │  ├─ u16              42.73 ns      │ 55.2 ns       │ 42.77 ns      │ 43.08 ns      │ 500     │ 2500000
+   │  │                   35.94 Gitem/s │ 27.82 Gitem/s │ 35.91 Gitem/s │ 35.64 Gitem/s │         │
+   │  ├─ u32              80 ns         │ 89.82 ns      │ 80.78 ns      │ 80.84 ns      │ 500     │ 2500000
+   │  │                   19.2 Gitem/s  │ 17.09 Gitem/s │ 19.01 Gitem/s │ 19 Gitem/s    │         │
+   │  ├─ u64              182.9 ns      │ 194 ns        │ 183.3 ns      │ 184 ns        │ 500     │ 2500000
+   │  │                   8.397 Gitem/s │ 7.914 Gitem/s │ 8.377 Gitem/s │ 8.346 Gitem/s │         │
+   │  ╰─ u8               21.06 ns      │ 25.38 ns      │ 21.39 ns      │ 21.48 ns      │ 500     │ 2500000
+   │                      72.9 Gitem/s  │ 60.52 Gitem/s │ 71.78 Gitem/s │ 71.5 Gitem/s  │         │
+   ╰─ ndarray_vector                    │               │               │               │         │
+      ├─ f32              101.7 ns      │ 114.7 ns      │ 103.2 ns      │ 103.6 ns      │ 500     │ 2500000
+      │                   15.08 Gitem/s │ 13.38 Gitem/s │ 14.88 Gitem/s │ 14.81 Gitem/s │         │
+      ├─ f64              223 ns        │ 240 ns        │ 225.5 ns      │ 226 ns        │ 500     │ 2500000
+      │                   6.884 Gitem/s │ 6.399 Gitem/s │ 6.809 Gitem/s │ 6.794 Gitem/s │         │
+      ├─ i16              53.27 ns      │ 68.77 ns      │ 53.68 ns      │ 53.87 ns      │ 500     │ 2500000
+      │                   28.83 Gitem/s │ 22.33 Gitem/s │ 28.6 Gitem/s  │ 28.51 Gitem/s │         │
+      ├─ i32              102 ns        │ 110.5 ns      │ 103.2 ns      │ 103.7 ns      │ 500     │ 2500000
+      │                   15.05 Gitem/s │ 13.89 Gitem/s │ 14.87 Gitem/s │ 14.8 Gitem/s  │         │
+      ├─ i64              251.3 ns      │ 262.4 ns      │ 253.6 ns      │ 254.2 ns      │ 500     │ 2500000
+      │                   6.111 Gitem/s │ 5.852 Gitem/s │ 6.054 Gitem/s │ 6.041 Gitem/s │         │
+      ├─ i8               27.66 ns      │ 32.46 ns      │ 28.08 ns      │ 28.13 ns      │ 500     │ 2500000
+      │                   55.53 Gitem/s │ 47.3 Gitem/s  │ 54.68 Gitem/s │ 54.58 Gitem/s │         │
+      ├─ u16              53.17 ns      │ 67.93 ns      │ 53.53 ns      │ 53.76 ns      │ 500     │ 2500000
+      │                   28.88 Gitem/s │ 22.61 Gitem/s │ 28.69 Gitem/s │ 28.57 Gitem/s │         │
+      ├─ u32              101.9 ns      │ 119.1 ns      │ 103.6 ns      │ 103.9 ns      │ 500     │ 2500000
+      │                   15.07 Gitem/s │ 12.88 Gitem/s │ 14.82 Gitem/s │ 14.77 Gitem/s │         │
+      ├─ u64              251.2 ns      │ 291.3 ns      │ 254.3 ns      │ 254.9 ns      │ 500     │ 2500000
+      │                   6.113 Gitem/s │ 5.272 Gitem/s │ 6.038 Gitem/s │ 6.024 Gitem/s │         │
+      ╰─ u8               27.67 ns      │ 32.04 ns      │ 27.86 ns      │ 28.02 ns      │ 500     │ 2500000
+                          55.5 Gitem/s  │ 47.94 Gitem/s │ 55.11 Gitem/s │ 54.8 Gitem/s  │         │
+
+     Running benches/bench_distance_ops.rs (target/release/deps/bench_distance_ops-d9c339bc36ebc58e)
+Timer precision: 9 ns
+bench_distance_ops  fastest       │ slowest       │ median        │ mean          │ samples │ iters
+├─ cosine                         │               │               │               │         │
+│  ├─ cfavml                      │               │               │               │         │
+│  │  ├─ f32        142.3 ns      │ 908.8 ns      │ 142.8 ns      │ 145.8 ns      │ 2500    │ 12500000
+│  │  │             10.78 Gitem/s │ 1.689 Gitem/s │ 10.74 Gitem/s │ 10.53 Gitem/s │         │
+│  │  ╰─ f64        290.4 ns      │ 308.9 ns      │ 290.8 ns      │ 291.1 ns      │ 2500    │ 12500000
+│  │                5.288 Gitem/s │ 4.971 Gitem/s │ 5.28 Gitem/s  │ 5.275 Gitem/s │         │
+│  ├─ ndarray                     │               │               │               │         │
+│  │  ├─ f32        343.5 ns      │ 364.8 ns      │ 347.7 ns      │ 348 ns        │ 2500    │ 12500000
+│  │  │             4.47 Gitem/s  │ 4.209 Gitem/s │ 4.417 Gitem/s │ 4.413 Gitem/s │         │
+│  │  ╰─ f64        371.5 ns      │ 395.3 ns      │ 376.5 ns      │ 376.9 ns      │ 2500    │ 12500000
+│  │                4.134 Gitem/s │ 3.885 Gitem/s │ 4.078 Gitem/s │ 4.075 Gitem/s │         │
+│  ╰─ simsimd                     │               │               │               │         │
+│     ├─ f32        74.47 ns      │ 100.8 ns      │ 78.99 ns      │ 79.13 ns      │ 2500    │ 12500000
+│     │             20.62 Gitem/s │ 15.22 Gitem/s │ 19.44 Gitem/s │ 19.41 Gitem/s │         │
+│     ╰─ f64        148.1 ns      │ 170.1 ns      │ 152.5 ns      │ 152.7 ns      │ 2500    │ 12500000
+│                   10.37 Gitem/s │ 9.026 Gitem/s │ 10.06 Gitem/s │ 10.05 Gitem/s │         │
+├─ dot_product                    │               │               │               │         │
+│  ├─ cfavml                      │               │               │               │         │
+│  │  ├─ f32        54.45 ns      │ 71.52 ns      │ 54.82 ns      │ 54.95 ns      │ 2500    │ 12500000
+│  │  │             28.2 Gitem/s  │ 21.47 Gitem/s │ 28.01 Gitem/s │ 27.95 Gitem/s │         │
+│  │  ╰─ f64        110.4 ns      │ 129 ns        │ 111.1 ns      │ 111.3 ns      │ 2500    │ 12500000
+│  │                13.91 Gitem/s │ 11.89 Gitem/s │ 13.81 Gitem/s │ 13.79 Gitem/s │         │
+│  ├─ ndarray                     │               │               │               │         │
+│  │  ├─ f32        58.18 ns      │ 77.82 ns      │ 59.46 ns      │ 59.6 ns       │ 2500    │ 12500000
+│  │  │             26.39 Gitem/s │ 19.73 Gitem/s │ 25.83 Gitem/s │ 25.76 Gitem/s │         │
+│  │  ╰─ f64        114.3 ns      │ 134.6 ns      │ 116.6 ns      │ 116.8 ns      │ 2500    │ 12500000
+│  │                13.43 Gitem/s │ 11.4 Gitem/s  │ 13.16 Gitem/s │ 13.14 Gitem/s │         │
+│  ╰─ simsimd                     │               │               │               │         │
+│     ├─ f32        64.69 ns      │ 82.06 ns      │ 65.63 ns      │ 65.74 ns      │ 2500    │ 12500000
+│     │             23.74 Gitem/s │ 18.71 Gitem/s │ 23.4 Gitem/s  │ 23.36 Gitem/s │         │
+│     ╰─ f64        140.3 ns      │ 159.5 ns      │ 143.8 ns      │ 144.8 ns      │ 2500    │ 12500000
+│                   10.94 Gitem/s │ 9.629 Gitem/s │ 10.67 Gitem/s │ 10.6 Gitem/s  │         │
+╰─ euclidean                      │               │               │               │         │
+   ├─ cfavml                      │               │               │               │         │
+   │  ├─ f32        50.67 ns      │ 70.4 ns       │ 51.86 ns      │ 52.02 ns      │ 2500    │ 12500000
+   │  │             30.3 Gitem/s  │ 21.81 Gitem/s │ 29.61 Gitem/s │ 29.52 Gitem/s │         │
+   │  ╰─ f64        101.2 ns      │ 119.8 ns      │ 103.1 ns      │ 103.3 ns      │ 2500    │ 12500000
+   │                15.16 Gitem/s │ 12.81 Gitem/s │ 14.88 Gitem/s │ 14.86 Gitem/s │         │
+   ├─ ndarray                     │               │               │               │         │
+   │  ├─ f32        188.6 ns      │ 213.7 ns      │ 194.4 ns      │ 194.5 ns      │ 2500    │ 12500000
+   │  │             8.142 Gitem/s │ 7.187 Gitem/s │ 7.9 Gitem/s   │ 7.893 Gitem/s │         │
+   │  ╰─ f64        324.8 ns      │ 479.5 ns      │ 327.5 ns      │ 328.6 ns      │ 2500    │ 12500000
+   │                4.727 Gitem/s │ 3.203 Gitem/s │ 4.689 Gitem/s │ 4.674 Gitem/s │         │
+   ╰─ simsimd                     │               │               │               │         │
+      ├─ f32        68.32 ns      │ 85.67 ns      │ 69.42 ns      │ 69.58 ns      │ 2500    │ 12500000
+      │             22.48 Gitem/s │ 17.92 Gitem/s │ 22.12 Gitem/s │ 22.07 Gitem/s │         │
+      ╰─ f64        143.8 ns      │ 166.6 ns      │ 147.8 ns      │ 148 ns        │ 2500    │ 12500000
+                    10.67 Gitem/s │ 9.214 Gitem/s │ 10.38 Gitem/s │ 10.37 Gitem/s │         │

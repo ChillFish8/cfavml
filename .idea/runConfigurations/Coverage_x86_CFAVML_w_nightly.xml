@@ -1,9 +1,9 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="Coverage x86 CFAVML w/nightly" type="CargoCommandRunConfiguration" factoryName="Cargo Command">
-    <option name="command" value="llvm-cov -p cfavml" />
+    <option name="command" value="llvm-cov -p cfavml --doctests" />
     <option name="workingDirectory" value="file://$PROJECT_DIR$/cfavml" />
     <envs>
-      <env name="RUSTFLAGS" value="-C target-feature=+avx512f,+avx2,+fma" />
+      <env name="RUSTFLAGS" value="-C target-cpu=native" />
     </envs>
     <option name="emulateTerminal" value="true" />
     <option name="channel" value="NIGHTLY" />

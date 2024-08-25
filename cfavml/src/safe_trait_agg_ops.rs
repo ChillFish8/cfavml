@@ -4,12 +4,13 @@
 //! some syntax sugar over these traits.
 
 use crate::danger::export_agg_ops;
+use crate::mem_loader::{IntoMemLoader, MemLoader};
 
 /// Various aggregation operations on a single vector.
-pub trait AggOps: Sized  + Copy {
+pub trait AggOps: Sized + Copy {
     /// Performs a horizontal sum of all elements in `a` returning the result.
     ///
-    /// ### Pseudocode
+    /// ### Implementation Pseudocode
     ///
     /// ```ignore
     /// result = 0
@@ -19,26 +20,27 @@ pub trait AggOps: Sized  + Copy {
     ///
     /// return result
     /// ```
-    ///
-    /// ### Panics
-    ///
-    /// This function will panic if vectors `a` does not match size `dims`.
-    fn sum(dims: usize, a: &[Self]) -> Self;
+    fn sum<B1>(a: B1) -> Self
+    where
+        B1: IntoMemLoader<Self>,
+        B1::Loader: MemLoader<Value = Self>;
 }
 
 macro_rules! agg_ops {
     ($t:ty) => {
         impl AggOps for $t {
-            fn sum(dims: usize, a: &[Self]) -> Self {
-                assert_eq!(a.len(), dims, "Input vector `a` does not match size `dims`");
-
+            fn sum<B1>(a: B1) -> Self
+            where
+                B1: IntoMemLoader<Self>,
+                B1::Loader: MemLoader<Value = Self>,
+            {
                 unsafe {
                     crate::dispatch!(
                         avx512 = export_agg_ops::generic_avx512_sum,
                         avx2 = export_agg_ops::generic_avx2_sum,
                         neon = export_agg_ops::generic_neon_sum,
                         fallback = export_agg_ops::generic_fallback_sum,
-                        args = (dims, a)
+                        args = (a)
                     )
                 }
             }

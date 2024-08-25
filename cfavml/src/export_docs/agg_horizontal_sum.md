@@ -1,6 +1,8 @@
-Performs a horizontal sum of all elements in vector `a` of size `dims` returning the total.
+Performs a horizontal sum of all elements in vector `a` returning the total.
 
-### Pseudocode
+### Implementation Pseudocode
+
+_This is the logic of the routine being called._
 
 ```ignore
 result = 0

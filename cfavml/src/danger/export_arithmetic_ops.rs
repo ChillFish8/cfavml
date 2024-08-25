@@ -4,89 +4,48 @@
 
 use crate::buffer::WriteOnlyBuffer;
 use crate::danger::{
-    generic_add_value,
-    generic_add_vector,
-    generic_div_value,
-    generic_div_vector,
-    generic_mul_value,
-    generic_mul_vector,
-    generic_sub_value,
-    generic_sub_vector,
+    generic_add_vertical,
+    generic_div_vertical,
+    generic_mul_vertical,
+    generic_sub_vertical,
     SimdRegister,
 };
 use crate::math::{AutoMath, Math};
+use crate::mem_loader::{IntoMemLoader, MemLoader};
 
 macro_rules! define_arithmetic_impls {
     (
-        add_value = $add_value_name:ident,
-        add_vector = $add_vector_name:ident,
-        sub_value = $sub_value_name:ident,
-        sub_vector = $sub_vector_name:ident,
-        mul_value = $mul_value_name:ident,
-        mul_vector = $mul_vector_name:ident,
-        div_value = $div_value_name:ident,
-        div_vector = $div_vector_name:ident,
+        add = $add_name:ident,
+        sub = $sub_name:ident,
+        mul = $mul_name:ident,
+        div = $div_name:ident,
         $imp:ident $(,)?
         $(target_features = $($feat:expr $(,)?)+)?
     ) => {
         #[inline]
         $(#[target_feature($(enable = $feat, )*)])*
-        #[doc = include_str!("../export_docs/arithmetic_add_value.md")]
+        #[doc = include_str!("../export_docs/arithmetic_add_vertical.md")]
         $(
 
             #[doc = concat!("- ", $("**`+", $feat, "`** ", )*)]
             #[doc = "CPU features are available at runtime. Running on hardware _without_ this feature available will cause immediate UB."]
         )*
-        #[doc = r#"
-            - The sizes of `a` and `result` must also be equal to size `dims` otherwise out of
-              bounds access can occur.
-        "#]
-        pub unsafe fn $add_value_name<T, B>(
-            dims: usize,
-            value: T,
-            a: &[T],
-            result: &mut [B],
+        pub unsafe fn $add_name<T, B1, B2, B3>(
+            a: B1,
+            b: B2,
+            result: &mut [B3],
         )
         where
             T: Copy,
+            B1: IntoMemLoader<T>,
+            B1::Loader: MemLoader<Value = T>,
+            B2: IntoMemLoader<T>,
+            B2::Loader: MemLoader<Value = T>,
             crate::danger::$imp: SimdRegister<T>,
             AutoMath: Math<T>,
-            for<'a> &'a mut [B]: WriteOnlyBuffer<Item = T>,
+            for<'a> &'a mut [B3]: WriteOnlyBuffer<Item = T>,
         {
-            generic_add_value::<T, crate::danger::$imp, AutoMath, B>(
-                dims,
-                value,
-                a,
-                result,
-            )
-        }
-
-        #[inline]
-        $(#[target_feature($(enable = $feat, )*)])*
-        #[doc = include_str!("../export_docs/arithmetic_add_vector.md")]
-        $(
-
-            #[doc = concat!("- ", $("**`+", $feat, "`** ", )*)]
-            #[doc = "CPU features are available at runtime. Running on hardware _without_ this feature available will cause immediate UB."]
-        )*
-        #[doc = r#"
-            - The sizes of `a`, `b` and `result` must also be equal to size `dims` otherwise out of
-              bounds access can occur.
-        "#]
-        pub unsafe fn $add_vector_name<T, B>(
-            dims: usize,
-            a: &[T],
-            b: &[T],
-            result: &mut [B],
-        )
-        where
-            T: Copy,
-            crate::danger::$imp: SimdRegister<T>,
-            AutoMath: Math<T>,
-            for<'a> &'a mut [B]: WriteOnlyBuffer<Item = T>,
-        {
-            generic_add_vector::<T, crate::danger::$imp, AutoMath, B>(
-                dims,
+            generic_add_vertical::<T, crate::danger::$imp, AutoMath, B1, B2, B3>(
                 a,
                 b,
                 result,
@@ -95,62 +54,28 @@ macro_rules! define_arithmetic_impls {
 
         #[inline]
         $(#[target_feature($(enable = $feat, )*)])*
-        #[doc = include_str!("../export_docs/arithmetic_sub_value.md")]
+        #[doc = include_str!("../export_docs/arithmetic_sub_vertical.md")]
         $(
 
             #[doc = concat!("- ", $("**`+", $feat, "`** ", )*)]
             #[doc = "CPU features are available at runtime. Running on hardware _without_ this feature available will cause immediate UB."]
         )*
-        #[doc = r#"
-            - The sizes of `a` and `result` must also be equal to size `dims` otherwise out of
-              bounds access can occur.
-        "#]
-        pub unsafe fn $sub_value_name<T, B>(
-            dims: usize,
-            value: T,
-            a: &[T],
-            result: &mut [B],
+        pub unsafe fn $sub_name<T, B1, B2, B3>(
+            a: B1,
+            b: B2,
+            result: &mut [B3],
         )
         where
             T: Copy,
+            B1: IntoMemLoader<T>,
+            B1::Loader: MemLoader<Value = T>,
+            B2: IntoMemLoader<T>,
+            B2::Loader: MemLoader<Value = T>,
             crate::danger::$imp: SimdRegister<T>,
             AutoMath: Math<T>,
-            for<'a> &'a mut [B]: WriteOnlyBuffer<Item = T>,
+            for<'a> &'a mut [B3]: WriteOnlyBuffer<Item = T>,
         {
-            generic_sub_value::<T, crate::danger::$imp, AutoMath, B>(
-                dims,
-                value,
-                a,
-                result,
-            )
-        }
-
-        #[inline]
-        $(#[target_feature($(enable = $feat, )*)])*
-        #[doc = include_str!("../export_docs/arithmetic_sub_vector.md")]
-        $(
-
-            #[doc = concat!("- ", $("**`+", $feat, "`** ", )*)]
-            #[doc = "CPU features are available at runtime. Running on hardware _without_ this feature available will cause immediate UB."]
-        )*
-        #[doc = r#"
-            - The sizes of `a`, `b` and `result` must also be equal to size `dims` otherwise out of
-              bounds access can occur.
-        "#]
-        pub unsafe fn $sub_vector_name<T, B>(
-            dims: usize,
-            a: &[T],
-            b: &[T],
-            result: &mut [B],
-        )
-        where
-            T: Copy,
-            crate::danger::$imp: SimdRegister<T>,
-            AutoMath: Math<T>,
-            for<'a> &'a mut [B]: WriteOnlyBuffer<Item = T>,
-        {
-            generic_sub_vector::<T, crate::danger::$imp, AutoMath, B>(
-                dims,
+            generic_sub_vertical::<T, crate::danger::$imp, AutoMath, B1, B2, B3>(
                 a,
                 b,
                 result,
@@ -159,62 +84,28 @@ macro_rules! define_arithmetic_impls {
 
         #[inline]
         $(#[target_feature($(enable = $feat, )*)])*
-        #[doc = include_str!("../export_docs/arithmetic_mul_value.md")]
+        #[doc = include_str!("../export_docs/arithmetic_mul_vertical.md")]
         $(
 
             #[doc = concat!("- ", $("**`+", $feat, "`** ", )*)]
             #[doc = "CPU features are available at runtime. Running on hardware _without_ this feature available will cause immediate UB."]
         )*
-        #[doc = r#"
-            - The sizes of `a` and `result` must also be equal to size `dims` otherwise out of
-              bounds access can occur.
-        "#]
-        pub unsafe fn $mul_value_name<T, B>(
-            dims: usize,
-            value: T,
-            a: &[T],
-            result: &mut [B],
+        pub unsafe fn $mul_name<T, B1, B2, B3>(
+            a: B1,
+            b: B2,
+            result: &mut [B3],
         )
         where
             T: Copy,
+            B1: IntoMemLoader<T>,
+            B1::Loader: MemLoader<Value = T>,
+            B2: IntoMemLoader<T>,
+            B2::Loader: MemLoader<Value = T>,
             crate::danger::$imp: SimdRegister<T>,
             AutoMath: Math<T>,
-            for<'a> &'a mut [B]: WriteOnlyBuffer<Item = T>,
+            for<'a> &'a mut [B3]: WriteOnlyBuffer<Item = T>,
         {
-            generic_mul_value::<T, crate::danger::$imp, AutoMath, B>(
-                dims,
-                value,
-                a,
-                result,
-            )
-        }
-
-        #[inline]
-        $(#[target_feature($(enable = $feat, )*)])*
-        #[doc = include_str!("../export_docs/arithmetic_mul_vector.md")]
-        $(
-
-            #[doc = concat!("- ", $("**`+", $feat, "`** ", )*)]
-            #[doc = "CPU features are available at runtime. Running on hardware _without_ this feature available will cause immediate UB."]
-        )*
-        #[doc = r#"
-            - The sizes of `a`, `b` and `result` must also be equal to size `dims` otherwise out of
-              bounds access can occur.
-        "#]
-        pub unsafe fn $mul_vector_name<T, B>(
-            dims: usize,
-            a: &[T],
-            b: &[T],
-            result: &mut [B],
-        )
-        where
-            T: Copy,
-            crate::danger::$imp: SimdRegister<T>,
-            AutoMath: Math<T>,
-            for<'a> &'a mut [B]: WriteOnlyBuffer<Item = T>,
-        {
-            generic_mul_vector::<T, crate::danger::$imp, AutoMath, B>(
-                dims,
+            generic_mul_vertical::<T, crate::danger::$imp, AutoMath, B1, B2, B3>(
                 a,
                 b,
                 result,
@@ -223,62 +114,28 @@ macro_rules! define_arithmetic_impls {
 
         #[inline]
         $(#[target_feature($(enable = $feat, )*)])*
-        #[doc = include_str!("../export_docs/arithmetic_div_value.md")]
+        #[doc = include_str!("../export_docs/arithmetic_div_vertical.md")]
         $(
 
             #[doc = concat!("- ", $("**`+", $feat, "`** ", )*)]
             #[doc = "CPU features are available at runtime. Running on hardware _without_ this feature available will cause immediate UB."]
         )*
-        #[doc = r#"
-            - The sizes of `a` and `result` must also be equal to size `dims` otherwise out of
-              bounds access can occur.
-        "#]
-        pub unsafe fn $div_value_name<T, B>(
-            dims: usize,
-            value: T,
-            a: &[T],
-            result: &mut [B],
+        pub unsafe fn $div_name<T, B1, B2, B3>(
+            a: B1,
+            b: B2,
+            result: &mut [B3],
         )
         where
             T: Copy,
+            B1: IntoMemLoader<T>,
+            B1::Loader: MemLoader<Value = T>,
+            B2: IntoMemLoader<T>,
+            B2::Loader: MemLoader<Value = T>,
             crate::danger::$imp: SimdRegister<T>,
             AutoMath: Math<T>,
-            for<'a> &'a mut [B]: WriteOnlyBuffer<Item = T>,
+            for<'a> &'a mut [B3]: WriteOnlyBuffer<Item = T>,
         {
-            generic_div_value::<T, crate::danger::$imp, AutoMath, B>(
-                dims,
-                value,
-                a,
-                result,
-            )
-        }
-
-        #[inline]
-        $(#[target_feature($(enable = $feat, )*)])*
-        #[doc = include_str!("../export_docs/arithmetic_div_vector.md")]
-        $(
-
-            #[doc = concat!("- ", $("**`+", $feat, "`** ", )*)]
-            #[doc = "CPU features are available at runtime. Running on hardware _without_ this feature available will cause immediate UB."]
-        )*
-        #[doc = r#"
-            - The sizes of `a`, `b` and `result` must also be equal to size `dims` otherwise out of
-              bounds access can occur.
-        "#]
-        pub unsafe fn $div_vector_name<T, B>(
-            dims: usize,
-            a: &[T],
-            b: &[T],
-            result: &mut [B],
-        )
-        where
-            T: Copy,
-            crate::danger::$imp: SimdRegister<T>,
-            AutoMath: Math<T>,
-            for<'a> &'a mut [B]: WriteOnlyBuffer<Item = T>,
-        {
-            generic_div_vector::<T, crate::danger::$imp, AutoMath, B>(
-                dims,
+            generic_div_vertical::<T, crate::danger::$imp, AutoMath, B1, B2, B3>(
                 a,
                 b,
                 result,
@@ -288,53 +145,37 @@ macro_rules! define_arithmetic_impls {
 }
 
 define_arithmetic_impls!(
-    add_value = generic_fallback_add_value,
-    add_vector = generic_fallback_add_vector,
-    sub_value = generic_fallback_sub_value,
-    sub_vector = generic_fallback_sub_vector,
-    mul_value = generic_fallback_mul_value,
-    mul_vector = generic_fallback_mul_vector,
-    div_value = generic_fallback_div_value,
-    div_vector = generic_fallback_div_vector,
+    add = generic_fallback_add_vertical,
+    sub = generic_fallback_sub_vertical,
+    mul = generic_fallback_mul_vertical,
+    div = generic_fallback_div_vertical,
     Fallback,
 );
 #[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
 define_arithmetic_impls!(
-    add_value = generic_avx2_add_value,
-    add_vector = generic_avx2_add_vector,
-    sub_value = generic_avx2_sub_value,
-    sub_vector = generic_avx2_sub_vector,
-    mul_value = generic_avx2_mul_value,
-    mul_vector = generic_avx2_mul_vector,
-    div_value = generic_avx2_div_value,
-    div_vector = generic_avx2_div_vector,
+    add = generic_avx2_add_vertical,
+    sub = generic_avx2_sub_vertical,
+    mul = generic_avx2_mul_vertical,
+    div = generic_avx2_div_vertical,
     Avx2,
     target_features = "avx2"
 );
 #[cfg(all(any(target_arch = "x86", target_arch = "x86_64"), feature = "nightly"))]
 define_arithmetic_impls!(
-    add_value = generic_avx512_add_value,
-    add_vector = generic_avx512_add_vector,
-    sub_value = generic_avx512_sub_value,
-    sub_vector = generic_avx512_sub_vector,
-    mul_value = generic_avx512_mul_value,
-    mul_vector = generic_avx512_mul_vector,
-    div_value = generic_avx512_div_value,
-    div_vector = generic_avx512_div_vector,
+    add = generic_avx512_add_vertical,
+    sub = generic_avx512_sub_vertical,
+    mul = generic_avx512_mul_vertical,
+    div = generic_avx512_div_vertical,
     Avx512,
     target_features = "avx512f",
     "avx512bw"
 );
 #[cfg(target_arch = "aarch64")]
 define_arithmetic_impls!(
-    add_value = generic_neon_add_value,
-    add_vector = generic_neon_add_vector,
-    sub_value = generic_neon_sub_value,
-    sub_vector = generic_neon_sub_vector,
-    mul_value = generic_neon_mul_value,
-    mul_vector = generic_neon_mul_vector,
-    div_value = generic_neon_div_value,
-    div_vector = generic_neon_div_vector,
+    add = generic_neon_add_vertical,
+    sub = generic_neon_sub_vertical,
+    mul = generic_neon_mul_vertical,
+    div = generic_neon_div_vertical,
     Neon,
     target_features = "neon"
 );
@@ -351,7 +192,7 @@ mod tests {
                     let (l1, _) = crate::test_utils::get_sample_vectors::<$t>(533);
 
                     let mut result = vec![$t::default(); 533];
-                    unsafe { [< $variant _ $op _value >](l1.len(), 2 as $t, &l1, &mut result) };
+                    unsafe { [< $variant _ $op _vertical >](&l1, 2 as $t, &mut result) };
 
                     let expected = l1.iter()
                         .copied()
@@ -369,7 +210,7 @@ mod tests {
                     let (l1, l2) = crate::test_utils::get_sample_vectors::<$t>(533);
 
                     let mut result = vec![$t::default(); 533];
-                    unsafe { [< $variant _ $op _vector >](l1.len(), &l1, &l2, &mut result) };
+                    unsafe { [< $variant _ $op _vertical >](&l1, &l2, &mut result) };
 
                     let expected = l1.iter()
                         .copied()
