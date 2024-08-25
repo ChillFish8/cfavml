@@ -1,3 +1,5 @@
+use std::fmt::Debug;
+
 use crate::danger::{DenseLane, SimdRegister};
 
 /// The stack scratch space used by the projecting buffer loader.
@@ -142,7 +144,7 @@ pub struct Projected<T>(pub T);
 
 impl<'a, B, T> IntoMemLoader<T> for Projected<&'a B>
 where
-    T: Copy + Default,
+    T: Copy + Default + Debug,
     B: AsRef<[T]> + ?Sized,
 {
     type Loader = ProjectedPtrBufferLoader<T>;
@@ -267,7 +269,7 @@ pub struct ProjectedPtrBufferLoader<T> {
     projected_len: usize,
 }
 
-impl<T: Copy> ProjectedPtrBufferLoader<T> {
+impl<T: Copy + Debug> ProjectedPtrBufferLoader<T> {
     fn can_load_full_dense_lane<R: SimdRegister<T>>(&self) -> bool {
         self.data_cursor + R::elements_per_dense() <= self.data_len
     }
@@ -281,7 +283,7 @@ impl<T: Copy> ProjectedPtrBufferLoader<T> {
     }
 }
 
-impl<T: Copy + Default> MemLoader for ProjectedPtrBufferLoader<T> {
+impl<T: Copy + Default + Debug> MemLoader for ProjectedPtrBufferLoader<T> {
     type Value = T;
 
     #[inline(always)]
@@ -331,6 +333,7 @@ impl<T: Copy + Default> MemLoader for ProjectedPtrBufferLoader<T> {
         for i in 0..R::elements_per_lane() {
             temp_buffer[i] = self.read();
         }
+        dbg!(&temp_buffer);
 
         R::load(temp_buffer.as_ptr())
     }
@@ -478,6 +481,308 @@ mod tests {
             assert_eq!(reg, 1.0);
             let reg = loader.load::<Fallback>();
             assert_eq!(reg, 2.0);
+        }
+    }
+
+    #[cfg(all(
+        any(target_arch = "x86", target_arch = "x86_64"),
+        target_feature = "avx2"
+    ))]
+    #[test]
+    fn test_buffer_projection_avx2_dense_load() {
+        let sample = [1.0f32, 2.0f32];
+        let projected = Projected(&sample);
+        let mut loader = projected.into_projected_mem_loader(4);
+        assert_eq!(loader.projected_len(), 4);
+
+        #[allow(clippy::missing_transmute_annotations)]
+        unsafe {
+            let dense = loader.load_dense::<crate::danger::Avx2>();
+            assert_eq!(
+                core::mem::transmute::<_, [f32; 8]>(dense.a),
+                [1.0, 2.0, 1.0, 2.0, 1.0, 2.0, 1.0, 2.0]
+            );
+            assert_eq!(
+                core::mem::transmute::<_, [f32; 8]>(dense.b),
+                [1.0, 2.0, 1.0, 2.0, 1.0, 2.0, 1.0, 2.0]
+            );
+            assert_eq!(
+                core::mem::transmute::<_, [f32; 8]>(dense.c),
+                [1.0, 2.0, 1.0, 2.0, 1.0, 2.0, 1.0, 2.0]
+            );
+            assert_eq!(
+                core::mem::transmute::<_, [f32; 8]>(dense.d),
+                [1.0, 2.0, 1.0, 2.0, 1.0, 2.0, 1.0, 2.0]
+            );
+            assert_eq!(
+                core::mem::transmute::<_, [f32; 8]>(dense.e),
+                [1.0, 2.0, 1.0, 2.0, 1.0, 2.0, 1.0, 2.0]
+            );
+            assert_eq!(
+                core::mem::transmute::<_, [f32; 8]>(dense.f),
+                [1.0, 2.0, 1.0, 2.0, 1.0, 2.0, 1.0, 2.0]
+            );
+            assert_eq!(
+                core::mem::transmute::<_, [f32; 8]>(dense.g),
+                [1.0, 2.0, 1.0, 2.0, 1.0, 2.0, 1.0, 2.0]
+            );
+            assert_eq!(
+                core::mem::transmute::<_, [f32; 8]>(dense.h),
+                [1.0, 2.0, 1.0, 2.0, 1.0, 2.0, 1.0, 2.0]
+            );
+        }
+
+        let sample = [1.0f32, 2.0f32, 3.0f32];
+        let projected = Projected(&sample);
+        let mut loader = projected.into_projected_mem_loader(9);
+        assert_eq!(loader.projected_len(), 9);
+
+        #[allow(clippy::missing_transmute_annotations)]
+        unsafe {
+            let dense = loader.load_dense::<crate::danger::Avx2>();
+            assert_eq!(
+                core::mem::transmute::<_, [f32; 8]>(dense.a),
+                [1.0, 2.0, 3.0, 1.0, 2.0, 3.0, 1.0, 2.0]
+            );
+            assert_eq!(
+                core::mem::transmute::<_, [f32; 8]>(dense.b),
+                [3.0, 1.0, 2.0, 3.0, 1.0, 2.0, 3.0, 1.0]
+            );
+            assert_eq!(
+                core::mem::transmute::<_, [f32; 8]>(dense.c),
+                [2.0, 3.0, 1.0, 2.0, 3.0, 1.0, 2.0, 3.0]
+            );
+            assert_eq!(
+                core::mem::transmute::<_, [f32; 8]>(dense.d),
+                [1.0, 2.0, 3.0, 1.0, 2.0, 3.0, 1.0, 2.0]
+            );
+            assert_eq!(
+                core::mem::transmute::<_, [f32; 8]>(dense.e),
+                [3.0, 1.0, 2.0, 3.0, 1.0, 2.0, 3.0, 1.0]
+            );
+            assert_eq!(
+                core::mem::transmute::<_, [f32; 8]>(dense.f),
+                [2.0, 3.0, 1.0, 2.0, 3.0, 1.0, 2.0, 3.0]
+            );
+            assert_eq!(
+                core::mem::transmute::<_, [f32; 8]>(dense.g),
+                [1.0, 2.0, 3.0, 1.0, 2.0, 3.0, 1.0, 2.0]
+            );
+            assert_eq!(
+                core::mem::transmute::<_, [f32; 8]>(dense.h),
+                [3.0, 1.0, 2.0, 3.0, 1.0, 2.0, 3.0, 1.0]
+            );
+        }
+    }
+
+    #[cfg(all(
+        any(target_arch = "x86", target_arch = "x86_64"),
+        target_feature = "avx2"
+    ))]
+    #[test]
+    fn test_buffer_projection_avx2_load() {
+        let sample = [1.0f32, 2.0f32];
+        let projected = Projected(&sample);
+        let mut loader = projected.into_projected_mem_loader(4);
+        assert_eq!(loader.projected_len(), 4);
+
+        #[allow(clippy::missing_transmute_annotations)]
+        unsafe {
+            let reg = loader.load::<crate::danger::Avx2>();
+            assert_eq!(
+                core::mem::transmute::<_, [f32; 8]>(reg),
+                [1.0, 2.0, 1.0, 2.0, 1.0, 2.0, 1.0, 2.0]
+            );
+            let reg = loader.load::<crate::danger::Avx2>();
+            assert_eq!(
+                core::mem::transmute::<_, [f32; 8]>(reg),
+                [1.0, 2.0, 1.0, 2.0, 1.0, 2.0, 1.0, 2.0]
+            );
+            let reg = loader.load::<crate::danger::Avx2>();
+            assert_eq!(
+                core::mem::transmute::<_, [f32; 8]>(reg),
+                [1.0, 2.0, 1.0, 2.0, 1.0, 2.0, 1.0, 2.0]
+            );
+            let reg = loader.load::<crate::danger::Avx2>();
+            assert_eq!(
+                core::mem::transmute::<_, [f32; 8]>(reg),
+                [1.0, 2.0, 1.0, 2.0, 1.0, 2.0, 1.0, 2.0]
+            );
+        }
+
+        let sample = [1.0f32, 2.0f32, 3.0f32];
+        let projected = Projected(&sample);
+        let mut loader = projected.into_projected_mem_loader(9);
+        assert_eq!(loader.projected_len(), 9);
+
+        #[allow(clippy::missing_transmute_annotations)]
+        unsafe {
+            let reg = loader.load::<crate::danger::Avx2>();
+            assert_eq!(
+                core::mem::transmute::<_, [f32; 8]>(reg),
+                [1.0, 2.0, 3.0, 1.0, 2.0, 3.0, 1.0, 2.0]
+            );
+            let reg = loader.load::<crate::danger::Avx2>();
+            assert_eq!(
+                core::mem::transmute::<_, [f32; 8]>(reg),
+                [3.0, 1.0, 2.0, 3.0, 1.0, 2.0, 3.0, 1.0]
+            );
+            let reg = loader.load::<crate::danger::Avx2>();
+            assert_eq!(
+                core::mem::transmute::<_, [f32; 8]>(reg),
+                [2.0, 3.0, 1.0, 2.0, 3.0, 1.0, 2.0, 3.0]
+            );
+        }
+    }
+
+    #[cfg(all(
+        any(target_arch = "x86", target_arch = "x86_64"),
+        target_feature = "avx512f"
+    ))]
+    #[test]
+    fn test_buffer_projection_avx512_dense_load() {
+        let sample = [1.0f64, 2.0f64];
+        let projected = Projected(&sample);
+        let mut loader = projected.into_projected_mem_loader(4);
+        assert_eq!(loader.projected_len(), 4);
+
+        #[allow(clippy::missing_transmute_annotations)]
+        unsafe {
+            let dense = loader.load_dense::<crate::danger::Avx512>();
+            assert_eq!(
+                core::mem::transmute::<_, [f64; 8]>(dense.a),
+                [1.0, 2.0, 1.0, 2.0, 1.0, 2.0, 1.0, 2.0]
+            );
+            assert_eq!(
+                core::mem::transmute::<_, [f64; 8]>(dense.b),
+                [1.0, 2.0, 1.0, 2.0, 1.0, 2.0, 1.0, 2.0]
+            );
+            assert_eq!(
+                core::mem::transmute::<_, [f64; 8]>(dense.c),
+                [1.0, 2.0, 1.0, 2.0, 1.0, 2.0, 1.0, 2.0]
+            );
+            assert_eq!(
+                core::mem::transmute::<_, [f64; 8]>(dense.d),
+                [1.0, 2.0, 1.0, 2.0, 1.0, 2.0, 1.0, 2.0]
+            );
+            assert_eq!(
+                core::mem::transmute::<_, [f64; 8]>(dense.e),
+                [1.0, 2.0, 1.0, 2.0, 1.0, 2.0, 1.0, 2.0]
+            );
+            assert_eq!(
+                core::mem::transmute::<_, [f64; 8]>(dense.f),
+                [1.0, 2.0, 1.0, 2.0, 1.0, 2.0, 1.0, 2.0]
+            );
+            assert_eq!(
+                core::mem::transmute::<_, [f64; 8]>(dense.g),
+                [1.0, 2.0, 1.0, 2.0, 1.0, 2.0, 1.0, 2.0]
+            );
+            assert_eq!(
+                core::mem::transmute::<_, [f64; 8]>(dense.h),
+                [1.0, 2.0, 1.0, 2.0, 1.0, 2.0, 1.0, 2.0]
+            );
+        }
+
+        let sample = [1.0f64, 2.0f64, 3.0f64];
+        let projected = Projected(&sample);
+        let mut loader = projected.into_projected_mem_loader(9);
+        assert_eq!(loader.projected_len(), 9);
+
+        #[allow(clippy::missing_transmute_annotations)]
+        unsafe {
+            let dense = loader.load_dense::<crate::danger::Avx512>();
+            assert_eq!(
+                core::mem::transmute::<_, [f64; 8]>(dense.a),
+                [1.0, 2.0, 3.0, 1.0, 2.0, 3.0, 1.0, 2.0]
+            );
+            assert_eq!(
+                core::mem::transmute::<_, [f64; 8]>(dense.b),
+                [3.0, 1.0, 2.0, 3.0, 1.0, 2.0, 3.0, 1.0]
+            );
+            assert_eq!(
+                core::mem::transmute::<_, [f64; 8]>(dense.c),
+                [2.0, 3.0, 1.0, 2.0, 3.0, 1.0, 2.0, 3.0]
+            );
+            assert_eq!(
+                core::mem::transmute::<_, [f64; 8]>(dense.d),
+                [1.0, 2.0, 3.0, 1.0, 2.0, 3.0, 1.0, 2.0]
+            );
+            assert_eq!(
+                core::mem::transmute::<_, [f64; 8]>(dense.e),
+                [3.0, 1.0, 2.0, 3.0, 1.0, 2.0, 3.0, 1.0]
+            );
+            assert_eq!(
+                core::mem::transmute::<_, [f64; 8]>(dense.f),
+                [2.0, 3.0, 1.0, 2.0, 3.0, 1.0, 2.0, 3.0]
+            );
+            assert_eq!(
+                core::mem::transmute::<_, [f64; 8]>(dense.g),
+                [1.0, 2.0, 3.0, 1.0, 2.0, 3.0, 1.0, 2.0]
+            );
+            assert_eq!(
+                core::mem::transmute::<_, [f64; 8]>(dense.h),
+                [3.0, 1.0, 2.0, 3.0, 1.0, 2.0, 3.0, 1.0]
+            );
+        }
+    }
+
+    #[cfg(all(
+        any(target_arch = "x86", target_arch = "x86_64"),
+        target_feature = "avx512f"
+    ))]
+    #[test]
+    fn test_buffer_projection_avx512_load() {
+        let sample = [1.0f64, 2.0f64];
+        let projected = Projected(&sample);
+        let mut loader = projected.into_projected_mem_loader(4);
+        assert_eq!(loader.projected_len(), 4);
+
+        #[allow(clippy::missing_transmute_annotations)]
+        unsafe {
+            let reg = loader.load::<crate::danger::Avx512>();
+            assert_eq!(
+                core::mem::transmute::<_, [f64; 8]>(reg),
+                [1.0, 2.0, 1.0, 2.0, 1.0, 2.0, 1.0, 2.0]
+            );
+            let reg = loader.load::<crate::danger::Avx512>();
+            assert_eq!(
+                core::mem::transmute::<_, [f64; 8]>(reg),
+                [1.0, 2.0, 1.0, 2.0, 1.0, 2.0, 1.0, 2.0]
+            );
+            let reg = loader.load::<crate::danger::Avx512>();
+            assert_eq!(
+                core::mem::transmute::<_, [f64; 8]>(reg),
+                [1.0, 2.0, 1.0, 2.0, 1.0, 2.0, 1.0, 2.0]
+            );
+            let reg = loader.load::<crate::danger::Avx512>();
+            assert_eq!(
+                core::mem::transmute::<_, [f64; 8]>(reg),
+                [1.0, 2.0, 1.0, 2.0, 1.0, 2.0, 1.0, 2.0]
+            );
+        }
+
+        let sample = [1.0f64, 2.0f64, 3.0f64];
+        let projected = Projected(&sample);
+        let mut loader = projected.into_projected_mem_loader(9);
+        assert_eq!(loader.projected_len(), 9);
+
+        #[allow(clippy::missing_transmute_annotations)]
+        unsafe {
+            let reg = loader.load::<crate::danger::Avx512>();
+            assert_eq!(
+                core::mem::transmute::<_, [f64; 8]>(reg),
+                [1.0, 2.0, 3.0, 1.0, 2.0, 3.0, 1.0, 2.0]
+            );
+            let reg = loader.load::<crate::danger::Avx512>();
+            assert_eq!(
+                core::mem::transmute::<_, [f64; 8]>(reg),
+                [3.0, 1.0, 2.0, 3.0, 1.0, 2.0, 3.0, 1.0]
+            );
+            let reg = loader.load::<crate::danger::Avx512>();
+            assert_eq!(
+                core::mem::transmute::<_, [f64; 8]>(reg),
+                [2.0, 3.0, 1.0, 2.0, 3.0, 1.0, 2.0, 3.0]
+            );
         }
     }
 }
