@@ -1,5 +1,3 @@
-use std::fmt::Debug;
-
 use crate::danger::{DenseLane, SimdRegister};
 
 /// The stack scratch space used by the projecting buffer loader.
@@ -144,7 +142,7 @@ pub struct Projected<T>(pub T);
 
 impl<'a, B, T> IntoMemLoader<T> for Projected<&'a B>
 where
-    T: Copy + Default + Debug,
+    T: Copy + Default,
     B: AsRef<[T]> + ?Sized,
 {
     type Loader = ProjectedPtrBufferLoader<T>;
@@ -269,7 +267,7 @@ pub struct ProjectedPtrBufferLoader<T> {
     projected_len: usize,
 }
 
-impl<T: Copy + Debug> ProjectedPtrBufferLoader<T> {
+impl<T: Copy> ProjectedPtrBufferLoader<T> {
     fn can_load_full_dense_lane<R: SimdRegister<T>>(&self) -> bool {
         self.data_cursor + R::elements_per_dense() <= self.data_len
     }
@@ -283,7 +281,7 @@ impl<T: Copy + Debug> ProjectedPtrBufferLoader<T> {
     }
 }
 
-impl<T: Copy + Default + Debug> MemLoader for ProjectedPtrBufferLoader<T> {
+impl<T: Copy + Default> MemLoader for ProjectedPtrBufferLoader<T> {
     type Value = T;
 
     #[inline(always)]
@@ -333,7 +331,6 @@ impl<T: Copy + Default + Debug> MemLoader for ProjectedPtrBufferLoader<T> {
         for i in 0..R::elements_per_lane() {
             temp_buffer[i] = self.read();
         }
-        dbg!(&temp_buffer);
 
         R::load(temp_buffer.as_ptr())
     }
