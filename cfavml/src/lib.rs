@@ -17,6 +17,7 @@ pub mod dispatch;
 pub mod math;
 
 pub mod buffer;
+pub mod mem_loader;
 mod safe_function_ops;
 pub mod safe_trait_agg_ops;
 pub mod safe_trait_arithmetic_ops;

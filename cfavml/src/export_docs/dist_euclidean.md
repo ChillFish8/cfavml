@@ -1,6 +1,8 @@
-Calculates the squared Euclidean distance between vectors `a` and `b` of size `dims`.
+Calculates the squared Euclidean distance between vectors `a` and `b`.
 
-### Pseudocode
+### Implementation Pseudocode
+
+_This is the logic of the routine being called._
 
 ```ignore
 result = 0;
@@ -11,6 +13,10 @@ for i in range(dims):
 
 return result
 ```
+
+# Panics
+
+If vectors `a` and `b` are not equal in the length.
 
 # Safety
 

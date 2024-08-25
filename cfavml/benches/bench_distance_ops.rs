@@ -67,12 +67,7 @@ mod dot_product {
     {
         let (l1, l2) = utils::get_sample_vectors::<T>(DIMS);
 
-        bencher.bench_local(|| {
-            let l1_view = black_box(l1.as_ref());
-            let l2_view = black_box(l2.as_ref());
-
-            cfavml::dot(l1_view, l2_view)
-        });
+        bencher.bench_local(|| cfavml::dot(black_box(&l1), black_box(&l2)));
     }
 }
 
@@ -134,12 +129,7 @@ mod cosine {
     {
         let (l1, l2) = utils::get_sample_vectors::<T>(DIMS);
 
-        bencher.bench_local(|| {
-            let l1_view = black_box(l1.as_ref());
-            let l2_view = black_box(l2.as_ref());
-
-            cfavml::cosine(l1_view, l2_view)
-        });
+        bencher.bench_local(|| cfavml::cosine(black_box(&l1), black_box(&l2)));
     }
 }
 
@@ -202,11 +192,7 @@ mod euclidean {
     {
         let (l1, l2) = utils::get_sample_vectors::<T>(DIMS);
 
-        bencher.bench_local(|| {
-            let l1_view = black_box(l1.as_ref());
-            let l2_view = black_box(l2.as_ref());
-
-            cfavml::squared_euclidean(l1_view, l2_view)
-        });
+        bencher
+            .bench_local(|| cfavml::squared_euclidean(black_box(&l1), black_box(&l2)));
     }
 }

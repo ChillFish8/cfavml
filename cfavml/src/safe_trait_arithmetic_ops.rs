@@ -5,41 +5,26 @@
 
 use crate::buffer::WriteOnlyBuffer;
 use crate::danger::export_arithmetic_ops;
+use crate::mem_loader::{IntoMemLoader, MemLoader};
 
 /// Various arithmetic operations over vectors.
-pub trait ArithmeticOps: Sized {
-    /// Performs an element wise addition of each element of vector `a` and the provided broadcast
-    /// value, writing the result to `result`.
+pub trait ArithmeticOps: Sized + Copy {
+    /// Performs an element wise addition of two input buffers `lhs` and `rhs` that can
+    /// be projected to the desired output size of `result`.
     ///
-    /// ### Pseudocode
+    /// ### Projecting Vectors
     ///
-    /// ```ignore
-    /// result = [0; dims]
+    /// CFAVML allows for working over a wide variety of buffers for applications, projection is effectively
+    /// broadcasting of two input buffers implementing `IntoMemLoader<T>`.
     ///
-    /// for i in range(dims):
-    ///     result[i] = a[i] + value
+    /// By default, you can provide _two slices_, _one slice and a broadcast value_, or _two broadcast values_,
+    /// which exhibit the standard behaviour as you might expect.
     ///
-    /// return result
-    /// ```
+    /// When providing two slices as inputs they cannot be projected to a buffer
+    /// that is larger their input sizes by default. This means providing two slices
+    /// of `128` elements in length must take a result buffer of `128` elements in length.
     ///
-    /// ### Result buffer
-    ///
-    /// The result buffer can be either an initialized slice i.e. `&mut [Self]`
-    /// or it can be a slice holding potentially uninitialized data i.e. `&mut [MaybeUninit<Self>]`.
-    ///
-    /// Once the operation is complete, it is safe to assume the data written is fully initialized.
-    ///
-    /// ### Panics
-    ///
-    /// Panics if the size of vectors `a` or `result` does not match `dims`.
-    fn add_value<B>(dims: usize, value: Self, a: &[Self], result: &mut [B])
-    where
-        for<'a> &'a mut [B]: WriteOnlyBuffer<Item = Self>;
-
-    /// Performs an element wise addition of each element pair of vector `a` and `b`,
-    /// writing the result to `result`.
-    ///
-    /// ### Pseudocode
+    /// ### Implementation Pseudocode
     ///
     /// ```ignore
     /// result = [0; dims]
@@ -50,52 +35,34 @@ pub trait ArithmeticOps: Sized {
     /// return result
     /// ```
     ///
-    /// ### Result buffer
+    /// # Panics
     ///
-    /// The result buffer can be either an initialized slice i.e. `&mut [Self]`
-    /// or it can be a slice holding potentially uninitialized data i.e. `&mut [MaybeUninit<Self>]`.
-    ///
-    /// Once the operation is complete, it is safe to assume the data written is fully initialized.
-    ///
-    /// ### Panics
-    ///
-    /// Panics if the size of vectors `a`, `b` or `result` does not match `dims`.
-    fn add_vector<B>(dims: usize, a: &[Self], b: &[Self], result: &mut [B])
+    /// If vectors `a` and `b` cannot be projected to the target size of `result`.
+    /// Note that the projection rules are tied to the `MemLoader` implementation.
+    fn add_vertical<B1, B2, B3>(lhs: B1, rhs: B2, result: &mut [B3])
     where
-        for<'a> &'a mut [B]: WriteOnlyBuffer<Item = Self>;
+        B1: IntoMemLoader<Self>,
+        B1::Loader: MemLoader<Value = Self>,
+        B2: IntoMemLoader<Self>,
+        B2::Loader: MemLoader<Value = Self>,
+        for<'a> &'a mut [B3]: WriteOnlyBuffer<Item = Self>;
 
-    /// Performs an element wise subtraction of each element of vector `a` and the provided broadcast
-    /// value, writing the result to `result`.
+    /// Performs an element wise subtraction of two input buffers `a` and `b` that can
+    /// be projected to the desired output size of `result`.
     ///
-    /// ### Pseudocode
+    /// ### Projecting Vectors
     ///
-    /// ```ignore
-    /// result = [0; dims]
+    /// CFAVML allows for working over a wide variety of buffers for applications, projection is effectively
+    /// broadcasting of two input buffers implementing `IntoMemLoader<T>`.
     ///
-    /// for i in range(dims):
-    ///     result[i] = a[i] - value
+    /// By default, you can provide _two slices_, _one slice and a broadcast value_, or _two broadcast values_,
+    /// which exhibit the standard behaviour as you might expect.
     ///
-    /// return result
-    /// ```
+    /// When providing two slices as inputs they cannot be projected to a buffer
+    /// that is larger their input sizes by default. This means providing two slices
+    /// of `128` elements in length must take a result buffer of `128` elements in length.
     ///
-    /// ### Result buffer
-    ///
-    /// The result buffer can be either an initialized slice i.e. `&mut [Self]`
-    /// or it can be a slice holding potentially uninitialized data i.e. `&mut [MaybeUninit<Self>]`.
-    ///
-    /// Once the operation is complete, it is safe to assume the data written is fully initialized.
-    ///
-    /// ### Panics
-    ///
-    /// Panics if the size of vectors `a` or `result` does not match `dims`.
-    fn sub_value<B>(dims: usize, value: Self, a: &[Self], result: &mut [B])
-    where
-        for<'a> &'a mut [B]: WriteOnlyBuffer<Item = Self>;
-
-    /// Performs an element wise subtraction of each element pair from vectors `a` and `b`,
-    /// writing the result to `result`.
-    ///
-    /// ### Pseudocode
+    /// ### Implementation Pseudocode
     ///
     /// ```ignore
     /// result = [0; dims]
@@ -106,52 +73,34 @@ pub trait ArithmeticOps: Sized {
     /// return result
     /// ```
     ///
-    /// ### Result buffer
+    /// # Panics
     ///
-    /// The result buffer can be either an initialized slice i.e. `&mut [Self]`
-    /// or it can be a slice holding potentially uninitialized data i.e. `&mut [MaybeUninit<Self>]`.
-    ///
-    /// Once the operation is complete, it is safe to assume the data written is fully initialized.
-    ///
-    /// ### Panics
-    ///
-    /// Panics if the size of vectors `a`, `b` or `result` does not match `dims`.
-    fn sub_vector<B>(dims: usize, a: &[Self], b: &[Self], result: &mut [B])
+    /// If vectors `a` and `b` cannot be projected to the target size of `result`.
+    /// Note that the projection rules are tied to the `MemLoader` implementation.
+    fn sub_vertical<B1, B2, B3>(lhs: B1, rhs: B2, result: &mut [B3])
     where
-        for<'a> &'a mut [B]: WriteOnlyBuffer<Item = Self>;
+        B1: IntoMemLoader<Self>,
+        B1::Loader: MemLoader<Value = Self>,
+        B2: IntoMemLoader<Self>,
+        B2::Loader: MemLoader<Value = Self>,
+        for<'a> &'a mut [B3]: WriteOnlyBuffer<Item = Self>;
 
-    /// Performs an element wise multiplication of each element of vector `a` and the provided broadcast
-    /// value, writing the result to `result`.
+    /// Performs an element wise multiply of two input buffers `a` and `b` that can
+    /// be projected to the desired output size of `result`.
     ///
-    /// ### Pseudocode
+    /// ### Projecting Vectors
     ///
-    /// ```ignore
-    /// result = [0; dims]
+    /// CFAVML allows for working over a wide variety of buffers for applications, projection is effectively
+    /// broadcasting of two input buffers implementing `IntoMemLoader<T>`.
     ///
-    /// for i in range(dims):
-    ///     result[i] = a[i] * value
+    /// By default, you can provide _two slices_, _one slice and a broadcast value_, or _two broadcast values_,
+    /// which exhibit the standard behaviour as you might expect.
     ///
-    /// return result
-    /// ```
+    /// When providing two slices as inputs they cannot be projected to a buffer
+    /// that is larger their input sizes by default. This means providing two slices
+    /// of `128` elements in length must take a result buffer of `128` elements in length.
     ///
-    /// ### Result buffer
-    ///
-    /// The result buffer can be either an initialized slice i.e. `&mut [Self]`
-    /// or it can be a slice holding potentially uninitialized data i.e. `&mut [MaybeUninit<Self>]`.
-    ///
-    /// Once the operation is complete, it is safe to assume the data written is fully initialized.
-    ///
-    /// ### Panics
-    ///
-    /// Panics if the size of vectors `a` or `result` does not match `dims`.
-    fn mul_value<B>(dims: usize, value: Self, a: &[Self], result: &mut [B])
-    where
-        for<'a> &'a mut [B]: WriteOnlyBuffer<Item = Self>;
-
-    /// Performs an element wise multiplication of each element pair from vectors `a` and `b`,
-    /// writing the result to `result`.
-    ///
-    /// ### Pseudocode
+    /// ### Implementation Pseudocode
     ///
     /// ```ignore
     /// result = [0; dims]
@@ -162,52 +111,34 @@ pub trait ArithmeticOps: Sized {
     /// return result
     /// ```
     ///
-    /// ### Result buffer
+    /// # Panics
     ///
-    /// The result buffer can be either an initialized slice i.e. `&mut [Self]`
-    /// or it can be a slice holding potentially uninitialized data i.e. `&mut [MaybeUninit<Self>]`.
-    ///
-    /// Once the operation is complete, it is safe to assume the data written is fully initialized.
-    ///
-    /// ### Panics
-    ///
-    /// Panics if the size of vectors `a`, `b` or `result` does not match `dims`.
-    fn mul_vector<B>(dims: usize, a: &[Self], b: &[Self], result: &mut [B])
+    /// If vectors `a` and `b` cannot be projected to the target size of `result`.
+    /// Note that the projection rules are tied to the `MemLoader` implementation.
+    fn mul_vertical<B1, B2, B3>(lhs: B1, rhs: B2, result: &mut [B3])
     where
-        for<'a> &'a mut [B]: WriteOnlyBuffer<Item = Self>;
+        B1: IntoMemLoader<Self>,
+        B1::Loader: MemLoader<Value = Self>,
+        B2: IntoMemLoader<Self>,
+        B2::Loader: MemLoader<Value = Self>,
+        for<'a> &'a mut [B3]: WriteOnlyBuffer<Item = Self>;
 
-    /// Performs an element wise division of each element of vector `a` and the provided broadcast
-    /// value, writing the result to `result`.
+    /// Performs an element wise division of two input buffers `a` and `b` that can
+    /// be projected to the desired output size of `result`.
     ///
-    /// ### Pseudocode
+    /// ### Projecting Vectors
     ///
-    /// ```ignore
-    /// result = [0; dims]
+    /// CFAVML allows for working over a wide variety of buffers for applications, projection is effectively
+    /// broadcasting of two input buffers implementing `IntoMemLoader<T>`.
     ///
-    /// for i in range(dims):
-    ///     result[i] = a[i] / value
+    /// By default, you can provide _two slices_, _one slice and a broadcast value_, or _two broadcast values_,
+    /// which exhibit the standard behaviour as you might expect.
     ///
-    /// return result
-    /// ```
+    /// When providing two slices as inputs they cannot be projected to a buffer
+    /// that is larger their input sizes by default. This means providing two slices
+    /// of `128` elements in length must take a result buffer of `128` elements in length.
     ///
-    /// ### Result buffer
-    ///
-    /// The result buffer can be either an initialized slice i.e. `&mut [Self]`
-    /// or it can be a slice holding potentially uninitialized data i.e. `&mut [MaybeUninit<Self>]`.
-    ///
-    /// Once the operation is complete, it is safe to assume the data written is fully initialized.
-    ///
-    /// ### Panics
-    ///
-    /// Panics if the size of vectors `a` or `result` does not match `dims`.
-    fn div_value<B>(dims: usize, value: Self, a: &[Self], result: &mut [B])
-    where
-        for<'a> &'a mut [B]: WriteOnlyBuffer<Item = Self>;
-
-    /// Performs an element wise division on each element pair from vectors `a` and `b`,
-    /// writing the result to `result`.
-    ///
-    /// ### Pseudocode
+    /// ### Implementation Pseudocode
     ///
     /// ```ignore
     /// result = [0; dims]
@@ -218,200 +149,94 @@ pub trait ArithmeticOps: Sized {
     /// return result
     /// ```
     ///
-    /// ### Result buffer
+    /// # Panics
     ///
-    /// The result buffer can be either an initialized slice i.e. `&mut [Self]`
-    /// or it can be a slice holding potentially uninitialized data i.e. `&mut [MaybeUninit<Self>]`.
-    ///
-    /// Once the operation is complete, it is safe to assume the data written is fully initialized.
-    ///
-    /// ### Panics
-    ///
-    /// Panics if the size of vectors `a`, `b` or `result` does not match `dims`.
-    fn div_vector<B>(dims: usize, a: &[Self], b: &[Self], result: &mut [B])
+    /// If vectors `a` and `b` cannot be projected to the target size of `result`.
+    /// Note that the projection rules are tied to the `MemLoader` implementation.
+    fn div_vertical<B1, B2, B3>(lhs: B1, rhs: B2, result: &mut [B3])
     where
-        for<'a> &'a mut [B]: WriteOnlyBuffer<Item = Self>;
+        B1: IntoMemLoader<Self>,
+        B1::Loader: MemLoader<Value = Self>,
+        B2: IntoMemLoader<Self>,
+        B2::Loader: MemLoader<Value = Self>,
+        for<'a> &'a mut [B3]: WriteOnlyBuffer<Item = Self>;
 }
 
 macro_rules! arithmetic_ops {
     ($t:ty) => {
         impl ArithmeticOps for $t {
-            fn add_value<B>(dims: usize, value: Self, a: &[Self], result: &mut [B])
+            fn add_vertical<B1, B2, B3>(lhs: B1, rhs: B2, result: &mut [B3])
             where
-                for<'a> &'a mut [B]: WriteOnlyBuffer<Item = Self>,
+                B1: IntoMemLoader<Self>,
+                B1::Loader: MemLoader<Value = Self>,
+                B2: IntoMemLoader<Self>,
+                B2::Loader: MemLoader<Value = Self>,
+                for<'a> &'a mut [B3]: WriteOnlyBuffer<Item = Self>,
             {
-                assert_eq!(a.len(), dims, "Input vector `a` does not match size `dims`");
-                assert_eq!(
-                    result.len(),
-                    dims,
-                    "Input vector `result` does not match size `dims`"
-                );
-
                 unsafe {
                     crate::dispatch!(
-                        avx512 = export_arithmetic_ops::generic_avx512_add_value,
-                        avx2 = export_arithmetic_ops::generic_avx2_add_value,
-                        neon = export_arithmetic_ops::generic_neon_add_value,
-                        fallback = export_arithmetic_ops::generic_fallback_add_value,
-                        args = (dims, value, a, result)
+                        avx512 = export_arithmetic_ops::generic_avx512_add_vertical,
+                        avx2 = export_arithmetic_ops::generic_avx2_add_vertical,
+                        neon = export_arithmetic_ops::generic_neon_add_vertical,
+                        fallback = export_arithmetic_ops::generic_fallback_add_vertical,
+                        args = (lhs, rhs, result)
                     );
                 }
             }
 
-            fn add_vector<B>(dims: usize, a: &[Self], b: &[Self], result: &mut [B])
+            fn sub_vertical<B1, B2, B3>(lhs: B1, rhs: B2, result: &mut [B3])
             where
-                for<'a> &'a mut [B]: WriteOnlyBuffer<Item = Self>,
+                B1: IntoMemLoader<Self>,
+                B1::Loader: MemLoader<Value = Self>,
+                B2: IntoMemLoader<Self>,
+                B2::Loader: MemLoader<Value = Self>,
+                for<'a> &'a mut [B3]: WriteOnlyBuffer<Item = Self>,
             {
-                assert_eq!(a.len(), dims, "Input vector `a` does not match size `dims`");
-                assert_eq!(b.len(), dims, "Input vector `b` does not match size `dims`");
-                assert_eq!(
-                    result.len(),
-                    dims,
-                    "Input vector `result` does not match size `dims`"
-                );
-
                 unsafe {
                     crate::dispatch!(
-                        avx512 = export_arithmetic_ops::generic_avx512_add_vector,
-                        avx2 = export_arithmetic_ops::generic_avx2_add_vector,
-                        neon = export_arithmetic_ops::generic_neon_add_vector,
-                        fallback = export_arithmetic_ops::generic_fallback_add_vector,
-                        args = (dims, a, b, result)
+                        avx512 = export_arithmetic_ops::generic_avx512_sub_vertical,
+                        avx2 = export_arithmetic_ops::generic_avx2_sub_vertical,
+                        neon = export_arithmetic_ops::generic_neon_sub_vertical,
+                        fallback = export_arithmetic_ops::generic_fallback_sub_vertical,
+                        args = (lhs, rhs, result)
                     );
                 }
             }
 
-            fn sub_value<B>(dims: usize, value: Self, a: &[Self], result: &mut [B])
+            fn mul_vertical<B1, B2, B3>(lhs: B1, rhs: B2, result: &mut [B3])
             where
-                for<'a> &'a mut [B]: WriteOnlyBuffer<Item = Self>,
+                B1: IntoMemLoader<Self>,
+                B1::Loader: MemLoader<Value = Self>,
+                B2: IntoMemLoader<Self>,
+                B2::Loader: MemLoader<Value = Self>,
+                for<'a> &'a mut [B3]: WriteOnlyBuffer<Item = Self>,
             {
-                assert_eq!(a.len(), dims, "Input vector `a` does not match size `dims`");
-                assert_eq!(
-                    result.len(),
-                    dims,
-                    "Input vector `result` does not match size `dims`"
-                );
-
                 unsafe {
                     crate::dispatch!(
-                        avx512 = export_arithmetic_ops::generic_avx512_sub_value,
-                        avx2 = export_arithmetic_ops::generic_avx2_sub_value,
-                        neon = export_arithmetic_ops::generic_neon_sub_value,
-                        fallback = export_arithmetic_ops::generic_fallback_sub_value,
-                        args = (dims, value, a, result)
+                        avx512 = export_arithmetic_ops::generic_avx512_mul_vertical,
+                        avx2 = export_arithmetic_ops::generic_avx2_mul_vertical,
+                        neon = export_arithmetic_ops::generic_neon_mul_vertical,
+                        fallback = export_arithmetic_ops::generic_fallback_mul_vertical,
+                        args = (lhs, rhs, result)
                     );
                 }
             }
 
-            fn sub_vector<B>(dims: usize, a: &[Self], b: &[Self], result: &mut [B])
+            fn div_vertical<B1, B2, B3>(lhs: B1, rhs: B2, result: &mut [B3])
             where
-                for<'a> &'a mut [B]: WriteOnlyBuffer<Item = Self>,
+                B1: IntoMemLoader<Self>,
+                B1::Loader: MemLoader<Value = Self>,
+                B2: IntoMemLoader<Self>,
+                B2::Loader: MemLoader<Value = Self>,
+                for<'a> &'a mut [B3]: WriteOnlyBuffer<Item = Self>,
             {
-                assert_eq!(a.len(), dims, "Input vector `a` does not match size `dims`");
-                assert_eq!(b.len(), dims, "Input vector `b` does not match size `dims`");
-                assert_eq!(
-                    result.len(),
-                    dims,
-                    "Input vector `result` does not match size `dims`"
-                );
-
                 unsafe {
                     crate::dispatch!(
-                        avx512 = export_arithmetic_ops::generic_avx512_sub_vector,
-                        avx2 = export_arithmetic_ops::generic_avx2_sub_vector,
-                        neon = export_arithmetic_ops::generic_neon_sub_vector,
-                        fallback = export_arithmetic_ops::generic_fallback_sub_vector,
-                        args = (dims, a, b, result)
-                    );
-                }
-            }
-
-            fn mul_value<B>(dims: usize, value: Self, a: &[Self], result: &mut [B])
-            where
-                for<'a> &'a mut [B]: WriteOnlyBuffer<Item = Self>,
-            {
-                assert_eq!(a.len(), dims, "Input vector `a` does not match size `dims`");
-                assert_eq!(
-                    result.len(),
-                    dims,
-                    "Input vector `result` does not match size `dims`"
-                );
-
-                unsafe {
-                    crate::dispatch!(
-                        avx512 = export_arithmetic_ops::generic_avx512_mul_value,
-                        avx2 = export_arithmetic_ops::generic_avx2_mul_value,
-                        neon = export_arithmetic_ops::generic_neon_mul_value,
-                        fallback = export_arithmetic_ops::generic_fallback_mul_value,
-                        args = (dims, value, a, result)
-                    );
-                }
-            }
-
-            fn mul_vector<B>(dims: usize, a: &[Self], b: &[Self], result: &mut [B])
-            where
-                for<'a> &'a mut [B]: WriteOnlyBuffer<Item = Self>,
-            {
-                assert_eq!(a.len(), dims, "Input vector `a` does not match size `dims`");
-                assert_eq!(b.len(), dims, "Input vector `b` does not match size `dims`");
-                assert_eq!(
-                    result.len(),
-                    dims,
-                    "Input vector `result` does not match size `dims`"
-                );
-
-                unsafe {
-                    crate::dispatch!(
-                        avx512 = export_arithmetic_ops::generic_avx512_mul_vector,
-                        avx2 = export_arithmetic_ops::generic_avx2_mul_vector,
-                        neon = export_arithmetic_ops::generic_neon_mul_vector,
-                        fallback = export_arithmetic_ops::generic_fallback_mul_vector,
-                        args = (dims, a, b, result)
-                    );
-                }
-            }
-
-            fn div_value<B>(dims: usize, value: Self, a: &[Self], result: &mut [B])
-            where
-                for<'a> &'a mut [B]: WriteOnlyBuffer<Item = Self>,
-            {
-                assert_eq!(a.len(), dims, "Input vector `a` does not match size `dims`");
-                assert_eq!(
-                    result.len(),
-                    dims,
-                    "Input vector `result` does not match size `dims`"
-                );
-
-                unsafe {
-                    crate::dispatch!(
-                        avx512 = export_arithmetic_ops::generic_avx512_div_value,
-                        avx2 = export_arithmetic_ops::generic_avx2_div_value,
-                        neon = export_arithmetic_ops::generic_neon_div_value,
-                        fallback = export_arithmetic_ops::generic_fallback_div_value,
-                        args = (dims, value, a, result)
-                    );
-                }
-            }
-
-            fn div_vector<B>(dims: usize, a: &[Self], b: &[Self], result: &mut [B])
-            where
-                for<'a> &'a mut [B]: WriteOnlyBuffer<Item = Self>,
-            {
-                assert_eq!(a.len(), dims, "Input vector `a` does not match size `dims`");
-                assert_eq!(b.len(), dims, "Input vector `b` does not match size `dims`");
-                assert_eq!(
-                    result.len(),
-                    dims,
-                    "Input vector `result` does not match size `dims`"
-                );
-
-                unsafe {
-                    crate::dispatch!(
-                        avx512 = export_arithmetic_ops::generic_avx512_div_vector,
-                        avx2 = export_arithmetic_ops::generic_avx2_div_vector,
-                        neon = export_arithmetic_ops::generic_neon_div_vector,
-                        fallback = export_arithmetic_ops::generic_fallback_div_vector,
-                        args = (dims, a, b, result)
+                        avx512 = export_arithmetic_ops::generic_avx512_div_vertical,
+                        avx2 = export_arithmetic_ops::generic_avx2_div_vertical,
+                        neon = export_arithmetic_ops::generic_neon_div_vertical,
+                        fallback = export_arithmetic_ops::generic_fallback_div_vertical,
+                        args = (lhs, rhs, result)
                     );
                 }
             }

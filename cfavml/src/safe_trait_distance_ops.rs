@@ -4,12 +4,13 @@
 //! some syntax sugar over these traits.
 
 use crate::danger::export_distance_ops;
+use crate::mem_loader::{IntoMemLoader, MemLoader};
 
 /// Various spacial distance operations between vectors.
-pub trait DistanceOps: Sized {
-    /// Calculates the cosine similarity distance of vectors `a` and `b` of size `dims`.
+pub trait DistanceOps: Sized + Copy {
+    /// Calculates the cosine similarity distance between vectors `a` and `b`.
     ///
-    /// ### Pseudocode
+    /// ### Implementation Pseudocode
     ///
     /// ```ignore
     /// result = 0
@@ -29,17 +30,22 @@ pub trait DistanceOps: Sized {
     ///     return 1.0 - (result / sqrt(norm_a * norm_b))
     /// ```
     ///
-    /// ### Panics
+    /// # Panics
     ///
-    /// This function will panic if vectors `a` and `b` do not match size `dims`.
-    fn cosine(dims: usize, a: &[Self], b: &[Self]) -> Self;
+    /// If vectors `a` and `b` are not equal in the length.
+    fn cosine<B1, B2>(a: B1, b: B2) -> Self
+    where
+        B1: IntoMemLoader<Self>,
+        B1::Loader: MemLoader<Value = Self>,
+        B2: IntoMemLoader<Self>,
+        B2::Loader: MemLoader<Value = Self>;
 
-    /// Calculates the cosine similarity distance of vectors `a` and `b` of size `dims`.
+    /// Calculates the dot product between vectors `a` and `b`.
     ///
-    /// ### Pseudocode
+    /// ### Implementation Pseudocode
     ///
     /// ```ignore
-    /// result = 0
+    /// result = 0;
     ///
     /// for i in range(dims):
     ///     result += a[i] * b[i]
@@ -47,56 +53,68 @@ pub trait DistanceOps: Sized {
     /// return result
     /// ```
     ///
-    /// ### Panics
+    /// # Panics
     ///
-    /// This function will panic if vectors `a` and `b` do not match size `dims`.
-    fn dot(dims: usize, a: &[Self], b: &[Self]) -> Self;
+    /// If vectors `a` and `b` are not equal in the length.
+    fn dot<B1, B2>(a: B1, b: B2) -> Self
+    where
+        B1: IntoMemLoader<Self>,
+        B1::Loader: MemLoader<Value = Self>,
+        B2: IntoMemLoader<Self>,
+        B2::Loader: MemLoader<Value = Self>;
 
-    /// Calculates the squared Euclidean distance of vectors `a` and `b` of size `dims`.
+    /// Calculates the squared Euclidean distance between vectors `a` and `b`.
     ///
-    /// ### Pseudocode
+    /// ### Implementation Pseudocode
     ///
     /// ```ignore
-    /// result = 0
+    /// result = 0;
     ///
     /// for i in range(dims):
     ///     diff = a[i] - b[i]
-    ///     result += diff * diff
+    ///     result += diff ** 2
     ///
     /// return result
     /// ```
     ///
-    /// ### Panics
+    /// # Panics
     ///
-    /// This function will panic if vectors `a` and `b` do not match size `dims`.
-    fn squared_euclidean(dims: usize, a: &[Self], b: &[Self]) -> Self;
+    /// If vectors `a` and `b` are not equal in the length.
+    fn squared_euclidean<B1, B2>(a: B1, b: B2) -> Self
+    where
+        B1: IntoMemLoader<Self>,
+        B1::Loader: MemLoader<Value = Self>,
+        B2: IntoMemLoader<Self>,
+        B2::Loader: MemLoader<Value = Self>;
 
-    /// Calculates the squared L2 norm of vector `a` of size `dims`.
+    /// Calculates the squared L2 norm of vector `a`.
     ///
-    /// ### Pseudocode
+    /// ### Implementation Pseudocode
     ///
     /// ```ignore
-    /// result = 0
+    /// result = 0;
     ///
     /// for i in range(dims):
-    ///     result += a[i] * a[i]
+    ///     result += a[i] ** 2
     ///
     /// return result
     /// ```
-    ///
-    /// ### Panics
-    ///
-    /// This function will panic if vectors `a` does not match size `dims`.
-    fn squared_norm(dims: usize, a: &[Self]) -> Self;
+    fn squared_norm<B1>(a: B1) -> Self
+    where
+        B1: IntoMemLoader<Self>,
+        B1::Loader: MemLoader<Value = Self>;
 }
 
 macro_rules! float_distance_ops {
     ($t:ty) => {
         impl DistanceOps for $t {
-            fn cosine(dims: usize, a: &[Self], b: &[Self]) -> Self {
-                assert_eq!(a.len(), dims, "Input vector `a` does not match size `dims`");
-                assert_eq!(b.len(), dims, "Input vector `b` does not match size `dims`");
-
+            fn cosine<B1, B2>(a: B1, b: B2) -> Self
+            where
+                B1: IntoMemLoader<Self>,
+                B1::Loader: MemLoader<Value = Self>,
+                B2: IntoMemLoader<Self>,
+                B2::Loader: MemLoader<Value = Self>,
+            {
                 unsafe {
                     crate::dispatch!(
                         avx512 = export_distance_ops::generic_avx512_cosine,
@@ -104,15 +122,18 @@ macro_rules! float_distance_ops {
                         avx2 = export_distance_ops::generic_avx2_cosine,
                         neon = export_distance_ops::generic_neon_cosine,
                         fallback = export_distance_ops::generic_fallback_cosine,
-                        args = (dims, a, b)
+                        args = (a, b)
                     )
                 }
             }
 
-            fn dot(dims: usize, a: &[Self], b: &[Self]) -> Self {
-                assert_eq!(a.len(), dims, "Input vector `a` does not match size `dims`");
-                assert_eq!(b.len(), dims, "Input vector `b` does not match size `dims`");
-
+            fn dot<B1, B2>(a: B1, b: B2) -> Self
+            where
+                B1: IntoMemLoader<Self>,
+                B1::Loader: MemLoader<Value = Self>,
+                B2: IntoMemLoader<Self>,
+                B2::Loader: MemLoader<Value = Self>,
+            {
                 unsafe {
                     crate::dispatch!(
                         avx512 = export_distance_ops::generic_avx512_dot,
@@ -120,15 +141,18 @@ macro_rules! float_distance_ops {
                         avx2 = export_distance_ops::generic_avx2_dot,
                         neon = export_distance_ops::generic_neon_dot,
                         fallback = export_distance_ops::generic_fallback_dot,
-                        args = (dims, a, b)
+                        args = (a, b)
                     )
                 }
             }
 
-            fn squared_euclidean(dims: usize, a: &[Self], b: &[Self]) -> Self {
-                assert_eq!(a.len(), dims, "Input vector `a` does not match size `dims`");
-                assert_eq!(b.len(), dims, "Input vector `b` does not match size `dims`");
-
+            fn squared_euclidean<B1, B2>(a: B1, b: B2) -> Self
+            where
+                B1: IntoMemLoader<Self>,
+                B1::Loader: MemLoader<Value = Self>,
+                B2: IntoMemLoader<Self>,
+                B2::Loader: MemLoader<Value = Self>,
+            {
                 unsafe {
                     crate::dispatch!(
                         avx512 = export_distance_ops::generic_avx512_squared_euclidean,
@@ -137,14 +161,16 @@ macro_rules! float_distance_ops {
                         neon = export_distance_ops::generic_neon_squared_euclidean,
                         fallback =
                             export_distance_ops::generic_fallback_squared_euclidean,
-                        args = (dims, a, b)
+                        args = (a, b)
                     )
                 }
             }
 
-            fn squared_norm(dims: usize, a: &[Self]) -> Self {
-                assert_eq!(a.len(), dims, "Input vector `a` does not match size `dims`");
-
+            fn squared_norm<B1>(a: B1) -> Self
+            where
+                B1: IntoMemLoader<Self>,
+                B1::Loader: MemLoader<Value = Self>,
+            {
                 unsafe {
                     crate::dispatch!(
                         avx512 = export_distance_ops::generic_avx512_squared_norm,
@@ -152,7 +178,7 @@ macro_rules! float_distance_ops {
                         avx2 = export_distance_ops::generic_avx2_squared_norm,
                         neon = export_distance_ops::generic_neon_squared_norm,
                         fallback = export_distance_ops::generic_fallback_squared_norm,
-                        args = (dims, a)
+                        args = (a)
                     )
                 }
             }
@@ -163,40 +189,49 @@ macro_rules! float_distance_ops {
 macro_rules! scalar_distance_ops {
     ($t:ty) => {
         impl DistanceOps for $t {
-            fn cosine(dims: usize, a: &[Self], b: &[Self]) -> Self {
-                assert_eq!(a.len(), dims, "Input vector `a` does not match size `dims`");
-                assert_eq!(b.len(), dims, "Input vector `b` does not match size `dims`");
-
+            fn cosine<B1, B2>(a: B1, b: B2) -> Self
+            where
+                B1: IntoMemLoader<Self>,
+                B1::Loader: MemLoader<Value = Self>,
+                B2: IntoMemLoader<Self>,
+                B2::Loader: MemLoader<Value = Self>,
+            {
                 unsafe {
                     crate::dispatch!(
                         avx512 = export_distance_ops::generic_avx512_cosine,
                         avx2 = export_distance_ops::generic_avx2_cosine,
                         neon = export_distance_ops::generic_neon_cosine,
                         fallback = export_distance_ops::generic_fallback_cosine,
-                        args = (dims, a, b)
+                        args = (a, b)
                     )
                 }
             }
 
-            fn dot(dims: usize, a: &[Self], b: &[Self]) -> Self {
-                assert_eq!(a.len(), dims, "Input vector `a` does not match size `dims`");
-                assert_eq!(b.len(), dims, "Input vector `b` does not match size `dims`");
-
+            fn dot<B1, B2>(a: B1, b: B2) -> Self
+            where
+                B1: IntoMemLoader<Self>,
+                B1::Loader: MemLoader<Value = Self>,
+                B2: IntoMemLoader<Self>,
+                B2::Loader: MemLoader<Value = Self>,
+            {
                 unsafe {
                     crate::dispatch!(
                         avx512 = export_distance_ops::generic_avx512_dot,
                         avx2 = export_distance_ops::generic_avx2_dot,
                         neon = export_distance_ops::generic_neon_dot,
                         fallback = export_distance_ops::generic_fallback_dot,
-                        args = (dims, a, b)
+                        args = (a, b)
                     )
                 }
             }
 
-            fn squared_euclidean(dims: usize, a: &[Self], b: &[Self]) -> Self {
-                assert_eq!(a.len(), dims, "Input vector `a` does not match size `dims`");
-                assert_eq!(b.len(), dims, "Input vector `b` does not match size `dims`");
-
+            fn squared_euclidean<B1, B2>(a: B1, b: B2) -> Self
+            where
+                B1: IntoMemLoader<Self>,
+                B1::Loader: MemLoader<Value = Self>,
+                B2: IntoMemLoader<Self>,
+                B2::Loader: MemLoader<Value = Self>,
+            {
                 unsafe {
                     crate::dispatch!(
                         avx512 = export_distance_ops::generic_avx512_squared_euclidean,
@@ -204,21 +239,23 @@ macro_rules! scalar_distance_ops {
                         neon = export_distance_ops::generic_neon_squared_euclidean,
                         fallback =
                             export_distance_ops::generic_fallback_squared_euclidean,
-                        args = (dims, a, b)
+                        args = (a, b)
                     )
                 }
             }
 
-            fn squared_norm(dims: usize, a: &[Self]) -> Self {
-                assert_eq!(a.len(), dims, "Input vector `a` does not match size `dims`");
-
+            fn squared_norm<B1>(a: B1) -> Self
+            where
+                B1: IntoMemLoader<Self>,
+                B1::Loader: MemLoader<Value = Self>,
+            {
                 unsafe {
                     crate::dispatch!(
                         avx512 = export_distance_ops::generic_avx512_squared_norm,
                         avx2 = export_distance_ops::generic_avx2_squared_norm,
                         neon = export_distance_ops::generic_neon_squared_norm,
                         fallback = export_distance_ops::generic_fallback_squared_norm,
-                        args = (dims, a)
+                        args = (a)
                     )
                 }
             }
