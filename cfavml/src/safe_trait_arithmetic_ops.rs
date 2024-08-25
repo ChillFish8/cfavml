@@ -24,7 +24,7 @@ pub trait ArithmeticOps: Sized {
     /// that is larger their input sizes by default. This means providing two slices
     /// of `128` elements in length must take a result buffer of `128` elements in length.
     ///
-    /// ### Pseudocode
+    /// ### Implementation Pseudocode
     ///
     /// ```ignore
     /// result = [0; dims]
@@ -62,7 +62,7 @@ pub trait ArithmeticOps: Sized {
     /// that is larger their input sizes by default. This means providing two slices
     /// of `128` elements in length must take a result buffer of `128` elements in length.
     ///
-    /// ### Pseudocode
+    /// ### Implementation Pseudocode
     ///
     /// ```ignore
     /// result = [0; dims]
@@ -100,7 +100,7 @@ pub trait ArithmeticOps: Sized {
     /// that is larger their input sizes by default. This means providing two slices
     /// of `128` elements in length must take a result buffer of `128` elements in length.
     ///
-    /// ### Pseudocode
+    /// ### Implementation Pseudocode
     ///
     /// ```ignore
     /// result = [0; dims]
@@ -138,7 +138,7 @@ pub trait ArithmeticOps: Sized {
     /// that is larger their input sizes by default. This means providing two slices
     /// of `128` elements in length must take a result buffer of `128` elements in length.
     ///
-    /// ### Pseudocode
+    /// ### Implementation Pseudocode
     ///
     /// ```ignore
     /// result = [0; dims]

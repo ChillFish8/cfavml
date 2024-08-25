@@ -10,7 +10,7 @@ use crate::mem_loader::{IntoMemLoader, MemLoader};
 pub trait AggOps: Sized {
     /// Performs a horizontal sum of all elements in `a` returning the result.
     ///
-    /// ### Pseudocode
+    /// ### Implementation Pseudocode
     ///
     /// ```ignore
     /// result = 0

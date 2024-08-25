@@ -16,7 +16,26 @@ use crate::safe_trait_distance_ops::DistanceOps;
 #[inline]
 /// Calculates the cosine similarity distance of vectors `a` and `b`.
 ///
-/// ### Pseudocode
+/// ### Examples
+///
+/// We can create two vectors and calculate the cosine distance _providing they are the same length_.
+/// Any type that implements `AsRef<[A]>` can be provided, where `A` is any type from:
+///
+/// > `f32`, `f64`, `i8`, `i16`, `i32`, `i64`, `u8`, `u16`, `u32`, `u64`
+///
+/// _Although you likely want `f32` or `f64`._
+///
+/// ```rust
+/// let a = vec![1.0, 0.3, 0.2, 0.4, 0.2, 0.1, 0.3, 0.2];
+/// let b = vec![0.8, 0.2, 0.1, 0.4, 0.2, 0.5, 0.8, 0.4];
+///
+/// let distance = cfavml::cosine(&a, &b);
+/// assert_eq!(distance, 0.14136523227140463);
+/// ```
+///
+/// ### Implementation Pseudocode
+///
+/// _This is the logic of the routine being called._
 ///
 /// ```ignore
 /// result = 0
@@ -53,7 +72,26 @@ where
 #[inline]
 /// Calculates the cosine similarity distance of vectors `a` and `b`.
 ///
-/// ### Pseudocode
+/// ### Examples
+///
+/// We can create two vectors and calculate the dot product _providing they are the same length_.
+/// Any type that implements `AsRef<[A]>` can be provided, where `A` is any type from:
+///
+/// > `f32`, `f64`, `i8`, `i16`, `i32`, `i64`, `u8`, `u16`, `u32`, `u64`
+///
+/// _Although you likely want `f32` or `f64`._
+///
+/// ```rust
+/// let a = vec![1.0, 0.3, 0.2, 0.4, 0.2, 0.4, 0.3, 0.2];
+/// let b = vec![0.8, 0.2, 0.1, 0.4, 0.2, 0.4, 0.8, 0.4];
+///
+/// let distance = cfavml::dot(&a, &b);
+/// assert_eq!(distance, 1.56);
+/// ```
+///
+/// ### Implementation Pseudocode
+///
+/// _This is the logic of the routine being called._
 ///
 /// ```ignore
 /// result = 0
@@ -81,7 +119,26 @@ where
 #[inline]
 /// Calculates the squared Euclidean distance of vectors `a` and `b`.
 ///
-/// ### Pseudocode
+/// ### Examples
+///
+/// We can create two vectors and calculate the squared Euclidean distance _providing they are the same length_.
+/// Any type that implements `AsRef<[A]>` can be provided, where `A` is any type from:
+///
+/// > `f32`, `f64`, `i8`, `i16`, `i32`, `i64`, `u8`, `u16`, `u32`, `u64`
+///
+/// _Although you likely want `f32` or `f64`._
+///
+/// ```rust
+/// let a = vec![1.0, 0.3, 0.2, 0.4, 0.2, 0.1, 0.3, 0.2];
+/// let b = vec![0.8, 0.2, 0.1, 0.4, 0.2, 0.5, 0.8, 0.4];
+///
+/// let distance = cfavml::squared_euclidean(&a, &b);
+/// assert_eq!(distance, 0.51);
+/// ```
+///
+/// ### Implementation Pseudocode
+///
+/// _This is the logic of the routine being called._
 ///
 /// ```ignore
 /// result = 0
@@ -110,7 +167,25 @@ where
 #[inline]
 /// Calculates the squared L2 norm of vector `a`.
 ///
-/// ### Pseudocode
+/// ### Examples
+///
+/// We can create a single vector and calculate the squared L2 norm.
+/// Any type that implements `AsRef<[A]>` can be provided, where `A` is any type from:
+///
+/// > `f32`, `f64`, `i8`, `i16`, `i32`, `i64`, `u8`, `u16`, `u32`, `u64`
+///
+/// _Although you likely want `f32` or `f64`._
+///
+/// ```rust
+/// let a = vec![1.0, 0.3, 0.2, 0.4, 0.2, 0.1, 0.3, 0.2];
+///
+/// let norm = cfavml::squared_norm(&a);
+/// assert_eq!(norm, 1.47);
+/// ```
+///
+/// ### Implementation Pseudocode
+///
+/// _This is the logic of the routine being called._
 ///
 /// ```ignore
 /// result = 0
@@ -132,7 +207,26 @@ where
 #[inline]
 /// Performs a horizontal sum of all elements in a returning the result.
 ///
-/// ### Pseudocode
+/// ### Examples
+///
+/// We can create a single vector and calculate the squared L2 norm.
+/// Any type that implements `AsRef<[A]>` can be provided, where `A` is any type from:
+///
+/// > `f32`, `f64`, `i8`, `i16`, `i32`, `i64`, `u8`, `u16`, `u32`, `u64`
+///
+/// It is worth noting however, the compiler can often match the speed of this particular
+/// routine if your operations are as simple as `my_vector.iter().sum()`.
+///
+/// ```rust
+/// let a = vec![1.0, 0.3, 0.2, 0.4, 0.2, 0.1, 0.3, 0.2];
+///
+/// let total = cfavml::sum(&a);
+/// assert_eq!(total, 2.7);
+/// ```
+///
+/// ### Implementation Pseudocode
+///
+/// _This is the logic of the routine being called._
 ///
 /// ```ignore
 /// result = 0
@@ -154,7 +248,29 @@ where
 #[inline]
 /// Finds the horizontal max element of a given vector and returns the result.
 ///
-/// ### Pseudocode
+/// ### Default Value Warning
+///
+/// Beware of the default value returned when passing a zero-length array (which is technically allowed)
+///
+/// If you are using `f32` or `f64` types, this becomes `T::NEG_INFINITY` otherwise the
+/// default max value is `T:MIN`.
+///
+/// ### Examples
+///
+/// Any vector can be created and have the maximum value found within using the `max` operation, but
+/// be aware of the default value handling if you pass an empty array
+/// (see the "Default Value Warning" section for more.)
+///
+/// ```rust
+/// let a = vec![1.0, 0.3, 0.2, 0.4, 0.2, 0.1, 0.3, 0.2];
+///
+/// let total = cfavml::max(&a);
+/// assert_eq!(total, 1.0);
+/// ```
+///
+/// ### Implementation Pseudocode
+///
+/// _This is the logic of the routine being called._
 ///
 /// ```ignore
 /// result = -inf
@@ -177,6 +293,81 @@ where
 /// Takes the element wise max of vectors `a` and `b` of size `dims` and stores the result
 /// in `result` of size `dims`.
 ///
+/// ### Examples
+///
+/// ###### Supported patterns
+///
+/// Unlike horizontal operations, vertical ops can execute over a much wider variety of data
+/// depending on the `MemLoader` which is a trait used to control how inputs are projected and
+/// read from before executing. For the most part, you don't need to worry about this outside of
+/// knowing you can by default, pass one combination of:
+///     
+/// - `lhs: vector` and `rhs: vector`  
+/// - `lhs: vector` and `rhs: broadcast value`  
+/// - `lhs: broadcast value` and `rhs: vector`  
+/// - `lhs: broadcast value` and `rhs: broadcast value`  
+///   * Not really that useful and is just an artefact of the memory management system.
+///
+/// ###### Broadcast values
+///
+/// When a broadcast value is provided, CFAVML will stretch that value out to match the size of
+/// the _result_ buffer (not the other input buffer!) this does not cost additional allocations
+/// outside the result buffer itself.
+///
+/// This means the following is possible:
+/// - `[0, 0, 0] + 1 == [1, 1, 1]`  w/result_buffer_len=3
+/// - `0 + 1 == [1, 1, 1]`  w/result_buffer_len=3
+/// - `1 + 1 == [1]`  w/result_buffer_len=1
+///
+/// ##### Two vectors
+///
+/// ```rust
+/// let lhs = [1.0, 1.0, 1.0, 1.0];
+/// let rhs = [2.0, 2.5, 1.0, -2.0];
+///
+/// let mut result = [0.0; 4];
+/// cfavml::max_vertical(&lhs, &rhs, &mut result);
+/// assert_eq!(result, [2.0, 2.5, 1.0, 1.0]);
+/// ```
+///
+/// ##### One vector & broadcast value
+///
+/// ```rust
+/// let lhs = [2.0, 3.0, -1.0, -0.5];
+///
+/// let mut result = [0.0; 4];
+/// cfavml::max_vertical(&lhs, 0.0, &mut result);
+/// assert_eq!(result, [2.0, 3.0, 0.0, 0.0]);
+/// ```
+///
+/// ##### Two broadcast values
+///
+/// ```rust
+/// let mut result = [0.0; 4];
+/// cfavml::max_vertical(1.0, 0.0, &mut result);
+/// assert_eq!(result, [1.0; 4]);
+/// ```
+///
+/// ##### With `MaybeUninit`
+///
+/// Often if you are working with new-allocations, you do not want to initialize the data twice,
+/// CFAVML guarantees that the output buffer will never be read from, so it is safe to provide
+/// uninitialized buffers for the result, this is what the `WriteOnlyBuffer` trait is about.
+///
+/// ```rust
+/// use core::mem::MaybeUninit;
+///
+/// let lhs = [1.0, 1.0, 1.0, 1.0];
+/// let rhs = [2.0, 2.5, 1.0, -2.0];
+///
+/// let mut result = Vec::with_capacity(4);
+/// unsafe { result.set_len(4) };
+/// cfavml::max_vertical(&lhs, &rhs, &mut result);
+///
+/// let result = unsafe { core::mem::transmute::<Vec<MaybeUninit<f32>>, Vec<f32>>(result) };
+/// assert_eq!(result, [2.0, 2.5, 1.0, 1.0]);
+/// ```
+///
 /// ### Projecting Vectors
 ///
 /// CFAVML allows for working over a wide variety of buffers for applications, projection is effectively
@@ -189,7 +380,9 @@ where
 /// that is larger their input sizes by default. This means providing two slices
 /// of `128` elements in length must take a result buffer of `128` elements in length.
 ///
-/// ### Pseudocode
+/// ### Implementation Pseudocode
+///
+/// _This is the logic of the routine being called._
 ///
 /// ```ignore
 /// result = [0; dims]
@@ -219,7 +412,29 @@ where
 #[inline]
 /// Finds the horizontal min element of a given vector and returns the result.
 ///
-/// ### Pseudocode
+/// ### Default Value Warning
+///
+/// Beware of the default value returned when passing a zero-length array (which is technically allowed)
+///
+/// If you are using `f32` or `f64` types, this becomes `T::NEG_INFINITY` otherwise the
+/// default max value is `T:MIN`.
+///
+/// ### Examples
+///
+/// Any vector can be created and have the minimum value found within using the `min` operation, but
+/// be aware of the default value handling if you pass an empty array
+/// (see the "Default Value Warning" section for more.)
+///
+/// ```rust
+/// let a = vec![1.0, 0.3, 0.2, 0.4, 0.2, 0.1, 0.3, 0.2];
+///
+/// let total = cfavml::min(&a);
+/// assert_eq!(total, 0.1);
+/// ```
+///
+/// ### Implementation Pseudocode
+///
+/// _This is the logic of the routine being called._
 ///
 /// ```ignore
 /// result = inf
@@ -242,6 +457,81 @@ where
 /// Takes the element wise min of vectors `a` and `b` of size `dims` and stores the result
 /// in `result` of size `dims`.
 ///
+/// ### Examples
+///
+/// ###### Supported patterns
+///
+/// Unlike horizontal operations, vertical ops can execute over a much wider variety of data
+/// depending on the `MemLoader` which is a trait used to control how inputs are projected and
+/// read from before executing. For the most part, you don't need to worry about this outside of
+/// knowing you can by default, pass one combination of:
+///     
+/// - `lhs: vector` and `rhs: vector`  
+/// - `lhs: vector` and `rhs: broadcast value`  
+/// - `lhs: broadcast value` and `rhs: vector`  
+/// - `lhs: broadcast value` and `rhs: broadcast value`  
+///   * Not really that useful and is just an artefact of the memory management system.
+///
+/// ###### Broadcast values
+///
+/// When a broadcast value is provided, CFAVML will stretch that value out to match the size of
+/// the _result_ buffer (not the other input buffer!) this does not cost additional allocations
+/// outside the result buffer itself.
+///
+/// This means the following is possible:
+/// - `[0, 0, 0] + 1 == [1, 1, 1]`  w/result_buffer_len=3
+/// - `0 + 1 == [1, 1, 1]`  w/result_buffer_len=3
+/// - `1 + 1 == [1]`  w/result_buffer_len=1
+///
+/// ##### Two vectors
+///
+/// ```rust
+/// let lhs = [1.0, 1.0, 1.0, 1.0];
+/// let rhs = [2.0, 2.5, 1.0, -2.0];
+///
+/// let mut result = [0.0; 4];
+/// cfavml::min_vertical(&lhs, &rhs, &mut result);
+/// assert_eq!(result, [1.0, 1.0, 1.0, -2.0]);
+/// ```
+///
+/// ##### One vector & broadcast value
+///
+/// ```rust
+/// let lhs = [2.0, 3.0, -1.0, -0.5];
+///
+/// let mut result = [0.0; 4];
+/// cfavml::min_vertical(&lhs, 0.0, &mut result);
+/// assert_eq!(result, [0.0, 0.0, -1.0, -0.5]);
+/// ```
+///
+/// ##### Two broadcast values
+///
+/// ```rust
+/// let mut result = [0.0; 4];
+/// cfavml::min_vertical(1.0, -5.0, &mut result);
+/// assert_eq!(result, [-5.0; 4]);
+/// ```
+///
+/// ##### With `MaybeUninit`
+///
+/// Often if you are working with new-allocations, you do not want to initialize the data twice,
+/// CFAVML guarantees that the output buffer will never be read from, so it is safe to provide
+/// uninitialized buffers for the result, this is what the `WriteOnlyBuffer` trait is about.
+///
+/// ```rust
+/// use core::mem::MaybeUninit;
+///
+/// let lhs = [1.0, -1.0, 0.5, 1.0];
+/// let rhs = [2.0, 2.5, 1.0, -2.0];
+///
+/// let mut result = Vec::with_capacity(4);
+/// unsafe { result.set_len(4) };
+/// cfavml::min_vertical(&lhs, &rhs, &mut result);
+///
+/// let result = unsafe { core::mem::transmute::<Vec<MaybeUninit<f32>>, Vec<f32>>(result) };
+/// assert_eq!(result, [1.0, -1.0, 0.5, -2.0]);
+/// ```
+///
 /// ### Projecting Vectors
 ///
 /// CFAVML allows for working over a wide variety of buffers for applications, projection is effectively
@@ -254,7 +544,9 @@ where
 /// that is larger their input sizes by default. This means providing two slices
 /// of `128` elements in length must take a result buffer of `128` elements in length.
 ///
-/// ### Pseudocode
+/// ### Implementation Pseudocode
+///
+/// _This is the logic of the routine being called._
 ///
 /// ```ignore
 /// result = [0; dims]
@@ -286,7 +578,96 @@ where
 /// element `a` is **_equal to_** element `b`, storing the output as `1` (true) or `0` (false)
 /// in `result`.
 ///
-/// Vectors `a` and `b` can be projected to the new size of `result` if the mem loader allows.
+/// ### Examples
+///
+/// ###### Supported patterns
+///
+/// Unlike horizontal operations, vertical ops can execute over a much wider variety of data
+/// depending on the `MemLoader` which is a trait used to control how inputs are projected and
+/// read from before executing. For the most part, you don't need to worry about this outside of
+/// knowing you can by default, pass one combination of:
+///     
+/// - `lhs: vector` and `rhs: vector`  
+/// - `lhs: vector` and `rhs: broadcast value`  
+/// - `lhs: broadcast value` and `rhs: vector`  
+/// - `lhs: broadcast value` and `rhs: broadcast value`  
+///   * Not really that useful and is just an artefact of the memory management system.
+///
+/// ###### Broadcast values
+///
+/// When a broadcast value is provided, CFAVML will stretch that value out to match the size of
+/// the _result_ buffer (not the other input buffer!) this does not cost additional allocations
+/// outside the result buffer itself.
+///
+/// This means the following is possible:
+/// - `[0, 0, 0] + 1 == [1, 1, 1]`  w/result_buffer_len=3
+/// - `0 + 1 == [1, 1, 1]`  w/result_buffer_len=3
+/// - `1 + 1 == [1]`  w/result_buffer_len=1
+///
+/// ###### Masks
+///
+/// CFAVML follows the same pattern as numpy, which is it representing boolean results as
+/// either `1` or `0` in the respective type. This allows you to do various bit manipulation
+/// and arithmetic techniques for processing values within the vector.
+///
+/// ##### Two vectors
+///
+/// ```rust
+/// let lhs = [1.0, 2.3, 2.0, 1.0];
+/// let rhs = [2.0, 0.7, 2.0, -2.0];
+///
+/// let mut mask = [0.0f32; 4];
+/// cfavml::eq_vertical(&lhs, &rhs, &mut mask);
+/// assert_eq!(mask, [0.0, 0.0, 1.0, 0.0]);   // Value at index 2 as equal!
+///
+/// // Now we can use it to zero any values that don't match.
+/// let mut match_or_zeroes = [0.0f32; 4];
+/// cfavml::mul_vertical(&lhs, &mask, &mut match_or_zeroes);
+///
+/// // Our original match is extracted and the rest are `0.0`
+/// // For convenience, I've used `0.0` as the non-match value,
+/// // but if you switch `mask` and `lhs` around you can get
+/// // a `NaN` mask which may be more useful depending on application.
+/// assert_eq!(match_or_zeroes, [0.0, 0.0, 2.0, 0.0]);    
+/// ```
+///
+/// ##### One vector & broadcast value
+///
+/// ```rust
+/// let lhs = [2.0, f32::NAN, -1.0, -0.5];
+///
+/// let mut result = [0.0f32; 4];
+/// cfavml::eq_vertical(&lhs, -0.5, &mut result);
+/// assert_eq!(result, [0.0, 0.0, 0.0, 1.0]);  // NaN is always false on eq checks.
+/// ```
+///
+/// ##### Two broadcast values
+///
+/// ```rust
+/// let mut result = [0.0f32; 4];
+/// cfavml::eq_vertical(1.0, -5.0, &mut result);
+/// assert_eq!(result, [0.0; 4]);
+/// ```
+///
+/// ##### With `MaybeUninit`
+///
+/// Often if you are working with new-allocations, you do not want to initialize the data twice,
+/// CFAVML guarantees that the output buffer will never be read from, so it is safe to provide
+/// uninitialized buffers for the result, this is what the `WriteOnlyBuffer` trait is about.
+///
+/// ```rust
+/// use core::mem::MaybeUninit;
+///
+/// let lhs = [1.0, -1.0, 0.5, 1.0];
+/// let rhs = [1.0, 2.5, 0.5, -2.0];
+///
+/// let mut result = Vec::with_capacity(4);
+/// unsafe { result.set_len(4) };
+/// cfavml::eq_vertical(&lhs, &rhs, &mut result);
+///
+/// let result = unsafe { core::mem::transmute::<Vec<MaybeUninit<f32>>, Vec<f32>>(result) };
+/// assert_eq!(result, [1.0, 0.0, 1.0, 0.0]);
+/// ```
 ///
 /// ### Projecting Vectors
 ///
@@ -300,7 +681,9 @@ where
 /// that is larger their input sizes by default. This means providing two slices
 /// of `128` elements in length must take a result buffer of `128` elements in length.
 ///
-/// ### Pseudocode
+/// ### Implementation Pseudocode
+///
+/// _This is the logic of the routine being called._
 ///
 /// ```ignore
 /// mask = [0; dims]
@@ -341,7 +724,96 @@ where
 /// element `a` is **_not equal to_** element `b`, storing the output as `1` (true)
 /// or `0` (false) in `result`.
 ///
-/// Vectors `a` and `b` can be projected to the new size of `result` if the mem loader allows.
+/// ### Examples
+///
+/// ###### Supported patterns
+///
+/// Unlike horizontal operations, vertical ops can execute over a much wider variety of data
+/// depending on the `MemLoader` which is a trait used to control how inputs are projected and
+/// read from before executing. For the most part, you don't need to worry about this outside of
+/// knowing you can by default, pass one combination of:
+///     
+/// - `lhs: vector` and `rhs: vector`  
+/// - `lhs: vector` and `rhs: broadcast value`  
+/// - `lhs: broadcast value` and `rhs: vector`  
+/// - `lhs: broadcast value` and `rhs: broadcast value`  
+///   * Not really that useful and is just an artefact of the memory management system.
+///
+/// ###### Broadcast values
+///
+/// When a broadcast value is provided, CFAVML will stretch that value out to match the size of
+/// the _result_ buffer (not the other input buffer!) this does not cost additional allocations
+/// outside the result buffer itself.
+///
+/// This means the following is possible:
+/// - `[0, 0, 0] + 1 == [1, 1, 1]`  w/result_buffer_len=3
+/// - `0 + 1 == [1, 1, 1]`  w/result_buffer_len=3
+/// - `1 + 1 == [1]`  w/result_buffer_len=1
+///
+/// ###### Masks
+///
+/// CFAVML follows the same pattern as numpy, which is it representing boolean results as
+/// either `1` or `0` in the respective type. This allows you to do various bit manipulation
+/// and arithmetic techniques for processing values within the vector.
+///
+/// ##### Two vectors
+///
+/// ```rust
+/// let lhs = [1.0, 2.3, 2.0, 1.0];
+/// let rhs = [2.0, 0.7, 2.0, -2.0];
+///
+/// let mut mask = [0.0f32; 4];
+/// cfavml::neq_vertical(&lhs, &rhs, &mut mask);
+/// assert_eq!(mask, [1.0, 1.0, 0.0, 1.0]);   // All values except index 2 are not equal!
+///
+/// // Now we can use it to zero any values that are equal
+/// let mut match_or_zeroes = [0.0f32; 4];
+/// cfavml::mul_vertical(&lhs, &mask, &mut match_or_zeroes);
+///
+/// // Our original match is extracted and the rest are `0.0`
+/// // For convenience, I've used `0.0` as the non-match value,
+/// // but if you switch `mask` and `lhs` around you can get
+/// // a `NaN` mask which may be more useful depending on application.
+/// assert_eq!(match_or_zeroes, [1.0, 2.3, 0.0, 1.0]);    
+/// ```
+///
+/// ##### One vector & broadcast value
+///
+/// ```rust
+/// let lhs = [2.0, f32::NAN, -1.0, -0.5];
+///
+/// let mut result = [0.0f32; 4];
+/// cfavml::neq_vertical(&lhs, -0.5, &mut result);
+/// assert_eq!(result, [1.0, 1.0, 1.0, 0.0]);  // NaN is always false on eq checks.
+/// ```
+///
+/// ##### Two broadcast values
+///
+/// ```rust
+/// let mut result = [0.0f32; 4];
+/// cfavml::neq_vertical(1.0, -5.0, &mut result);
+/// assert_eq!(result, [1.0; 4]);
+/// ```
+///
+/// ##### With `MaybeUninit`
+///
+/// Often if you are working with new-allocations, you do not want to initialize the data twice,
+/// CFAVML guarantees that the output buffer will never be read from, so it is safe to provide
+/// uninitialized buffers for the result, this is what the `WriteOnlyBuffer` trait is about.
+///
+/// ```rust
+/// use core::mem::MaybeUninit;
+///
+/// let lhs = [1.0, -1.0, 0.5, 1.0];
+/// let rhs = [1.0, 2.5, 0.5, -2.0];
+///
+/// let mut result = Vec::with_capacity(4);
+/// unsafe { result.set_len(4) };
+/// cfavml::neq_vertical(&lhs, &rhs, &mut result);
+///
+/// let result = unsafe { core::mem::transmute::<Vec<MaybeUninit<f32>>, Vec<f32>>(result) };
+/// assert_eq!(result, [0.0, 1.0, 0.0, 1.0]);
+/// ```
 ///
 /// ### Projecting Vectors
 ///
@@ -355,7 +827,9 @@ where
 /// that is larger their input sizes by default. This means providing two slices
 /// of `128` elements in length must take a result buffer of `128` elements in length.
 ///
-/// ### Pseudocode
+/// ### Implementation Pseudocode
+///
+/// _This is the logic of the routine being called._
 ///
 /// ```ignore
 /// mask = [0; dims]
@@ -396,7 +870,96 @@ where
 /// element `a` is **_less than_** element `b`, storing the output as `1` (true)
 /// or `0` (false) in `result`.
 ///
-/// Vectors `a` and `b` can be projected to the new size of `result` if the mem loader allows.
+/// ### Examples
+///
+/// ###### Supported patterns
+///
+/// Unlike horizontal operations, vertical ops can execute over a much wider variety of data
+/// depending on the `MemLoader` which is a trait used to control how inputs are projected and
+/// read from before executing. For the most part, you don't need to worry about this outside of
+/// knowing you can by default, pass one combination of:
+///     
+/// - `lhs: vector` and `rhs: vector`  
+/// - `lhs: vector` and `rhs: broadcast value`  
+/// - `lhs: broadcast value` and `rhs: vector`  
+/// - `lhs: broadcast value` and `rhs: broadcast value`  
+///   * Not really that useful and is just an artefact of the memory management system.
+///
+/// ###### Broadcast values
+///
+/// When a broadcast value is provided, CFAVML will stretch that value out to match the size of
+/// the _result_ buffer (not the other input buffer!) this does not cost additional allocations
+/// outside the result buffer itself.
+///
+/// This means the following is possible:
+/// - `[0, 0, 0] + 1 == [1, 1, 1]`  w/result_buffer_len=3
+/// - `0 + 1 == [1, 1, 1]`  w/result_buffer_len=3
+/// - `1 + 1 == [1]`  w/result_buffer_len=1
+///
+/// ###### Masks
+///
+/// CFAVML follows the same pattern as numpy, which is it representing boolean results as
+/// either `1` or `0` in the respective type. This allows you to do various bit manipulation
+/// and arithmetic techniques for processing values within the vector.
+///
+/// ##### Two vectors
+///
+/// ```rust
+/// let lhs = [-1.0, 2.3, 2.0, 1.0];
+/// let rhs = [2.0, 0.7, 2.0, -2.0];
+///
+/// let mut mask = [0.0f32; 4];
+/// cfavml::lt_vertical(&lhs, &rhs, &mut mask);
+/// assert_eq!(mask, [1.0, 0.0, 0.0, 0.0]);  // Only index 0 of lhs is less than the rhs.
+///
+/// // Now we can use it to zero any values that greater than or equal.
+/// let mut match_or_zeroes = [0.0f32; 4];
+/// cfavml::mul_vertical(&lhs, &mask, &mut match_or_zeroes);
+///
+/// // Our original match is extracted and the rest are `0.0`
+/// // For convenience, I've used `0.0` as the non-match value,
+/// // but if you switch `mask` and `lhs` around you can get
+/// // a `NaN` mask which may be more useful depending on application.
+/// assert_eq!(match_or_zeroes, [-1.0, 0.0, 0.0, 0.0]);    
+/// ```
+///
+/// ##### One vector & broadcast value
+///
+/// ```rust
+/// let lhs = [2.0, f32::NAN, -1.0, -0.5];
+///
+/// let mut result = [0.0f32; 4];
+/// cfavml::lt_vertical(&lhs, -0.5, &mut result);
+/// assert_eq!(result, [0.0, 0.0, 1.0, 0.0]);  // NaN is always false on lt checks.
+/// ```
+///
+/// ##### Two broadcast values
+///
+/// ```rust
+/// let mut result = [0.0f32; 4];
+/// cfavml::lt_vertical(-1.0, 5.0, &mut result);
+/// assert_eq!(result, [1.0; 4]);
+/// ```
+///
+/// ##### With `MaybeUninit`
+///
+/// Often if you are working with new-allocations, you do not want to initialize the data twice,
+/// CFAVML guarantees that the output buffer will never be read from, so it is safe to provide
+/// uninitialized buffers for the result, this is what the `WriteOnlyBuffer` trait is about.
+///
+/// ```rust
+/// use core::mem::MaybeUninit;
+///
+/// let lhs = [1.0, -1.0, 0.5, 1.0];
+/// let rhs = [1.0, 2.5, 0.5, -2.0];
+///
+/// let mut result = Vec::with_capacity(4);
+/// unsafe { result.set_len(4) };
+/// cfavml::lt_vertical(&lhs, &rhs, &mut result);
+///
+/// let result = unsafe { core::mem::transmute::<Vec<MaybeUninit<f32>>, Vec<f32>>(result) };
+/// assert_eq!(result, [0.0, 1.0, 0.0, 0.0]);
+/// ```
 ///
 /// ### Projecting Vectors
 ///
@@ -410,7 +973,9 @@ where
 /// that is larger their input sizes by default. This means providing two slices
 /// of `128` elements in length must take a result buffer of `128` elements in length.
 ///
-/// ### Pseudocode
+/// ### Implementation Pseudocode
+///
+/// _This is the logic of the routine being called._
 ///
 /// ```ignore
 /// mask = [0; dims]
@@ -452,7 +1017,96 @@ where
 /// element `a` is **_less than or equal to_** element `b`, storing the output as `1` (true)
 /// or `0` (false) in `result`.
 ///
-/// Vectors `a` and `b` can be projected to the new size of `result` if the mem loader allows.
+/// ### Examples
+///
+/// ###### Supported patterns
+///
+/// Unlike horizontal operations, vertical ops can execute over a much wider variety of data
+/// depending on the `MemLoader` which is a trait used to control how inputs are projected and
+/// read from before executing. For the most part, you don't need to worry about this outside of
+/// knowing you can by default, pass one combination of:
+///     
+/// - `lhs: vector` and `rhs: vector`  
+/// - `lhs: vector` and `rhs: broadcast value`  
+/// - `lhs: broadcast value` and `rhs: vector`  
+/// - `lhs: broadcast value` and `rhs: broadcast value`  
+///   * Not really that useful and is just an artefact of the memory management system.
+///
+/// ###### Broadcast values
+///
+/// When a broadcast value is provided, CFAVML will stretch that value out to match the size of
+/// the _result_ buffer (not the other input buffer!) this does not cost additional allocations
+/// outside the result buffer itself.
+///
+/// This means the following is possible:
+/// - `[0, 0, 0] + 1 == [1, 1, 1]`  w/result_buffer_len=3
+/// - `0 + 1 == [1, 1, 1]`  w/result_buffer_len=3
+/// - `1 + 1 == [1]`  w/result_buffer_len=1
+///
+/// ###### Masks
+///
+/// CFAVML follows the same pattern as numpy, which is it representing boolean results as
+/// either `1` or `0` in the respective type. This allows you to do various bit manipulation
+/// and arithmetic techniques for processing values within the vector.
+///
+/// ##### Two vectors
+///
+/// ```rust
+/// let lhs = [-1.0, 2.3, 2.0, 1.0];
+/// let rhs = [2.0, 0.7, 2.0, -2.0];
+///
+/// let mut mask = [0.0f32; 4];
+/// cfavml::lte_vertical(&lhs, &rhs, &mut mask);
+/// assert_eq!(mask, [1.0, 0.0, 1.0, 0.0]);  // Index 0 & 2 are lte to rhs.
+///
+/// // Now we can use it to zero any values that are greater.
+/// let mut match_or_zeroes = [0.0f32; 4];
+/// cfavml::mul_vertical(&lhs, &mask, &mut match_or_zeroes);
+///
+/// // Our original match is extracted and the rest are `0.0`
+/// // For convenience, I've used `0.0` as the non-match value,
+/// // but if you switch `mask` and `lhs` around you can get
+/// // a `NaN` mask which may be more useful depending on application.
+/// assert_eq!(match_or_zeroes, [-1.0, 0.0, 2.0, 0.0]);    
+/// ```
+///
+/// ##### One vector & broadcast value
+///
+/// ```rust
+/// let lhs = [2.0, f32::NAN, -1.0, -0.5];
+///
+/// let mut result = [0.0f32; 4];
+/// cfavml::lte_vertical(&lhs, -0.5, &mut result);
+/// assert_eq!(result, [0.0, 0.0, 1.0, 1.0]);  // NaN is always false on lte checks.
+/// ```
+///
+/// ##### Two broadcast values
+///
+/// ```rust
+/// let mut result = [0.0f32; 4];
+/// cfavml::lte_vertical(5.0, 5.0, &mut result);
+/// assert_eq!(result, [1.0; 4]);
+/// ```
+///
+/// ##### With `MaybeUninit`
+///
+/// Often if you are working with new-allocations, you do not want to initialize the data twice,
+/// CFAVML guarantees that the output buffer will never be read from, so it is safe to provide
+/// uninitialized buffers for the result, this is what the `WriteOnlyBuffer` trait is about.
+///
+/// ```rust
+/// use core::mem::MaybeUninit;
+///
+/// let lhs = [1.0, -1.0, 0.5, 1.0];
+/// let rhs = [1.0, 2.5, 0.5, -2.0];
+///
+/// let mut result = Vec::with_capacity(4);
+/// unsafe { result.set_len(4) };
+/// cfavml::lte_vertical(&lhs, &rhs, &mut result);
+///
+/// let result = unsafe { core::mem::transmute::<Vec<MaybeUninit<f32>>, Vec<f32>>(result) };
+/// assert_eq!(result, [1.0, 1.0, 1.0, 0.0]);
+/// ```
 ///
 /// ### Projecting Vectors
 ///
@@ -466,7 +1120,9 @@ where
 /// that is larger their input sizes by default. This means providing two slices
 /// of `128` elements in length must take a result buffer of `128` elements in length.
 ///
-/// ### Pseudocode
+/// ### Implementation Pseudocode
+///
+/// _This is the logic of the routine being called._
 ///
 /// ```ignore
 /// mask = [0; dims]
@@ -509,7 +1165,96 @@ where
 /// element `a` is **_greater than_** element `b`, storing the output as `1` (true) or `0` (false)
 /// in `result`.
 ///
-/// Vectors `a` and `b` can be projected to the new size of `result` if the mem loader allows.
+/// ### Examples
+///
+/// ###### Supported patterns
+///
+/// Unlike horizontal operations, vertical ops can execute over a much wider variety of data
+/// depending on the `MemLoader` which is a trait used to control how inputs are projected and
+/// read from before executing. For the most part, you don't need to worry about this outside of
+/// knowing you can by default, pass one combination of:
+///     
+/// - `lhs: vector` and `rhs: vector`  
+/// - `lhs: vector` and `rhs: broadcast value`  
+/// - `lhs: broadcast value` and `rhs: vector`  
+/// - `lhs: broadcast value` and `rhs: broadcast value`  
+///   * Not really that useful and is just an artefact of the memory management system.
+///
+/// ###### Broadcast values
+///
+/// When a broadcast value is provided, CFAVML will stretch that value out to match the size of
+/// the _result_ buffer (not the other input buffer!) this does not cost additional allocations
+/// outside the result buffer itself.
+///
+/// This means the following is possible:
+/// - `[0, 0, 0] + 1 == [1, 1, 1]`  w/result_buffer_len=3
+/// - `0 + 1 == [1, 1, 1]`  w/result_buffer_len=3
+/// - `1 + 1 == [1]`  w/result_buffer_len=1
+///
+/// ###### Masks
+///
+/// CFAVML follows the same pattern as numpy, which is it representing boolean results as
+/// either `1` or `0` in the respective type. This allows you to do various bit manipulation
+/// and arithmetic techniques for processing values within the vector.
+///
+/// ##### Two vectors
+///
+/// ```rust
+/// let lhs = [-1.0, 2.3, 2.0, 1.0];
+/// let rhs = [2.0, 0.7, 2.0, -2.0];
+///
+/// let mut mask = [0.0f32; 4];
+/// cfavml::gt_vertical(&lhs, &rhs, &mut mask);
+/// assert_eq!(mask, [0.0, 1.0, 0.0, 1.0]);  // Index 1 & 3 are greater than the rhs.
+///
+/// // Now we can use it to zero any values that are less than or equal.
+/// let mut match_or_zeroes = [0.0f32; 4];
+/// cfavml::mul_vertical(&lhs, &mask, &mut match_or_zeroes);
+///
+/// // Our original match is extracted and the rest are `0.0`
+/// // For convenience, I've used `0.0` as the non-match value,
+/// // but if you switch `mask` and `lhs` around you can get
+/// // a `NaN` mask which may be more useful depending on application.
+/// assert_eq!(match_or_zeroes, [0.0, 2.3, 0.0, 1.0]);    
+/// ```
+///
+/// ##### One vector & broadcast value
+///
+/// ```rust
+/// let lhs = [2.0, f32::NAN, -1.0, -0.5];
+///
+/// let mut result = [0.0f32; 4];
+/// cfavml::gt_vertical(&lhs, -0.5, &mut result);
+/// assert_eq!(result, [1.0, 0.0, 0.0, 0.0]);  // NaN is always false on gt checks.
+/// ```
+///
+/// ##### Two broadcast values
+///
+/// ```rust
+/// let mut result = [0.0f32; 4];
+/// cfavml::gt_vertical(6.0, 5.0, &mut result);
+/// assert_eq!(result, [1.0; 4]);
+/// ```
+///
+/// ##### With `MaybeUninit`
+///
+/// Often if you are working with new-allocations, you do not want to initialize the data twice,
+/// CFAVML guarantees that the output buffer will never be read from, so it is safe to provide
+/// uninitialized buffers for the result, this is what the `WriteOnlyBuffer` trait is about.
+///
+/// ```rust
+/// use core::mem::MaybeUninit;
+///
+/// let lhs = [1.0, -1.0, 0.5, 1.0];
+/// let rhs = [1.0, 2.5, 0.5, -2.0];
+///
+/// let mut result = Vec::with_capacity(4);
+/// unsafe { result.set_len(4) };
+/// cfavml::gt_vertical(&lhs, &rhs, &mut result);
+///
+/// let result = unsafe { core::mem::transmute::<Vec<MaybeUninit<f32>>, Vec<f32>>(result) };
+/// assert_eq!(result, [0.0, 0.0, 0.0, 1.0]);
+/// ```
 ///
 /// ### Projecting Vectors
 ///
@@ -523,7 +1268,9 @@ where
 /// that is larger their input sizes by default. This means providing two slices
 /// of `128` elements in length must take a result buffer of `128` elements in length.
 ///
-/// ### Pseudocode
+/// ### Implementation Pseudocode
+///
+/// _This is the logic of the routine being called._
 ///
 /// ```ignore
 /// mask = [0; dims]
@@ -565,7 +1312,96 @@ where
 /// element `a` is **_greater than or equal to_** element `b`, storing the output as `1` (true)
 /// or `0` (false) in `result`.
 ///
-/// Vectors `a` and `b` can be projected to the new size of `result` if the mem loader allows.
+/// ### Examples
+///
+/// ###### Supported patterns
+///
+/// Unlike horizontal operations, vertical ops can execute over a much wider variety of data
+/// depending on the `MemLoader` which is a trait used to control how inputs are projected and
+/// read from before executing. For the most part, you don't need to worry about this outside of
+/// knowing you can by default, pass one combination of:
+///     
+/// - `lhs: vector` and `rhs: vector`  
+/// - `lhs: vector` and `rhs: broadcast value`  
+/// - `lhs: broadcast value` and `rhs: vector`  
+/// - `lhs: broadcast value` and `rhs: broadcast value`  
+///   * Not really that useful and is just an artefact of the memory management system.
+///
+/// ###### Broadcast values
+///
+/// When a broadcast value is provided, CFAVML will stretch that value out to match the size of
+/// the _result_ buffer (not the other input buffer!) this does not cost additional allocations
+/// outside the result buffer itself.
+///
+/// This means the following is possible:
+/// - `[0, 0, 0] + 1 == [1, 1, 1]`  w/result_buffer_len=3
+/// - `0 + 1 == [1, 1, 1]`  w/result_buffer_len=3
+/// - `1 + 1 == [1]`  w/result_buffer_len=1
+///
+/// ###### Masks
+///
+/// CFAVML follows the same pattern as numpy, which is it representing boolean results as
+/// either `1` or `0` in the respective type. This allows you to do various bit manipulation
+/// and arithmetic techniques for processing values within the vector.
+///
+/// ##### Two vectors
+///
+/// ```rust
+/// let lhs = [-1.0, 2.3, 2.0, 1.0];
+/// let rhs = [2.0, 0.7, 2.0, -2.0];
+///
+/// let mut mask = [0.0f32; 4];
+/// cfavml::gte_vertical(&lhs, &rhs, &mut mask);
+/// assert_eq!(mask, [0.0, 1.0, 1.0, 1.0]);  // Index 1, 2 & 3 are greater than or eq to rhs.
+///
+/// // Now we can use it to zero any values that are less than the rhs.
+/// let mut match_or_zeroes = [0.0f32; 4];
+/// cfavml::mul_vertical(&lhs, &mask, &mut match_or_zeroes);
+///
+/// // Our original match is extracted and the rest are `0.0`
+/// // For convenience, I've used `0.0` as the non-match value,
+/// // but if you switch `mask` and `lhs` around you can get
+/// // a `NaN` mask which may be more useful depending on application.
+/// assert_eq!(match_or_zeroes, [0.0, 2.3, 2.0, 1.0]);    
+/// ```
+///
+/// ##### One vector & broadcast value
+///
+/// ```rust
+/// let lhs = [2.0, f32::NAN, -1.0, -0.5];
+///
+/// let mut result = [0.0f32; 4];
+/// cfavml::gte_vertical(&lhs, -0.5, &mut result);
+/// assert_eq!(result, [1.0, 0.0, 0.0, 1.0]);  // NaN is always false on gte checks.
+/// ```
+///
+/// ##### Two broadcast values
+///
+/// ```rust
+/// let mut result = [0.0f32; 4];
+/// cfavml::gte_vertical(5.0, 5.0, &mut result);
+/// assert_eq!(result, [1.0; 4]);
+/// ```
+///
+/// ##### With `MaybeUninit`
+///
+/// Often if you are working with new-allocations, you do not want to initialize the data twice,
+/// CFAVML guarantees that the output buffer will never be read from, so it is safe to provide
+/// uninitialized buffers for the result, this is what the `WriteOnlyBuffer` trait is about.
+///
+/// ```rust
+/// use core::mem::MaybeUninit;
+///
+/// let lhs = [1.0, -1.0, 0.5, 1.0];
+/// let rhs = [1.0, 2.5, 0.5, -2.0];
+///
+/// let mut result = Vec::with_capacity(4);
+/// unsafe { result.set_len(4) };
+/// cfavml::gte_vertical(&lhs, &rhs, &mut result);
+///
+/// let result = unsafe { core::mem::transmute::<Vec<MaybeUninit<f32>>, Vec<f32>>(result) };
+/// assert_eq!(result, [1.0, 0.0, 1.0, 1.0]);
+/// ```
 ///
 /// ### Projecting Vectors
 ///
@@ -579,7 +1415,9 @@ where
 /// that is larger their input sizes by default. This means providing two slices
 /// of `128` elements in length must take a result buffer of `128` elements in length.
 ///
-/// ### Pseudocode
+/// ### Implementation Pseudocode
+///
+/// _This is the logic of the routine being called._
 ///
 /// ```ignore
 /// mask = [0; dims]
@@ -619,6 +1457,81 @@ where
 /// Performs an element wise addition of two input buffers `a` and `b` that can
 /// be projected to the desired output size of `result`.
 ///
+/// ### Examples
+///
+/// ###### Supported patterns
+///
+/// Unlike horizontal operations, vertical ops can execute over a much wider variety of data
+/// depending on the `MemLoader` which is a trait used to control how inputs are projected and
+/// read from before executing. For the most part, you don't need to worry about this outside of
+/// knowing you can by default, pass one combination of:
+///     
+/// - `lhs: vector` and `rhs: vector`  
+/// - `lhs: vector` and `rhs: broadcast value`  
+/// - `lhs: broadcast value` and `rhs: vector`  
+/// - `lhs: broadcast value` and `rhs: broadcast value`  
+///   * Not really that useful and is just an artefact of the memory management system.
+///
+/// ###### Broadcast values
+///
+/// When a broadcast value is provided, CFAVML will stretch that value out to match the size of
+/// the _result_ buffer (not the other input buffer!) this does not cost additional allocations
+/// outside the result buffer itself.
+///
+/// This means the following is possible:
+/// - `[0, 0, 0] + 1 == [1, 1, 1]`  w/result_buffer_len=3
+/// - `0 + 1 == [1, 1, 1]`  w/result_buffer_len=3
+/// - `1 + 1 == [1]`  w/result_buffer_len=1
+///
+/// ##### Two vectors
+///
+/// ```rust
+/// let lhs = [-1.0, 2.3, 2.0, 1.0];
+/// let rhs = [2.0, 0.7, 2.0, -2.0];
+///
+/// let mut result = [0.0f32; 4];
+/// cfavml::add_vertical(&lhs, &rhs, &mut result);
+/// assert_eq!(result, [1.0, 3.0, 4.0, -1.0]);
+/// ```
+///
+/// ##### One vector & broadcast value
+///
+/// ```rust
+/// let lhs = [2.0, 0.5, -1.0, -0.5];
+///
+/// let mut result = [0.0f32; 4];
+/// cfavml::add_vertical(&lhs, -0.5, &mut result);
+/// assert_eq!(result, [1.5, 0.0, -1.5, -1.0]);
+/// ```
+///
+/// ##### Two broadcast values
+///
+/// ```rust
+/// let mut result = [0.0f32; 4];
+/// cfavml::add_vertical(5.0, 5.0, &mut result);
+/// assert_eq!(result, [10.0; 4]);
+/// ```
+///
+/// ##### With `MaybeUninit`
+///
+/// Often if you are working with new-allocations, you do not want to initialize the data twice,
+/// CFAVML guarantees that the output buffer will never be read from, so it is safe to provide
+/// uninitialized buffers for the result, this is what the `WriteOnlyBuffer` trait is about.
+///
+/// ```rust
+/// use core::mem::MaybeUninit;
+///
+/// let lhs = [1.0, -1.0, 0.5, 1.0];
+/// let rhs = [1.0, 2.5, 0.5, -2.0];
+///
+/// let mut result = Vec::with_capacity(4);
+/// unsafe { result.set_len(4) };
+/// cfavml::add_vertical(&lhs, &rhs, &mut result);
+///
+/// let result = unsafe { core::mem::transmute::<Vec<MaybeUninit<f32>>, Vec<f32>>(result) };
+/// assert_eq!(result, [2.0, 1.5, 1.0, -1.0]);
+/// ```
+///
 /// ### Projecting Vectors
 ///
 /// CFAVML allows for working over a wide variety of buffers for applications, projection is effectively
@@ -631,7 +1544,9 @@ where
 /// that is larger their input sizes by default. This means providing two slices
 /// of `128` elements in length must take a result buffer of `128` elements in length.
 ///
-/// ### Pseudocode
+/// ### Implementation Pseudocode
+///
+/// _This is the logic of the routine being called._
 ///
 /// ```ignore
 /// result = [0; dims]
@@ -661,6 +1576,81 @@ where
 /// Performs an element wise subtraction of two input buffers `a` and `b` that can
 /// be projected to the desired output size of `result`.
 ///
+/// ### Examples
+///
+/// ###### Supported patterns
+///
+/// Unlike horizontal operations, vertical ops can execute over a much wider variety of data
+/// depending on the `MemLoader` which is a trait used to control how inputs are projected and
+/// read from before executing. For the most part, you don't need to worry about this outside of
+/// knowing you can by default, pass one combination of:
+///     
+/// - `lhs: vector` and `rhs: vector`  
+/// - `lhs: vector` and `rhs: broadcast value`  
+/// - `lhs: broadcast value` and `rhs: vector`  
+/// - `lhs: broadcast value` and `rhs: broadcast value`  
+///   * Not really that useful and is just an artefact of the memory management system.
+///
+/// ###### Broadcast values
+///
+/// When a broadcast value is provided, CFAVML will stretch that value out to match the size of
+/// the _result_ buffer (not the other input buffer!) this does not cost additional allocations
+/// outside the result buffer itself.
+///
+/// This means the following is possible:
+/// - `[0, 0, 0] + 1 == [1, 1, 1]`  w/result_buffer_len=3
+/// - `0 + 1 == [1, 1, 1]`  w/result_buffer_len=3
+/// - `1 + 1 == [1]`  w/result_buffer_len=1
+///
+/// ##### Two vectors
+///
+/// ```rust
+/// let lhs = [-1.0, 2.3, 2.0, 1.0];
+/// let rhs = [2.0, 0.7, 2.0, -2.0];
+///
+/// let mut result = [0.0f32; 4];
+/// cfavml::sub_vertical(&lhs, &rhs, &mut result);
+/// assert_eq!(result, [-3.0, 1.5999999, 0.0, 3.0]);
+/// ```
+///
+/// ##### One vector & broadcast value
+///
+/// ```rust
+/// let lhs = [2.0, 0.5, -1.0, -0.5];
+///
+/// let mut result = [0.0f32; 4];
+/// cfavml::sub_vertical(&lhs, -0.5, &mut result);
+/// assert_eq!(result, [2.5, 1.0, -0.5, 0.0]);
+/// ```
+///
+/// ##### Two broadcast values
+///
+/// ```rust
+/// let mut result = [0.0f32; 4];
+/// cfavml::sub_vertical(5.0, 5.0, &mut result);
+/// assert_eq!(result, [0.0; 4]);
+/// ```
+///
+/// ##### With `MaybeUninit`
+///
+/// Often if you are working with new-allocations, you do not want to initialize the data twice,
+/// CFAVML guarantees that the output buffer will never be read from, so it is safe to provide
+/// uninitialized buffers for the result, this is what the `WriteOnlyBuffer` trait is about.
+///
+/// ```rust
+/// use core::mem::MaybeUninit;
+///
+/// let lhs = [1.0, -1.0, 0.5, 1.0];
+/// let rhs = [1.0, 2.5, 0.5, -2.0];
+///
+/// let mut result = Vec::with_capacity(4);
+/// unsafe { result.set_len(4) };
+/// cfavml::sub_vertical(&lhs, &rhs, &mut result);
+///
+/// let result = unsafe { core::mem::transmute::<Vec<MaybeUninit<f32>>, Vec<f32>>(result) };
+/// assert_eq!(result, [0.0, -3.5, 0.0, 3.0]);
+/// ```
+///
 /// ### Projecting Vectors
 ///
 /// CFAVML allows for working over a wide variety of buffers for applications, projection is effectively
@@ -673,7 +1663,9 @@ where
 /// that is larger their input sizes by default. This means providing two slices
 /// of `128` elements in length must take a result buffer of `128` elements in length.
 ///
-/// ### Pseudocode
+/// ### Implementation Pseudocode
+///
+/// _This is the logic of the routine being called._
 ///
 /// ```ignore
 /// result = [0; dims]
@@ -703,6 +1695,81 @@ where
 /// Performs an element wise multiply of two input buffers `a` and `b` that can
 /// be projected to the desired output size of `result`.
 ///
+/// ### Examples
+///
+/// ###### Supported patterns
+///
+/// Unlike horizontal operations, vertical ops can execute over a much wider variety of data
+/// depending on the `MemLoader` which is a trait used to control how inputs are projected and
+/// read from before executing. For the most part, you don't need to worry about this outside of
+/// knowing you can by default, pass one combination of:
+///     
+/// - `lhs: vector` and `rhs: vector`  
+/// - `lhs: vector` and `rhs: broadcast value`  
+/// - `lhs: broadcast value` and `rhs: vector`  
+/// - `lhs: broadcast value` and `rhs: broadcast value`  
+///   * Not really that useful and is just an artefact of the memory management system.
+///
+/// ###### Broadcast values
+///
+/// When a broadcast value is provided, CFAVML will stretch that value out to match the size of
+/// the _result_ buffer (not the other input buffer!) this does not cost additional allocations
+/// outside the result buffer itself.
+///
+/// This means the following is possible:
+/// - `[0, 0, 0] + 1 == [1, 1, 1]`  w/result_buffer_len=3
+/// - `0 + 1 == [1, 1, 1]`  w/result_buffer_len=3
+/// - `1 + 1 == [1]`  w/result_buffer_len=1
+///
+/// ##### Two vectors
+///
+/// ```rust
+/// let lhs = [-1.0, 2.3, 2.0, 1.0];
+/// let rhs = [2.0, 0.7, 2.0, -2.0];
+///
+/// let mut result = [0.0f32; 4];
+/// cfavml::mul_vertical(&lhs, &rhs, &mut result);
+/// assert_eq!(result, [-2.0, 1.6099999, 4.0, -2.0]);
+/// ```
+///
+/// ##### One vector & broadcast value
+///
+/// ```rust
+/// let lhs = [2.0, 0.5, -1.0, -0.5];
+///
+/// let mut result = [0.0f32; 4];
+/// cfavml::mul_vertical(&lhs, -0.5, &mut result);
+/// assert_eq!(result, [-1.0, -0.25, 0.5, 0.25]);
+/// ```
+///
+/// ##### Two broadcast values
+///
+/// ```rust
+/// let mut result = [0.0f32; 4];
+/// cfavml::mul_vertical(5.0, 5.0, &mut result);
+/// assert_eq!(result, [25.0; 4]);
+/// ```
+///
+/// ##### With `MaybeUninit`
+///
+/// Often if you are working with new-allocations, you do not want to initialize the data twice,
+/// CFAVML guarantees that the output buffer will never be read from, so it is safe to provide
+/// uninitialized buffers for the result, this is what the `WriteOnlyBuffer` trait is about.
+///
+/// ```rust
+/// use core::mem::MaybeUninit;
+///
+/// let lhs = [1.0, -1.0, 0.5, 1.0];
+/// let rhs = [1.0, 2.5, 0.5, -2.0];
+///
+/// let mut result = Vec::with_capacity(4);
+/// unsafe { result.set_len(4) };
+/// cfavml::mul_vertical(&lhs, &rhs, &mut result);
+///
+/// let result = unsafe { core::mem::transmute::<Vec<MaybeUninit<f32>>, Vec<f32>>(result) };
+/// assert_eq!(result, [1.0, -2.5, 0.25, -2.0]);
+/// ```
+///
 /// ### Projecting Vectors
 ///
 /// CFAVML allows for working over a wide variety of buffers for applications, projection is effectively
@@ -715,7 +1782,9 @@ where
 /// that is larger their input sizes by default. This means providing two slices
 /// of `128` elements in length must take a result buffer of `128` elements in length.
 ///
-/// ### Pseudocode
+/// ### Implementation Pseudocode
+///
+/// _This is the logic of the routine being called._
 ///
 /// ```ignore
 /// result = [0; dims]
@@ -745,6 +1814,101 @@ where
 /// Performs an element wise division of two input buffers `a` and `b` that can
 /// be projected to the desired output size of `result`.
 ///
+/// ## WARNING - You probably don't want to divide!
+///
+/// If you are attempting to divide a vector by a broadcast value or vice versa, you are
+/// infinitely better off calculating the inverse and using a _multiply_ operation instead.
+///
+/// **This routine will not do this for you** so you are potentially missing out on a large
+/// chunk of performance.
+///
+/// ```rust
+/// let example = [1.0, 2.0, 3.0];
+/// let mut result = [0.0; 3];
+/// // BAD! Don't do this!
+/// cfavml::div_vertical(&example, 2.0, &mut result);
+/// assert_eq!(result, [0.5, 1.0, 1.5]);
+///
+/// // Do this instead! It is infinitely faster! (Well not quite but trust me)
+/// cfavml::mul_vertical(&example, 1.0 / 2.0, &mut result);
+/// assert_eq!(result, [0.5, 1.0, 1.5]);
+/// ```
+///
+/// ### Examples
+///
+/// ###### Supported patterns
+///
+/// Unlike horizontal operations, vertical ops can execute over a much wider variety of data
+/// depending on the `MemLoader` which is a trait used to control how inputs are projected and
+/// read from before executing. For the most part, you don't need to worry about this outside of
+/// knowing you can by default, pass one combination of:
+///     
+/// - `lhs: vector` and `rhs: vector`  
+/// - `lhs: vector` and `rhs: broadcast value`  
+/// - `lhs: broadcast value` and `rhs: vector`  
+/// - `lhs: broadcast value` and `rhs: broadcast value`  
+///   * Not really that useful and is just an artefact of the memory management system.
+///
+/// ###### Broadcast values
+///
+/// When a broadcast value is provided, CFAVML will stretch that value out to match the size of
+/// the _result_ buffer (not the other input buffer!) this does not cost additional allocations
+/// outside the result buffer itself.
+///
+/// This means the following is possible:
+/// - `[0, 0, 0] + 1 == [1, 1, 1]`  w/result_buffer_len=3
+/// - `0 + 1 == [1, 1, 1]`  w/result_buffer_len=3
+/// - `1 + 1 == [1]`  w/result_buffer_len=1
+///
+/// ##### Two vectors
+///
+/// ```rust
+/// let lhs = [1.0, 2.0, 4.0, 1.0];
+/// let rhs = [2.0, 0.8, 2.0, -2.0];
+///
+/// let mut result = [0.0f32; 4];
+/// cfavml::div_vertical(&lhs, &rhs, &mut result);
+/// assert_eq!(result, [0.5, 2.5, 2.0, -0.5]);
+/// ```
+///
+/// ##### One vector & broadcast value
+///
+/// ```rust
+/// let lhs = [2.0, 0.5, -1.0, -0.5];
+///
+/// let mut result = [0.0f32; 4];
+/// cfavml::div_vertical(&lhs, -0.5, &mut result);
+/// assert_eq!(result, [-4.0, -1.0, 2.0, 1.0]);
+/// ```
+///
+/// ##### Two broadcast values
+///
+/// ```rust
+/// let mut result = [0.0f32; 4];
+/// cfavml::div_vertical(5.0, 5.0, &mut result);
+/// assert_eq!(result, [1.0; 4]);
+/// ```
+///
+/// ##### With `MaybeUninit`
+///
+/// Often if you are working with new-allocations, you do not want to initialize the data twice,
+/// CFAVML guarantees that the output buffer will never be read from, so it is safe to provide
+/// uninitialized buffers for the result, this is what the `WriteOnlyBuffer` trait is about.
+///
+/// ```rust
+/// use core::mem::MaybeUninit;
+///
+/// let lhs = [1.0, -1.0, 0.5, 1.0];
+/// let rhs = [1.0, 2.5, 0.5, -2.0];
+///
+/// let mut result = Vec::with_capacity(4);
+/// unsafe { result.set_len(4) };
+/// cfavml::div_vertical(&lhs, &rhs, &mut result);
+///
+/// let result = unsafe { core::mem::transmute::<Vec<MaybeUninit<f32>>, Vec<f32>>(result) };
+/// assert_eq!(result, [1.0, -0.4, 1.0, -0.5]);
+/// ```
+///
 /// ### Projecting Vectors
 ///
 /// CFAVML allows for working over a wide variety of buffers for applications, projection is effectively
@@ -757,7 +1921,9 @@ where
 /// that is larger their input sizes by default. This means providing two slices
 /// of `128` elements in length must take a result buffer of `128` elements in length.
 ///
-/// ### Pseudocode
+/// ### Implementation Pseudocode
+///
+/// _This is the logic of the routine being called._
 ///
 /// ```ignore
 /// result = [0; dims]

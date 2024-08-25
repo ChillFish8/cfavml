@@ -1,6 +1,8 @@
 Calculates the cosine similarity distance between vectors `a` and `b`.
 
-### Pseudocode
+### Implementation Pseudocode
+
+_This is the logic of the routine being called._
 
 ```ignore
 result = 0

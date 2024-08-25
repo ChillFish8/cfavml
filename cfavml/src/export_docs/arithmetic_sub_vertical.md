@@ -13,7 +13,9 @@ When providing two slices as inputs they cannot be projected to a buffer
 that is larger their input sizes by default. This means providing two slices
 of `128` elements in length must take a result buffer of `128` elements in length.
 
-### Pseudocode
+### Implementation Pseudocode
+
+_This is the logic of the routine being called._
 
 ```ignore
 result = [0; dims]

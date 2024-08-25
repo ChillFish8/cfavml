@@ -1,6 +1,8 @@
 Calculates the squared L2 norm of vector `a`.
 
-### Pseudocode
+### Implementation Pseudocode
+
+_This is the logic of the routine being called._
 
 ```ignore
 result = 0;

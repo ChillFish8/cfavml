@@ -10,7 +10,7 @@ use crate::mem_loader::{IntoMemLoader, MemLoader};
 pub trait DistanceOps: Sized {
     /// Calculates the cosine similarity distance between vectors `a` and `b`.
     ///
-    /// ### Pseudocode
+    /// ### Implementation Pseudocode
     ///
     /// ```ignore
     /// result = 0
@@ -42,7 +42,7 @@ pub trait DistanceOps: Sized {
 
     /// Calculates the dot product between vectors `a` and `b`.
     ///
-    /// ### Pseudocode
+    /// ### Implementation Pseudocode
     ///
     /// ```ignore
     /// result = 0;
@@ -65,7 +65,7 @@ pub trait DistanceOps: Sized {
 
     /// Calculates the squared Euclidean distance between vectors `a` and `b`.
     ///
-    /// ### Pseudocode
+    /// ### Implementation Pseudocode
     ///
     /// ```ignore
     /// result = 0;
@@ -89,7 +89,7 @@ pub trait DistanceOps: Sized {
 
     /// Calculates the squared L2 norm of vector `a`.
     ///
-    /// ### Pseudocode
+    /// ### Implementation Pseudocode
     ///
     /// ```ignore
     /// result = 0;

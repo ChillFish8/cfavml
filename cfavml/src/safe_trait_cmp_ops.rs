@@ -11,7 +11,7 @@ use crate::mem_loader::{IntoMemLoader, MemLoader};
 pub trait CmpOps: Sized {
     /// Finds the horizontal max element of a given vector and returns the result.
     ///
-    /// ### Pseudocode
+    /// ### Implementation Pseudocode
     ///
     /// ```ignore
     /// result = -inf
@@ -33,7 +33,7 @@ pub trait CmpOps: Sized {
     /// Performs an element wise max on each element of vector `a` and `b`,
     /// writing the result to `result`.
     ///
-    /// ### Pseudocode
+    /// ### Implementation Pseudocode
     ///
     /// ```ignore
     /// result = [0; dims]
@@ -64,7 +64,7 @@ pub trait CmpOps: Sized {
 
     /// Finds the horizontal min element of a given vector.
     ///
-    /// ### Pseudocode
+    /// ### Implementation Pseudocode
     ///
     /// ```ignore
     /// result = inf
@@ -82,7 +82,7 @@ pub trait CmpOps: Sized {
     /// Performs an element wise min on each element of vector `a` and `b`,
     /// writing the result to `result`.
     ///
-    /// ### Pseudocode
+    /// ### Implementation Pseudocode
     ///
     /// ```ignore
     /// result = [0; dims]
@@ -114,7 +114,7 @@ pub trait CmpOps: Sized {
     /// Checks each element pair from vectors `a` and `b` of size `dims`  comparing
     /// if element `a` is **_equal to_** element `b` returning a mask vector of the same type.
     ///
-    /// ### Pseudocode
+    /// ### Implementation Pseudocode
     ///
     /// ```ignore
     /// mask = [0; dims]
@@ -155,7 +155,7 @@ pub trait CmpOps: Sized {
     /// Checks each element pair from vectors `a` and `b` of size `dims`  comparing
     /// if element `a` is **_not equal to_** element `b` returning a mask vector of the same type.
     ///
-    /// ### Pseudocode
+    /// ### Implementation Pseudocode
     ///
     /// ```ignore
     /// mask = [0; dims]
@@ -196,7 +196,7 @@ pub trait CmpOps: Sized {
     /// Checks each element pair from vectors `a` and `b` of size `dims`  comparing
     /// if element `a` is **_less than_** element `b` returning a mask vector of the same type.
     ///
-    /// ### Pseudocode
+    /// ### Implementation Pseudocode
     ///
     /// ```ignore
     /// mask = [0; dims]
@@ -237,7 +237,7 @@ pub trait CmpOps: Sized {
     /// Checks each element pair from vectors `a` and `b` of size `dims`  comparing
     /// if element `a` is **_less than or equal to_** element `b` returning a mask vector of the same type.
     ///
-    /// ### Pseudocode
+    /// ### Implementation Pseudocode
     ///
     /// ```ignore
     /// mask = [0; dims]
@@ -278,7 +278,7 @@ pub trait CmpOps: Sized {
     /// Checks each element pair from vectors `a` and `b` of size `dims`  comparing
     /// if element `a` is **_greater than_** element `b` returning a mask vector of the same type.
     ///
-    /// ### Pseudocode
+    /// ### Implementation Pseudocode
     ///
     /// ```ignore
     /// mask = [0; dims]
@@ -319,7 +319,7 @@ pub trait CmpOps: Sized {
     /// Checks each element pair from vectors `a` and `b` of size `dims`  comparing
     /// if element `a` is **_greater than_** element `b` returning a mask vector of the same type.
     ///
-    /// ### Pseudocode
+    /// ### Implementation Pseudocode
     ///
     /// ```ignore
     /// mask = [0; dims]
