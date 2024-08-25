@@ -319,6 +319,23 @@ where
 /// - `0 + 1 == [1, 1, 1]`  w/result_buffer_len=3
 /// - `1 + 1 == [1]`  w/result_buffer_len=1
 ///
+/// ###### Projecting Vectors
+///
+/// CFAVML allows for working over a wide variety of buffers for applications, projection is effectively
+/// broadcasting of two input buffers implementing `IntoMemLoader<T>`.
+///
+/// By default, you can provide _two slices_, _one slice and a broadcast value_, or _two broadcast values_,
+/// which exhibit the standard behaviour as you might expect.
+///
+/// When providing two slices as inputs they cannot be projected to a buffer
+/// that is larger their input sizes by default. This means providing two slices
+/// of `128` elements in length must take a result buffer of `128` elements in length.
+///
+/// You can wrap your inputs in a [cfavml::mem_loader::Projected] wrapper which
+/// enables projecting of the input buffer to new sizes providing the new size is a
+/// multiple of the original size. When this buffer is projected, it is effectively
+/// repeated `N` times, where `N` is how many times the old size fits into the new size.
+///
 /// ### Examples
 ///
 /// ##### Two vectors
@@ -369,18 +386,6 @@ where
 /// let result = unsafe { core::mem::transmute::<Vec<MaybeUninit<f32>>, Vec<f32>>(result) };
 /// assert_eq!(result, [2.0, 2.5, 1.0, 1.0]);
 /// ```
-///
-/// ### Projecting Vectors
-///
-/// CFAVML allows for working over a wide variety of buffers for applications, projection is effectively
-/// broadcasting of two input buffers implementing `IntoMemLoader<T>`.
-///
-/// By default, you can provide _two slices_, _one slice and a broadcast value_, or _two broadcast values_,
-/// which exhibit the standard behaviour as you might expect.
-///
-/// When providing two slices as inputs they cannot be projected to a buffer
-/// that is larger their input sizes by default. This means providing two slices
-/// of `128` elements in length must take a result buffer of `128` elements in length.
 ///
 /// ### Implementation Pseudocode
 ///
@@ -485,6 +490,23 @@ where
 /// - `0 + 1 == [1, 1, 1]`  w/result_buffer_len=3
 /// - `1 + 1 == [1]`  w/result_buffer_len=1
 ///
+/// ###### Projecting Vectors
+///
+/// CFAVML allows for working over a wide variety of buffers for applications, projection is effectively
+/// broadcasting of two input buffers implementing `IntoMemLoader<T>`.
+///
+/// By default, you can provide _two slices_, _one slice and a broadcast value_, or _two broadcast values_,
+/// which exhibit the standard behaviour as you might expect.
+///
+/// When providing two slices as inputs they cannot be projected to a buffer
+/// that is larger their input sizes by default. This means providing two slices
+/// of `128` elements in length must take a result buffer of `128` elements in length.
+///
+/// You can wrap your inputs in a [cfavml::mem_loader::Projected] wrapper which
+/// enables projecting of the input buffer to new sizes providing the new size is a
+/// multiple of the original size. When this buffer is projected, it is effectively
+/// repeated `N` times, where `N` is how many times the old size fits into the new size.
+///
 /// ### Examples
 ///
 /// ##### Two vectors
@@ -535,18 +557,6 @@ where
 /// let result = unsafe { core::mem::transmute::<Vec<MaybeUninit<f32>>, Vec<f32>>(result) };
 /// assert_eq!(result, [1.0, -1.0, 0.5, -2.0]);
 /// ```
-///
-/// ### Projecting Vectors
-///
-/// CFAVML allows for working over a wide variety of buffers for applications, projection is effectively
-/// broadcasting of two input buffers implementing `IntoMemLoader<T>`.
-///
-/// By default, you can provide _two slices_, _one slice and a broadcast value_, or _two broadcast values_,
-/// which exhibit the standard behaviour as you might expect.
-///
-/// When providing two slices as inputs they cannot be projected to a buffer
-/// that is larger their input sizes by default. This means providing two slices
-/// of `128` elements in length must take a result buffer of `128` elements in length.
 ///
 /// ### Implementation Pseudocode
 ///
@@ -607,6 +617,23 @@ where
 /// - `[0, 0, 0] + 1 == [1, 1, 1]`  w/result_buffer_len=3
 /// - `0 + 1 == [1, 1, 1]`  w/result_buffer_len=3
 /// - `1 + 1 == [1]`  w/result_buffer_len=1
+///
+/// ###### Projecting Vectors
+///
+/// CFAVML allows for working over a wide variety of buffers for applications, projection is effectively
+/// broadcasting of two input buffers implementing `IntoMemLoader<T>`.
+///
+/// By default, you can provide _two slices_, _one slice and a broadcast value_, or _two broadcast values_,
+/// which exhibit the standard behaviour as you might expect.
+///
+/// When providing two slices as inputs they cannot be projected to a buffer
+/// that is larger their input sizes by default. This means providing two slices
+/// of `128` elements in length must take a result buffer of `128` elements in length.
+///
+/// You can wrap your inputs in a [cfavml::mem_loader::Projected] wrapper which
+/// enables projecting of the input buffer to new sizes providing the new size is a
+/// multiple of the original size. When this buffer is projected, it is effectively
+/// repeated `N` times, where `N` is how many times the old size fits into the new size.
 ///
 /// ###### Masks
 ///
@@ -674,18 +701,6 @@ where
 /// let result = unsafe { core::mem::transmute::<Vec<MaybeUninit<f32>>, Vec<f32>>(result) };
 /// assert_eq!(result, [1.0, 0.0, 1.0, 0.0]);
 /// ```
-///
-/// ### Projecting Vectors
-///
-/// CFAVML allows for working over a wide variety of buffers for applications, projection is effectively
-/// broadcasting of two input buffers implementing `IntoMemLoader<T>`.
-///
-/// By default, you can provide _two slices_, _one slice and a broadcast value_, or _two broadcast values_,
-/// which exhibit the standard behaviour as you might expect.
-///
-/// When providing two slices as inputs they cannot be projected to a buffer
-/// that is larger their input sizes by default. This means providing two slices
-/// of `128` elements in length must take a result buffer of `128` elements in length.
 ///
 /// ### Implementation Pseudocode
 ///
@@ -756,6 +771,23 @@ where
 /// - `0 + 1 == [1, 1, 1]`  w/result_buffer_len=3
 /// - `1 + 1 == [1]`  w/result_buffer_len=1
 ///
+/// ###### Projecting Vectors
+///
+/// CFAVML allows for working over a wide variety of buffers for applications, projection is effectively
+/// broadcasting of two input buffers implementing `IntoMemLoader<T>`.
+///
+/// By default, you can provide _two slices_, _one slice and a broadcast value_, or _two broadcast values_,
+/// which exhibit the standard behaviour as you might expect.
+///
+/// When providing two slices as inputs they cannot be projected to a buffer
+/// that is larger their input sizes by default. This means providing two slices
+/// of `128` elements in length must take a result buffer of `128` elements in length.
+///
+/// You can wrap your inputs in a [cfavml::mem_loader::Projected] wrapper which
+/// enables projecting of the input buffer to new sizes providing the new size is a
+/// multiple of the original size. When this buffer is projected, it is effectively
+/// repeated `N` times, where `N` is how many times the old size fits into the new size.
+///
 /// ###### Masks
 ///
 /// CFAVML follows the same pattern as numpy, which is it representing boolean results as
@@ -822,18 +854,6 @@ where
 /// let result = unsafe { core::mem::transmute::<Vec<MaybeUninit<f32>>, Vec<f32>>(result) };
 /// assert_eq!(result, [0.0, 1.0, 0.0, 1.0]);
 /// ```
-///
-/// ### Projecting Vectors
-///
-/// CFAVML allows for working over a wide variety of buffers for applications, projection is effectively
-/// broadcasting of two input buffers implementing `IntoMemLoader<T>`.
-///
-/// By default, you can provide _two slices_, _one slice and a broadcast value_, or _two broadcast values_,
-/// which exhibit the standard behaviour as you might expect.
-///
-/// When providing two slices as inputs they cannot be projected to a buffer
-/// that is larger their input sizes by default. This means providing two slices
-/// of `128` elements in length must take a result buffer of `128` elements in length.
 ///
 /// ### Implementation Pseudocode
 ///
@@ -904,6 +924,23 @@ where
 /// - `0 + 1 == [1, 1, 1]`  w/result_buffer_len=3
 /// - `1 + 1 == [1]`  w/result_buffer_len=1
 ///
+/// ###### Projecting Vectors
+///
+/// CFAVML allows for working over a wide variety of buffers for applications, projection is effectively
+/// broadcasting of two input buffers implementing `IntoMemLoader<T>`.
+///
+/// By default, you can provide _two slices_, _one slice and a broadcast value_, or _two broadcast values_,
+/// which exhibit the standard behaviour as you might expect.
+///
+/// When providing two slices as inputs they cannot be projected to a buffer
+/// that is larger their input sizes by default. This means providing two slices
+/// of `128` elements in length must take a result buffer of `128` elements in length.
+///
+/// You can wrap your inputs in a [cfavml::mem_loader::Projected] wrapper which
+/// enables projecting of the input buffer to new sizes providing the new size is a
+/// multiple of the original size. When this buffer is projected, it is effectively
+/// repeated `N` times, where `N` is how many times the old size fits into the new size.
+///
 /// ###### Masks
 ///
 /// CFAVML follows the same pattern as numpy, which is it representing boolean results as
@@ -970,18 +1007,6 @@ where
 /// let result = unsafe { core::mem::transmute::<Vec<MaybeUninit<f32>>, Vec<f32>>(result) };
 /// assert_eq!(result, [0.0, 1.0, 0.0, 0.0]);
 /// ```
-///
-/// ### Projecting Vectors
-///
-/// CFAVML allows for working over a wide variety of buffers for applications, projection is effectively
-/// broadcasting of two input buffers implementing `IntoMemLoader<T>`.
-///
-/// By default, you can provide _two slices_, _one slice and a broadcast value_, or _two broadcast values_,
-/// which exhibit the standard behaviour as you might expect.
-///
-/// When providing two slices as inputs they cannot be projected to a buffer
-/// that is larger their input sizes by default. This means providing two slices
-/// of `128` elements in length must take a result buffer of `128` elements in length.
 ///
 /// ### Implementation Pseudocode
 ///
@@ -1053,6 +1078,23 @@ where
 /// - `0 + 1 == [1, 1, 1]`  w/result_buffer_len=3
 /// - `1 + 1 == [1]`  w/result_buffer_len=1
 ///
+/// ###### Projecting Vectors
+///
+/// CFAVML allows for working over a wide variety of buffers for applications, projection is effectively
+/// broadcasting of two input buffers implementing `IntoMemLoader<T>`.
+///
+/// By default, you can provide _two slices_, _one slice and a broadcast value_, or _two broadcast values_,
+/// which exhibit the standard behaviour as you might expect.
+///
+/// When providing two slices as inputs they cannot be projected to a buffer
+/// that is larger their input sizes by default. This means providing two slices
+/// of `128` elements in length must take a result buffer of `128` elements in length.
+///
+/// You can wrap your inputs in a [cfavml::mem_loader::Projected] wrapper which
+/// enables projecting of the input buffer to new sizes providing the new size is a
+/// multiple of the original size. When this buffer is projected, it is effectively
+/// repeated `N` times, where `N` is how many times the old size fits into the new size.
+///
 /// ###### Masks
 ///
 /// CFAVML follows the same pattern as numpy, which is it representing boolean results as
@@ -1119,18 +1161,6 @@ where
 /// let result = unsafe { core::mem::transmute::<Vec<MaybeUninit<f32>>, Vec<f32>>(result) };
 /// assert_eq!(result, [1.0, 1.0, 1.0, 0.0]);
 /// ```
-///
-/// ### Projecting Vectors
-///
-/// CFAVML allows for working over a wide variety of buffers for applications, projection is effectively
-/// broadcasting of two input buffers implementing `IntoMemLoader<T>`.
-///
-/// By default, you can provide _two slices_, _one slice and a broadcast value_, or _two broadcast values_,
-/// which exhibit the standard behaviour as you might expect.
-///
-/// When providing two slices as inputs they cannot be projected to a buffer
-/// that is larger their input sizes by default. This means providing two slices
-/// of `128` elements in length must take a result buffer of `128` elements in length.
 ///
 /// ### Implementation Pseudocode
 ///
@@ -1203,6 +1233,23 @@ where
 /// - `0 + 1 == [1, 1, 1]`  w/result_buffer_len=3
 /// - `1 + 1 == [1]`  w/result_buffer_len=1
 ///
+/// ###### Projecting Vectors
+///
+/// CFAVML allows for working over a wide variety of buffers for applications, projection is effectively
+/// broadcasting of two input buffers implementing `IntoMemLoader<T>`.
+///
+/// By default, you can provide _two slices_, _one slice and a broadcast value_, or _two broadcast values_,
+/// which exhibit the standard behaviour as you might expect.
+///
+/// When providing two slices as inputs they cannot be projected to a buffer
+/// that is larger their input sizes by default. This means providing two slices
+/// of `128` elements in length must take a result buffer of `128` elements in length.
+///
+/// You can wrap your inputs in a [cfavml::mem_loader::Projected] wrapper which
+/// enables projecting of the input buffer to new sizes providing the new size is a
+/// multiple of the original size. When this buffer is projected, it is effectively
+/// repeated `N` times, where `N` is how many times the old size fits into the new size.
+///
 /// ###### Masks
 ///
 /// CFAVML follows the same pattern as numpy, which is it representing boolean results as
@@ -1269,18 +1316,6 @@ where
 /// let result = unsafe { core::mem::transmute::<Vec<MaybeUninit<f32>>, Vec<f32>>(result) };
 /// assert_eq!(result, [0.0, 0.0, 0.0, 1.0]);
 /// ```
-///
-/// ### Projecting Vectors
-///
-/// CFAVML allows for working over a wide variety of buffers for applications, projection is effectively
-/// broadcasting of two input buffers implementing `IntoMemLoader<T>`.
-///
-/// By default, you can provide _two slices_, _one slice and a broadcast value_, or _two broadcast values_,
-/// which exhibit the standard behaviour as you might expect.
-///
-/// When providing two slices as inputs they cannot be projected to a buffer
-/// that is larger their input sizes by default. This means providing two slices
-/// of `128` elements in length must take a result buffer of `128` elements in length.
 ///
 /// ### Implementation Pseudocode
 ///
@@ -1352,6 +1387,23 @@ where
 /// - `0 + 1 == [1, 1, 1]`  w/result_buffer_len=3
 /// - `1 + 1 == [1]`  w/result_buffer_len=1
 ///
+/// ###### Projecting Vectors
+///
+/// CFAVML allows for working over a wide variety of buffers for applications, projection is effectively
+/// broadcasting of two input buffers implementing `IntoMemLoader<T>`.
+///
+/// By default, you can provide _two slices_, _one slice and a broadcast value_, or _two broadcast values_,
+/// which exhibit the standard behaviour as you might expect.
+///
+/// When providing two slices as inputs they cannot be projected to a buffer
+/// that is larger their input sizes by default. This means providing two slices
+/// of `128` elements in length must take a result buffer of `128` elements in length.
+///
+/// You can wrap your inputs in a [cfavml::mem_loader::Projected] wrapper which
+/// enables projecting of the input buffer to new sizes providing the new size is a
+/// multiple of the original size. When this buffer is projected, it is effectively
+/// repeated `N` times, where `N` is how many times the old size fits into the new size.
+///
 /// ###### Masks
 ///
 /// CFAVML follows the same pattern as numpy, which is it representing boolean results as
@@ -1418,18 +1470,6 @@ where
 /// let result = unsafe { core::mem::transmute::<Vec<MaybeUninit<f32>>, Vec<f32>>(result) };
 /// assert_eq!(result, [1.0, 0.0, 1.0, 1.0]);
 /// ```
-///
-/// ### Projecting Vectors
-///
-/// CFAVML allows for working over a wide variety of buffers for applications, projection is effectively
-/// broadcasting of two input buffers implementing `IntoMemLoader<T>`.
-///
-/// By default, you can provide _two slices_, _one slice and a broadcast value_, or _two broadcast values_,
-/// which exhibit the standard behaviour as you might expect.
-///
-/// When providing two slices as inputs they cannot be projected to a buffer
-/// that is larger their input sizes by default. This means providing two slices
-/// of `128` elements in length must take a result buffer of `128` elements in length.
 ///
 /// ### Implementation Pseudocode
 ///
@@ -1499,6 +1539,23 @@ where
 /// - `0 + 1 == [1, 1, 1]`  w/result_buffer_len=3
 /// - `1 + 1 == [1]`  w/result_buffer_len=1
 ///
+/// ###### Projecting Vectors
+///
+/// CFAVML allows for working over a wide variety of buffers for applications, projection is effectively
+/// broadcasting of two input buffers implementing `IntoMemLoader<T>`.
+///
+/// By default, you can provide _two slices_, _one slice and a broadcast value_, or _two broadcast values_,
+/// which exhibit the standard behaviour as you might expect.
+///
+/// When providing two slices as inputs they cannot be projected to a buffer
+/// that is larger their input sizes by default. This means providing two slices
+/// of `128` elements in length must take a result buffer of `128` elements in length.
+///
+/// You can wrap your inputs in a [cfavml::mem_loader::Projected] wrapper which
+/// enables projecting of the input buffer to new sizes providing the new size is a
+/// multiple of the original size. When this buffer is projected, it is effectively
+/// repeated `N` times, where `N` is how many times the old size fits into the new size.
+///
 /// ### Examples
 ///
 /// ##### Two vectors
@@ -1549,18 +1606,6 @@ where
 /// let result = unsafe { core::mem::transmute::<Vec<MaybeUninit<f32>>, Vec<f32>>(result) };
 /// assert_eq!(result, [2.0, 1.5, 1.0, -1.0]);
 /// ```
-///
-/// ### Projecting Vectors
-///
-/// CFAVML allows for working over a wide variety of buffers for applications, projection is effectively
-/// broadcasting of two input buffers implementing `IntoMemLoader<T>`.
-///
-/// By default, you can provide _two slices_, _one slice and a broadcast value_, or _two broadcast values_,
-/// which exhibit the standard behaviour as you might expect.
-///
-/// When providing two slices as inputs they cannot be projected to a buffer
-/// that is larger their input sizes by default. This means providing two slices
-/// of `128` elements in length must take a result buffer of `128` elements in length.
 ///
 /// ### Implementation Pseudocode
 ///
@@ -1620,6 +1665,23 @@ where
 /// - `0 + 1 == [1, 1, 1]`  w/result_buffer_len=3
 /// - `1 + 1 == [1]`  w/result_buffer_len=1
 ///
+/// ###### Projecting Vectors
+///
+/// CFAVML allows for working over a wide variety of buffers for applications, projection is effectively
+/// broadcasting of two input buffers implementing `IntoMemLoader<T>`.
+///
+/// By default, you can provide _two slices_, _one slice and a broadcast value_, or _two broadcast values_,
+/// which exhibit the standard behaviour as you might expect.
+///
+/// When providing two slices as inputs they cannot be projected to a buffer
+/// that is larger their input sizes by default. This means providing two slices
+/// of `128` elements in length must take a result buffer of `128` elements in length.
+///
+/// You can wrap your inputs in a [cfavml::mem_loader::Projected] wrapper which
+/// enables projecting of the input buffer to new sizes providing the new size is a
+/// multiple of the original size. When this buffer is projected, it is effectively
+/// repeated `N` times, where `N` is how many times the old size fits into the new size.
+///
 /// ### Examples
 ///
 /// ##### Two vectors
@@ -1670,18 +1732,6 @@ where
 /// let result = unsafe { core::mem::transmute::<Vec<MaybeUninit<f32>>, Vec<f32>>(result) };
 /// assert_eq!(result, [0.0, -3.5, 0.0, 3.0]);
 /// ```
-///
-/// ### Projecting Vectors
-///
-/// CFAVML allows for working over a wide variety of buffers for applications, projection is effectively
-/// broadcasting of two input buffers implementing `IntoMemLoader<T>`.
-///
-/// By default, you can provide _two slices_, _one slice and a broadcast value_, or _two broadcast values_,
-/// which exhibit the standard behaviour as you might expect.
-///
-/// When providing two slices as inputs they cannot be projected to a buffer
-/// that is larger their input sizes by default. This means providing two slices
-/// of `128` elements in length must take a result buffer of `128` elements in length.
 ///
 /// ### Implementation Pseudocode
 ///
@@ -1741,6 +1791,23 @@ where
 /// - `0 + 1 == [1, 1, 1]`  w/result_buffer_len=3
 /// - `1 + 1 == [1]`  w/result_buffer_len=1
 ///
+/// ###### Projecting Vectors
+///
+/// CFAVML allows for working over a wide variety of buffers for applications, projection is effectively
+/// broadcasting of two input buffers implementing `IntoMemLoader<T>`.
+///
+/// By default, you can provide _two slices_, _one slice and a broadcast value_, or _two broadcast values_,
+/// which exhibit the standard behaviour as you might expect.
+///
+/// When providing two slices as inputs they cannot be projected to a buffer
+/// that is larger their input sizes by default. This means providing two slices
+/// of `128` elements in length must take a result buffer of `128` elements in length.
+///
+/// You can wrap your inputs in a [cfavml::mem_loader::Projected] wrapper which
+/// enables projecting of the input buffer to new sizes providing the new size is a
+/// multiple of the original size. When this buffer is projected, it is effectively
+/// repeated `N` times, where `N` is how many times the old size fits into the new size.
+///
 /// ### Examples
 ///
 /// ##### Two vectors
@@ -1792,23 +1859,6 @@ where
 /// assert_eq!(result, [1.0, -2.5, 0.25, -2.0]);
 /// ```
 ///
-/// ### Projecting Vectors
-///
-/// CFAVML allows for working over a wide variety of buffers for applications, projection is effectively
-/// broadcasting of two input buffers implementing `IntoMemLoader<T>`.
-///
-/// By default, you can provide _two slices_, _one slice and a broadcast value_, or _two broadcast values_,
-/// which exhibit the standard behaviour as you might expect.
-///
-/// When providing two slices as inputs they cannot be projected to a buffer
-/// that is larger their input sizes by default. This means providing two slices
-/// of `128` elements in length must take a result buffer of `128` elements in length.
-///
-/// You can wrap your inputs in a [cfavml::mem_loader::Projected] wrapper which
-/// enables projecting of the input buffer to new sizes providing the new size is a 
-/// multiple of the original size. When this buffer is projected, it is effectively
-/// repeated `N` times, where `N` is how many times the old size fits into the new size.
-/// 
 /// ### Implementation Pseudocode
 ///
 /// _This is the logic of the routine being called._
@@ -1887,6 +1937,23 @@ where
 /// - `0 + 1 == [1, 1, 1]`  w/result_buffer_len=3
 /// - `1 + 1 == [1]`  w/result_buffer_len=1
 ///
+/// ###### Projecting Vectors
+///
+/// CFAVML allows for working over a wide variety of buffers for applications, projection is effectively
+/// broadcasting of two input buffers implementing `IntoMemLoader<T>`.
+///
+/// By default, you can provide _two slices_, _one slice and a broadcast value_, or _two broadcast values_,
+/// which exhibit the standard behaviour as you might expect.
+///
+/// When providing two slices as inputs they cannot be projected to a buffer
+/// that is larger their input sizes by default. This means providing two slices
+/// of `128` elements in length must take a result buffer of `128` elements in length.
+///
+/// You can wrap your inputs in a [cfavml::mem_loader::Projected] wrapper which
+/// enables projecting of the input buffer to new sizes providing the new size is a
+/// multiple of the original size. When this buffer is projected, it is effectively
+/// repeated `N` times, where `N` is how many times the old size fits into the new size.
+///
 /// ### Examples
 ///
 /// ##### Two vectors
@@ -1937,18 +2004,6 @@ where
 /// let result = unsafe { core::mem::transmute::<Vec<MaybeUninit<f32>>, Vec<f32>>(result) };
 /// assert_eq!(result, [1.0, -0.4, 1.0, -0.5]);
 /// ```
-///
-/// ### Projecting Vectors
-///
-/// CFAVML allows for working over a wide variety of buffers for applications, projection is effectively
-/// broadcasting of two input buffers implementing `IntoMemLoader<T>`.
-///
-/// By default, you can provide _two slices_, _one slice and a broadcast value_, or _two broadcast values_,
-/// which exhibit the standard behaviour as you might expect.
-///
-/// When providing two slices as inputs they cannot be projected to a buffer
-/// that is larger their input sizes by default. This means providing two slices
-/// of `128` elements in length must take a result buffer of `128` elements in length.
 ///
 /// ### Implementation Pseudocode
 ///
