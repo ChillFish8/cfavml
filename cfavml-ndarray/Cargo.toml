@@ -4,7 +4,7 @@ version = "0.1.0"
 edition = "2021"
 rust-version = "1.75"
 authors = ["Harrison Burt <harrison.burt@cf8.gg>"]
-description = "Accelerate your ndarray operations by upto 20x with CFAVML's SIMD acceleration."
+description = "Accelerate your ndarray operations with CFAVML's SIMD acceleration."
 keywords = ["linear-algebra", "vector", "simd"]
 categories = ["concurrency"]
 readme = "README.md"
@@ -22,3 +22,4 @@ nightly = ["cfavml/nightly"]
 
 [dev-dependencies]
 ndarray-rand = "0.15.0"
+paste = "1.0.15"

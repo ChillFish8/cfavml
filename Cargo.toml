@@ -8,3 +8,6 @@ members = [
     # Testing and profiling
     "cfavml/asm-view"
 ]
+
+[profile.test]
+overflow-checks = false

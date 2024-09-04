@@ -1,10 +1,19 @@
 //! A crate-local copy of ndarray's private `broadcast_with` operation.
-//! 
+//!
 //! Due to the nature of this library, we need to mimic certain behaviours to maintain the
 //! 'drop in' nature, which includes mimicking the broadcasting behaviour.
 use core::iter::zip;
-use ndarray::{ArrayBase, ArrayView, Data, DimMax, ErrorKind, RawData, ShapeError};
-use ndarray::Dimension;
+
+use ndarray::{
+    ArrayBase,
+    ArrayView,
+    Data,
+    DimMax,
+    Dimension,
+    ErrorKind,
+    RawData,
+    ShapeError,
+};
 
 #[allow(clippy::type_complexity)]
 /// For two arrays or views, find their common shape if possible and
@@ -15,14 +24,23 @@ use ndarray::Dimension;
 pub(crate) fn broadcast_mut_with<'a, 'b, A, B, S, S2, D, E>(
     array_a: &'a ArrayBase<S, D>,
     array_b: &'b ArrayBase<S2, E>,
-) -> Result<(ArrayView<'a, A, <D as DimMax<E>>::Output>, ArrayView<'b, B, <D as DimMax<E>>::Output>), ShapeError>
+) -> Result<
+    (
+        ArrayView<'a, A, <D as DimMax<E>>::Output>,
+        ArrayView<'b, B, <D as DimMax<E>>::Output>,
+    ),
+    ShapeError,
+>
 where
     S: RawData<Elem = A> + Data<Elem = A>,
     S2: Data<Elem = B>,
     D: Dimension + DimMax<E>,
     E: Dimension,
 {
-    let shape = co_broadcast::<D, E, <D as DimMax<E>>::Output>(&array_a.raw_dim(), &array_b.raw_dim())?;
+    let shape = co_broadcast::<D, E, <D as DimMax<E>>::Output>(
+        &array_a.raw_dim(),
+        &array_b.raw_dim(),
+    )?;
     let view1 = if shape.slice() == array_a.raw_dim().slice() {
         array_a
             .view()
@@ -49,7 +67,10 @@ where
 ///
 /// Uses the [NumPy broadcasting rules]
 //  (https://docs.scipy.org/doc/numpy/user/basics.broadcasting.html#general-broadcasting-rules).
-pub(crate) fn co_broadcast<D1, D2, Output>(shape1: &D1, shape2: &D2) -> Result<Output, ShapeError>
+pub(crate) fn co_broadcast<D1, D2, Output>(
+    shape1: &D1,
+    shape2: &D2,
+) -> Result<Output, ShapeError>
 where
     D1: Dimension,
     D2: Dimension,
@@ -83,16 +104,18 @@ fn from_kind(error_kind: ErrorKind) -> ShapeError {
 }
 
 #[cfg(test)]
-mod tests
-{
+mod tests {
     use ndarray::*;
+
     use super::*;
 
     #[test]
-    fn test_broadcast_shape()
-    {
-        fn test_co<D1, D2>(d1: &D1, d2: &D2, r: Result<<D1 as DimMax<D2>>::Output, ShapeError>)
-        where
+    fn test_broadcast_shape() {
+        fn test_co<D1, D2>(
+            d1: &D1,
+            d2: &D2,
+            r: Result<<D1 as DimMax<D2>>::Output, ShapeError>,
+        ) where
             D1: Dimension + DimMax<D2>,
             D2: Dimension,
         {
@@ -100,16 +123,36 @@ mod tests
             assert_eq!(d, r);
         }
         test_co(&Dim([2, 3]), &Dim([4, 1, 3]), Ok(Dim([4, 2, 3])));
-        test_co(&Dim([1, 2, 2]), &Dim([1, 3, 4]), Err(ShapeError::from_kind(ErrorKind::IncompatibleShape)));
+        test_co(
+            &Dim([1, 2, 2]),
+            &Dim([1, 3, 4]),
+            Err(ShapeError::from_kind(ErrorKind::IncompatibleShape)),
+        );
         test_co(&Dim([3, 4, 5]), &Ix0(), Ok(Dim([3, 4, 5])));
         let v = vec![1, 2, 3, 4, 5, 6, 7];
-        test_co(&Dim(vec![1, 1, 3, 1, 5, 1, 7]), &Dim([2, 1, 4, 1, 6, 1]), Ok(Dim(IxDynImpl::from(v.as_slice()))));
+        test_co(
+            &Dim(vec![1, 1, 3, 1, 5, 1, 7]),
+            &Dim([2, 1, 4, 1, 6, 1]),
+            Ok(Dim(IxDynImpl::from(v.as_slice()))),
+        );
         let d = Dim([1, 2, 1, 3]);
         test_co(&d, &d, Ok(d));
-        test_co(&Dim([2, 1, 2]).into_dyn(), &Dim(0), Err(ShapeError::from_kind(ErrorKind::IncompatibleShape)));
-        test_co(&Dim([2, 1, 1]), &Dim([0, 0, 1, 3, 4]), Ok(Dim([0, 0, 2, 3, 4])));
+        test_co(
+            &Dim([2, 1, 2]).into_dyn(),
+            &Dim(0),
+            Err(ShapeError::from_kind(ErrorKind::IncompatibleShape)),
+        );
+        test_co(
+            &Dim([2, 1, 1]),
+            &Dim([0, 0, 1, 3, 4]),
+            Ok(Dim([0, 0, 2, 3, 4])),
+        );
         test_co(&Dim([0]), &Dim([0, 0, 0]), Ok(Dim([0, 0, 0])));
         test_co(&Dim(1), &Dim([1, 0, 0]), Ok(Dim([1, 0, 0])));
-        test_co(&Dim([1, 3, 0, 1, 1]), &Dim([1, 2, 3, 1]), Err(ShapeError::from_kind(ErrorKind::IncompatibleShape)));
+        test_co(
+            &Dim([1, 3, 0, 1, 1]),
+            &Dim([1, 2, 3, 1]),
+            Err(ShapeError::from_kind(ErrorKind::IncompatibleShape)),
+        );
     }
 }
