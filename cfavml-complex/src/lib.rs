@@ -5,8 +5,44 @@ use core::arch::x86_64::*;
 
 use cfavml::danger::{Avx2, SimdRegister};
 use num_complex::Complex;
+pub trait ComplexOps<T>
+where
+    Complex<T>: Copy,
+{
+    type Register: Copy;
+    /// Extracts the real component from a register
+    unsafe fn real_values(value: Self::Register) -> Self::Register;
+    /// Extracts the imaginary component from a register
+    unsafe fn imag_values(value: Self::Register) -> Self::Register;
+
+    /// Duplicates the real and imaginary components of a the input into separate registers
+    unsafe fn duplicate_complex_components(
+        value: Self::Register,
+    ) -> (Self::Register, Self::Register) {
+        (Self::real_values(value), Self::imag_values(value))
+    }
+    /// Swaps the real and imaginary components of a complex number
+    unsafe fn swap_complex_components(value: Self::Register) -> Self::Register;
+}
 
 pub struct Avx2Complex;
+impl ComplexOps<f32> for Avx2Complex {
+    type Register = __m256;
+
+    #[inline(always)]
+    unsafe fn real_values(value: Self::Register) -> Self::Register {
+        _mm256_moveldup_ps(value)
+    }
+
+    #[inline(always)]
+    unsafe fn imag_values(value: Self::Register) -> Self::Register {
+        _mm256_movehdup_ps(value)
+    }
+    #[inline(always)]
+    unsafe fn swap_complex_components(value: Self::Register) -> Self::Register {
+        _mm256_permute_ps(value, 0xB1)
+    }
+}
 
 impl SimdRegister<Complex<f32>> for Avx2Complex {
     type Register = __m256;
@@ -46,9 +82,9 @@ impl SimdRegister<Complex<f32>> for Avx2Complex {
         // [a, b, a, b, a, b, a, b], [c, d, c, d, c, d, c, d]
         // [a x 4], [b x 4]
         let (left_real, left_imag) =
-            (_mm256_moveldup_ps(left), _mm256_movehdup_ps(left));
-        // [d,c x 4]
-        let right_shuffled = _mm256_permute_ps(right, 0xB1);
+            <Avx2Complex as ComplexOps<f32>>::duplicate_complex_components(left);
+        let right_shuffled =
+            <Avx2Complex as ComplexOps<f32>>::swap_complex_components(right);
 
         let output_right = _mm256_mul_ps(left_imag, right_shuffled);
         _mm256_fmaddsub_ps(left_real, right, output_right)
@@ -113,6 +149,22 @@ impl SimdRegister<Complex<f32>> for Avx2Complex {
 
     unsafe fn write(mem: *mut Complex<f32>, reg: Self::Register) {
         todo!()
+    }
+}
+
+impl ComplexOps<Complex<f64>> for Avx2Complex {
+    type Register = __m256d;
+    #[inline(always)]
+    unsafe fn real_values(value: Self::Register) -> Self::Register {
+        _mm256_movedup_pd(value)
+    }
+    #[inline(always)]
+    unsafe fn imag_values(value: Self::Register) -> Self::Register {
+        _mm256_permute_pd(value, 0x0F)
+    }
+    #[inline(always)]
+    unsafe fn swap_complex_components(value: Self::Register) -> Self::Register {
+        _mm256_permute_pd(value, 0x5)
     }
 }
 
