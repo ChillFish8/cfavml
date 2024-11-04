@@ -6,7 +6,7 @@ use core::arch::x86_64::*;
 use cfavml::danger::{Avx2, SimdRegister};
 use num_complex::Complex;
 
-use crate::complex_ops::ComplexOps;
+use super::complex_ops::ComplexOps;
 
 pub struct Avx2Complex;
 impl ComplexOps<f32> for Avx2Complex {
@@ -83,18 +83,14 @@ impl SimdRegister<Complex<f32>> for Avx2Complex {
 
     #[inline(always)]
     unsafe fn mul(left: Self::Register, right: Self::Register) -> Self::Register {
-        // (a + bi)(c + di) = (ac - bd) + (ad + bc)i
-        // [b, a], [d,c]
-        // [a], [b]
         let (left_real, left_imag) =
             <Avx2Complex as ComplexOps<f32>>::duplicate_complex_components(left);
-        // [c,d]
+
         let right_shuffled =
             <Avx2Complex as ComplexOps<f32>>::swap_complex_components(right);
-        //[bc,bd]
+
         let output_right = _mm256_mul_ps(left_imag, right_shuffled);
 
-        // [ad+bc, ac-bd]
         let output_left = _mm256_mul_ps(left_real, right);
         _mm256_addsub_ps(output_left, output_right)
     }
@@ -144,35 +140,35 @@ impl SimdRegister<Complex<f32>> for Avx2Complex {
         _mm256_storeu_pd(mem as *mut f64, _mm256_castps_pd(reg));
     }
 
-    unsafe fn max(l1: Self::Register, l2: Self::Register) -> Self::Register {
+    unsafe fn max(_l1: Self::Register, _l22: Self::Register) -> Self::Register {
         unimplemented!("Ordering operations are not supported for complex numbers");
     }
 
-    unsafe fn min(l1: Self::Register, l2: Self::Register) -> Self::Register {
+    unsafe fn min(_l1: Self::Register, _l2: Self::Register) -> Self::Register {
         unimplemented!("Ordering operations are not supported for complex numbers");
     }
 
-    unsafe fn lt(l1: Self::Register, l2: Self::Register) -> Self::Register {
+    unsafe fn lt(_l1: Self::Register, _l22: Self::Register) -> Self::Register {
         unimplemented!("Ordering operations are not supported for complex numbers");
     }
 
-    unsafe fn lte(l1: Self::Register, l2: Self::Register) -> Self::Register {
+    unsafe fn lte(_l1: Self::Register, _l2: Self::Register) -> Self::Register {
         unimplemented!("Ordering operations are not supported for complex numbers");
     }
 
-    unsafe fn gt(l1: Self::Register, l2: Self::Register) -> Self::Register {
+    unsafe fn gt(_l1: Self::Register, _l22: Self::Register) -> Self::Register {
         unimplemented!("Ordering operations are not supported for complex numbers");
     }
 
-    unsafe fn gte(l1: Self::Register, l2: Self::Register) -> Self::Register {
+    unsafe fn gte(_l1: Self::Register, _l2: Self::Register) -> Self::Register {
         unimplemented!("Ordering operations are not supported for complex numbers");
     }
 
-    unsafe fn max_to_value(reg: Self::Register) -> Complex<f32> {
+    unsafe fn max_to_value(_reg: Self::Register) -> Complex<f32> {
         unimplemented!("Ordering operations are not supported for complex numbers");
     }
 
-    unsafe fn min_to_value(reg: Self::Register) -> Complex<f32> {
+    unsafe fn min_to_value(_reg: Self::Register) -> Complex<f32> {
         unimplemented!("Ordering operations are not supported for complex numbers");
     }
 }
@@ -300,35 +296,35 @@ impl SimdRegister<Complex<f64>> for Avx2Complex {
         store[0]
     }
 
-    unsafe fn max(l1: Self::Register, l2: Self::Register) -> Self::Register {
+    unsafe fn max(_l1: Self::Register, _l22: Self::Register) -> Self::Register {
         unimplemented!("Ordering operations are not supported for complex numbers");
     }
 
-    unsafe fn min(l1: Self::Register, l2: Self::Register) -> Self::Register {
+    unsafe fn min(_l1: Self::Register, _l2: Self::Register) -> Self::Register {
         unimplemented!("Ordering operations are not supported for complex numbers");
     }
 
-    unsafe fn lt(l1: Self::Register, l2: Self::Register) -> Self::Register {
+    unsafe fn lt(_l1: Self::Register, _l22: Self::Register) -> Self::Register {
         unimplemented!("Ordering operations are not supported for complex numbers");
     }
 
-    unsafe fn lte(l1: Self::Register, l2: Self::Register) -> Self::Register {
+    unsafe fn lte(_l1: Self::Register, _l2: Self::Register) -> Self::Register {
         unimplemented!("Ordering operations are not supported for complex numbers");
     }
 
-    unsafe fn gt(l1: Self::Register, l2: Self::Register) -> Self::Register {
+    unsafe fn gt(_l1: Self::Register, _l22: Self::Register) -> Self::Register {
         unimplemented!("Ordering operations are not supported for complex numbers");
     }
 
-    unsafe fn gte(l1: Self::Register, l2: Self::Register) -> Self::Register {
+    unsafe fn gte(_l1: Self::Register, _l2: Self::Register) -> Self::Register {
         unimplemented!("Ordering operations are not supported for complex numbers");
     }
 
-    unsafe fn max_to_value(reg: Self::Register) -> Complex<f64> {
+    unsafe fn max_to_value(_reg: Self::Register) -> Complex<f64> {
         unimplemented!("Ordering operations are not supported for complex numbers");
     }
 
-    unsafe fn min_to_value(reg: Self::Register) -> Complex<f64> {
+    unsafe fn min_to_value(_reg: Self::Register) -> Complex<f64> {
         unimplemented!("Ordering operations are not supported for complex numbers");
     }
 }

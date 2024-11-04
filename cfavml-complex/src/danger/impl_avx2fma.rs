@@ -1,5 +1,5 @@
-use crate::avx2::Avx2Complex;
-use crate::complex_ops::ComplexOps;
+use crate::danger::complex_ops::ComplexOps;
+use crate::danger::impl_avx2::Avx2Complex;
 use cfavml::danger::SimdRegister;
 #[cfg(target_arch = "x86")]
 use core::arch::x86::*;
