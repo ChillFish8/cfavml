@@ -12,13 +12,13 @@ impl ComplexOps<f32> for Avx2ComplexFma {
     type HalfRegister = __m128;
 
     #[inline(always)]
-    unsafe fn duplicate_reals(value: Self::Register) -> Self::Register {
-        <Avx2Complex as ComplexOps<f32>>::duplicate_reals(value)
+    unsafe fn dup_real_components(value: Self::Register) -> Self::Register {
+        <Avx2Complex as ComplexOps<f32>>::dup_real_components(value)
     }
 
     #[inline(always)]
-    unsafe fn imag_values(value: Self::Register) -> Self::Register {
-        <Avx2Complex as ComplexOps<f32>>::imag_values(value)
+    unsafe fn dup_imag_components(value: Self::Register) -> Self::Register {
+        <Avx2Complex as ComplexOps<f32>>::dup_imag_components(value)
     }
     #[inline(always)]
     unsafe fn swap_complex_components(value: Self::Register) -> Self::Register {
@@ -44,7 +44,7 @@ impl SimdRegister<Complex<f32>> for Avx2ComplexFma {
     #[inline(always)]
     unsafe fn mul(left: Self::Register, right: Self::Register) -> Self::Register {
         let (left_real, left_imag) =
-            <Avx2Complex as ComplexOps<f32>>::duplicate_complex_components(left);
+            <Avx2Complex as ComplexOps<f32>>::dup_complex_components(left);
 
         let right_shuffled =
             <Avx2Complex as ComplexOps<f32>>::swap_complex_components(right);
@@ -153,12 +153,12 @@ impl ComplexOps<f64> for Avx2ComplexFma {
     type Register = __m256d;
     type HalfRegister = __m128d;
     #[inline(always)]
-    unsafe fn duplicate_reals(value: Self::Register) -> Self::Register {
-        <Avx2Complex as ComplexOps<f64>>::duplicate_reals(value)
+    unsafe fn dup_real_components(value: Self::Register) -> Self::Register {
+        <Avx2Complex as ComplexOps<f64>>::dup_real_components(value)
     }
     #[inline(always)]
-    unsafe fn imag_values(value: Self::Register) -> Self::Register {
-        <Avx2Complex as ComplexOps<f64>>::imag_values(value)
+    unsafe fn dup_imag_components(value: Self::Register) -> Self::Register {
+        <Avx2Complex as ComplexOps<f64>>::dup_imag_components(value)
     }
     #[inline(always)]
     unsafe fn swap_complex_components(value: Self::Register) -> Self::Register {
@@ -209,7 +209,7 @@ impl SimdRegister<Complex<f64>> for Avx2ComplexFma {
     #[inline(always)]
     unsafe fn mul(left: Self::Register, right: Self::Register) -> Self::Register {
         let (left_real, left_imag) =
-            <Avx2Complex as ComplexOps<f64>>::duplicate_complex_components(left);
+            <Avx2Complex as ComplexOps<f64>>::dup_complex_components(left);
         let right_shuffled =
             <Avx2Complex as ComplexOps<f64>>::swap_complex_components(right);
         let output_right = _mm256_mul_pd(left_imag, right_shuffled);
@@ -234,11 +234,11 @@ impl SimdRegister<Complex<f64>> for Avx2ComplexFma {
         )
     }
 
-    unsafe fn max(l1: Self::Register, l2: Self::Register) -> Self::Register {
+    unsafe fn max(_l1: Self::Register, _l2: Self::Register) -> Self::Register {
         unimplemented!("Ordering operations are not supported for complex numbers");
     }
 
-    unsafe fn min(l1: Self::Register, l2: Self::Register) -> Self::Register {
+    unsafe fn min(_l1: Self::Register, _l2: Self::Register) -> Self::Register {
         unimplemented!("Ordering operations are not supported for complex numbers");
     }
 
@@ -250,19 +250,19 @@ impl SimdRegister<Complex<f64>> for Avx2ComplexFma {
         <Avx2Complex as SimdRegister<Complex<f64>>>::neq(l1, l2)
     }
 
-    unsafe fn lt(l1: Self::Register, l2: Self::Register) -> Self::Register {
+    unsafe fn lt(_l1: Self::Register, _l2: Self::Register) -> Self::Register {
         unimplemented!("Ordering operations are not supported for complex numbers");
     }
 
-    unsafe fn lte(l1: Self::Register, l2: Self::Register) -> Self::Register {
+    unsafe fn lte(_l1: Self::Register, _l2: Self::Register) -> Self::Register {
         unimplemented!("Ordering operations are not supported for complex numbers");
     }
 
-    unsafe fn gt(l1: Self::Register, l2: Self::Register) -> Self::Register {
+    unsafe fn gt(_l1: Self::Register, _l2: Self::Register) -> Self::Register {
         unimplemented!("Ordering operations are not supported for complex numbers");
     }
 
-    unsafe fn gte(l1: Self::Register, l2: Self::Register) -> Self::Register {
+    unsafe fn gte(_l1: Self::Register, _l2: Self::Register) -> Self::Register {
         unimplemented!("Ordering operations are not supported for complex numbers");
     }
 
@@ -270,15 +270,15 @@ impl SimdRegister<Complex<f64>> for Avx2ComplexFma {
         <Avx2Complex as SimdRegister<Complex<f64>>>::sum_to_value(reg)
     }
 
-    unsafe fn max_to_value(reg: Self::Register) -> Complex<f64> {
+    unsafe fn max_to_value(_reg: Self::Register) -> Complex<f64> {
         unimplemented!("Ordering operations are not supported for complex numbers");
     }
 
-    unsafe fn min_to_value(reg: Self::Register) -> Complex<f64> {
+    unsafe fn min_to_value(_reg: Self::Register) -> Complex<f64> {
         unimplemented!("Ordering operations are not supported for complex numbers");
     }
 
     unsafe fn write(mem: *mut Complex<f64>, reg: Self::Register) {
-        todo!()
+        <Avx2Complex as SimdRegister<Complex<f64>>>::write(mem, reg)
     }
 }

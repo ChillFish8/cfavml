@@ -13,12 +13,12 @@ impl ComplexOps<f32> for Avx2Complex {
     type Register = __m256;
     type HalfRegister = __m128;
     #[inline(always)]
-    unsafe fn duplicate_reals(value: Self::Register) -> Self::Register {
+    unsafe fn dup_real_components(value: Self::Register) -> Self::Register {
         _mm256_moveldup_ps(value)
     }
 
     #[inline(always)]
-    unsafe fn imag_values(value: Self::Register) -> Self::Register {
+    unsafe fn dup_imag_components(value: Self::Register) -> Self::Register {
         _mm256_movehdup_ps(value)
     }
     #[inline(always)]
@@ -42,7 +42,7 @@ impl ComplexOps<f32> for Avx2Complex {
     #[inline(always)]
     unsafe fn dup_norm(value: Self::Register) -> Self::Register {
         let (real, imag) =
-            <Avx2Complex as ComplexOps<f32>>::duplicate_complex_components(value);
+            <Avx2Complex as ComplexOps<f32>>::dup_complex_components(value);
         _mm256_sqrt_ps(_mm256_add_ps(
             _mm256_mul_ps(real, real),
             _mm256_mul_ps(imag, imag),
@@ -84,7 +84,7 @@ impl SimdRegister<Complex<f32>> for Avx2Complex {
     #[inline(always)]
     unsafe fn mul(left: Self::Register, right: Self::Register) -> Self::Register {
         let (left_real, left_imag) =
-            <Avx2Complex as ComplexOps<f32>>::duplicate_complex_components(left);
+            <Avx2Complex as ComplexOps<f32>>::dup_complex_components(left);
 
         let right_shuffled =
             <Avx2Complex as ComplexOps<f32>>::swap_complex_components(right);
@@ -177,11 +177,11 @@ impl ComplexOps<f64> for Avx2Complex {
     type Register = __m256d;
     type HalfRegister = __m128d;
     #[inline(always)]
-    unsafe fn duplicate_reals(value: Self::Register) -> Self::Register {
+    unsafe fn dup_real_components(value: Self::Register) -> Self::Register {
         _mm256_movedup_pd(value)
     }
     #[inline(always)]
-    unsafe fn imag_values(value: Self::Register) -> Self::Register {
+    unsafe fn dup_imag_components(value: Self::Register) -> Self::Register {
         _mm256_permute_pd(value, 0x0F)
     }
     #[inline(always)]
@@ -203,7 +203,7 @@ impl ComplexOps<f64> for Avx2Complex {
     #[inline(always)]
     unsafe fn dup_norm(value: Self::Register) -> Self::Register {
         let (real, imag) =
-            <Avx2Complex as ComplexOps<f64>>::duplicate_complex_components(value);
+            <Avx2Complex as ComplexOps<f64>>::dup_complex_components(value);
 
         _mm256_sqrt_pd(_mm256_add_pd(
             _mm256_mul_pd(real, real),
@@ -243,7 +243,7 @@ impl SimdRegister<Complex<f64>> for Avx2Complex {
     #[inline(always)]
     unsafe fn mul(left: Self::Register, right: Self::Register) -> Self::Register {
         let (left_real, left_imag) =
-            <Avx2Complex as ComplexOps<f64>>::duplicate_complex_components(left);
+            <Avx2Complex as ComplexOps<f64>>::dup_complex_components(left);
 
         let right_shuffled =
             <Avx2Complex as ComplexOps<f64>>::swap_complex_components(right);

@@ -1,3 +1,5 @@
+use super::impl_fallback::Fallback;
+
 macro_rules! test_suite {
     ($t:ident, $im:ident) => {
         paste::paste! {
@@ -9,6 +11,8 @@ macro_rules! test_suite {
     };
 }
 
+test_suite!(f32, Fallback);
+test_suite!(f64, Fallback);
 #[cfg(all(target_feature = "avx2", test))]
 mod avx2_tests {
     use super::*;

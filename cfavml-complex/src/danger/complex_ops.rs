@@ -8,16 +8,19 @@ where
     type HalfRegister: Copy;
 
     /// returns the real components of the complex register duplicated over their imaginary counterparts
-    unsafe fn duplicate_reals(value: Self::Register) -> Self::Register;
+    unsafe fn dup_real_components(value: Self::Register) -> Self::Register;
     /// returns the imaginary component of a complex register duplicated over their real counterparts
-    unsafe fn imag_values(value: Self::Register) -> Self::Register;
+    unsafe fn dup_imag_components(value: Self::Register) -> Self::Register;
 
     #[inline(always)]
     /// Duplicates the real and imaginary components of a the input into separate registers
-    unsafe fn duplicate_complex_components(
+    unsafe fn dup_complex_components(
         value: Self::Register,
     ) -> (Self::Register, Self::Register) {
-        (Self::duplicate_reals(value), Self::imag_values(value))
+        (
+            Self::dup_real_components(value),
+            Self::dup_imag_components(value),
+        )
     }
     /// returns the conjugates of the complex register
     unsafe fn conj(value: Self::Register) -> Self::Register;

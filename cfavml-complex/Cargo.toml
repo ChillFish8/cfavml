@@ -16,11 +16,12 @@ license = "MIT OR Apache-2.0"
 [dependencies]
 num-complex = "0.4.6"
 cfavml = { path = "../cfavml" }
+num-traits = "0.2.19"
 
 [dev-dependencies]
-num-traits = "0.2.19"
 rand_chacha = "0.3.1"
 rand = "0.8.5"
+paste = "1.0.14"
 
 [features]
 # Enables nightly only features like fast-math optimizations for fallback routines and AVX512 support.
