@@ -1,29 +1,20 @@
-use crate::danger::complex_ops::ComplexOps;
-use crate::danger::impl_avx2::Avx2Complex;
-use cfavml::danger::SimdRegister;
 #[cfg(target_arch = "x86")]
 use core::arch::x86::*;
 #[cfg(target_arch = "x86_64")]
 use core::arch::x86_64::*;
+
+use cfavml::danger::SimdRegister;
 use num_complex::Complex;
+
+use super::complex_ops::ComplexSimdOps;
+use crate::danger::complex_ops::ComplexOps;
+use crate::danger::impl_avx2::Avx2Complex;
 pub struct Avx2ComplexFma;
+
 impl ComplexOps<f32> for Avx2ComplexFma {
     type Register = __m256;
     type HalfRegister = __m128;
 
-    #[inline(always)]
-    unsafe fn dup_real_components(value: Self::Register) -> Self::Register {
-        <Avx2Complex as ComplexOps<f32>>::dup_real_components(value)
-    }
-
-    #[inline(always)]
-    unsafe fn dup_imag_components(value: Self::Register) -> Self::Register {
-        <Avx2Complex as ComplexOps<f32>>::dup_imag_components(value)
-    }
-    #[inline(always)]
-    unsafe fn swap_complex_components(value: Self::Register) -> Self::Register {
-        <Avx2Complex as ComplexOps<f32>>::swap_complex_components(value)
-    }
     #[inline(always)]
     unsafe fn conj(value: Self::Register) -> Self::Register {
         <Avx2Complex as ComplexOps<f32>>::conj(value)
@@ -31,10 +22,6 @@ impl ComplexOps<f32> for Avx2ComplexFma {
     #[inline(always)]
     unsafe fn inv(value: Self::Register) -> Self::Register {
         <Avx2Complex as ComplexOps<f32>>::inv(value)
-    }
-    #[inline(always)]
-    unsafe fn dup_norm(value: Self::Register) -> Self::Register {
-        <Avx2Complex as ComplexOps<f32>>::dup_norm(value)
     }
 }
 
@@ -44,10 +31,10 @@ impl SimdRegister<Complex<f32>> for Avx2ComplexFma {
     #[inline(always)]
     unsafe fn mul(left: Self::Register, right: Self::Register) -> Self::Register {
         let (left_real, left_imag) =
-            <Avx2Complex as ComplexOps<f32>>::dup_complex_components(left);
+            <Avx2Complex as ComplexSimdOps<f32>>::dup_complex_components(left);
 
         let right_shuffled =
-            <Avx2Complex as ComplexOps<f32>>::swap_complex_components(right);
+            <Avx2Complex as ComplexSimdOps<f32>>::swap_complex_components(right);
 
         let output_right = _mm256_mul_ps(left_imag, right_shuffled);
 
@@ -152,18 +139,7 @@ impl SimdRegister<Complex<f32>> for Avx2ComplexFma {
 impl ComplexOps<f64> for Avx2ComplexFma {
     type Register = __m256d;
     type HalfRegister = __m128d;
-    #[inline(always)]
-    unsafe fn dup_real_components(value: Self::Register) -> Self::Register {
-        <Avx2Complex as ComplexOps<f64>>::dup_real_components(value)
-    }
-    #[inline(always)]
-    unsafe fn dup_imag_components(value: Self::Register) -> Self::Register {
-        <Avx2Complex as ComplexOps<f64>>::dup_imag_components(value)
-    }
-    #[inline(always)]
-    unsafe fn swap_complex_components(value: Self::Register) -> Self::Register {
-        <Avx2Complex as ComplexOps<f64>>::swap_complex_components(value)
-    }
+
     #[inline(always)]
     unsafe fn conj(value: Self::Register) -> Self::Register {
         <Avx2Complex as ComplexOps<f64>>::conj(value)
@@ -171,10 +147,6 @@ impl ComplexOps<f64> for Avx2ComplexFma {
     #[inline(always)]
     unsafe fn inv(value: Self::Register) -> Self::Register {
         <Avx2Complex as ComplexOps<f64>>::inv(value)
-    }
-    #[inline(always)]
-    unsafe fn dup_norm(value: Self::Register) -> Self::Register {
-        <Avx2Complex as ComplexOps<f64>>::dup_norm(value)
     }
 }
 
@@ -209,9 +181,9 @@ impl SimdRegister<Complex<f64>> for Avx2ComplexFma {
     #[inline(always)]
     unsafe fn mul(left: Self::Register, right: Self::Register) -> Self::Register {
         let (left_real, left_imag) =
-            <Avx2Complex as ComplexOps<f64>>::dup_complex_components(left);
+            <Avx2Complex as ComplexSimdOps<f64>>::dup_complex_components(left);
         let right_shuffled =
-            <Avx2Complex as ComplexOps<f64>>::swap_complex_components(right);
+            <Avx2Complex as ComplexSimdOps<f64>>::swap_complex_components(right);
         let output_right = _mm256_mul_pd(left_imag, right_shuffled);
         _mm256_fmaddsub_pd(left_real, right, output_right)
     }

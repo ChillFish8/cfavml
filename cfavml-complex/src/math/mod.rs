@@ -1,5 +1,6 @@
-use cfavml::math::{AutoMath, Math};
 use core::ops::Neg;
+
+use cfavml::math::{AutoMath, Math};
 use num_complex::Complex;
 pub type AutoComplex = DefaultComplexMath;
 pub struct DefaultComplexMath;
@@ -42,12 +43,24 @@ where
             im: AutoMath::sub(a.im, b.im),
         }
     }
+    #[inline(always)]
+    fn norm(a: Complex<T>) -> T {
+        AutoMath::sqrt(AutoMath::add(
+            AutoMath::mul(a.re, a.re),
+            AutoMath::mul(a.im, a.im),
+        ))
+    }
+    #[inline(always)]
+    fn inv(a: Complex<T>) -> Complex<T> {
+        let sqrd_norm =
+            AutoMath::add(AutoMath::mul(a.re, a.re), AutoMath::mul(a.im, a.im));
+        let inv_re = AutoMath::div(a.re, sqrd_norm);
+        let inv_im = AutoMath::div(-a.im, sqrd_norm);
+        Complex::new(inv_re, inv_im)
+    }
     //need to implement this separately so I don't require the std::ops::Neg trait
     fn div(a: Complex<T>, b: Complex<T>) -> Complex<T> {
-        let norm = AutoMath::add(AutoMath::mul(b.re, b.re), AutoMath::mul(b.im, b.im));
-        let inv_re = AutoMath::div(AutoMath::div(b.re, norm), norm);
-        let inv_im = AutoMath::div(AutoMath::div(-b.im, norm), norm);
-        Self::mul(a, Complex::new(inv_re, inv_im))
+        Self::mul(a, Self::inv(b))
     }
 
     #[cfg(test)]

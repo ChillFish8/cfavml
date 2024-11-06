@@ -1,17 +1,15 @@
-use crate::{
-    math::{AutoComplex, ComplexMath},
-    test_utils::get_sample_vectors,
-};
-use cfavml::{
-    danger::SimdRegister,
-    math::{AutoMath, Math},
-};
 use std::fmt::Debug;
 use std::iter::zip;
 
+use cfavml::danger::SimdRegister;
+use cfavml::math::{AutoMath, Math};
 use num_complex::Complex;
 use num_traits::Float;
-use rand::{distributions::Standard, prelude::Distribution};
+use rand::distributions::Standard;
+use rand::prelude::Distribution;
+
+use crate::math::{AutoComplex, ComplexMath};
+use crate::test_utils::get_sample_vectors;
 
 pub(crate) unsafe fn test_suite_impl<T, R>()
 where
@@ -87,7 +85,9 @@ where
         let l1 = R::load(small_sample_l1.as_ptr());
         let l2 = R::load(small_sample_l2.as_ptr());
         let res = R::div(l1, l2);
+
         let value = R::sum_to_value(res);
+
         let expected_value = zip(small_sample_l1.iter(), small_sample_l2.iter())
             .map(|(a, b)| AutoComplex::div(*a, *b))
             .fold(AutoComplex::zero(), |a, b| AutoComplex::add(a, b));

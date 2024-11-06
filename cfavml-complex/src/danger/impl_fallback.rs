@@ -1,12 +1,12 @@
-use super::complex_ops::ComplexOps;
-use crate::math::{AutoComplex, ComplexMath};
-use cfavml::{
-    danger::{DenseLane, SimdRegister},
-    math::{AutoMath, Math},
-};
 use core::ops::Neg;
+
+use cfavml::danger::{DenseLane, SimdRegister};
+use cfavml::math::{AutoMath, Math};
 use num_complex::Complex;
 use num_traits::Float;
+
+use super::complex_ops::ComplexOps;
+use crate::math::{AutoComplex, ComplexMath};
 
 pub struct Fallback;
 
@@ -19,21 +19,6 @@ where
 
     type HalfRegister = T;
 
-    unsafe fn dup_real_components(value: Self::Register) -> Self::Register {
-        // my god this is jank
-        Complex {
-            re: value.re,
-            im: value.re,
-        }
-    }
-
-    unsafe fn dup_imag_components(value: Self::Register) -> Self::Register {
-        Complex {
-            re: value.im,
-            im: value.im,
-        }
-    }
-
     unsafe fn conj(value: Self::Register) -> Self::Register {
         Complex {
             re: value.re,
@@ -42,30 +27,15 @@ where
     }
 
     unsafe fn inv(value: Self::Register) -> Self::Register {
-        let norm = AutoMath::add(
+        let squared_norm = AutoMath::add(
             AutoMath::mul(value.re, value.re),
             AutoMath::mul(value.im, value.im),
         );
         let conj = <Fallback as ComplexOps<T>>::conj(value);
 
         Complex {
-            re: AutoMath::div(AutoMath::div(conj.re, norm), norm),
-            im: AutoMath::div(AutoMath::div(conj.im, norm), norm),
-        }
-    }
-
-    unsafe fn dup_norm(value: Self::Register) -> Self::Register {
-        let norm = AutoMath::add(
-            AutoMath::mul(value.re, value.re),
-            AutoMath::mul(value.im, value.im),
-        );
-        Complex { re: norm, im: norm }
-    }
-
-    unsafe fn swap_complex_components(value: Self::Register) -> Self::Register {
-        Complex {
-            re: value.im,
-            im: value.re,
+            re: AutoMath::div(conj.re, squared_norm),
+            im: AutoMath::div(conj.im, squared_norm),
         }
     }
 }
