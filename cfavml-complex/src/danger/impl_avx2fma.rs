@@ -11,6 +11,33 @@ use crate::danger::complex_ops::ComplexOps;
 use crate::danger::impl_avx2::Avx2Complex;
 pub struct Avx2ComplexFma;
 
+impl ComplexSimdOps<f32> for Avx2ComplexFma {
+    type Register = __m256;
+    unsafe fn dup_real_components(value: Self::Register) -> Self::Register {
+        _mm256_moveldup_ps(value)
+    }
+
+    unsafe fn dup_imag_components(value: Self::Register) -> Self::Register {
+        _mm256_movehdup_ps(value)
+    }
+
+    unsafe fn dup_norm(value: Self::Register) -> Self::Register {
+        let (real, imag) =
+            <Avx2Complex as ComplexSimdOps<f32>>::dup_complex_components(value);
+        let b_abs = _mm256_andnot_ps(imag, _mm256_set1_ps(-0.0));
+        let ab = _mm256_div_ps(real, imag);
+        let ab_square = _mm256_mul_ps(ab, ab);
+        _mm256_mul_ps(
+            b_abs,
+            _mm256_sqrt_ps(_mm256_fmadd_ps(ab_square, ab_square, _mm256_set1_ps(1.0))),
+        )
+    }
+
+    unsafe fn swap_complex_components(value: Self::Register) -> Self::Register {
+        <Avx2Complex as ComplexSimdOps<f32>>::swap_complex_components(value)
+    }
+}
+
 impl ComplexOps<f32> for Avx2ComplexFma {
     type Register = __m256;
     type HalfRegister = __m128;
@@ -21,7 +48,11 @@ impl ComplexOps<f32> for Avx2ComplexFma {
     }
     #[inline(always)]
     unsafe fn inv(value: Self::Register) -> Self::Register {
-        <Avx2Complex as ComplexOps<f32>>::inv(value)
+        let norm = <Avx2ComplexFma as ComplexSimdOps<f32>>::dup_norm(value);
+        _mm256_div_ps(
+            _mm256_div_ps(<Avx2Complex as ComplexOps<f32>>::conj(value), norm),
+            norm,
+        )
     }
 }
 
@@ -136,6 +167,32 @@ impl SimdRegister<Complex<f32>> for Avx2ComplexFma {
     }
 }
 
+impl ComplexSimdOps<f64> for Avx2ComplexFma {
+    type Register = __m256d;
+    unsafe fn dup_real_components(value: Self::Register) -> Self::Register {
+        <Avx2Complex as ComplexSimdOps<f64>>::dup_real_components(value)
+    }
+
+    unsafe fn dup_imag_components(value: Self::Register) -> Self::Register {
+        <Avx2Complex as ComplexSimdOps<f64>>::dup_imag_components(value)
+    }
+
+    unsafe fn dup_norm(value: Self::Register) -> Self::Register {
+        let (real, imag) =
+            <Avx2Complex as ComplexSimdOps<f64>>::dup_complex_components(value);
+        let b_abs = _mm256_andnot_pd(imag, _mm256_set1_pd(-0.0));
+        let ab = _mm256_div_pd(real, imag);
+        let ab_square = _mm256_mul_pd(ab, ab);
+        _mm256_mul_pd(
+            b_abs,
+            _mm256_sqrt_pd(_mm256_fmadd_pd(ab_square, ab_square, _mm256_set1_pd(1.0))),
+        )
+    }
+
+    unsafe fn swap_complex_components(value: Self::Register) -> Self::Register {
+        <Avx2Complex as ComplexSimdOps<f64>>::swap_complex_components(value)
+    }
+}
 impl ComplexOps<f64> for Avx2ComplexFma {
     type Register = __m256d;
     type HalfRegister = __m128d;
@@ -146,7 +203,11 @@ impl ComplexOps<f64> for Avx2ComplexFma {
     }
     #[inline(always)]
     unsafe fn inv(value: Self::Register) -> Self::Register {
-        <Avx2Complex as ComplexOps<f64>>::inv(value)
+        let norm = <Avx2ComplexFma as ComplexSimdOps<f64>>::dup_norm(value);
+        _mm256_div_pd(
+            _mm256_div_pd(<Avx2Complex as ComplexOps<f64>>::conj(value), norm),
+            norm,
+        )
     }
 }
 

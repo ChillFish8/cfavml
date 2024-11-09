@@ -1,3 +1,4 @@
+use cfavml::danger::SimdRegister;
 use num_complex::Complex;
 
 pub trait ComplexOps<T>
@@ -34,7 +35,7 @@ where
         )
     }
     /// returns the squared_norm of the complex number duplicated into even/odd index pairs
-    unsafe fn dup_squared_norm(value: Self::Register) -> Self::Register;
+    unsafe fn dup_norm(value: Self::Register) -> Self::Register;
 
     /// Swaps the real and imaginary components of a complex register
     unsafe fn swap_complex_components(value: Self::Register) -> Self::Register;

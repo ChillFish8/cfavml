@@ -2,6 +2,7 @@
 use core::arch::x86::*;
 #[cfg(target_arch = "x86_64")]
 use core::arch::x86_64::*;
+use core::{f32, f64};
 
 use cfavml::danger::{Avx2, SimdRegister};
 use num_complex::Complex;
@@ -27,10 +28,24 @@ impl ComplexSimdOps<f32> for Avx2Complex {
         _mm256_permute_ps(value, 0xB1)
     }
     #[inline(always)]
-    unsafe fn dup_squared_norm(value: Self::Register) -> Self::Register {
+    unsafe fn dup_norm(value: Self::Register) -> Self::Register {
         let (real, imag) =
             <Avx2Complex as ComplexSimdOps<f32>>::dup_complex_components(value);
-        _mm256_add_ps(_mm256_mul_ps(real, real), _mm256_mul_ps(imag, imag))
+        let (real_abs, imag_abs) = (
+            _mm256_andnot_ps(_mm256_set1_ps(-0.0), real),
+            _mm256_andnot_ps(_mm256_set1_ps(-0.0), imag),
+        );
+
+        let (a, b) = (
+            <Avx2 as SimdRegister<f32>>::max(real_abs, imag_abs),
+            <Avx2 as SimdRegister<f32>>::min(real_abs, imag_abs),
+        );
+        let right_half = _mm256_div_ps(a, b);
+        let right_half = _mm256_mul_ps(right_half, right_half);
+        _mm256_mul_ps(
+            b,
+            _mm256_sqrt_ps(_mm256_add_ps(right_half, _mm256_set1_ps(1.0))),
+        )
     }
 }
 
@@ -47,9 +62,12 @@ impl ComplexOps<f32> for Avx2Complex {
 
     #[inline(always)]
     unsafe fn inv(value: Self::Register) -> Self::Register {
-        let norm = <Avx2Complex as ComplexSimdOps<f32>>::dup_squared_norm(value);
+        let mut v = [Complex::new(0.0, 0.0); 4];
+        _mm256_storeu_pd(v.as_mut_ptr() as *mut f64, _mm256_castps_pd(value));
+        let norm = <Avx2Complex as ComplexSimdOps<f32>>::dup_norm(value);
+
         let conj = <Avx2Complex as ComplexOps<f32>>::conj(value);
-        _mm256_div_ps(conj, norm)
+        _mm256_div_ps(_mm256_div_ps(conj, norm), norm)
     }
 }
 
@@ -197,11 +215,24 @@ impl ComplexSimdOps<f64> for Avx2Complex {
         _mm256_permute_pd(value, 0x5)
     }
     #[inline(always)]
-    unsafe fn dup_squared_norm(value: Self::Register) -> Self::Register {
+    unsafe fn dup_norm(value: Self::Register) -> Self::Register {
         let (real, imag) =
             <Avx2Complex as ComplexSimdOps<f64>>::dup_complex_components(value);
+        let (real_abs, imag_abs) = (
+            _mm256_andnot_pd(_mm256_set1_pd(-0.0), real),
+            _mm256_andnot_pd(_mm256_set1_pd(-0.0), imag),
+        );
+        let (a, b) = (
+            <Avx2 as SimdRegister<f64>>::max(real_abs, imag_abs),
+            <Avx2 as SimdRegister<f64>>::min(real_abs, imag_abs),
+        );
 
-        _mm256_add_pd(_mm256_mul_pd(real, real), _mm256_mul_pd(imag, imag))
+        let right_half = _mm256_div_pd(a, b);
+        let right_half = _mm256_mul_pd(right_half, right_half);
+        _mm256_mul_pd(
+            b,
+            _mm256_sqrt_pd(_mm256_add_pd(right_half, _mm256_set1_pd(1.0))),
+        )
     }
 }
 
@@ -215,9 +246,9 @@ impl ComplexOps<f64> for Avx2Complex {
 
     #[inline(always)]
     unsafe fn inv(value: Self::Register) -> Self::Register {
-        let norm = <Avx2Complex as ComplexSimdOps<f64>>::dup_squared_norm(value);
+        let norm = <Avx2Complex as ComplexSimdOps<f64>>::dup_norm(value);
         let conj = <Avx2Complex as ComplexOps<f64>>::conj(value);
-        _mm256_div_pd(conj, norm)
+        _mm256_div_pd(_mm256_div_pd(conj, norm), norm)
     }
 }
 

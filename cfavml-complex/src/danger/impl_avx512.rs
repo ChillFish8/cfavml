@@ -1,3 +1,4 @@
+#[feature(stdarch_x86_avx512)]
 #[cfg(target_arch = "x86")]
 use core::arch::x86::*;
 #[cfg(target_arch = "x86_64")]
@@ -7,21 +8,36 @@ use core::mem;
 use cfavml::danger::SimdRegister;
 use num_complex::Complex;
 
+use super::complex_ops::ComplexSimdOps;
 use crate::danger::complex_ops::ComplexOps;
 
-pub struct Avx512Complex;
+pub struct Avx512;
+
+impl ComplexSimdOps<f32> for Avx512 {
+    type Register = __m512;
+    unsafe fn dup_real_components(value: Self::Register) -> Self::Register {
+        _mm512_moveldup_ps(value)
+    }
+
+    unsafe fn dup_imag_components(value: Self::Register) -> Self::Register {
+        _mm512_movehdup_ps(value)
+    }
+
+    unsafe fn dup_norm(value: Self::Register) -> Self::Register {
+        let (real, imag) = Self::dup_complex_components(value);
+        todo!()
+    }
+
+    unsafe fn swap_complex_components(value: Self::Register) -> Self::Register {
+        _mm512_permute_ps(value, 0xB1)
+    }
+}
 
 // impl ComplexOps<f32> for Avx512Complex {
 //     type Register = __m512;
 //     type HalfRegister = __m256;
 
-//     unsafe fn dup_real_components(value: Self::Register) -> Self::Register {
-//         _mm512_moveldup_ps(value)
-//     }
-
-//     unsafe fn dup_imag_components(value: Self::Register) -> Self::Register {
-//         _mm512_movehdup_ps(value)
-//     }
+//
 
 //     unsafe fn conj(value: Self::Register) -> Self::Register {
 //         todo!()
