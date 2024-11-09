@@ -1,5 +1,6 @@
+use super::core_simd_api::Hypot;
 use crate::danger::{DenseLane, SimdRegister};
-use crate::math::{AutoMath, Math};
+use crate::math::{f32_hypot, AutoMath, Math};
 
 /// Fallback SIMD-like operations.
 ///
@@ -128,5 +129,18 @@ where
     #[inline(always)]
     unsafe fn neq(l1: Self::Register, l2: Self::Register) -> Self::Register {
         AutoMath::cast_bool(!AutoMath::cmp_eq(l1, l2))
+    }
+}
+
+impl Hypot<f32> for Fallback {
+    #[inline(always)]
+    unsafe fn hypot(x: f32, y: f32) -> f32 {
+        f32_hypot(x, y)
+    }
+}
+impl Hypot<f64> for Fallback {
+    #[inline(always)]
+    unsafe fn hypot(x: f64, y: f64) -> f64 {
+        f64::hypot(x, y)
     }
 }

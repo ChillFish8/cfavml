@@ -147,6 +147,13 @@ impl SimdRegister<f32> for Neon {
     }
 }
 
+impl Hypot<f32> for Neon {
+    #[inline(always)]
+    unsafe fn hypot(l1: Self::Register, l2: Self::Register) -> Self::Register {
+        todo!()
+    }
+}
+
 impl SimdRegister<f64> for Neon {
     type Register = float64x2_t;
 

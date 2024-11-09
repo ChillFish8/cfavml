@@ -281,6 +281,23 @@ macro_rules! test_suite {
     };
 }
 
+macro_rules! hypot_tests {
+    ($im:ident) => {
+        paste::paste! {
+            #[test]
+            fn [<test_ $im:lower _hypot_f32>]() {
+                unsafe { crate::danger::impl_test::test_suite_impl::<f64, $im>() }
+            }
+        }
+        paste::paste! {
+            #[test]
+            fn [<test_ $im:lower _hypot_f64>]() {
+                unsafe { crate::danger::impl_test::test_suite_impl::<f64, $im>() }
+            }
+        }
+    };
+}
+
 fn test_arithmetic_value_all<T, R>(l1: Vec<T>, value: T)
 where
     T: Copy + PartialEq + Debug + IntoMemLoader<T>,
@@ -385,6 +402,7 @@ test_cosine_extra!(u64, Fallback);
 
 test_nan_sanity!(f32, Fallback);
 test_nan_sanity!(f64, Fallback);
+hypot_tests!(Fallback);
 
 #[cfg(all(target_feature = "avx2", test))]
 mod avx2_tests {
@@ -412,6 +430,7 @@ mod avx2_tests {
 
     test_nan_sanity!(f32, Avx2);
     test_nan_sanity!(f64, Avx2);
+    hypot_tests!(Avx2);
 }
 
 #[cfg(all(target_feature = "avx512f", feature = "nightly", test))]
@@ -451,6 +470,7 @@ mod avx2fma_tests {
 
     test_cosine_extra!(f32, Avx2Fma);
     test_cosine_extra!(f64, Avx2Fma);
+    hypot_tests!(Avx2Fma);
 }
 
 #[cfg(all(target_feature = "neon", test))]

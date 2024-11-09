@@ -3,9 +3,9 @@ mod default;
 mod fast_math;
 
 pub use default::StdMath;
+pub(crate) use default::{f32_hypot, f64_hypot};
 #[cfg(feature = "nightly")]
 pub use fast_math::FastMath;
-
 #[cfg(not(feature = "nightly"))]
 pub type AutoMath = StdMath;
 #[cfg(feature = "nightly")]

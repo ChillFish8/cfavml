@@ -5,7 +5,7 @@ use core::arch::x86_64::*;
 use core::iter::zip;
 use core::mem;
 
-use super::core_simd_api::{DenseLane, SimdRegister};
+use super::core_simd_api::{DenseLane, Hypot, SimdRegister};
 use super::impl_avx2::Avx2;
 use crate::apply_dense;
 
@@ -133,6 +133,63 @@ impl SimdRegister<f32> for Avx512 {
     }
 }
 
+impl Hypot<f32> for Avx512 {
+    //b' * sqrt((a*b_hat)^2 + (b*b_hat)^2), where |b| > |a|, b'=(2^n<b), b_hat=1/b'
+    #[inline(always)]
+    unsafe fn hypot(x: Self::Register, y: Self::Register) -> Self::Register {
+        // convert the inputs to absolute values
+        let (x, y) = (
+            _mm512_andnot_ps(_mm512_set1_ps(-0.0), x),
+            _mm512_andnot_ps(_mm512_set1_ps(-0.0), y),
+        );
+        // find the max and min of the two inputs
+        let (hi, lo) = (
+            <Avx512 as SimdRegister<f32>>::max(x, y),
+            <Avx512 as SimdRegister<f32>>::min(x, y),
+        );
+        //Infinity is represented by all 1s in the exponent, and all 0s in the mantissa
+        let exponent_mask = _mm512_set1_ps(f32::INFINITY);
+        //The mantissa mask is the inverse of the exponent mask
+        let mantissa_mask = _mm512_sub_ps(
+            _mm512_set1_ps(f32::MIN_POSITIVE),
+            _mm512_set1_ps(core::mem::transmute(1_u32)),
+        );
+        // round the hi values down to the nearest power of 2
+        let hi2p = _mm512_and_ps(hi, exponent_mask);
+        // we scale the values inside the root by the reciprocal of hi2p. since it's a power of 2,
+        // we can double it and xor it with the exponent mask
+        let scale = _mm512_xor_ps(_mm512_add_ps(hi2p, hi2p), exponent_mask);
+
+        // create a mask that matches the normal hi values
+        let mask =
+            _mm512_cmp_ps_mask::<_CMP_GT_OQ>(hi, _mm512_set1_ps(f32::MIN_POSITIVE));
+        // replace the subnormal values of hi2p with the minimum positive normal value
+        let hi2p = _mm512_mask_blend_ps(mask, _mm512_set1_ps(f32::MIN_POSITIVE), hi2p);
+        // replace the subnormal values of scale with the reciprocal of the minimum positive normal value
+        let scale =
+            _mm512_mask_blend_ps(mask, _mm512_set1_ps(1.0 / f32::MIN_POSITIVE), scale);
+        // create a mask that matches the subnormal hi values
+        let mask =
+            _mm512_cmp_ps_mask::<_CMP_LT_OQ>(hi, _mm512_set1_ps(f32::MIN_POSITIVE));
+        // since hi2p was preserved the exponent bits of hi, the exponent of hi/hi2p is 1
+        let hi_scaled =
+            _mm512_or_ps(_mm512_and_ps(hi, mantissa_mask), _mm512_set1_ps(1.0));
+        // for the subnormal elements of hi, we need to subtract 1 from the scaled hi values
+        let hi_scaled = _mm512_mask_blend_ps(
+            mask,
+            hi_scaled,
+            _mm512_sub_ps(hi_scaled, _mm512_set1_ps(1.0)),
+        );
+
+        let hi_scaled = _mm512_mul_ps(hi_scaled, hi_scaled);
+        let lo_scaled = _mm512_mul_ps(lo, scale);
+        _mm512_mul_ps(
+            hi2p,
+            _mm512_sqrt_ps(_mm512_fmadd_ps(lo_scaled, lo_scaled, hi_scaled)),
+        )
+    }
+}
+
 impl SimdRegister<f64> for Avx512 {
     type Register = __m512d;
 
@@ -247,6 +304,62 @@ impl SimdRegister<f64> for Avx512 {
     }
 }
 
+impl Hypot<f64> for Avx512 {
+    #[inline(always)]
+    unsafe fn hypot(x: Self::Register, y: Self::Register) -> Self::Register {
+        // convert the inputs to absolute values
+        let (x, y) = (
+            _mm512_andnot_pd(_mm512_set1_pd(-0.0), x),
+            _mm512_andnot_pd(_mm512_set1_pd(-0.0), y),
+        );
+        // find the max and min of the two inputs
+        let (hi, lo) = (
+            <Avx512 as SimdRegister<f64>>::max(x, y),
+            <Avx512 as SimdRegister<f64>>::min(x, y),
+        );
+        //Infinity is represented by all 1s in the exponent, and all 0s in the mantissa
+        let exponent_mask = _mm512_set1_pd(f64::INFINITY);
+        //The mantissa mask is the inverse of the exponent mask
+        let mantissa_mask = _mm512_sub_pd(
+            _mm512_set1_pd(f64::MIN_POSITIVE),
+            _mm512_set1_pd(core::mem::transmute(1_u64)),
+        );
+        // round the hi values down to the nearest power of 2
+        let hi2p = _mm512_and_pd(hi, exponent_mask);
+        // we scale the values inside the root by the reciprocal of hi2p. since it's a power of 2,
+        // we can double it and xor it with the exponent mask
+        let scale = _mm512_xor_pd(_mm512_add_pd(hi2p, hi2p), exponent_mask);
+
+        // create a mask that matches the normal hi values
+        let mask =
+            _mm512_cmp_pd_mask::<_CMP_GT_OQ>(hi, _mm512_set1_pd(f64::MIN_POSITIVE));
+        // replace the subnormal values of hi2p with the minimum positive normal value
+        let hi2p = _mm512_mask_blend_pd(mask, _mm512_set1_pd(f64::MIN_POSITIVE), hi2p);
+        // replace the subnormal values of scale with the reciprocal of the minimum positive normal value
+        let scale =
+            _mm512_mask_blend_pd(mask, _mm512_set1_pd(1.0 / f64::MIN_POSITIVE), scale);
+        // create a mask that matches the subnormal hi values
+        let mask =
+            _mm512_cmp_pd_mask::<_CMP_LT_OQ>(hi, _mm512_set1_pd(f64::MIN_POSITIVE));
+        // since hi2p was preserved the exponent bits of hi, the exponent of hi/hi2p is 1
+        let hi_scaled =
+            _mm512_or_pd(_mm512_and_pd(hi, mantissa_mask), _mm512_set1_pd(1.0));
+        // for the subnormal elements of hi, we need to subtract 1 from the scaled hi values
+        let hi_scaled = _mm512_mask_blend_pd(
+            mask,
+            hi_scaled,
+            _mm512_sub_pd(hi_scaled, _mm512_set1_pd(1.0)),
+        );
+
+        let hi_scaled = _mm512_mul_pd(hi_scaled, hi_scaled);
+        let lo_scaled = _mm512_mul_pd(lo, scale);
+
+        _mm512_mul_pd(
+            hi2p,
+            _mm512_sqrt_pd(_mm512_fmadd_pd(lo_scaled, lo_scaled, hi_scaled)),
+        )
+    }
+}
 impl SimdRegister<i8> for Avx512 {
     type Register = __m512i;
 

@@ -114,6 +114,27 @@ impl Math<f32> for StdMath {
     }
 }
 
+pub(crate) fn f32_hypot(a: f32, b: f32) -> f32 {
+    #[cfg(feature = "std")]
+    {
+        f32::hypot(a, b)
+    }
+    #[cfg(not(feature = "std"))]
+    {
+        todo!()
+    }
+}
+pub(crate) fn f64_hypot(a: f64, b: f64) -> f64 {
+    #[cfg(feature = "std")]
+    {
+        f64::hypot(a, b)
+    }
+    #[cfg(not(feature = "std"))]
+    {
+        todo!()
+    }
+}
+
 impl Math<f64> for StdMath {
     #[inline(always)]
     fn zero() -> f64 {

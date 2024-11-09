@@ -405,3 +405,19 @@ pub trait SimdRegister<T: Copy> {
         Self::write(mem.add(Self::elements_per_lane() * 7), lane.h);
     }
 }
+
+pub trait Hypot<T>: SimdRegister<T>
+where
+    T: Copy,
+{
+    /// SIMD Variant of the std hypot function. Computes the distance between the origin
+    /// and a point (`x`, `y`) on the Euclidean plane.
+    unsafe fn hypot(a: Self::Register, b: Self::Register) -> Self::Register;
+    #[inline(always)]
+    unsafe fn hypot_dense(
+        a: DenseLane<Self::Register>,
+        b: DenseLane<Self::Register>,
+    ) -> DenseLane<Self::Register> {
+        apply_dense!(Self::hypot, a, b)
+    }
+}
