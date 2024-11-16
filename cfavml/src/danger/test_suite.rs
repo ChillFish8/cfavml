@@ -281,7 +281,7 @@ macro_rules! test_suite {
     };
 }
 
-macro_rules! hypot_tests {
+macro_rules! test_hypot {
     ($im:ident) => {
         paste::paste! {
             #[test]
@@ -402,7 +402,7 @@ test_cosine_extra!(u64, Fallback);
 
 test_nan_sanity!(f32, Fallback);
 test_nan_sanity!(f64, Fallback);
-hypot_tests!(Fallback);
+test_hypot!(Fallback);
 
 #[cfg(all(target_feature = "avx2", test))]
 mod avx2_tests {
@@ -430,7 +430,7 @@ mod avx2_tests {
 
     test_nan_sanity!(f32, Avx2);
     test_nan_sanity!(f64, Avx2);
-    hypot_tests!(Avx2);
+    test_hypot!(Avx2);
 }
 
 #[cfg(all(target_feature = "avx512f", feature = "nightly", test))]
@@ -459,6 +459,7 @@ mod avx512_tests {
 
     test_nan_sanity!(f32, Avx512);
     test_nan_sanity!(f64, Avx512);
+    test_hypot!(Avx512);
 }
 
 #[cfg(all(target_feature = "avx2", target_feature = "fma", test))]
@@ -470,7 +471,7 @@ mod avx2fma_tests {
 
     test_cosine_extra!(f32, Avx2Fma);
     test_cosine_extra!(f64, Avx2Fma);
-    hypot_tests!(Avx2Fma);
+    test_hypot!(Avx2Fma);
 }
 
 #[cfg(all(target_feature = "neon", test))]
@@ -501,4 +502,5 @@ mod neon_tests {
 
     test_nan_sanity!(f32, Neon);
     test_nan_sanity!(f64, Neon);
+    test_hypot!(Neon);
 }
