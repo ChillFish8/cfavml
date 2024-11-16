@@ -2,7 +2,7 @@ use core::arch::aarch64::*;
 use core::iter::zip;
 use core::mem;
 
-use super::core_simd_api::{DenseLane, SimdRegister,Hypot};
+use super::core_simd_api::{DenseLane, Hypot, SimdRegister};
 use crate::math::{AutoMath, Math};
 
 const BITS_8_CAPACITY: usize = 16;
@@ -332,7 +332,8 @@ impl Hypot<f64> for Neon {
         // Find the max and min of the two inputs
         let (hi, lo) = (vmaxq_f64(x, y), vminq_f64(x, y));
         let exponent_mask = vdupq_n_u64(f64::INFINITY.to_bits());
-        let mantissa_mask = vdupq_n_u64((f64::MIN_POSITIVE - mem::transmute::<u64,f64>(1)).to_bits());
+        let mantissa_mask =
+            vdupq_n_u64((f64::MIN_POSITIVE - mem::transmute::<u64, f64>(1)).to_bits());
 
         // round the hi values down to the nearest power of 2
         let hi2p =

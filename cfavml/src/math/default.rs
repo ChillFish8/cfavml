@@ -1,4 +1,4 @@
-use super::Math;
+use super::{Math, Numeric};
 
 /// Standard math operations that apply no specialised handling.
 pub struct StdMath;
@@ -114,24 +114,18 @@ impl Math<f32> for StdMath {
     }
 }
 
-pub(crate) fn f32_hypot(a: f32, b: f32) -> f32 {
-    #[cfg(feature = "std")]
-    {
-        f32::hypot(a, b)
-    }
-    #[cfg(not(feature = "std"))]
-    {
-        todo!()
-    }
-}
-pub(crate) fn f64_hypot(a: f64, b: f64) -> f64 {
-    #[cfg(feature = "std")]
-    {
-        f64::hypot(a, b)
-    }
-    #[cfg(not(feature = "std"))]
-    {
-        todo!()
+impl Numeric<f32> for StdMath {
+    #[inline(always)]
+    fn hypot(a: f32, b: f32) -> f32 {
+        #[cfg(feature = "std")]
+        {
+            f32::hypot(a, b)
+        }
+        #[cfg(not(feature = "std"))]
+        {
+            // Fall back to direct calculation
+            f32_sqrt_fast(a * a + b * b)
+        }
     }
 }
 
@@ -243,6 +237,21 @@ impl Math<f64> for StdMath {
         let min = a.min(b);
         let diff = max - min;
         diff <= 0.00015
+    }
+}
+
+impl Numeric<f64> for StdMath {
+    #[inline(always)]
+    fn hypot(a: f64, b: f64) -> f64 {
+        #[cfg(feature = "std")]
+        {
+            f64::hypot(a, b)
+        }
+        #[cfg(not(feature = "std"))]
+        {
+            // Fall back to direct calculation
+            f32_sqrt_fast((a * a + b * b) as f32) as f64
+        }
     }
 }
 
