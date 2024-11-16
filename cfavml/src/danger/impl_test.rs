@@ -326,7 +326,7 @@ unsafe fn test_sample<T, R>(
     Standard: Distribution<T>,
 {
     {
-        let (_std_result, std_sum) = get_std_results(&sample1, &sample2);
+        let (std_result, std_sum) = get_std_results(&sample1, &sample2);
         let l1 = R::load(sample1.as_ptr());
         let l2 = R::load(sample2.as_ptr());
         let res = R::hypot(l1, l2);
@@ -335,9 +335,12 @@ unsafe fn test_sample<T, R>(
             AutoMath::is_close(std_sum, res_sum),
             "Hypot and sum test failed on single task"
         );
+        let mut res_vec = vec![T::zero(); R::elements_per_lane()];
+        R::write(res_vec.as_mut_ptr(), res);
+        test_diff_ulps(std_result, res_vec);
     }
     {
-        let (_std_result, std_sum) = get_std_results(&large_sample_l1, &large_sample_l2);
+        let (std_result, std_sum) = get_std_results(&large_sample_l1, &large_sample_l2);
         let l1 = R::load_dense(large_sample_l1.as_ptr());
         let l2 = R::load_dense(large_sample_l2.as_ptr());
         let res = R::hypot_dense(l1, l2);
@@ -348,6 +351,9 @@ unsafe fn test_sample<T, R>(
             AutoMath::is_close(std_sum, res_sum),
             "Hypot and sum test failed on dense task"
         );
+        let mut res_vec = vec![T::zero(); R::elements_per_dense()];
+        R::write_dense(res_vec.as_mut_ptr(), res);
+        test_diff_ulps(std_result, res_vec);
     }
 }
 
@@ -363,4 +369,18 @@ where
         .collect::<Vec<T>>();
     let sum = std_result.iter().fold(AutoMath::zero(), |a, b| a + *b);
     (std_result, sum)
+}
+
+fn test_diff_ulps<T>(a: Vec<T>, b: Vec<T>)
+where
+    T: Float + FloatConst,
+{
+    a.iter().zip(b.iter()).for_each(|(a, b)| {
+        let (a_mant, a_exp, a_sign) = a.integer_decode();
+        let (b_mant, b_exp, b_sign) = b.integer_decode();
+        assert!(a_sign == b_sign);
+        assert!(a_exp == b_exp);
+        let dist = a_mant as i64 - b_mant as i64;
+        assert!(dist.abs() < 2, "Greater than 1 ulp difference: {dist}");
+    });
 }

@@ -28,7 +28,7 @@ impl Math<f32> for FastMath {
 
     #[inline(always)]
     fn sqrt(a: f32) -> f32 {
-        StdMath::sqrt(a)
+        core::intrinsics::sqrtf32(a)
     }
 
     #[inline(always)]
@@ -139,7 +139,7 @@ impl Math<f64> for FastMath {
 
     #[inline(always)]
     fn sqrt(a: f64) -> f64 {
-        StdMath::sqrt(a)
+        core::intrinsics::sqrtf64(a)
     }
 
     #[inline(always)]

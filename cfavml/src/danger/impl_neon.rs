@@ -2,7 +2,7 @@ use core::arch::aarch64::*;
 use core::iter::zip;
 use core::mem;
 
-use crate::danger::{DenseLane, SimdRegister};
+use super::core_simd_api::{DenseLane, SimdRegister,Hypot};
 use crate::math::{AutoMath, Math};
 
 const BITS_8_CAPACITY: usize = 16;
@@ -146,11 +146,48 @@ impl SimdRegister<f32> for Neon {
         vst1q_f32(mem, reg)
     }
 }
-
+const EXPONENT_MASK_F32: u32 = 2139095040;
+const MANTISSA_MASK_F32: u32 = 8388607;
 impl Hypot<f32> for Neon {
     #[inline(always)]
-    unsafe fn hypot(l1: Self::Register, l2: Self::Register) -> Self::Register {
-        todo!()
+    unsafe fn hypot(x: Self::Register, y: Self::Register) -> Self::Register {
+        // Convert inputs to absolute values
+        let (x, y) = (vabsq_f32(x), vabsq_f32(y));
+
+        // Find the max and min of the two inputs
+        let (hi, lo) = (vmaxq_f32(x, y), vminq_f32(x, y));
+        let exponent_mask = vdupq_n_u32(EXPONENT_MASK_F32);
+        let mantissa_mask = vdupq_n_u32(MANTISSA_MASK_F32);
+
+        // round the hi values down to the nearest power of 2
+        let hi2p =
+            vreinterpretq_f32_u32(vandq_u32(vreinterpretq_u32_f32(hi), exponent_mask));
+        // we scale the values inside the root by the reciprocal of hi2p. since it's a power of 2,
+        // we can double it and xor it with the exponent mask
+        let scale = vreinterpretq_f32_u32(veorq_u32(
+            vreinterpretq_u32_f32(vaddq_f32(hi2p, hi2p)),
+            exponent_mask,
+        ));
+        // create a mask that matches the normal hi values
+        let mask = vcgtq_f32(hi, vdupq_n_f32(f32::MIN_POSITIVE));
+        // replace the subnormal values of hi2p with the minimum positive normal value
+        let hi2p = vbslq_f32(mask, hi2p, vdupq_n_f32(f32::MIN_POSITIVE));
+        // replace the subnormal values of scale with the reciprocal of the minimum positive normal value
+        let scale = vbslq_f32(mask, scale, vdupq_n_f32(1.0 / f32::MIN_POSITIVE));
+        // create a mask that matches the subnormal hi values
+        let mask = vcltq_f32(hi, vdupq_n_f32(f32::MIN_POSITIVE));
+        // since hi2p was preserved the exponent bits of hi, the exponent of hi/hi2p is 1
+        let hi_scaled = vreinterpretq_f32_u32(vorrq_u32(
+            vandq_u32(vreinterpretq_u32_f32(hi), mantissa_mask),
+            vreinterpretq_u32_f32(vdupq_n_f32(1.0)),
+        ));
+        // for the subnormal elements of hi, we need to subtract 1 from the scaled hi values
+        let hi_scaled =
+            vbslq_f32(mask, vsubq_f32(hi_scaled, vdupq_n_f32(1.0)), hi_scaled);
+        // finally, do the thing
+        let hi_scaled = vmulq_f32(hi_scaled, hi_scaled);
+        let lo_scaled = vmulq_f32(lo, scale);
+        vmulq_f32(hi2p, vsqrtq_f32(vfmaq_f32(lo_scaled, lo_scaled, hi_scaled)))
     }
 }
 
@@ -283,6 +320,49 @@ impl SimdRegister<f64> for Neon {
     #[inline(always)]
     unsafe fn write(mem: *mut f64, reg: Self::Register) {
         vst1q_f64(mem, reg)
+    }
+}
+
+impl Hypot<f64> for Neon {
+    #[inline(always)]
+    unsafe fn hypot(x: Self::Register, y: Self::Register) -> Self::Register {
+        // Convert inputs to absolute values
+        let (x, y) = (vabsq_f64(x), vabsq_f64(y));
+
+        // Find the max and min of the two inputs
+        let (hi, lo) = (vmaxq_f64(x, y), vminq_f64(x, y));
+        let exponent_mask = vdupq_n_u64(f64::INFINITY.to_bits());
+        let mantissa_mask = vdupq_n_u64((f64::MIN_POSITIVE - mem::transmute::<u64,f64>(1)).to_bits());
+
+        // round the hi values down to the nearest power of 2
+        let hi2p =
+            vreinterpretq_f64_u64(vandq_u64(vreinterpretq_u64_f64(hi), exponent_mask));
+        // we scale the values inside the root by the reciprocal of hi2p. since it's a power of 2,
+        // we can double it and xor it with the exponent mask
+        let scale = vreinterpretq_f64_u64(veorq_u64(
+            vreinterpretq_u64_f64(vaddq_f64(hi2p, hi2p)),
+            exponent_mask,
+        ));
+        // create a mask that matches the normal hi values
+        let mask = vcgtq_f64(hi, vdupq_n_f64(f64::MIN_POSITIVE));
+        // replace the subnormal values of hi2p with the minimum positive normal value
+        let hi2p = vbslq_f64(mask, hi2p, vdupq_n_f64(f64::MIN_POSITIVE));
+        // replace the subnormal values of scale with the reciprocal of the minimum positive normal value
+        let scale = vbslq_f64(mask, scale, vdupq_n_f64(1.0 / f64::MIN_POSITIVE));
+        // create a mask that matches the subnormal hi values
+        let mask = vcltq_f64(hi, vdupq_n_f64(f64::MIN_POSITIVE));
+        // since hi2p was preserved the exponent bits of hi, the exponent of hi/hi2p is 1
+        let hi_scaled = vreinterpretq_f64_u64(vorrq_u64(
+            vandq_u64(vreinterpretq_u64_f64(hi), mantissa_mask),
+            vreinterpretq_u64_f64(vdupq_n_f64(1.0)),
+        ));
+        // for the subnormal elements of hi, we need to subtract 1 from the scaled hi values
+        let hi_scaled =
+            vbslq_f64(mask, vsubq_f64(hi_scaled, vdupq_n_f64(1.0)), hi_scaled);
+        // finally, do the thing
+        let hi_scaled = vmulq_f64(hi_scaled, hi_scaled);
+        let lo_scaled = vmulq_f64(lo, scale);
+        vmulq_f64(hi2p, vsqrtq_f64(vfmaq_f64(lo_scaled, lo_scaled, hi_scaled)))
     }
 }
 
