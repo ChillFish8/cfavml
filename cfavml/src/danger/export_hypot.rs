@@ -79,6 +79,7 @@ mod tests {
                         .copied()
                         .map(|v| AutoMath::$op(v, 2 as $t))
                         .collect::<Vec<_>>();
+
                     for ((initial, expected), actual) in l1.iter().zip(&expected).zip(&result) {
                         let ulps_diff = get_diff_ulps(*expected, *actual);
                         assert!(
@@ -86,13 +87,14 @@ mod tests {
                             "result differs by more than 1 ULP:\n initial inputs: {}, 2\n  expected: {} actual: {}\nulps diff: {}",
                             initial, expected, actual, ulps_diff
                         );
+
                     }
 
                 }
 
                 #[test]
                 fn [< $variant _ $op _vector_ $t >]() {
-                    let (l1, l2) = crate::test_utils::get_subnormal_sample_vectors::<$t>(533);
+                    let (l1, l2) = crate::test_utils::get_sample_vectors::<$t>(533);
 
                     let mut result = vec![$t::default(); 533];
                     unsafe { [< $variant _ $op _vertical >](&l1, &l2, &mut result) };
