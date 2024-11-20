@@ -132,15 +132,13 @@ where
     }
 }
 
-impl Hypot<f32> for Fallback {
+impl<T> Hypot<T> for Fallback
+where
+    T: Copy,
+    AutoMath: Math<T> + Numeric<T>,
+{
     #[inline(always)]
-    unsafe fn hypot(x: f32, y: f32) -> f32 {
-        AutoMath::hypot(x, y)
-    }
-}
-impl Hypot<f64> for Fallback {
-    #[inline(always)]
-    unsafe fn hypot(x: f64, y: f64) -> f64 {
+    unsafe fn hypot(x: T, y: T) -> T {
         AutoMath::hypot(x, y)
     }
 }
