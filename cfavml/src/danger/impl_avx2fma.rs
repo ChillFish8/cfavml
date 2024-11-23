@@ -138,7 +138,7 @@ impl Hypot<f32> for Avx2Fma {
         //The mantissa mask is the inverse of the exponent mask
         let mantissa_mask = _mm256_sub_ps(
             _mm256_set1_ps(f32::MIN_POSITIVE),
-            _mm256_set1_ps(core::mem::transmute(1_u32)),
+            _mm256_set1_ps(f32::from_bits(1_u32)),
         );
         // round the hi values down to the nearest power of 2
         let hi2p = _mm256_and_ps(hi, exponent_mask);
@@ -149,9 +149,10 @@ impl Hypot<f32> for Avx2Fma {
         // create a mask that matches the normal hi values
         let mask = _mm256_cmp_ps::<_CMP_GT_OQ>(hi, _mm256_set1_ps(f32::MIN_POSITIVE));
         // replace the subnormal values of hi2p with the minimum positive normal value
-        let hi2p = _mm256_blendv_ps(_mm256_set1_ps(f32::MIN_POSITIVE), hi2p, mask);
+        let outer_scale =
+            _mm256_blendv_ps(_mm256_set1_ps(f32::MIN_POSITIVE), hi2p, mask);
         // replace the subnormal values of scale with the reciprocal of the minimum positive normal value
-        let scale =
+        let inner_scale =
             _mm256_blendv_ps(_mm256_set1_ps(1.0 / f32::MIN_POSITIVE), scale, mask);
         // create a mask that matches the subnormal hi values
         let mask = _mm256_cmp_ps::<_CMP_LT_OQ>(hi, _mm256_set1_ps(f32::MIN_POSITIVE));
@@ -166,9 +167,9 @@ impl Hypot<f32> for Avx2Fma {
         );
 
         let hi_scaled = _mm256_mul_ps(hi_scaled, hi_scaled);
-        let lo_scaled = _mm256_mul_ps(lo, scale);
+        let lo_scaled = _mm256_mul_ps(lo, inner_scale);
         _mm256_mul_ps(
-            hi2p,
+            outer_scale,
             _mm256_sqrt_ps(_mm256_fmadd_ps(lo_scaled, lo_scaled, hi_scaled)),
         )
     }
@@ -299,7 +300,7 @@ impl Hypot<f64> for Avx2Fma {
         //The mantissa mask is the inverse of the exponent mask
         let mantissa_mask = _mm256_sub_pd(
             _mm256_set1_pd(f64::MIN_POSITIVE),
-            _mm256_set1_pd(core::mem::transmute(1_u64)),
+            _mm256_set1_pd(f64::from_bits(1_u64)),
         );
         // round the hi values down to the nearest power of 2
         let hi2p = _mm256_and_pd(hi, exponent_mask);

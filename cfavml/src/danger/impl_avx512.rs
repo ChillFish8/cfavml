@@ -152,7 +152,7 @@ impl Hypot<f32> for Avx512 {
         //The mantissa mask is the inverse of the exponent mask
         let mantissa_mask = _mm512_sub_ps(
             _mm512_set1_ps(f32::MIN_POSITIVE),
-            _mm512_set1_ps(core::mem::transmute(1_u32)),
+            _mm512_set1_ps(f32::from_bits(1_u32)),
         );
         // round the hi values down to the nearest power of 2
         let hi2p = _mm512_and_ps(hi, exponent_mask);
@@ -322,7 +322,7 @@ impl Hypot<f64> for Avx512 {
         //The mantissa mask is the inverse of the exponent mask
         let mantissa_mask = _mm512_sub_pd(
             _mm512_set1_pd(f64::MIN_POSITIVE),
-            _mm512_set1_pd(core::mem::transmute(1_u64)),
+            _mm512_set1_pd(f64::from_bits(1_u64)),
         );
         // round the hi values down to the nearest power of 2
         let hi2p = _mm512_and_pd(hi, exponent_mask);

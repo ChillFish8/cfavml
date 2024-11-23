@@ -286,13 +286,13 @@ macro_rules! test_hypot {
         paste::paste! {
             #[test]
             fn [<test_ $im:lower _hypot_f32>]() {
-                unsafe { crate::danger::impl_test::test_suite_impl::<f64, $im>() }
+                unsafe { crate::danger::impl_test::hypot_test_impl::<f64, $im>() }
             }
         }
         paste::paste! {
             #[test]
             fn [<test_ $im:lower _hypot_f64>]() {
-                unsafe { crate::danger::impl_test::test_suite_impl::<f64, $im>() }
+                unsafe { crate::danger::impl_test::hypot_test_impl::<f64, $im>() }
             }
         }
     };

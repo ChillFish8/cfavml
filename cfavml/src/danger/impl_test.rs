@@ -337,7 +337,7 @@ unsafe fn test_sample<T, R>(
         );
         let mut res_vec = vec![T::zero(); R::elements_per_lane()];
         R::write(res_vec.as_mut_ptr(), res);
-        test_diff_ulps(std_result, res_vec);
+        test_diff_ulps(&std_result, &res_vec);
     }
     {
         let (std_result, std_sum) = get_std_results(&large_sample_l1, &large_sample_l2);
@@ -353,11 +353,11 @@ unsafe fn test_sample<T, R>(
         );
         let mut res_vec = vec![T::zero(); R::elements_per_dense()];
         R::write_dense(res_vec.as_mut_ptr(), res);
-        test_diff_ulps(std_result, res_vec);
+        test_diff_ulps(&std_result, &res_vec);
     }
 }
 
-fn get_std_results<T>(sample1: &Vec<T>, sample2: &Vec<T>) -> (Vec<T>, T)
+fn get_std_results<T>(sample1: &[T], sample2: &[T]) -> (Vec<T>, T)
 where
     T: Float + Debug,
     AutoMath: Math<T>,
@@ -371,7 +371,7 @@ where
     (std_result, sum)
 }
 
-fn test_diff_ulps<T>(a: Vec<T>, b: Vec<T>)
+fn test_diff_ulps<T>(a: &[T], b: &[T])
 where
     T: Float + FloatConst,
 {
