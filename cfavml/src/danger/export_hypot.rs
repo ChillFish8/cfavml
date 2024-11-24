@@ -8,7 +8,7 @@ use crate::danger::{generic_hypot_vertical, SimdRegister};
 use crate::math::{AutoMath, Math, Numeric};
 use crate::mem_loader::{IntoMemLoader, MemLoader};
 
-macro_rules! define_arithmetic_impls {
+macro_rules! define_hypot_impls {
     (
         $hypot_name:ident,
         $imp:ident $(,)?
@@ -46,18 +46,25 @@ macro_rules! define_arithmetic_impls {
     };
 }
 
-define_arithmetic_impls!(generic_fallback_hypot_vertical, Fallback,);
+define_hypot_impls!(generic_fallback_hypot_vertical, Fallback,);
 #[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
-define_arithmetic_impls!(generic_avx2_hypot_vertical, Avx2, target_features = "avx2");
+define_hypot_impls!(generic_avx2_hypot_vertical, Avx2, target_features = "avx2");
+#[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
+define_hypot_impls!(
+    generic_avx2fma_hypot_vertical,
+    Avx2Fma,
+    target_features = "avx2",
+    "fma"
+);
 #[cfg(all(any(target_arch = "x86", target_arch = "x86_64"), feature = "nightly"))]
-define_arithmetic_impls!(
+define_hypot_impls!(
     generic_avx512_hypot_vertical,
     Avx512,
     target_features = "avx512f",
     "avx512bw"
 );
 #[cfg(target_arch = "aarch64")]
-define_arithmetic_impls!(generic_neon_hypot_vertical, Neon, target_features = "neon");
+define_hypot_impls!(generic_neon_hypot_vertical, Neon, target_features = "neon");
 
 #[cfg(test)]
 mod tests {
@@ -113,6 +120,51 @@ mod tests {
                         );
                     }
                 }
+                #[test]
+                fn [< $variant _ $op _subnormal_value_ $t >]() {
+                    let (l1, _) = crate::test_utils::get_subnormal_sample_vectors::<$t>(533);
+
+                    let mut result = vec![$t::default(); 533];
+                    unsafe { [< $variant _ $op _vertical >](&l1, 2 as $t, &mut result) };
+
+                    let expected = l1.iter()
+                        .copied()
+                        .map(|v| AutoMath::$op(v, 2 as $t))
+                        .collect::<Vec<_>>();
+
+                    for ((initial, expected), actual) in l1.iter().zip(&expected).zip(&result) {
+                        let ulps_diff = get_diff_ulps(*expected, *actual);
+                        assert!(
+                            ulps_diff.abs() <= 1,
+                            "result differs by more than 1 ULP:\n initial inputs: {}, 2\n  expected: {} actual: {}\nulps diff: {}",
+                            initial, expected, actual, ulps_diff
+                        );
+
+                    }
+
+                }
+
+                #[test]
+                fn [< $variant _ $op _subnormal_vector_ $t >]() {
+                    let (l1, l2) = crate::test_utils::get_subnormal_sample_vectors::<$t>(533);
+
+                    let mut result = vec![$t::default(); 533];
+                    unsafe { [< $variant _ $op _vertical >](&l1, &l2, &mut result) };
+
+                    let expected = l1.iter()
+                        .copied()
+                        .zip(l2.iter().copied())
+                        .map(|(a, b)| AutoMath::$op(a, b))
+                        .collect::<Vec<_>>();
+                    for ((initial, expected), actual) in l1.iter().zip(&expected).zip(&result) {
+                        let ulps_diff = get_diff_ulps(*expected, *actual);
+                        assert!(
+                            ulps_diff.abs() <= 1,
+                            "result differs by more than 1 ULP:\n initial inputs: {}, 2\n  expected: {} actual: {}\nulps diff: {}",
+                            initial, expected, actual, ulps_diff
+                        );
+                    }
+                }
             }
         };
     }
@@ -143,6 +195,12 @@ mod tests {
         target_feature = "avx2"
     ))]
     define_numeric_test!(generic_avx2, types = f32, f64,);
+    #[cfg(all(
+        any(target_arch = "x86", target_arch = "x86_64"),
+        target_feature = "avx2",
+        target_feature = "fma"
+    ))]
+    define_numeric_test!(generic_avx2fma, types = f32, f64,);
     #[cfg(all(
         any(target_arch = "x86", target_arch = "x86_64"),
         feature = "nightly",
