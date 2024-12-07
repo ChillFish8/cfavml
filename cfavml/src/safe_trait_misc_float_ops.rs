@@ -7,8 +7,8 @@ use crate::buffer::WriteOnlyBuffer;
 use crate::danger::export_hypot;
 use crate::mem_loader::{IntoMemLoader, MemLoader};
 
-/// Various arithmetic operations over vectors.
-pub trait NumericOps: Sized + Copy {
+/// Various float operations over vectors.
+pub trait MiscFloatOps: Sized + Copy {
     /// Performs an elementwise hypotenuse of input buffers `a` and `b` that can
     /// be projected to the desired output size of `result`. Implementation is an appoximation that
     /// _should_ match std::hypot in most cases. However, with some inputs it's been confirmed to be off by 1 ulp.
@@ -56,9 +56,9 @@ pub trait NumericOps: Sized + Copy {
         for<'a> &'a mut [B3]: WriteOnlyBuffer<Item = Self>;
 }
 
-macro_rules! numeric_ops {
+macro_rules! misc_float_ops {
     ($t:ty) => {
-        impl NumericOps for $t {
+        impl MiscFloatOps for $t {
             fn hypot_vertical<B1, B2, B3>(lhs: B1, rhs: B2, result: &mut [B3])
             where
                 B1: IntoMemLoader<Self>,
@@ -81,5 +81,5 @@ macro_rules! numeric_ops {
     };
 }
 
-numeric_ops!(f32);
-numeric_ops!(f64);
+misc_float_ops!(f32);
+misc_float_ops!(f64);
