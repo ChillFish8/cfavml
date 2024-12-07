@@ -1,6 +1,6 @@
 Performs an elementwise hypotenuse of input buffers `a` and `b` that can
 be projected to the desired output size of `result`. Implementation is an appoximation that
-_should_ match std::hypot in most cases. However, with some inputs it's been confirmed to be off by 1 ulp.
+_should_ match std::hypot in most cases. However, with some inputs it's been confirmed to be off by 1 ulp. Note: for `no_std` builds the result will be off more significantly for fallback
 
 ### Projecting Vectors
 
@@ -16,13 +16,17 @@ of `128` elements in length must take a result buffer of `128` elements in lengt
 
 ### Implementation Pseudocode
 
-_This is the logic of the routine being called._
+_This is the (simplified) logic of the routine being called._
 
 ```ignore
 result = [0; dims]
 
+// assume |a|<|b| for all a,b
 for i in range(dims):
-    result[i] = a[i].hypot(b[i])
+    let hi = a[i].abs()
+    let lo = b[i].abs()
+    let scale = 1/hi
+    result[i] = hi * sqrt(lo*scale + 1)
 
 return result
 ```

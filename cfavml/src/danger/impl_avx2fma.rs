@@ -124,15 +124,11 @@ impl Hypot<f32> for Avx2Fma {
     #[inline(always)]
     unsafe fn hypot(x: Self::Register, y: Self::Register) -> Self::Register {
         // convert the inputs to absolute values
-        let (x, y) = (
-            _mm256_andnot_ps(_mm256_set1_ps(-0.0), x),
-            _mm256_andnot_ps(_mm256_set1_ps(-0.0), y),
-        );
+        let x = _mm256_andnot_ps(_mm256_set1_ps(-0.0), x);
+        let y = _mm256_andnot_ps(_mm256_set1_ps(-0.0), y);
         // find the max and min of the two inputs
-        let (hi, lo) = (
-            <Avx2 as SimdRegister<f32>>::max(x, y),
-            <Avx2 as SimdRegister<f32>>::min(x, y),
-        );
+        let hi = <Avx2 as SimdRegister<f32>>::max(x, y);
+        let lo = <Avx2 as SimdRegister<f32>>::min(x, y);
         //Infinity is represented by all 1s in the exponent, and all 0s in the mantissa
         let exponent_mask = _mm256_set1_ps(f32::INFINITY);
         //The mantissa mask is the inverse of the exponent mask
@@ -286,15 +282,11 @@ impl Hypot<f64> for Avx2Fma {
     #[inline(always)]
     unsafe fn hypot(x: Self::Register, y: Self::Register) -> Self::Register {
         // convert the inputs to absolute values
-        let (x, y) = (
-            _mm256_andnot_pd(_mm256_set1_pd(-0.0), x),
-            _mm256_andnot_pd(_mm256_set1_pd(-0.0), y),
-        );
+        let x = _mm256_andnot_pd(_mm256_set1_pd(-0.0), x);
+        let y = _mm256_andnot_pd(_mm256_set1_pd(-0.0), y);
         // find the max and min of the two inputs
-        let (hi, lo) = (
-            <Avx2 as SimdRegister<f64>>::max(x, y),
-            <Avx2 as SimdRegister<f64>>::min(x, y),
-        );
+        let hi = <Avx2 as SimdRegister<f64>>::max(x, y);
+        let lo = <Avx2 as SimdRegister<f64>>::min(x, y);
         //Infinity is represented by all 1s in the exponent, and all 0s in the mantissa
         let exponent_mask = _mm256_set1_pd(f64::INFINITY);
         //The mantissa mask is the inverse of the exponent mask

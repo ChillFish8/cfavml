@@ -250,7 +250,7 @@ impl Numeric<f64> for StdMath {
         #[cfg(not(feature = "std"))]
         {
             // Fall back to direct calculation
-            f32_sqrt_fast((a * a + b * b) as f32) as f64
+            StdMath::sqrt(a * a + b * b)
         }
     }
 }

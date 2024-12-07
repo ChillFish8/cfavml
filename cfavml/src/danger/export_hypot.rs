@@ -207,6 +207,6 @@ mod tests {
         target_feature = "avx512f"
     ))]
     define_numeric_test!(generic_avx512, types = f32, f64,);
-    #[cfg(target_arch = "aarch64")]
+    #[cfg(all(target_arch = "aarch64", target_feature = "neon"))]
     define_numeric_test!(generic_neon, types = f32, f64,);
 }

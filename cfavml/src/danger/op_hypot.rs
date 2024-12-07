@@ -6,13 +6,15 @@ use crate::math::{Math, Numeric};
 use crate::mem_loader::{IntoMemLoader, MemLoader};
 
 #[inline(always)]
-/// A generic vector hypot over one vector and single value.
+/// A generic vector implementation of hypot over one vector and single value.
 ///
 /// # Safety
 ///
+/// The safety of hypot relies on the safety of the implementation of SimdRegister
 /// The sizes of `a`, `b` and `result` must be equal to `dims`, the safety requirements of
 /// `M` definition the basic math operations and the requirements of `R` SIMD register
 /// must also be followed.
+
 pub unsafe fn generic_hypot_vertical<T, R, M, B1, B2, B3>(
     a: B1,
     b: B2,

@@ -414,6 +414,8 @@ where
     /// and a point (`x`, `y`) on the Euclidean plane.
     unsafe fn hypot(a: Self::Register, b: Self::Register) -> Self::Register;
     #[inline(always)]
+
+    /// Perform a element wise hypot on two dense lanes.
     unsafe fn hypot_dense(
         a: DenseLane<Self::Register>,
         b: DenseLane<Self::Register>,
