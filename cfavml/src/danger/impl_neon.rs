@@ -152,10 +152,12 @@ impl Hypot<f32> for Neon {
     #[inline(always)]
     unsafe fn hypot(x: Self::Register, y: Self::Register) -> Self::Register {
         // Convert inputs to absolute values
-        let (x, y) = (vabsq_f32(x), vabsq_f32(y));
+        let x = vabsq_f32(x);
+        let y = vabsq_f32(y);
 
         // Find the max and min of the two inputs
-        let (hi, lo) = (vmaxq_f32(x, y), vminq_f32(x, y));
+        let hi = vmaxq_f32(x, y);
+        let lo = vminq_f32(x, y);
         let exponent_mask = vdupq_n_u32(EXPONENT_MASK_F32);
         let mantissa_mask = vdupq_n_u32(MANTISSA_MASK_F32);
 
@@ -327,10 +329,12 @@ impl Hypot<f64> for Neon {
     #[inline(always)]
     unsafe fn hypot(x: Self::Register, y: Self::Register) -> Self::Register {
         // Convert inputs to absolute values
-        let (x, y) = (vabsq_f64(x), vabsq_f64(y));
+        let x = vabsq_f64(x);
+        let y = vabsq_f64(y);
 
         // Find the max and min of the two inputs
-        let (hi, lo) = (vmaxq_f64(x, y), vminq_f64(x, y));
+        let hi = vmaxq_f64(x, y);
+        let lo = vminq_f64(x, y);
         let exponent_mask = vdupq_n_u64(f64::INFINITY.to_bits());
         let mantissa_mask =
             vdupq_n_u64((f64::MIN_POSITIVE - mem::transmute::<u64, f64>(1)).to_bits());
