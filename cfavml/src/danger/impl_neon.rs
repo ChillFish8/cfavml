@@ -189,7 +189,7 @@ impl Hypot<f32> for Neon {
         // finally, do the thing
         let hi_scaled = vmulq_f32(hi_scaled, hi_scaled);
         let lo_scaled = vmulq_f32(lo, scale);
-        vmulq_f32(hi2p, vsqrtq_f32(vfmaq_f32(lo_scaled, lo_scaled, hi_scaled)))
+        vmulq_f32(hi2p, vsqrtq_f32(vfmaq_f32(hi_scaled, lo_scaled, lo_scaled)))
     }
 }
 
@@ -367,7 +367,7 @@ impl Hypot<f64> for Neon {
         // finally, do the thing
         let hi_scaled = vmulq_f64(hi_scaled, hi_scaled);
         let lo_scaled = vmulq_f64(lo, scale);
-        vmulq_f64(hi2p, vsqrtq_f64(vfmaq_f64(lo_scaled, lo_scaled, hi_scaled)))
+        vmulq_f64(hi2p, vsqrtq_f64(vfmaq_f64(hi_scaled, lo_scaled, lo_scaled)))
     }
 }
 
