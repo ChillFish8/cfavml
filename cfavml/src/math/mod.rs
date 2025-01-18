@@ -5,7 +5,6 @@ mod fast_math;
 pub use default::StdMath;
 #[cfg(feature = "nightly")]
 pub use fast_math::FastMath;
-
 #[cfg(not(feature = "nightly"))]
 pub type AutoMath = StdMath;
 #[cfg(feature = "nightly")]
@@ -78,4 +77,8 @@ pub trait Math<T> {
             Self::zero()
         }
     }
+}
+
+pub trait Numeric<T>: Math<T> {
+    fn hypot(a: T, b: T) -> T;
 }

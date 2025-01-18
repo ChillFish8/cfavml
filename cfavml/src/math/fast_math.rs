@@ -1,6 +1,6 @@
 use core::intrinsics;
 
-use super::{Math, StdMath};
+use super::{Math, Numeric, StdMath};
 
 /// Basic math operations backed by fast-math intrinsics.
 pub struct FastMath;
@@ -116,6 +116,12 @@ impl Math<f32> for FastMath {
     }
 }
 
+impl Numeric<f32> for FastMath {
+    fn hypot(a: f32, b: f32) -> f32 {
+        StdMath::hypot(a as f64, b as f64) as f32
+    }
+}
+
 impl Math<f64> for FastMath {
     #[inline(always)]
     fn zero() -> f64 {
@@ -224,6 +230,12 @@ impl Math<f64> for FastMath {
         let min = a.min(b);
         let diff = max - min;
         diff <= 0.00015
+    }
+}
+
+impl Numeric<f64> for FastMath {
+    fn hypot(a: f64, b: f64) -> f64 {
+        StdMath::hypot(a, b)
     }
 }
 

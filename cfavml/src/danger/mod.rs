@@ -24,9 +24,11 @@ pub mod export_agg_ops;
 pub mod export_arithmetic_ops;
 pub mod export_cmp_ops;
 pub mod export_distance_ops;
+pub mod export_hypot;
 #[cfg(test)]
 mod impl_test;
 mod op_cmp_vertical;
+mod op_hypot;
 #[cfg(test)]
 mod test_suite;
 
@@ -61,6 +63,7 @@ pub(crate) use self::op_cosine::cosine;
 pub use self::op_cosine::generic_cosine;
 pub use self::op_dot::generic_dot;
 pub use self::op_euclidean::generic_squared_euclidean;
+pub use self::op_hypot::generic_hypot_vertical;
 pub use self::op_norm::generic_squared_norm;
 pub use self::op_sum::generic_sum;
 

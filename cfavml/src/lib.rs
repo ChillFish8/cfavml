@@ -23,6 +23,7 @@ pub mod safe_trait_agg_ops;
 pub mod safe_trait_arithmetic_ops;
 pub mod safe_trait_cmp_ops;
 pub mod safe_trait_distance_ops;
+pub mod safe_trait_misc_float_ops;
 #[cfg(test)]
 mod test_utils;
 
