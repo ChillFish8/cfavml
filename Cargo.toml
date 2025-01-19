@@ -3,7 +3,11 @@ resolver = "2"
 members = [
     "cfavml",
     "cfavml-gemm",
+    "cfavml-ndarray",
     "cfavml-utils",
     # Testing and profiling
     "cfavml/asm-view"
 ]
+
+[profile.test]
+overflow-checks = false

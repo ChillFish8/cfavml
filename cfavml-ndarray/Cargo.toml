@@ -1,0 +1,32 @@
+[package]
+name = "cfavml-ndarray"
+version = "0.1.0"
+edition = "2021"
+rust-version = "1.75"
+authors = ["Harrison Burt <harrison.burt@cf8.gg>"]
+description = "Accelerate your ndarray operations with CFAVML's SIMD acceleration."
+keywords = ["linear-algebra", "vector", "simd"]
+categories = ["concurrency"]
+readme = "README.md"
+repository = "https://github.com/ChillFish8/cfavml"
+license = "MIT OR Apache-2.0"
+
+[dependencies]
+ndarray = "0.16"
+
+cfavml = { version = "0.4.0", path = "../cfavml" }
+
+[features]
+# Enables cfavml's nightly only optimizations, which includes AVX512 support.
+nightly = ["cfavml/nightly"]
+
+[dev-dependencies]
+ndarray-rand = "0.15.0"
+paste = "1.0.15"
+divan = "0.1.14"
+
+mimalloc = { version = "0.1.43", default-features = false }
+
+[[bench]]
+name = "bench_arithmetic_ops"
+harness = false
