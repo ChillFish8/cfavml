@@ -4,6 +4,7 @@ members = [
     "cfavml",
     "cfavml-gemm",
     "cfavml-utils",
+    "cfavml-complex",
     # Testing and profiling
-    "cfavml/asm-view"
+    "cfavml/asm-view",
 ]

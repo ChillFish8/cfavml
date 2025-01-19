@@ -1,0 +1,43 @@
+[package]
+name = "cfavml-complex"
+version = "0.3.0"
+edition = "2021"
+rust-version = "1.75"
+authors = ["Harrison Burt <harrison.burt@cf8.gg>"]
+description = "CF's Accelerated Vector Math Library providing SIMD optimzied routines for vector operations"
+keywords = ["linear-algebra", "vector", "simd", "complex"]
+categories = ["no-std", "no-std::no-alloc", "concurrency"]
+readme = "README.md"
+repository = "https://github.com/ChillFish8/cfavml"
+license = "MIT OR Apache-2.0"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+num-complex = "0.4.6"
+cfavml = { path = "../cfavml" }
+num-traits = "0.2.19"
+
+[dev-dependencies]
+rand_chacha = "0.3.1"
+rand = "0.8.5"
+paste = "1.0.14"
+
+[features]
+# Enables nightly only features like fast-math optimizations for fallback routines and AVX512 support.
+#
+# This feature generally needs to be enabled in order to get the best optimizations.
+nightly = []
+# Enables std library support
+#
+# This primarily provides runtime CPU feature selection, if this is not enabled only compile time
+# dispatch can be used.
+std = []
+# The default features enabled.
+#
+# If you are compiling for no-std you will need to pass default-features = false
+default = ["std"]
+
+[package.metadata.docs.rs]
+all-features = true
+rustdoc-args = ["--cfg", "docsrs"]
